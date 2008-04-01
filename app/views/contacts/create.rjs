@@ -7,10 +7,10 @@ if @successful
   page << "#{query_field}.value = '#{@contact.id}';"
   page << remote_function(
             :update => searchbox_display_id(@options),
-            :url => {
+            :url => params.merge({
               :action => 'update_display_area',
               :controller => 'contacts'
-            },
+            }),
             :with => "'contact_id=' + #{query_field}.value")
   page << "Form.enable(#{query_field}.form.id);"
 else

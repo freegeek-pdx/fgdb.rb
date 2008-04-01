@@ -9,6 +9,8 @@ class Donation < ActiveRecord::Base
   before_save :add_contact_types
 
   define_amount_methods_on("reported_required_fee")
+  define_amount_methods_on("amount_invoiced")
+  define_amount_methods_on("cash_donation_owed")
   define_amount_methods_on("reported_suggested_fee")
 
   def initialize(*args)
@@ -87,8 +89,8 @@ class Donation < ActiveRecord::Base
     calculated_suggested_fee_cents + calculated_required_fee_cents
   end
 
-  def cash_donation_owed
-    [0, (amount_invoiced - reported_required_fee) - cash_donation_paid].max
+  def cash_donation_owed_cents
+    [0, (amount_invoiced_cents - reported_required_fee_cents) - cash_donation_paid_cents].max
   end
 
   def cash_donation_paid_cents

@@ -29,7 +29,7 @@
     <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
   </tr>
 <% end %>
-<% if @donation.invoiced? and @donation.cash_donation_owed.nonzero? %> 
+<% if @donation.invoiced? and @donation.cash_donation_owed_cents.nonzero? %>
   <tr>
     <td></td>
     <td> Cash Donation Owed (tax deductible <strong>after payment</strong>) </td>
