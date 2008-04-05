@@ -144,7 +144,7 @@ module ApplicationHelper
           id="#{options[:id]}" params="lightwindow_type=#{options[:type] || 'page'}">
          #{options[:content]}
        </a>] +
-      javascript_tag("myLightWindow._processLink($('#{options[:id]}'));")
+      javascript_tag("if(myLightWindow) {myLightWindow._processLink($('#{options[:id]}'))};")
   end
 
   def contact_element_prefix(options)
