@@ -22,8 +22,8 @@ class Donation < ActiveRecord::Base
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
-      if contact_id.to_i == 0
-        errors.add("contact_id", "does not refer to a single, unique contact")
+      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+        errors.add("contact_id", "does not refer to any single, unique contact")
       end
     elsif contact_type == 'anonymous'
       errors.add_on_empty("postal_code")
