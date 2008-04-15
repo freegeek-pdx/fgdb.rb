@@ -66,10 +66,13 @@ module GizmoTransaction
   end
 
   def add_contact_types
-    unless((contact_type != 'named' or
-           required_contact_type == nil or
-           (contact and contact.contact_types.include?(required_contact_type))) and
-           contact)
+    if(contact and
+        (
+          contact_type == 'named' and
+          required_contact_type != nil and
+          (! contact.contact_types.include?(required_contact_type))
+        )
+      )
       contact.contact_types << required_contact_type
     end
   end
