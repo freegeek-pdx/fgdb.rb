@@ -37,10 +37,14 @@
   </td>
 
   <%= will_paginate @transactions, :remote_options => {
-        :method => :get, :update => component_id(params),  :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_footer_loading")}');"
+        :method => :get,
+        :update => component_id(params),
+        :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_footer_loading")}');",
+      },
+      :params => {
+        :conditions => params[:conditions],
       }
-  %>
-  <%# render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
+   %>
 </div>
 <div class="list_refinement">
   <% refine_params = params.merge({:action => 'component_update', :transaction_type => @transaction_type }) %>

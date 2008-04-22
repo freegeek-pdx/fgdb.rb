@@ -31,8 +31,7 @@ class TransactionController < ApplicationController
   def component
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
-    # @sort_sql = model.columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_sql = model.default_sort_sql
+    @sort_sql = @model.default_sort_sql
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     @conditions
@@ -40,14 +39,14 @@ class TransactionController < ApplicationController
       :order => @sort_sql,
       :per_page => default_per_page,
       :include => [:gizmo_events],
-      :conditions => @conditions.conditions(model)
+      :conditions => @conditions.conditions(@model)
     }
     if @model.new.respond_to?( :payments )
       search_options[:include] << :payments
       search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
     search_options[:page] = params[:page]
-    @transactions = model.paginate( search_options )
+    @transactions = @model.paginate( search_options )
 
     render :action => "component", :layout => false
   end
