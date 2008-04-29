@@ -114,7 +114,7 @@ class ReportsController < ApplicationController
 
     @sections.each do |section|
      @columns[section].each do |method|
-        @income_data[section][method] ||= Hash.new(0.0)
+        @income_data[section][method] ||= Hash.new(0)
       end
     end
   end
