@@ -1,0 +1,28 @@
+<span class="print_only">
+  <%= render :partial => "helpers/letter_head",
+             :locals => {:contact_information => @contact.nil? ? nil : @contact.display_name_address} %>
+</span>
+<span class="no_print">
+  <h1>Report of hours worked <%= @date_range_string %></h1>
+</span>
+
+<div class="hours_detail_report">
+  <table class="list">
+    <tr>
+      <th>date</th>
+      <th>hours</th>
+      <th>task</th>
+      <th>community service</th>
+    </tr>
+  <% line=0; for t in @tasks %>
+    <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
+      <td><%= t.date_performed %></td>
+      <td><%= t.duration %></td>
+      <td><%= t.volunteer_task_type && t.volunteer_task_type.description %></td>
+      <td><%= t.community_service_type && t.community_service_type.description %></td>
+    </tr>
+  <% end %>
+  </table>
+
+  <p class="timestamp"> - generated <%= Time.now %></p>
+</div>

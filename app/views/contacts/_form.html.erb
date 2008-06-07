@@ -21,6 +21,7 @@
 <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
 <%= observe_field 'build', :function => check_vol % 'build' %>
 <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
+<%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
 <div class="organization form-element">
   <label for="contact_organization">Name</label>

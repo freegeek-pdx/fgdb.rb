@@ -314,4 +314,30 @@ class ReportsController < ApplicationController
     end
   end
 
+  public 
+
+  def hours
+    @defaults = Conditions.new
+    @defaults.date_range_enabled = "false"
+    @defaults.contact_enabled = "true"
+  end
+
+  def hours_report
+    @defaults = Conditions.new
+    if params[:contact] || params[:contact_id]
+      contact_id = (params[:contact_id] || params[:contact][:id])
+      params[:defaults] ||= {:date_range_enabled=>"false",:contact_enabled=>"true"}
+      params[:defaults][:contact_id] = contact_id
+      @contact = Contact.find_by_id(contact_id)
+    else
+      @contact = nil
+    end
+    @defaults.apply_conditions(params[:defaults])
+    @date_range_string = @defaults.to_s
+    # if this is too slow, replace it with straight sql
+    @tasks = VolunteerTask.find(:all, 
+                                :conditions => @defaults.conditions(VolunteerTask),
+                                :order => "date_performed desc")
+    
+  end
 end

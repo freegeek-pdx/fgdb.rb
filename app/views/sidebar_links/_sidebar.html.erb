@@ -45,6 +45,11 @@
     <div>
       <%= link_to "volunteering", :controller => 'reports', :action => 'volunteers' %>
     </div>
+    <div>
+      <%= link_to "hours",
+                  :controller => 'reports',
+                  :action => 'hours' %>
+    </div>
   </div>
   <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
   <div>

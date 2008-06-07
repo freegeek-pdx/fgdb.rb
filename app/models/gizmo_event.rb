@@ -122,7 +122,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def discounted_price(schedule)
-    return total_price unless schedule && gizmo_type
+    return total_price_cents unless schedule && gizmo_type
     (total_price_cents * (gizmo_type.multiplier_to_apply(schedule) * 100).to_i)/100
   end
 
