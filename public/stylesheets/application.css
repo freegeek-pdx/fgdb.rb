@@ -95,6 +95,7 @@ input.save {
           conditions */
 table.list {
 width: 100%;
+float: left;
 }
 
 table.list th {

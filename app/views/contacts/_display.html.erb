@@ -41,7 +41,6 @@
             recent <%= link_to(intro,
                        :controller => Inflector.pluralize(txn),
                        "conditions[contact_id]" => @contact.id,
-                       "conditions[date_range_enabled]" => "false",
                        "conditions[contact_enabled]" => "true"
                      ) %>
             : <%= last_one.map{|d,c| "#{c} #{d} "}.join(", ") %>

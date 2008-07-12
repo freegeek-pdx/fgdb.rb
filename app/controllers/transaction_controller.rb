@@ -29,7 +29,7 @@ class TransactionController < ApplicationController
   end
 
   def component
-    if @show_wrapper != false
+    if params[:conditions] == nil
       params[:conditions] = {}
       params[:conditions][(default_condition + "_enabled").to_sym] = "true"
     end
