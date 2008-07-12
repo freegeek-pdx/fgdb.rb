@@ -91,7 +91,7 @@ class Contact < ActiveRecord::Base
   end
 
   def date_of_last_adoption
-    last_adoption = Disbursement.find(:first, :conditions => [ "disbursement_type_id = ? AND contact_id = ?", DisbursementType.find_by_description("Adoption").id, id], :order => "disbursed_at DESC")
+    last_adoption = Disbursement.find(:first, :conditions => [ "(disbursement_type_id = ? OR disbursement_type_id = ?) AND contact_id = ?", DisbursementType.find_by_description("Adoption").id, DisbursementType.find_by_description("Build").id, id], :order => "disbursed_at DESC")
     if last_adoption
       return Date.parse(last_adoption.disbursed_at.to_s)
     else
