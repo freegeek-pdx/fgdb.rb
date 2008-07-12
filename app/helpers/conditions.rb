@@ -292,9 +292,9 @@ class Conditions
   end
 
   def to_s
-    if @date_range_enabled=="true" && @contact_enabled=="true"
+    if @created_at_enabled=="true" && @contact_enabled=="true"
       " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
-    elsif(@date_range_enabled=="true")
+    elsif(@created_at_enabled=="true")
       ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
     elsif(@contact_enabled=="true")
       " by " + contact_to_s
@@ -304,17 +304,17 @@ class Conditions
   end
 
   def date_range_to_s
-    case @date_type
+    case @created_at_date_type
     when 'daily'
-      desc = Date.parse(@date.to_s).to_s
+      desc = Date.parse(@created_at_date.to_s).to_s
     when 'monthly'
-      year = (@year || Date.today.year).to_i
-      start_date = Time.local(year, @month, 1)
+      year = (@created_at_year || Date.today.year).to_i
+      start_date = Time.local(year, @created_at_month, 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'arbitrary'
-      start_date = Date.parse(@start_date.to_s)
-      end_date = Date.parse(@end_date.to_s)
-      desc = "#{start_date} to #{end_date}"
+      start_date = Date.parse(@created_at_start_date.to_s)
+      end_date = Date.parse(@created_at_end_date.to_s)
+      desc = "#{created_at_start_date} to #{created_at_end_date}"
     else
       desc = 'unknown date type'
     end
