@@ -12,7 +12,7 @@
     <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
       <td><%= link_to c.id, :action => "lookup", :controller => "contacts", :contact_id => c.id %></td>
       <td><%= c.display_name %></td>
-      <td><%= Contact.connection.execute("SELECT description FROM contact_types_contacts AS ctc JOIN contact_types AS ct ON ctc.contact_type_id = ct.id WHERE contact_id = #{c.id} ORDER BY description;").map{|x| x.values}.join(", ") %></td>
+      <td><%= Contact.connection.execute("SELECT description FROM contact_types_contacts AS ctc JOIN contact_types AS ct ON ctc.contact_type_id = ct.id WHERE contact_id = #{c.id} ORDER BY description;").map{|x| x}.join(", ") %></td>
       <td><%= c.phone_numbers.join(", ") %></td>
       <td><%= "#{c.city}, #{c.state_or_province}, #{c.postal_code}" %></td>
       <td><%= c.created_at %></td>
