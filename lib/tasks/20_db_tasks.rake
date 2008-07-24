@@ -7,9 +7,9 @@ METADATATABLES = %w[
         contact_method_types contact_types discount_schedules
         discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
         gizmo_contexts_gizmo_typeattrs gizmo_contexts_gizmo_types
-        gizmo_typeattrs gizmo_types payment_methods
+        gizmo_typeattrs gizmo_types payment_methods gizmo_categories
         volunteer_task_types disbursement_types defaults
-        community_service_types roles
+        community_service_types roles actions types
 ]
 MIGRATIONDIR = 'db/migrate'
 
