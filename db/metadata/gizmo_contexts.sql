@@ -3,20 +3,22 @@
 --
 
 SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
 --
--- Name: gizmo_contexts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: stillflame
+-- Name: gizmo_contexts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('gizmo_contexts', 'id'), 4, true);
+SELECT pg_catalog.setval('gizmo_contexts_id_seq', 4, true);
 
 
 --
--- Data for Name: gizmo_contexts; Type: TABLE DATA; Schema: public; Owner: stillflame
+-- Data for Name: gizmo_contexts; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 ALTER TABLE gizmo_contexts DISABLE TRIGGER ALL;

@@ -3,20 +3,22 @@
 --
 
 SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
 --
--- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: fgdb
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('roles', 'id'), 8, true);
+SELECT pg_catalog.setval('roles_id_seq', 8, true);
 
 
 --
--- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: fgdb
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 ALTER TABLE roles DISABLE TRIGGER ALL;

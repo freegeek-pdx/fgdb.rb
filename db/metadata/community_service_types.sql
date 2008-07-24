@@ -3,20 +3,22 @@
 --
 
 SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
 --
--- Name: community_service_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: fgdb
+-- Name: community_service_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('community_service_types', 'id'), 2, true);
+SELECT pg_catalog.setval('community_service_types_id_seq', 2, true);
 
 
 --
--- Data for Name: community_service_types; Type: TABLE DATA; Schema: public; Owner: fgdb
+-- Data for Name: community_service_types; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 ALTER TABLE community_service_types DISABLE TRIGGER ALL;
