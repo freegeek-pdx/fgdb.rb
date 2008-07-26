@@ -1,6 +1,11 @@
 class VolunteerTasksController < ApplicationController
   layout :with_sidebar
   before_filter :authorized_only
+  before_filter :be_stupid
+
+  def be_stupid
+    @gizmo_context = GizmoContext.new(:name => 'contact')
+  end
 
   #########
   protected
