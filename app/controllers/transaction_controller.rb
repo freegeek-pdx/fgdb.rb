@@ -242,8 +242,10 @@ class TransactionController < ApplicationController
       @lines = []
       for line in lines.values
         ge = GizmoEvent.new(line.merge({:gizmo_context => @gizmo_context}))
-        if ge.fee_cents != line['unit_price'].to_cents
-          ge.adjusted_fee = line['unit_price']
+       if transaction.respond_to?(:payments) 
+          if ge.fee_cents != line['unit_price'].to_cents
+            ge.adjusted_fee = line['unit_price']
+          end
         end
         @lines << ge
       end
