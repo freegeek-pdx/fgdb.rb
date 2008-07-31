@@ -1,9 +1,14 @@
 <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-<%= javascript_tag "gizmo_context = '#{@gizmo_context.to_s}';"%>
+
+<%= js = "gizmo_context = '#{@gizmo_context.to_s}';"
+    js += "show_description=0;"
+    js += "bind_key('ctrl-e', toggle_description);";
+    javascript_tag js %>
 
 <table id="gizmo_event_lines">
 <tr>
 <th>type</th>
+<th class="description invisible">description</th>
 <th>qty</th>
 <th>unit price</th>
 <th>total price</th>
@@ -16,7 +21,7 @@
         else
           price = line.fee_cents.to_dollars
         end
-        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, #{@gizmo_context}_compute_totals);"
+        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{line.description}');"
       end
       javascript_tag js
   %>
@@ -26,6 +31,7 @@
     <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
       <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
+    <td class="description invisible"><input name="description" id="description" size="10"></td>
     <td><input name="gizmo_count" id="gizmo_count" size="6"></td>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(event.keyCode==9) {return add_priced_gizmo_event_from_form();}"></td>
     <td></td>

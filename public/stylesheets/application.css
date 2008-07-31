@@ -563,3 +563,7 @@ padding:0;
 .line { 
   text-align: right;
 }
+
+.invisible { 
+  display: none;
+}

@@ -21,7 +21,9 @@
       <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
 
       <p class="form-footer">
+        <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
         <%= submit_tag(Inflector.titleize(@options[:action]), 
+                       :id => "commit",
                        :onclick => "return validate_#{@transaction_type}();",
                        :class => "submit save")
  %>

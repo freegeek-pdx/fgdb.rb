@@ -1,9 +1,19 @@
 <script>
+  var show_description = 0;
   var discount_schedules;
   var counters = new Array();
   counters['gizmo_event_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
   counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
+
+  function toggle_description(evt) {
+    show_description++;
+    var arr = document.getElementsByClassName('description');
+    for (var i = 0; i < arr.length; i++) {
+      set_visibility(arr[i], show_description & 1)
+    }
+    return true;
+  }
 
   function add_line_item(args, hook1, hook2, update_hook){
     var prefix = args['prefix'];
@@ -92,35 +102,43 @@
 
   function gizmo_events_stuff(args, tr){
     var gizmo_type_id = args['gizmo_type_id'];
-    var gizmo_type = gizmo_types[gizmo_type_id];
     var gizmo_count = args['gizmo_count'];
+    var description = args['description'];
+    var gizmo_type = gizmo_types[gizmo_type_id];
     var line_id = counters[args['prefix'] + '_line_id'];
     tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
+    var desc = make_hidden("line", "description", description, description, line_id)
+    set_visibility(desc, show_description);
+    tr.appendChild(desc);
     tr.appendChild(make_hidden("line", "gizmo_count", gizmo_count, gizmo_count, line_id));
   }
 
-  function add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
-    args = new Array();
+  function add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+    var args = new Array();
     args['gizmo_type_id'] = gizmo_type_id;
     args['unit_price'] = dollar_value(cent_value(unit_price));
     args['gizmo_count'] = gizmo_count;
     args['prefix'] = 'gizmo_event';
+    args['description'] = description;
+    return args;
   }
 
   function add_unpriced_gizmo_event(gizmo_type_id, gizmo_count) {
-    args = new Array();
+    var args = new Array();
     args['gizmo_type_id'] = gizmo_type_id;
     args['gizmo_count'] = gizmo_count;
     args['prefix'] = 'gizmo_event';
+    args['description'] = 'foo';
+    return args;
   }
 
-  function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
-    add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
+  function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+    var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
     add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals);
   }
 
   function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count) {
-    add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
+    var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
     add_line_item(args, gizmo_events_stuff, function(){}, function(){});
   }
 
@@ -128,8 +146,8 @@
     add_disbursement_gizmo_event(gizmo_type_id, gizmo_count)
   }
 
-  function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
-    add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
+  function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+    var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
     add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals);
   }
 
@@ -138,8 +156,9 @@
     if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
       return true;
     }
-    add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value);
+    add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('description').value = $('description').defaultValue;
     $('unit_price').value = $('unit_price').defaultValue;
     $('gizmo_count').value = $('gizmo_count').defaultValue;
     $('gizmo_type_id').focus();
@@ -154,6 +173,7 @@
     add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('gizmo_count').value = $('gizmo_count').defaultValue;
+    $('description').value = $('description').defaultValue;
     $('gizmo_type_id').focus();
     return false;
   }
@@ -204,8 +224,11 @@
   }
 
   function set_visibility(node, visibility) {
-    if (node.visible() != visibility) {
-      node.toggle();
+    if (visibility) {
+      node.removeClassName("invisible");
+    } 
+    else {
+      node.addClassName("invisible");
     }
   }
 
@@ -368,7 +391,7 @@
   <%= js = "var payment_methods = new Array;" 
       for payment_method in PaymentMethod.find(:all).sort_by(&:description) 
         js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" 
-      end 
+      end
       javascript_tag js %>
 <% end -%>
 

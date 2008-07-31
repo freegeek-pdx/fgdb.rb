@@ -12,6 +12,8 @@
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'lightwindow' %>
   <%= javascript_include_tag 'boxover' %>
+  <%= javascript_include_tag 'keybindings' %>
+
   <%= dhtml_calendar_includes %>
   <% if defined?(@gizmo_context) %>
     <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
