@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('actions_id_seq', 1, false);
+SELECT pg_catalog.setval('actions_id_seq', 4, true);
 
 
 --
@@ -24,6 +24,10 @@ SELECT pg_catalog.setval('actions_id_seq', 1, false);
 ALTER TABLE actions DISABLE TRIGGER ALL;
 
 COPY actions (id, name, lock_version, updated_at, created_at, created_by, updated_by) FROM stdin;
+1	quality checker	0	\N	\N	1	1
+2	tech support	0	\N	\N	1	1
+3	build instructor	0	\N	\N	1	1
+4	builder	0	\N	\N	1	1
 \.
 
 
