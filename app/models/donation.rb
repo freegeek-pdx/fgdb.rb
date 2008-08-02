@@ -229,7 +229,7 @@ class Donation < ActiveRecord::Base
   end
 
   def add_dead_beat_discount
-    under_pay = money_tendered_cents - calculated_required_fee_cents
+    under_pay = (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
     if under_pay < 0:
         gizmo_events << GizmoEvent.new({:adjusted_fee_cents => under_pay,
                                         :gizmo_count => 1,
