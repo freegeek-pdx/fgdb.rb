@@ -15,13 +15,18 @@
 <th></th>
 <% if @transaction.gizmo_events %>
   <%= js = ""
-      for line in @transaction.gizmo_events 
+      for line in @transaction.gizmo_events
         if @gizmo_context.name == "sale"
           price = line.unit_price
         else
           price = line.fee_cents.to_dollars
         end
-        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{line.description}');"
+        if defined?(line.description)
+          description = line.description
+        else
+          description = ''
+        end
+        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');"
       end
       javascript_tag js
   %>
