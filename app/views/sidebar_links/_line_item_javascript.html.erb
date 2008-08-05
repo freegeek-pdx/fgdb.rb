@@ -88,10 +88,6 @@
     }
   }
 
-  function node_value(node, id) {
-    return parseInt(node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, ''));
-  }
-
   function sales_stuff(args, tr){
     var line_id = counters[args['prefix'] + '_line_id'];
     tr.appendChild(make_hidden("line", "unit_price", args['unit_price'], args['unit_price'], line_id));
@@ -191,7 +187,8 @@
     var total = 0;
     var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
     for (var x = 0; x < arr.length; x++) {
-      total += (cent_value(get_node_value(arr[x], "td.gizmo_count")) * node_value(arr[x], "td.unit_price"));
+      total += (get_node_value(arr[x], "td.gizmo_count") * cent_value(get_node_value(arr[x], "td.unit_price")));
+
     }
     return total;
   }
