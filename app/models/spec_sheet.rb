@@ -28,13 +28,13 @@ class SpecSheet < ActiveRecord::Base
     end
 
     xml_foreach("class", "system") {
-      @system_model = _xml_value_of("product", '/')
-      @system_serial_number = _xml_value_of("serial", '/')
-      @system_vendor = _xml_value_of("vendor", '/')
-      @mobo_model = xml_first("id", "core") do _xml_value_of("product", '/') end
-      @mobo_serial_number = xml_first("id", "core") do _xml_value_of("serial", '/') end
-      @mobo_vendor = xml_first("id", "core") do _xml_value_of("vendor", '/') end
-      @macaddr = xml_first("id", "network") do _xml_value_of("serial", '/') end
+      @system_model ||= _xml_value_of("product", '/')
+      @system_serial_number ||= _xml_value_of("serial", '/')
+      @system_vendor ||= _xml_value_of("vendor", '/')
+      @mobo_model ||= xml_first("id", "core") do _xml_value_of("product", '/') end
+      @mobo_serial_number ||= xml_first("id", "core") do _xml_value_of("serial", '/') end
+      @mobo_vendor ||= xml_first("id", "core") do _xml_value_of("vendor", '/') end
+      @macaddr ||= xml_first("id", "network") do _xml_value_of("serial", '/') end
     }
 
     get_vendor

@@ -5,6 +5,21 @@ class SpecSheetTest < ActiveSupport::TestCase
 
   REQUIRED_DATA={:contact_id => 1, :action_id => 1, :type_id => 1}
 
+  def test_that_ryans_laptop_makes_expected_output(stop = 0)
+    file = File.open(File.dirname(__FILE__) + "/../fixtures/laptop.xml")
+    report = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => file.read}))
+    file.close
+    assert report.save
+    assert_kind_of System, report.system
+    assert_nothing_raised {report.system.serial_number}
+    assert_equal "L3E9114", report.system.serial_number
+    assert_nothing_raised {report.system.model}
+    assert_equal "LENOVO", report.system.vendor
+    assert_nothing_raised {report.system.model}
+    assert_equal "6465CTO", report.system.model
+    test_that_generics_are_detected(stop + 1) unless stop == 3
+  end
+
   def test_that_generics_are_detected(stop = 0)
     file = File.open(File.dirname(__FILE__) + "/../fixtures/1967.xml")
     report = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => file.read}))
