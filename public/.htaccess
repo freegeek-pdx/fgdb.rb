@@ -26,6 +26,10 @@ RewriteEngine On
 #   Alias /myrailsapp /path/to/myrailsapp/public
 #   RewriteBase /myrailsapp
 
+RewriteCond %{HTTP_HOST} "printme.fglan" [OR]
+RewriteCond %{HTTP_HOST} "printme" [OR]
+RewriteCond %{HTTP_HOST} "fgss.fglan" [OR]
+RewriteCond %{HTTP_HOST} "fgss" [OR]
 RewriteCond %{HTTP_HOST} "rocky" [OR]
 RewriteCond %{HTTP_HOST} "rocky.fglan"
 RewriteRule ^$ fgss_moved.html [QSA]
