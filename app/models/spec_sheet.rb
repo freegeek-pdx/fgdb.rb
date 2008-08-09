@@ -10,9 +10,9 @@ class SpecSheet < ActiveRecord::Base
   belongs_to :system
   belongs_to :type
 
-  validates_existence_of :type
-  validates_existence_of :action
-  validates_existence_of :contact
+#  validates_existence_of :type
+#  validates_existence_of :action
+#  validates_existence_of :contact
 
   attr_readonly :lshw_output
 
