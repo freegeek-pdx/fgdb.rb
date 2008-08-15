@@ -6,7 +6,8 @@ require File.dirname(__FILE__) + '/config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/config/environment")
 
 f = File.open("output/donations", "w")
-Donation.find(:all, :order => 'created_at ASC', :limit => 20).each{|d|
+Donation.connection.execute("SELECT id FROM donations ORDER BY created_at ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+  d = Donation.find_by_id(x)
   string = ""
   string += d.id.to_s + " "
   string += d.reported_total_cents.to_s + " "
@@ -26,7 +27,8 @@ Donation.find(:all, :order => 'created_at ASC', :limit => 20).each{|d|
 f.close
 
 f = File.open("output/sales", "w")
-Sale.find(:all, :order => 'created_at ASC', :limit => 20).each{|s|
+Sale.connection.execute("SELECT id FROM sales ORDER BY created_at ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+  s = Sale.find_by_id(x)
   string = ""
   string += s.id.to_s + " "
   string += s.calculated_total_cents.to_s + " "
@@ -37,7 +39,8 @@ Sale.find(:all, :order => 'created_at ASC', :limit => 20).each{|s|
 f.close
 
 f = File.open("output/gizmo_events", "w")
-GizmoEvent.find(:all, :order => 'created_at ASC', :limit => 20).each{|g|
+GizmoEvent.connection.execute("SELECT id FROM gizmo_events ORDER BY created_at ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+  g = GizmoEvent.find_by_id(x)
   string = ""
   string += g.id.to_s + " "
   string += g.donation_id.to_s + " "
