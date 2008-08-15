@@ -1,12 +1,14 @@
 #!/usr/bin/ruby
 
+LIMIT="  LIMIT 20"
+
 ENV['RAILS_ENV']="production"
 
 require File.dirname(__FILE__) + '/config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/config/environment")
 
 f = File.open("output/donations", "w")
-Donation.connection.execute("SELECT id FROM donations ORDER BY id ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+Donation.connection.execute("SELECT id FROM donations ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   d = Donation.find_by_id(x)
   string = ""
   string += d.id.to_s + " "
@@ -27,7 +29,7 @@ Donation.connection.execute("SELECT id FROM donations ORDER BY id ASC LIMIT 20")
 f.close
 
 f = File.open("output/sales", "w")
-Sale.connection.execute("SELECT id FROM sales ORDER BY id ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+Sale.connection.execute("SELECT id FROM sales ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   s = Sale.find_by_id(x)
   string = ""
   string += s.id.to_s + " "
@@ -39,7 +41,7 @@ Sale.connection.execute("SELECT id FROM sales ORDER BY id ASC LIMIT 20").to_a.ma
 f.close
 
 f = File.open("output/gizmo_events", "w")
-GizmoEvent.connection.execute("SELECT id FROM gizmo_events ORDER BY id ASC LIMIT 20").to_a.map{|x| x['id'].to_i}.each{|x|
+GizmoEvent.connection.execute("SELECT id FROM gizmo_events ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   g = GizmoEvent.find_by_id(x)
   string = ""
   string += g.id.to_s + " "
