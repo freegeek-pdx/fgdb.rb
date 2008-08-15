@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + '/config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/config/environment")
 
 f = File.open("output/donations", "w")
-Donation.find(:all, :order => 'created_at ASC').each{|d|
+Donation.find(:all, :order => 'created_at ASC', :limit => 20).each{|d|
   string = ""
   string += d.id.to_s + " "
   string += d.reported_total_cents.to_s + " "
@@ -26,7 +26,7 @@ Donation.find(:all, :order => 'created_at ASC').each{|d|
 f.close
 
 f = File.open("output/sales", "w")
-Sale.find(:all, :order => 'created_at ASC').each{|s|
+Sale.find(:all, :order => 'created_at ASC', :limit => 20).each{|s|
   string = ""
   string += s.id.to_s + " "
   string += s.calculated_total_cents.to_s + " "
@@ -37,17 +37,33 @@ Sale.find(:all, :order => 'created_at ASC').each{|s|
 f.close
 
 f = File.open("output/gizmo_events", "w")
-GizmoEvent.find(:all, :order => 'created_at ASC').each{|g|
+GizmoEvent.find(:all, :order => 'created_at ASC', :limit => 20).each{|g|
   string = ""
   string += g.id.to_s + " "
   string += g.donation_id.to_s + " "
   string += g.sale_id.to_s + " "
   string += g.disbursement_id.to_s + " "
   string += g.recycling_id.to_s + " "
-  string += g.unit_price_cents.to_s + " "
-  string += g.as_is.to_s + " "
-  string += g.description.to_s + " "
-  string += g.size.to_s + " "
+  begin
+    string += g.unit_price_cents.to_s + " "
+  rescue
+    string += " "
+  end
+  begin
+    string += g.as_is.to_s + " "
+  rescue
+    string += " "
+  end
+  begin
+    string += g.description.to_s + " "
+  rescue
+    string += " "
+  end
+  begin
+    string += g.size.to_s + " "
+  rescue
+    string += " "
+  end
   f.write(string + "\n")
 }
 f.close
