@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-LIMIT="  LIMIT 20"
+LIMIT="  LIMIT 50"
 
 ENV['RAILS_ENV']="production"
 
