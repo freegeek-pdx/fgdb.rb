@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-ORDER_AND_LIMIT="ORDER BY id ASC LIMIT 50"
+ORDER_AND_LIMIT="ORDER BY id DESC LIMIT 50"
 
 ENV['RAILS_ENV']="production"
 
@@ -52,11 +52,13 @@ GizmoEvent.connection.execute("SELECT id FROM gizmo_events #{ORDER_AND_LIMIT}").
   begin
     string += g.unit_price_cents.to_s + " "
   rescue
-    begin
-      string += g.adjusted_fee_cents.to_s + " "
-    rescue
-      string += " "
+    thing = 0
+    if g.adjusted_fee_cents.to_i != 0
+      thing = g.adjusted_fee_cents.to_i
+    else
+      thing = (g.gizmo_type.suggested_fee_cents.to_i + g.gizmo_type.required_fee_cents.to_i)
     end
+    string += thing.to_s + " "
   end
   begin
     string += g.as_is.to_s + " "
