@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-LIMIT="  LIMIT 50"
+ORDER_AND_LIMIT="ORDER BY id ASC LIMIT 50"
 
 ENV['RAILS_ENV']="production"
 
@@ -8,13 +8,13 @@ require File.dirname(__FILE__) + '/config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/config/environment")
 
 f = File.open("output/donations", "w")
-Donation.connection.execute("SELECT id FROM donations ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
+Donation.connection.execute("SELECT id FROM donations #{ORDER_AND_LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   d = Donation.find_by_id(x)
   string = ""
   string += d.id.to_s + " "
   string += d.reported_total_cents.to_s + " "
   string += d.calculated_required_fee_cents.to_s + " "
-#  string += d.calculated_suggested_fee_cents.to_s + " "
+  string += d.calculated_suggested_fee_cents.to_s + " "
   string += d.calculated_total_cents.to_s + " "
   string += d.cash_donation_owed_cents.to_s + " "
   string += d.cash_donation_paid_cents.to_s + " "
@@ -29,7 +29,7 @@ Donation.connection.execute("SELECT id FROM donations ORDER BY id ASC#{LIMIT}").
 f.close
 
 f = File.open("output/sales", "w")
-Sale.connection.execute("SELECT id FROM sales ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
+Sale.connection.execute("SELECT id FROM sales #{ORDER_AND_LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   s = Sale.find_by_id(x)
   string = ""
   string += s.id.to_s + " "
@@ -41,7 +41,7 @@ Sale.connection.execute("SELECT id FROM sales ORDER BY id ASC#{LIMIT}").to_a.map
 f.close
 
 f = File.open("output/gizmo_events", "w")
-GizmoEvent.connection.execute("SELECT id FROM gizmo_events ORDER BY id ASC#{LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
+GizmoEvent.connection.execute("SELECT id FROM gizmo_events #{ORDER_AND_LIMIT}").to_a.map{|x| x['id'].to_i}.each{|x|
   g = GizmoEvent.find_by_id(x)
   string = ""
   string += g.id.to_s + " "
