@@ -1,1 +1,1 @@
-../test.rb
+link ../../trunk/test.rb
