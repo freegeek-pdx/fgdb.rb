@@ -3,7 +3,7 @@ class SpecSheetsController < ApplicationController
 
   helper :xml
   include XmlHelper
-  MINIMUM_COMPAT_VERSION=2
+  MINIMUM_COMPAT_VERSION=3
 
   def check_compat
     if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION
