@@ -6,13 +6,13 @@ if @successful
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
       page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
   end
-  page << "Form.enable('#{element_form_id(@create_options)}');"
+  page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
   page << "window.location.href='#{url_for( params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )}';"
 else
-  page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
+  page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
   show_errors_for(@transaction_type, @transaction, page)
-  page << "Form.enable('#{element_form_id(@create_options)}');"
-  page << "$('#{element_messages_id(@create_options)}').scrollTo();"
+  page << "Form.enable('#{element_form_id(@update_options)}');"
+  page << "$('#{element_messages_id(@update_options)}').scrollTo();"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
 end
