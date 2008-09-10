@@ -5,8 +5,9 @@
   <th></th>
 <tr>
 <% if @transaction.payments %>
+<% @gizmos_and_payments_js ||= "" %>
 <% for line in @transaction.payments %>
-<%= javascript_tag "add_payment(#{line.payment_method_id}, #{line.amount}, #{@gizmo_context}_compute_totals);" %>
+<% @gizmos_and_payments_js += "add_payment(#{line.payment_method_id}, #{line.amount}, #{@gizmo_context}_compute_totals);" %>
 <% end %>
 <% end %>
 

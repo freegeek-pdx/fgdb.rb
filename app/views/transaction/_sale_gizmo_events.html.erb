@@ -14,7 +14,7 @@
 <th>total price</th>
 <th></th>
 <% if @transaction.gizmo_events %>
-  <%= js = ""
+  <% @gizmos_and_payments_js ||= ""
       for line in @transaction.gizmo_events
         if @gizmo_context.name == "sale"
           price = line.unit_price
@@ -26,9 +26,8 @@
         else
           description = ''
         end
-        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');"
+        @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');\n"
       end
-      javascript_tag js
   %>
 <% end %>
 
