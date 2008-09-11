@@ -40,6 +40,7 @@
           <div class="<%= txn %>">
             recent <%= link_to(intro,
                        :controller => Inflector.pluralize(txn),
+                       :action => "search",
                        "conditions[contact_id]" => @contact.id,
                        "conditions[contact_enabled]" => "true"
                      ) %>
