@@ -94,6 +94,61 @@
 
     <tr>
       <th width="10%">
+        First name
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.first_name %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Middle name
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.middle_name %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Last name
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.surname %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Organization
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.organization %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Is organization
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.is_organization %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
         Merge
       </th>
       <% f_first=true %>
