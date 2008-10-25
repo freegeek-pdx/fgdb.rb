@@ -79,6 +79,17 @@
       <% end %>
     </tr>
 
+    <tr>
+      <th width="10%">
+        Number of Printmes ran
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.spec_sheets.length %>
+        </td>
+      <% end %>
+    </tr>
+
     <tr><td colspan="<%= @contacts.length + 1 %>">These parts will <b>NOT</b> be merged together. They will be taken from the keeper only:</td></tr>
 
     <tr>

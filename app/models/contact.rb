@@ -8,6 +8,7 @@ class Contact < ActiveRecord::Base
   has_many :disbursements
   has_many :sales
   has_many :donations
+  has_many :spec_sheets
   has_one :user
   has_one :contact_duplicate
 
@@ -22,6 +23,9 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+# this will make it blow up because contacts_mailings has a contraint to not allow the same mailing to be sent to the same person more than once
+#      connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
       self.notes = [self.notes, other.notes].uniq.delete_if{|x| x.nil?}.join("\n")
       self.save!
