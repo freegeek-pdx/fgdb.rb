@@ -204,9 +204,6 @@ function add_priced_gizmo_event_from_form()
   if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
     return true;
   }
-  if(system_bad()) {
-    return true;
-  }
   string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value";
   if($('system_id') != null) {
     string += ", $('system_id').value";
@@ -226,20 +223,9 @@ function add_priced_gizmo_event_from_form()
   return false;
 }
 
-function system_bad(){
-  if($('system_id') != null && !$('system_id').disabled && $('system_id').value == '') {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function add_unpriced_gizmo_event_from_form()
 {
   if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
-    return true;
-  }
-  if(system_bad()) {
     return true;
   }
   string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value";
