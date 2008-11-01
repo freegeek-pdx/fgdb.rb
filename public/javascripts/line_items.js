@@ -171,6 +171,7 @@ function edit_payment(id) {
 
 function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
+  args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
