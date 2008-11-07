@@ -1,5 +1,7 @@
-<pre id="contract_notes" style="background: yellow;">
-</pre>
+<% if Contract.find(:all).length > 1 %>
+  <pre id="contract_notes" style="background: yellow">
+  </pre>
+<% end %>
 
 <fieldset>
   <%= js = "contracts_notes = new Array();"
