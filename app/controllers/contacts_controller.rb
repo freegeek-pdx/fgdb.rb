@@ -1,6 +1,7 @@
 class ContactsController < ApplicationController
   ContactMethodsTag = 'contacts_contact_methods'
   layout :with_sidebar
+  filter_parameter_logging "user_password", "user_password_confirmation"
 
   around_filter :transaction_wrapper
   before_filter :authorized_only
