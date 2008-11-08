@@ -11,6 +11,6 @@ no-epoll: true
 servers: 3
 daemonize: true
 socket: /tmp/thin.sock
-chdir: /var/fgdb.rb
+chdir: /var/www/fgdb.rb/current
 user: www-data
 group: www-data
