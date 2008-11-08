@@ -1,0 +1,16 @@
+--- 
+pid: tmp/pids/thin.pid
+timeout: 30
+log: log/thin.log
+max_conns: 1024
+require: []
+
+environment: production
+max_persistent_conns: 512
+no-epoll: true
+servers: 3
+daemonize: true
+socket: /tmp/thin.sock
+chdir: /var/fgdb.rb
+user: www-data
+group: www-data
