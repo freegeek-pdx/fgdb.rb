@@ -15,5 +15,9 @@
                 if [ -f "`. /etc/apache2/envvars ; echo ${APACHE_PID_FILE:-/var/run/apache2.pid}`" ]; then
                         /etc/init.d/apache2 restart > /dev/null
                 fi
+                [ ! -f /var/run/nginx.pid ] || kill -USR1 `cat /var/run/nginx.pid`
+                if [ -x /etc/init.d/thin ]; then
+                       /etc/init.d/thin restart > /dev/null
+                fi
         endscript
 }
