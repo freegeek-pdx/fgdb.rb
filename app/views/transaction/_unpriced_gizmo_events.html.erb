@@ -26,7 +26,7 @@
     <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event)){if(($('system_id') != null && $('system_id').disabled) || ($('system_id') == null && $('contract_id') == null)) return add_unpriced_gizmo_event_from_form();}"></td>
     <% if params[:controller] == "disbursements" %>
       <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
     <% elsif params[:controller] == "recyclings" && Contract.usable.length > 1 %>
