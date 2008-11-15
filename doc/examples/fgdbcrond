@@ -1,0 +1,2 @@
+# cleans up sessions
+0 0 * * * root rm /var/www/fgdb.rb/current/tmp/sessions/*
