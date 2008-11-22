@@ -64,7 +64,7 @@ module ActiveRecord
         l.action = action
         l.user_id = user.id if !user.nil?
         l.thing_id = self.id
-        l.date = DateTime.now
+        l.date = Time.now
         l.save!
       end
     end
