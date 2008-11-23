@@ -16,10 +16,18 @@ class FixOccurredAtAgain < ActiveRecord::Migration
         WHERE disbursements.id = gizmo_events.disbursement_id
       )
       WHERE disbursement_id IS NOT NULL AND occurred_at IS NULL")
-    $stderr.puts '-- SET occurred_at = created_at'
+    $stderr.puts '-- SET occurred_at = donations.created_at'
     GizmoEvent.connection.execute("UPDATE gizmo_events
-      SET occurred_at = created_at
-      WHERE occurred_at IS NULL")
+      SET occurred_at = (SELECT created_at FROM donations WHERE donations.id = donation_id)
+      WHERE occurred_at IS NULL AND donation_id IS NOT NULL")
+    $stderr.puts '-- SET occurred_at = sales.created_at'
+    GizmoEvent.connection.execute("UPDATE gizmo_events
+      SET occurred_at = (SELECT created_at FROM sales WHERE sales.id = sale_id)
+      WHERE occurred_at IS NULL AND sale_id IS NOT NULL")
+#    $stderr.puts '-- SET occurred_at = created_at'
+#    GizmoEvent.connection.execute("UPDATE gizmo_events
+#      SET occurred_at = created_at
+#      WHERE occurred_at IS NULL")
   end
 
   def self.down
