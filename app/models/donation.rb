@@ -219,7 +219,7 @@ class Donation < ActiveRecord::Base
     if self.created_at == nil
       self.created_at = Time.now
     end
-    self.gizmo_events.each {|event| event.occurred_at = self.created_at}
+    self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
   end
 
   def add_dead_beat_discount

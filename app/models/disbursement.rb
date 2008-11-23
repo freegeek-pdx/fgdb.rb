@@ -35,6 +35,6 @@ class Disbursement < ActiveRecord::Base
   #######
 
   def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.disbursed_at}
+    self.gizmo_events.each {|event| event.occurred_at = self.disbursed_at; event.save!}
   end
 end

@@ -136,7 +136,7 @@ class Conditions
   end
 
   def contract_conditions(klass)
-    ["(SELECT contract_id FROM systems WHERE id = #{klass.table_name}.system_id) = ? OR recycling_contract_id = ? OR (SELECT contract_id FROM donations WHERE id = #{klass.table_name}.donation_id) = ?", @contract_id, @contract_id, @contract_id]
+    ["(donation_id IN (SELECT id FROM donations WHERE contract_id = ?) OR system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
   end
 
   def id_conditions(klass)
