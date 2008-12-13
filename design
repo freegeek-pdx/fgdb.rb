@@ -1,0 +1,15 @@
+                                  library_events
+contacts    -------------------   contact_id # int
+                                  type # int - 0 out, 1 in, 2 renew.
+                                  date # datetime
+copies     ---------------------  copy_id #
+barcode # int, that ones unique id
+copy_id # id of this copy of the book...is this needed?
+due_back # NULL if is checked in, otherwise has the date                fields
+book_id    ---------------------  books -----------------------------   book_id
+                                  name                                  tag
+                                  author                                subfield_cd
+                                  callno # is this actually used?       field_data
+collections --------------------  collection_id
+name                              etc, etc
+days_due_back # are collections even needed? can we just put the days due back in the defaults table generally?

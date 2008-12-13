@@ -26,7 +26,7 @@
 
   <% array.each do |i| %>
     <% x = hash[i.to_sym] %>
-    <% if x.nil? || has_role?(*x) %>
+    <% if x.nil? || has_role?(x) %>
       <%= i %>s
       <div class="sidebar_section">
         <div>
@@ -58,6 +58,11 @@
   </div>
   <% end %>
 
+  <% project_sidebar_partial = [RAILS_ROOT, "app", "views", "sidebar_links", "_#{PROJECT_NAME}.html.erb"].join("/") %>
+  <% if File.exists?(project_sidebar_partial) %>
+    <% render :partial => "sidebar_links/" + PROJECT_NAME %>
+  <% end %>
+
   <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
     contacts
     <div class="sidebar_section">
@@ -80,16 +85,11 @@
   <% end %>
 
   <% if PROJECT_NAME == "fgdb.rb" %>
-    fgss
-    <div class="sidebar_section">
-      <div>
-        <%= link_to "printme", :controller => 'spec_sheets' %>
-      </div>
-      <% if Contract.find(:all).length > 1 && has_role?("ADMIN") # TODO: fix this %>
-        <div>
-          <%= link_to "fix contract", :controller => 'spec_sheets', :action => "fix_contract" %>
-        </div>
-      <% end %>
+  everything else
+  <div class="sidebar_section">
+    <div>
+      <%= link_to "printme", :controller => 'spec_sheets' %>
     </div>
+  </div>
   <% end %>
 </div>
