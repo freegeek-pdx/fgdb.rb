@@ -36,6 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
 
+  map.root :controller => "soap", :conditions => { :method => :post, :soap => true }
   map.root :controller => "sidebar_links", :action => "fgss_moved", :conditions => {:host => /^(printme|fgss|rocky)(fglan)?$/i}
   map.root :controller => "sidebar_links"
 

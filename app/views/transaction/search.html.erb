@@ -81,6 +81,7 @@
                                            GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
       <% filters['id'] = text_field('conditions', 'id') %>
       <% filters['needs_attention'] = "" %>
+      <% filters['contract'] = collection_select("defaults", "contract_id", Contract.usable, "id", "description") %>
       <%= multiselect_of_form_elements('conditions', filters ) %>
 
       <div class="form-footer">

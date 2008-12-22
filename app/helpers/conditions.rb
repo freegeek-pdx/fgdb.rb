@@ -306,6 +306,7 @@ class Conditions
       string += " " if string.length > 0
       string += "for contract \"#{Contract.find_by_id(@contract_id).description}\""
     end
+    string
   end
 
   def date_range_to_s(thing)

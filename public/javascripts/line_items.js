@@ -127,14 +127,24 @@ function dollar_value(cents) {
   }
 }
 
+function coveredness_stuff(args, tr){
+  if(!coveredness_enabled)
+    return;
+  if($('covered') == null)
+    return;
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden("line", "covered", args['covered'], args['covered'], line_id));
+}
+
 function systems_stuff(args, tr){
+  coveredness_stuff(args, tr);
+  var line_id = counters[args['prefix'] + '_line_id'];
   if($('system_id') == null)
     return;
-  if($('system_id').value != "") {
+  if(args['system_id'] != "") {
     if(!all_systems[args['system_id']]) {
       alert("system does not exist! ignoring...");
     }
-    var line_id = counters[args['prefix'] + '_line_id'];
     if(all_systems[args['system_id']]) {
       if(all_contracts_names.length > 2) {
         hidden = document.createElement("input");
@@ -170,6 +180,7 @@ function contracts_stuff(args, tr){
     var contract = all_contracts[args['contract_id']];
     tr.appendChild(make_hidden("line", "recycling_contract_id", contract, args['contract_id'], line_id));
   }
+  coveredness_stuff(args, tr); // TODO: another hook
 }
 
 function sales_stuff(args, tr){
@@ -216,9 +227,13 @@ function edit_sale(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
   sale_gizmo_type_selected();
+  coveredness_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
+  }
+  if($('covered') != null) {
+    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
   }
   $('unit_price').value = thing.getElementsBySelector(".unit_price").first().firstChild.value;
   $('description').value = thing.getElementsBySelector(".description").first().firstChild.value;
@@ -229,12 +244,16 @@ function edit_disbursement(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
   disbursement_gizmo_type_selected();
+  coveredness_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
   }
   if($('contract_id') != null) {
     $('contract_id').value = thing.getElementsBySelector(".recycling_contract_id").first().firstChild.value;
+  }
+  if($('covered') != null) {
+    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
   }
   $('gizmo_type_id').focus();
 }
@@ -264,18 +283,26 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   add_line_item(args, gizmo_events_stuff, systems_stuff, update_contract_notes, edit_disbursement, true);
 }
 
-function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id) {
+function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
   args['contract_id'] = contract_id;
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
   }
+  args['covered'] = covered;
+  if(args['covered'] == undefined) {
+    args['covered'] = '';
+  }
   add_line_item(args, gizmo_events_stuff, contracts_stuff, function(){}, edit_disbursement, true);
 }
 
-function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
   add_edit_button = true;
+  args['covered'] = covered;
+  if(args['covered'] == undefined) {
+    args['covered'] = '';
+  }
   if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id])
     add_edit_button = false;
   add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals, edit_sale, add_edit_button);
@@ -290,8 +317,11 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     string += ", $('system_id').value";
   }
+  if($('covered') != null) {
+    string += ", $('covered').checked";
+  }
   if($('contract_id') != null) {
-    string += ", $('contract_id').selectedIndex";
+    string += ", $('contract_id').value";
   }
   string += ");";
   eval(string);
@@ -303,6 +333,10 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('covered') != null){
+    $('covered').checked = $('covered').defaultChecked;
+    $('covered').disable();
   }
   $('gizmo_type_id').focus();
   return false;
@@ -317,8 +351,16 @@ function add_unpriced_gizmo_event_from_form()
   if($('system_id') != null) {
     string += ", $('system_id').value";
   }
-  if($('contract_id') != null) {
-    string += ", $('contract_id').value";
+  if(gizmo_context_name == "recycling") {
+    if($('contract_id') != null) {
+      string += ", $('contract_id').value";
+    }
+    else {
+      string += ", undefined";
+    }
+  }
+  if($('covered') != null) {
+    string += ", $('covered').checked";
   }
   string += ");";
   eval(string);
@@ -327,6 +369,10 @@ function add_unpriced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('covered') != null){
+    $('covered').checked = $('covered').defaultChecked;
+    $('covered').disable();
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
@@ -396,10 +442,11 @@ function get_donation_totals() {
   totals['suggested'] = 0;
   var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
   for (var x = 0; x < arr.length; x++) {
-    var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
     var type;
+    var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
     type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
-
+    if($('covered') && arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
+      type = "suggested";
     totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
   }
   return totals;
@@ -511,6 +558,19 @@ function add_contact_method_from_form() {
 
 function max(a,b) { return a>b ? a : b; }
 
+function coveredness_type_selected() {
+  if($('covered') == null)
+    return;
+  if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
+    $('covered').enable();
+    $('covered').checked = true;
+  }
+  else {
+    $('covered').disable();
+    $('covered').checked = false;
+  }
+}
+
 function sale_gizmo_type_selected() {
   disbursement_gizmo_type_selected();
 }
@@ -522,8 +582,11 @@ function donation_gizmo_type_selected() {
   else {
     $('unit_price').disabled=true;
   }
+  if($('unit_price').disabled == false && $('covered') != null && $('covered').checked == true)
+    $('unit_price').disabled = true;
 }
 function recycling_gizmo_type_selected() {
+  coveredness_type_selected();
 }
 function disbursement_gizmo_type_selected() {
   if($('system_id') != null) {

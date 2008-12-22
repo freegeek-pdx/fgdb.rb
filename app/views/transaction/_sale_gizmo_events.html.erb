@@ -12,6 +12,10 @@
     <th>qty</th>
     <% if params[:controller] == "sales" %>
     <th>system id</th>
+    <% else # donations %>
+      <% if coveredness_enabled %>
+        <th>covered</th>
+      <% end %>
     <% end %>
     <th>unit price</th>
     <th>total price</th>
@@ -31,19 +35,24 @@
            end
            @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}'"
            @gizmos_and_payments_js += ", #{line.system_id}" if line.system_id
+           @gizmos_and_payments_js += ", #{line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false")}" if params[:controller] == "donations" && coveredness_enabled
            @gizmos_and_payments_js += ");\n"
          end
          %>
     <% end %>
 
   <tr id="form">
-    <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
+    <td><select id="gizmo_type_id" onchange="coveredness_type_selected(); <%= @gizmo_context.name %>_gizmo_type_selected();">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled && ($('system_id') == null || $('system_id').disabled)) {return add_priced_gizmo_event_from_form();}"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled && ($('system_id') == null || $('system_id').disabled) && ($('covered') == null || $('covered').disabled)) {return add_priced_gizmo_event_from_form();}"></td>
     <% if params[:controller] == "sales" %>
     <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>
+    <% else # donations %>
+      <% if coveredness_enabled %>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}" checked="checked" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()"></td>
+      <% end %>
     <% end %>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(is_tab(event)) {return add_priced_gizmo_event_from_form();}"></td>
     <td></td>

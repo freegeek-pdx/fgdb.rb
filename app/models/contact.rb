@@ -18,6 +18,18 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
+  def fully_covered_
+    case self.fully_covered
+    when nil: 'nil'
+    when true: "yes"
+    when false: "no"
+    end
+  end
+
+  def fully_covered_=(val)
+    self.fully_covered={:nil => nil, :yes => true, :no => false}[val.to_sym]
+  end
+
   def merge_these_in(arr)
     for other in arr
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")

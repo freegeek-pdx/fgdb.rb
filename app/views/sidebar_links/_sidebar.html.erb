@@ -21,7 +21,7 @@
     </div>
   <% end %>
 
-  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => nil, :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER']} %>
+  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER']} %>
   <% array = ['donation', 'sale', 'recycling', 'disbursement'] %>
 
   <% array.each do |i| %>

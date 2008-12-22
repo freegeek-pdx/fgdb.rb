@@ -1,9 +1,10 @@
-module MyInflector
-  def triggerize(table_name, events=[], before=false)
+# this is very dumb
+class MyInflector
+  def self.triggerize(table_name, events=[], before=false)
     events.join(" or ").gsub(":", "").tr(" ", "_").downcase + "_" + (before ? "before_" : "after_") + table_name.to_s + "_trigger"
   end
 
-  def symbolize(val)
+  def self.symbolize(val)
     return "'#{val}'" if val =~ /-/
     ":#{val}"
   end

@@ -6,6 +6,7 @@
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
   counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
   gizmo_context_name = '<%= @gizmo_context.name %>';
+  coveredness_enabled = <%= coveredness_enabled.to_json %>;
 </script>
 
 <%= javascript_include_tag 'line_items' %>
@@ -53,6 +54,15 @@
      javascript_tag js
     end
 %>
+
+<%= if ["donations", "recyclings"].include?(params[:controller])
+      js = ""
+      js += "var gizmo_types_covered = new Array;"
+      for gizmo_type in GizmoType.find(:all)
+        js += "gizmo_types_covered[#{gizmo_type.id}] = true;" if gizmo_type.covered
+      end
+      javascript_tag js
+end %>
 
 <%=
    case params[:controller]

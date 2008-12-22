@@ -30,8 +30,8 @@
     <h4><%= (@options[:action] + " " + @transaction_type).titleize
             %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
     <% if @transaction.created_at && @transaction.updated_at %>
-      <span>created <%= if defined?(@transaction.created_by) && @transaction.created_by then "by #{User.find_by_id(@transaction.created_by).login} " end %>at <%= @transaction.created_at %></span>
-      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.updated_by then "by #{User.find_by_id(@transaction.updated_by).login} " end %>at <%= @transaction.updated_at %></span>
+      <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{User.find_by_id(@transaction.cashier_created_by).login} " end %>at <%= @transaction.created_at %></span>
+      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{User.find_by_id(@transaction.cashier_updated_by).login} " end %>at <%= @transaction.updated_at %></span>
     <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>

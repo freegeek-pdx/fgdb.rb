@@ -76,9 +76,9 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def attry_description(options = {})
-    junk = [:unit_price, :as_is, :size] - (options[:ignore] || [])
+    junk = [:unit_price, :as_is, :size, :system_id] - (options[:ignore] || [])
 
-    junk.reject!{|x| z = read_attribute(x); z.nil? || z.empty?}
+    junk.reject!{|x| z = read_attribute(x); z.nil? || z.to_s.empty?}
 
     g_desc = gizmo_type.description
     m_desc = self.description
@@ -88,7 +88,7 @@ class GizmoEvent < ActiveRecord::Base
     if junk.empty?
       return desc
     else
-      return desc + "(" + junk.map{|x| x.to_s + ": " + read_attribute(x)}.join(", ") + ")"
+      return desc + "(" + junk.map{|x| x.to_s.classify.gsub(/(.)([A-Z])/, "\\1 \\2") + ": " + read_attribute(x).to_s}.join(", ") + ")"
     end
   end
 
@@ -116,7 +116,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def required_fee_cents
-    if gizmo_type.required_fee_cents != 0 || gizmo_type.name == "fee_discount"
+    if !covered && gizmo_type.required_fee_cents != 0 || gizmo_type.name == "fee_discount"
       gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents)
     else
       0
@@ -124,8 +124,8 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def suggested_fee_cents
-    if gizmo_type.suggested_fee_cents != 0
-      gizmo_count.to_i * (unit_price_cents || gizmo_type.suggested_fee_cents)
+    if (covered && gizmo_type.required_fee_cents != 0) || gizmo_type.suggested_fee_cents != 0
+      gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents || gizmo_type.suggested_fee_cents)
     else
       0
     end

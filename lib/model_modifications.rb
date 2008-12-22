@@ -74,7 +74,7 @@ module ActiveRecord
 
     def cashier_created_by
       begin
-        current_user.class.find_by_cashier_code(self[:cashier_created_by]) if current_user
+        current_user.class.find(self[:cashier_created_by]) if current_user
       rescue ActiveRecord::RecordNotFound
         nil
       end
@@ -82,7 +82,7 @@ module ActiveRecord
 
     def cashier_updated_by
       begin
-        current_user.class.find_by_cashier_code(self[:cashier_updated_by]) if current_user
+        current_user.class.find(self[:cashier_updated_by]) if current_user
       rescue ActiveRecord::RecordNotFound
         nil
       end

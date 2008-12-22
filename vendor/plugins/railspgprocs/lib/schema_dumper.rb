@@ -23,7 +23,7 @@ module ActiveRecord
             get_type(type)
           when String
             return %("#{types}") if types =~ /[\s\(]/
-            Inflector.symbolize(types)
+            MyInflector.symbolize(types)
         end
       end
 
@@ -37,13 +37,13 @@ module ActiveRecord
           arg_names ||= ''
           args      = get_type(arg_types.split(" "))#.zip(arg_names.split(" "))
 
-          stream.print "  create_proc(#{Inflector.symbolize(name)}, [#{args}], :return => #{get_type(ret_type)}"
+          stream.print "  create_proc(#{MyInflector.symbolize(name)}, [#{args}], :return => #{get_type(ret_type)}"
           stream.print ", :resource => ['#{bin}', '#{src}']" unless bin == '-'
           stream.print ", :set => true" if ret_set
           stream.print ", :strict => true" if is_strict
           stream.print ", :behavior => '#{behavior(volatile)}'" unless volatile == 'v'
           stream.print ", :lang => '#{lang}')"
-          stream.print " {\n    <<-#{Inflector.underscore(name)}_sql\n#{src.chomp}\n    #{Inflector.underscore(name)}_sql\n  }" if bin == '-'
+          stream.print " {\n    <<-#{(name).underscore}_sql\n#{src.chomp}\n    #{(name).underscore}_sql\n  }" if bin == '-'
           stream.print "\n"
         }
       end
@@ -66,8 +66,8 @@ module ActiveRecord
 
       def types(stream)
         @connection.types.each {|type|
-          stream.print "  create_type(#{Inflector.symbolize(type.name)}, "
-          stream.print "#{ type.columns.collect{|column, type| "[#{Inflector.symbolize(column)}, #{get_type(type)}]"}.join(", ") }"
+          stream.print "  create_type(#{MyInflector.symbolize(type.name)}, "
+          stream.print "#{ type.columns.collect{|column, type| "[#{MyInflector.symbolize(column)}, #{get_type(type)}]"}.join(", ") }"
           stream.puts  ")"
         }
       end

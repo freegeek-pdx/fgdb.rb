@@ -1,5 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def coveredness_enabled
+    Default["coveredness_enabled"] == "1"
+  end
+
   # ajax crap, copied from ajax/active scaffold while in the process of getting rid of active scaffold -->
 
   def generate_temporary_id

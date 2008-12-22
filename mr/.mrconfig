@@ -2,7 +2,7 @@
 
 [DEFAULT]
 lib =
-        branch_name=release_1.0.22
+        branch_name=release_1.0.23
         host_and_path=dev.freegeek.org/svn/fgdb.rb
         anon() {
                 svn info | grep -q 'http://'

@@ -10,7 +10,7 @@
 
   <% for section in @sections %>
     <tr>
-      <th class="section_header" colspan="<%= table_width %>"><%= section.titleize %></th>
+      <th class="section_header" colspan="<%= table_width %>"><%= section.to_s.titleize %></th>
     </tr>
     <% if @ranges.has_key? section %>
       <tr>

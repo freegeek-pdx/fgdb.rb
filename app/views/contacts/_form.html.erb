@@ -27,6 +27,7 @@
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
   </div>
+
   <div class="person form-element">
     <label for="contact_first_name">First name</label>
     <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
@@ -71,6 +72,23 @@
     <label for="contact_country">Country</label>
     <%= country_select 'contact', 'country', ['United States', 'Canada'] %>
   </div>
+
+  <div class="form-element noblock">
+    <label for="contact_fully_covered">Fully Covered:</label>
+    <%= radio_button 'contact', 'fully_covered_', 'yes' %>
+    <label for="contact_fully_covered__yes">Yes</label>
+    <%= radio_button 'contact', 'fully_covered_', 'no' %>
+    <label for="contact_fully_covered__yes">No</label>
+    <%= radio_button 'contact', 'fully_covered_', 'nil' %>
+    <label for="contact_fully_covered__nil">Unknown</label>
+  </div>
+
+  <% if Contract.usable.length > 1 %>
+    <div class="contract form-element">
+      <label for="contact_contract">Default Donation Contract</label>
+      <%= collection_select("contact", "contract_id", Contract.usable, "id", "description") %>
+    </div>
+  <% end %>
 
   <div class="form-element">
     <label for="contact_notes">Notes</label>

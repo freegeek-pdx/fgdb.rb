@@ -54,6 +54,16 @@
   </div>
 <% end %>
 <% end %>
+<% end %>
+<% if coveredness_enabled %>
+  <%=
+     "Fully Covered: " +
+       case @contact.fully_covered
+       when nil: "UNKNOWN"
+       when true: "Yes"
+       when false: "No"
+       end
+ %>
 </div>
 <% end %>
 <br />

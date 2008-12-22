@@ -7,8 +7,13 @@
     <th>qty</th>
     <% if params[:controller] == "disbursements" %>
       <th>system id</th>
-    <% elsif params[:controller] == "recyclings" && Contract.usable.length > 1 %>
+    <% elsif params[:controller] == "recyclings" %>
+      <% if Contract.usable.length > 1 %>
       <th>contract</th>
+      <% end %>
+      <% if coveredness_enabled %>
+        <th>covered</th>
+      <% end %>
     <% end %>
     <th></th>
     <% if @transaction.gizmo_events %>
@@ -17,6 +22,7 @@
             @js += "add_#{@gizmo_context.name}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}"
             @js += ", #{line.system_id}" if line.system_id
             @js += ", #{line.recycling_contract_id}" if line.recycling_contract_id
+            @js += ", #{line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false")}" if params[:controller] == "recyclings" && coveredness_enabled
             @js += ");"
           end
           %>
@@ -26,13 +32,20 @@
     <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event)){if(($('system_id') != null && $('system_id').disabled) || ($('system_id') == null && $('contract_id') == null)) return add_unpriced_gizmo_event_from_form();}"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event)){if(($('system_id') != null && $('system_id').disabled) || ($('covered') != null && $('covered'.disabled)) || ($('system_id') == null && $('contract_id') == null && $('covered') == null)) return add_unpriced_gizmo_event_from_form();}"></td>
     <% if params[:controller] == "disbursements" %>
       <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
-    <% elsif params[:controller] == "recyclings" && Contract.usable.length > 1 %>
-    <td><select id="contract_id" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}">
-        <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
-      </select></td>
+    <% elsif params[:controller] == "recyclings" %>
+      <% if Contract.usable.length > 1 %>
+        <td><select id="contract_id" onkeydown="if(is_tab(event) && ($('covered') == null || $('covered').disabled)) {return add_unpriced_gizmo_event_from_form();}">
+            <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
+          </select></td>
+      <% end %>
+      <% if coveredness_enabled %>
+        <td>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}" checked="checked"></td>
+        </td>
+      <% end %>
     <% end %>
     <td></td>
   </tr>

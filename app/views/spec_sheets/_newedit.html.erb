@@ -17,7 +17,7 @@
       <% form_opts = {:action => "update", :id => @report.id} %>
       <% string = "Update" %>
     <% end %>
-    <% form_tag (form_opts, {:multipart => true}) do |f| %>
+    <% form_tag(form_opts, {:multipart => true}) do %>
       <table>
         <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
         <tr><td>Job:</td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>

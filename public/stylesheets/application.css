@@ -305,6 +305,10 @@ margin-right: 10px;
 margin-bottom: 2px;
 }
 
+div.noblock label {
+  display: inline;
+}
+
 label {
 font-family: Verdana, sans-serif;
 display: block;
