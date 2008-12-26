@@ -1,0 +1,36 @@
+set logfile syslog facility log_daemon                                                                                                                                                                             
+set daemon 120                                                                                                                                                                                                     
+set alert ryan52@freegeek.org only on { nonexist, timeout, connection }
+set mail-format { from: monit@freegeek.org }
+
+check process nginx with pidfile /var/run/nginx.pid
+  start program = "/etc/init.d/nginx start"
+  stop  program = "/etc/init.d/nginx stop"
+  if 5 restarts within 5 cycles then timeout
+  if failed host soong port 80 protocol http # the host thing is a workaround for bug that monit triggers in nginx -- fixed in later versions of monit
+    with timeout 10 seconds
+    then restart
+
+check process thin0 with pidfile /var/www/fgdb.rb/current/tmp/pids/thin.0.pid
+  start program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 0 start"
+  stop program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 0 start"
+  if 5 restarts within 5 cycles then timeout
+  if failed unixsocket /tmp/thin.0.sock protocol http
+    with timeout 10 seconds
+    then restart
+
+check process thin1 with pidfile /var/www/fgdb.rb/current/tmp/pids/thin.1.pid
+  start program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 1 start"
+  stop program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 1 start"
+  if 5 restarts within 5 cycles then timeout
+  if failed unixsocket /tmp/thin.0.sock protocol http
+    with timeout 10 seconds
+    then restart
+
+check process thin2 with pidfile /var/www/fgdb.rb/current/tmp/pids/thin.2.pid
+  start program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 2 start"
+  stop program = "/usr/bin/thin -C /etc/thin/fgdb.yml -o 2 start"
+  if 5 restarts within 5 cycles then timeout
+  if failed unixsocket /tmp/thin.0.sock protocol http
+    with timeout 10 seconds
+    then restart

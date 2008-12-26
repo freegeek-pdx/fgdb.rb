@@ -1,3 +1,8 @@
 #!/bin/sh
 
-awk -F = '/^[ \t]+branch_name/{sub("release_", "", $2); print $2}' $(dirname $(readlink -f $0))/../mr/.mrconfig
+cd `dirname $0`/..
+if [ $(dpkg-parsechangelog -lChangeLog | awk '/^Distribution: /{print $2}') = "UNRELEASED" ]; then
+    echo "UNRELEASED"
+    exit
+fi
+dpkg-parsechangelog -lChangeLog | awk '/^Version: /{print $2}'

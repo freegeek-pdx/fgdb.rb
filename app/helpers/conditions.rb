@@ -302,7 +302,7 @@ class Conditions
     else
       string = ""
     end
-    if @contract_enabled
+    if @contract_enabled == "true"
       string += " " if string.length > 0
       string += "for contract \"#{Contract.find_by_id(@contract_id).description}\""
     end

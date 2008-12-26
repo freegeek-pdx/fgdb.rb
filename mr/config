@@ -1,4 +1,0 @@
-[.]
-update = svn up && mr -c .mrconfig update
-# doesn't pay attention to updates to .mrconfig
-#chain = true

@@ -1,5 +1,4 @@
 <div id="sidebar">
-  <% if PROJECT_NAME == "fgdb.rb" %>
   <% if has_role?("VOLUNTEER_MANAGER") %>
     hours
     <div class="sidebar_section">
@@ -56,7 +55,6 @@
           :action => 'hours' %>
     </div>
   </div>
-  <% end %>
 
   <% project_sidebar_partial = [RAILS_ROOT, "app", "views", "sidebar_links", "_#{PROJECT_NAME}.html.erb"].join("/") %>
   <% if File.exists?(project_sidebar_partial) %>
@@ -85,10 +83,16 @@
   <% end %>
 
   <% if PROJECT_NAME == "fgdb.rb" %>
-  everything else
-  <div class="sidebar_section">
-    <div>
-      <%= link_to "printme", :controller => 'spec_sheets' %>
+    fgss
+    <div class="sidebar_section">
+      <div>
+        <%= link_to "printme", :controller => 'spec_sheets' %>
+      </div>
+      <% if Contract.find(:all).length > 1 && has_role?("ADMIN") # TODO: fix this %>
+        <div>
+          <%= link_to "fix contract", :controller => 'spec_sheets', :action => "fix_contract" %>
+        </div>
+      <% end %>
     </div>
   </div>
   <% end %>

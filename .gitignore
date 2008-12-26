@@ -1,42 +1,15 @@
-#blah
 *~
-
-# /
-
-# /config/
 /config/database.yml
-
-# /doc/
 /doc/autodoc
-
-# /log/
 /log/*.log*
-
-# /public/
 /public/plugin_assets
-
-# /public/images/
 /public/images/dhtml_calendar
-
-# /public/images/active_scaffold/
 /public/images/active_scaffold/DO_NOT_EDIT
-
-# /public/javascripts/
 /public/javascripts/dhtml_calendar
-
-# /public/javascripts/active_scaffold/
 /public/javascripts/active_scaffold/DO_NOT_EDIT
-
-# /public/stylesheets/
 /public/stylesheets/dhtml_calendar
-
-# /public/stylesheets/active_scaffold/
 /public/stylesheets/active_scaffold/DO_NOT_EDIT
-
-# /tmp/sessions/
 /tmp/sessions/ruby_sess*
-
-# /vendor/
 /vendor/actionmailer
 /vendor/actionpack
 /vendor/activemodel
@@ -45,5 +18,4 @@
 /vendor/activesupport
 /vendor/rails
 /vendor/railties
-
-# /vendor/plugins/
+/vendor/rails.new

@@ -1,0 +1,40 @@
+fgdb.rb (1.0.24) UNRELEASED; urgency=low
+
+  * clean up some old cruft
+  * create ChangeLog file
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 22 Dec 2008 15:00:09 -0800
+
+fgdb.rb (1.0.23) released; urgency=low
+
+  * added support for rails version 2.1.2
+  * final touches on contracts (searching, adding contacts, etc)
+  * restrict recyclings based on role (require login)
+  * add soap support to rails (in a plugin-like thing)
+  * add support for coveredness (Ewaste Legislation stuff)
+  * convert fgdiag and freegeek-extras to git
+  * rewrote printme to use soap
+  * minor fixes/changes to fgdb
+  * added new printme features (figuring out the system's old contract in a smart way) that I can only do with soap (the whole point of the rewrite)
+  * improved rubytui
+  * fixed minor bugs
+  * release sprint 23
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 21 Dec 2008 00:00:00 -0800
+
+fgdb.rb (1.0.22) released; urgency=low
+
+  * added base support for address based routing
+  * start keeping track of changelog
+  * finished switching to git
+  * fix editing a printme report with the contracts (through the GUI)
+  * show contract name on the printme reports, and on the gizmo reports
+  * fixed printme's behavior with contracts to try to prevent user error as much
+  * removed "fee discount" lines when editing. (#575)
+  * fixed thin to restart better
+  * disbursements contracts integration (editing a system's contract, seeing it while disbursing, &c)
+  * cashiers tracking
+  * fix disbursements on sidebar
+  * released sprint 22
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Dec 2008 00:00:00 -0800

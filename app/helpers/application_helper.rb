@@ -46,7 +46,7 @@ module ApplicationHelper
     end
 
     def eval
-      @opts[:eval] || "#{(@klass).underscore}.#{@opts[:name]}"
+      @opts[:eval] || "#{(@klass).to_s.underscore}.#{@opts[:name]}"
     end
 
     def name
