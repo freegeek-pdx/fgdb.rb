@@ -1,8 +1,11 @@
 #!/bin/sh
 
 cd `dirname $0`/..
-if [ $(dpkg-parsechangelog -lChangeLog | awk '/^Distribution: /{print $2}') = "UNRELEASED" ]; then
-    echo "UNRELEASED"
-    exit
+VERSION=$(head -1 ChangeLog | awk '{print $2}' | sed 's/[()]//g')
+DIST=$(head -1 ChangeLog | awk '{print $3}' | sed 's/[;]//g')
+if [ "$DIST" = "UNRELEASED" ]; then
+    echo "$VERSION (UNRELEASED)"
+else
+    echo "$VERSION"
 fi
-dpkg-parsechangelog -lChangeLog | awk '/^Version: /{print $2}'
+
