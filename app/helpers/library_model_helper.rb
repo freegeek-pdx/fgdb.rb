@@ -10,4 +10,12 @@ module LibraryModelHelper
   def title
     blah(245, 'a')
   end
+
+  def description
+    blah(520, 'a')
+  end
+
+  def isbn
+    blah(020, 'a')
+  end
 end
