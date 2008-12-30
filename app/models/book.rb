@@ -4,6 +4,9 @@ class Book < ActiveRecord::Base
   include LibraryModelHelper
 
   def [](field, subfield)
-    return self.fields.select{|x| x.field == field && x.subfield == subfield}.collect{|x| x.data}
+    arr = self.fields.select{|x| x.field == field && x.subfield == subfield}.collect{|x| x.data}
+    return nil if arr.length == 0
+    return arr[0] if arr.length == 1
+    return arr
   end
 end
