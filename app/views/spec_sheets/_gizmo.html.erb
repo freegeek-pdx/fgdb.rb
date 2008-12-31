@@ -22,7 +22,7 @@
         Type:
       </td>
       <td>
-        <%= @report.type && @report.type.description || "Unknown" %>
+        <%= @report.type && h(@report.type.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -38,7 +38,7 @@
         OS:
       </td>
       <td>
-        <%= @report.os %>
+        <%= h @report.os %>
       </td>
     </tr>
     <tr>
@@ -46,7 +46,7 @@
         Job:
       </td>
       <td>
-        <%= @report.action && @report.action.description || "Unknown" %>
+        <%= @report.action && h(@report.action.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -62,7 +62,7 @@
         Contract:
       </td>
       <td>
-        <%= @report.system.contract.description %>
+        <%= h @report.system.contract.description %>
       </td>
     </tr>
     <tr>
@@ -116,7 +116,7 @@
         Notes:
       </td>
       <td>
-        <%= @report.notes.gsub("\n", "<br />") %>
+        <%= h(@report.notes).gsub("\n", "<br />") %>
       </td>
     </tr>
   </table>

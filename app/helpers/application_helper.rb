@@ -362,11 +362,11 @@ module ApplicationHelper
   end
 
   def new_make_link(link_id, image_tag, options, form_id = nil)
-    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    ify = form_id ? "form_has_not_been_edited('#{h form_id}') ||" : ""
     html = %Q[
-      <a id="#{link_id}" href="#{options[:url][:controller]}/#{options[:url][:action]}/#{options[:url][:id]}#{options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
-         onclick="if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
-                                 #{remote_function(options)}
+      <a id="#{link_id}" href="#{h options[:url][:controller]}/#{h options[:url][:action]}/#{h options[:url][:id]}#{h options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
+         onclick="if(#{h ify} confirm('Current entry form will be lost.  Continue?')) {
+                                 #{h remote_function(options)}
                              }">
         #{image_tag}
       </a>

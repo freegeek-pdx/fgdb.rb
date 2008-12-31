@@ -10,7 +10,7 @@
     if @contact.contact_methods %>
   <%
     for line in @contact.contact_methods
-      js += "add_contact_method(#{line.contact_method_type_id}, '#{line.ok}', '#{line.value}');"
+      js += "add_contact_method(#{h line.contact_method_type_id}, '#{line.ok}', '#{h line.value}');"
     end
     %>
   <% end %>

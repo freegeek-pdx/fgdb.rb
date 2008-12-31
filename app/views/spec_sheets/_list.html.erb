@@ -16,7 +16,7 @@
       <td><%= link_to report.id.to_s, {:action => "search", :conditions => {:id_enabled => true, :id => report.id}} %></td>
       <td>
         <% if (@current_user and @current_user.has_role?('CONTACT_MANAGER')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
-          <%= link_to thing, {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
+          <%= link_to h(thing), {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
         <% elsif thing = (report.contact_id && report.contact && report.contact.id) %>
           <%= thing %>
         <% else %>
@@ -24,14 +24,14 @@
         <% end %>
       </td>
       <td><%= link_to report.system_id.to_s, {:action => "search", :conditions => {:system_enabled => true, :system_id => report.system.id}} %></td>
-      <td><%= (report.type && report.type.description) || "Unknown" %></td>
-      <td><%= (report.action && report.action.description) || "Unknown" %></td>
-      <td><%= report.os %></td>
+      <td><%= h(report.type && report.type.description) || "Unknown" %></td>
+      <td><%= h(report.action && report.action.description) || "Unknown" %></td>
+      <td><%= h report.os %></td>
       <td><%= report.created_at.strftime("%D %I:%M%p") %></td>
       <td style="color: red;"><%= if report.flag; "FLAGGED"; else; ""; end %></td>
       <td><%= link_to 'Show', {:action => "show", :id => report.id} %>
         <%= link_to 'XML', {:action => "dump", :id => report.id} %></td>
-      <td><%= report.notes %></td>
+      <td><%= h report.notes %></td>
     </tr>
   <% end %>
 </table>

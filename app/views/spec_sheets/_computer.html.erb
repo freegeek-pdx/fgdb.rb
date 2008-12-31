@@ -6,7 +6,7 @@
         Vendor:
       </td>
       <td>
-        <%= @report.system.vendor %>
+        <%= h @report.system.vendor %>
       </td>
     </tr>
     <tr>
@@ -14,7 +14,7 @@
         Model:
       </td>
       <td>
-        <%= @report.system.model %>
+        <%= h @report.system.model %>
       </td>
     </tr>
     <tr>
@@ -22,7 +22,7 @@
         Serial Number:
       </td>
       <td>
-        <%= @report.system.serial_number %>
+        <%= h @report.system.serial_number %>
       </td>
     </tr>
     <% @parser.xml_foreach("class", "processor") do %>

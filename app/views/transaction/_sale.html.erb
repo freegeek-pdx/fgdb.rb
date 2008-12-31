@@ -3,7 +3,7 @@
 <% @options = params.merge(:controller => base_controller, :action => "view",
                            :id => sale.send("#{Sale.primary_key}")) %>
 
-<tr class="<%= sale.displayed_payment_method %><%= classAttr %>"
+<tr class="<%= h sale.displayed_payment_method %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
     <% column_value = eval(column.eval) rescue nil %>

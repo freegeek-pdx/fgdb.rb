@@ -1,0 +1,22 @@
+<% if @system = System.find_by_id(params[:id]) %>
+  <% things = [@system.notes, @system.spec_sheets].flatten.sort_by{|x| x.created_at} %>
+  <% things.each do |thing| %>
+    <div style="border: 1px solid rgb(0, 0, 0); display: block;">
+      <b><%= thing.contact.display_name %> created a <%= if thing.class == SpecSheet
+                                                           link_to thing.class.to_s, :controller => "spec_sheets", :action => "show", :id => thing.id
+                                                         else
+                                                           thing.class.to_s
+                                                         end%> at <%= thing.created_at %></b><br/>
+      <% if thing.class == Note %>
+        <%= thing.body %>
+      <% else %> <%# aka SpecSheet %>
+        Action: <%= thing.action.description %><br />
+        Type: <%= thing.type.description %><br />
+        Notes: <%= thing.notes %>
+      <% end %>
+    </div>
+    <br />
+  <% end %>
+<% else %>
+  <span style="color: red">Error: Can't find system</span>
+<% end %>

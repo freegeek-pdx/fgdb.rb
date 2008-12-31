@@ -5,6 +5,7 @@ class System < ActiveRecord::Base
   validates_presence_of :vendor, :serial_number, :model
   validates_existence_of :contract
   has_many :spec_sheets
+  has_many :notes
 
   def validate
     if self.contract.nil?

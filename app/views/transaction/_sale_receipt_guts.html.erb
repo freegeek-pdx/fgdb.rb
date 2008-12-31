@@ -12,7 +12,7 @@
 
       <% @sale.gizmo_events.each do |event| %>
         <tr>
-          <td> <%= event.attry_description( :ignore => ['unit_price'] ) %> </td>
+          <td> <%= h event.attry_description( :ignore => ['unit_price'] ) %> </td>
           <td> <%= my_number_to_currency event.unit_price_cents %> </td>
           <td> <%= event.gizmo_count %> </td>
           <td> <%= my_number_to_currency event.total_price_cents %> </td>
@@ -44,7 +44,7 @@
       <% @sale.payments.each do |payment| %>
         <tr>
           <td colspan="4">&nbsp;</td>
-          <td align="right" colspan="2"><%= payment.payment_method.description %>:</td>
+          <td align="right" colspan="2"><%= h payment.payment_method.description %>:</td>
           <td><%= my_number_to_currency(payment.amount_cents) %></td>
         </tr>
       <% end %>
@@ -58,5 +58,5 @@
       <% end %>
 
     </tbody></table>
-  <p><%= @sale.comments %></p>
+  <p><%= h @sale.comments %></p>
 </div>

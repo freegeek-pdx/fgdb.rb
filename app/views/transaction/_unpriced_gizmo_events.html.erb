@@ -1,5 +1,5 @@
 <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-<%= javascript_tag "gizmo_context = '#{@gizmo_context.to_s}';"%>
+<%= javascript_tag "gizmo_context = '#{escape_javascript h @gizmo_context.to_s}';"%>
 
 <table id="gizmo_event_lines">
   <tr>
@@ -19,7 +19,7 @@
     <% if @transaction.gizmo_events %>
       <% @js = ""
           for line in @transaction.gizmo_events
-            @js += "add_#{@gizmo_context.name}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}"
+            @js += "add_#{h @gizmo_context.name}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}"
             @js += ", #{line.system_id}" if line.system_id
             @js += ", #{line.recycling_contract_id}" if line.recycling_contract_id
             @js += ", #{line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false")}" if params[:controller] == "recyclings" && coveredness_enabled
@@ -29,7 +29,7 @@
     <% end %>
 
   <tr id="form">
-    <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
+    <td><select id="gizmo_type_id" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected()">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
     <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event)){if(($('system_id') != null && $('system_id').disabled) || ($('covered') != null && $('covered'.disabled)) || ($('system_id') == null && $('contract_id') == null && $('covered') == null)) return add_unpriced_gizmo_event_from_form();}"></td>

@@ -10,12 +10,12 @@
   <%= javascript_tag "contact_form_org_toggle();" %>
 
   <% for contact_type in ContactType.find_instantiable %>
-    <div class="form-element <%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
-      <input type="checkbox" id="<%= contact_type.description %>"
+    <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
+      <input type="checkbox" id="<%= h contact_type.name %>"
              name="contact_types[]"
              value="<%= contact_type.id %>"
              <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-             />&nbsp;<label class="checkbox" for="<%= contact_type.description %>"><%= contact_type.description %></label>
+             />&nbsp;<label class="checkbox" for="<%= h contact_type.name %>"><%= h contact_type.description %></label>
     </div>
   <% end %>
   <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>

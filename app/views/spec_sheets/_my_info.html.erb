@@ -17,7 +17,7 @@
       </td>
       <td>
         <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
-          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
+          <%= h(@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% else %>
           <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% end %>
@@ -28,7 +28,7 @@
         Technician's Job:
       </td>
       <td>
-        <%= @report.action && @report.action.description || "Unknown" %>
+        <%= @report.action && h(@report.action.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -44,7 +44,7 @@
         Type of System:
       </td>
       <td>
-        <%= @report.type && @report.type.description || "Unknown" %>
+        <%= @report.type && h(@report.type.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -52,7 +52,7 @@
         Contract:
       </td>
       <td>
-        <%= @report.system.contract.description %>
+        <%= h @report.system.contract.description %>
       </td>
     </tr>
     <tr>
@@ -68,7 +68,7 @@
         Notes:
       </td>
       <td>
-        <%= @report.notes.gsub("\n", "<br />") %>
+        <%= h(@report.notes).gsub("\n", "<br />") %>
       </td>
     </tr>
     <tr>

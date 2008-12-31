@@ -1,6 +1,6 @@
 <%= render :partial => "donation_receipt_guts", :locals => {:@donation => @donation} %>
 
-<p><%= @donation.comments %></p>
+<p><%= h @donation.comments %></p>
 <hr />
 <p class="footer">We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).</p>
 </div>

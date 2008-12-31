@@ -4,7 +4,7 @@
     <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
   </div>
 </div>
-<div id="<%= element_messages_id(@options) %>" class="messages-container">
+<div id="<%= h element_messages_id(@options) %>" class="messages-container">
   <div id="<%= messages_id(params) %>">
     <%= render :partial => 'form_messages' %>
   </div>
@@ -17,8 +17,8 @@
   </script>
 <% end %>
 
-<div id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
-  <div id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
+<div id="<%= h element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
+  <div id="<%= h element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
        :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
@@ -30,8 +30,8 @@
     <h4><%= (@options[:action] + " " + @transaction_type).titleize
             %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
     <% if @transaction.created_at && @transaction.updated_at %>
-      <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{User.find_by_id(@transaction.cashier_created_by).login} " end %>at <%= @transaction.created_at %></span>
-      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{User.find_by_id(@transaction.cashier_updated_by).login} " end %>at <%= @transaction.updated_at %></span>
+      <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{h User.find_by_id(@transaction.cashier_created_by).login} " end %>at <%= @transaction.created_at %></span>
+      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{u User.find_by_id(@transaction.cashier_updated_by).login} " end %>at <%= @transaction.updated_at %></span>
     <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
@@ -45,7 +45,7 @@
     <% end %>
 
   <%= js = "contracts_notes = new Array();"
-      Contract.find(:all).collect{|x| [x.id, x.notes]}.each{|x,y|
+      Contract.find(:all).collect{|x| [h(x.id), h(x.notes)]}.each{|x,y|
         js += "contracts_notes['#{x}'] = '#{escape_javascript(y)}';"
       }
      javascript_tag js %>

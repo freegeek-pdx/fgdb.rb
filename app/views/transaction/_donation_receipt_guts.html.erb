@@ -10,7 +10,7 @@
   <% if !GizmoType.fee?(event.gizmo_type) -%>
   <tr>
     <td> <%= event.gizmo_count %> </td>
-    <td> <%= event.attry_description %> </td>
+    <td> <%= h event.attry_description %> </td>
     <td>______</td>
   </tr>
   <% end -%>
@@ -28,7 +28,7 @@
   <% if GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)-%>
   <tr>
     <td><%= event.gizmo_count %> </td>
-    <td><%= event.attry_description %> </td>
+    <td><%= h event.attry_description %> </td>
     <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
   </tr>
   <% end -%>
@@ -37,7 +37,7 @@
 <% @donation.payments.each do |payment| %>
   <tr>
     <td>&nbsp;</td>
-    <td align="left"><%= payment.payment_method.description.titleize %>:</td>
+    <td align="left"><%= h(payment.payment_method.description).titleize %>:</td>
     <td><%= my_number_to_currency(payment.amount_cents) %></td>
   </tr>
 <% end %>

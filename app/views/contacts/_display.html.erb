@@ -3,12 +3,12 @@
 <div class="contact_display">
   <div class="id">
     <%= ( @contact.contact_types.map {|c_t|
-            c_t.description
+            h(c_t.description)
           }.sort << (@contact.is_organization ? 'organization' : 'person')
           ).join(', ') %>
-    (id: <%= @contact.id %><%= ", login: #{@contact.user.login}" if @contact.user %>)
+    (id: <%= @contact.id %><%= ", login: #{h @contact.user.login}" if @contact.user %>)
   </div>
-  <div class="name"><%= @contact.display_name %></div>
+  <div class="name"><%= h @contact.display_name %></div>
   <br />
   <% if @contact.is_person? %>
     <div class="hours_type">
@@ -16,18 +16,18 @@
   </div>
   <br />
 <% end %>
-<div class="address"><%= @contact.address %><br />
-  <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %>
+<div class="address"><%= h @contact.address %><br />
+  <%= h @contact.city %>, <%= h @contact.state_or_province %> <%= h @contact.postal_code %>
 </div>
 <div class="contact_methods">
   <% for method in @contact.contact_methods %>
-    <%= method.display %><br />
+    <%= h method.display %><br />
   <% end %>
 </div>
 <% if @contact.notes && @contact.notes != '' %>
   <div class="contact_comments">
     Notes:<br />
-    <%= @contact.notes.gsub(/\n/, "<br />") %>
+    <%= h(@contact.notes).gsub(/\n/, "<br />") %>
   </div>
 <% end %>
 <% if options.fetch(:display_associations, true) %>
@@ -50,7 +50,7 @@
                              "conditions[contact_id]" => @contact.id,
                              "conditions[contact_enabled]" => "true"
                              ) %>
-    : <%= last_one.map{|d,c| "#{c} #{d}"}.join(", ") %>
+    : <%= last_one.map{|d,c| "#{h c} #{h d}"}.join(", ") %>
   </div>
 <% end %>
 <% end %>

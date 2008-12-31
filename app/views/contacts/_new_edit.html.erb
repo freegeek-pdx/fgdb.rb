@@ -11,7 +11,7 @@
 
   <div id="<%= contact_messages_id(@options) %>" class="messages-container"></div>
 
-  <input type="hidden" name="contact_query_id" value="<%= contact_query_id(params) %>" />
+  <input type="hidden" name="contact_query_id" value="<%= h contact_query_id(params) %>" />
 
   <%= render :partial => 'form' %>
 

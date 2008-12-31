@@ -25,9 +25,9 @@
         </strong>
       </td>
       <% if @context == 'donation' %>
-        <td align="right"><%= Default['tax id'] %></td>
+        <td align="right"><%= h Default['tax id'] %></td>
       <% else %>
-        <td align="right"><%= Default['business id'] %></td>
+        <td align="right"><%= h Default['business id'] %></td>
       <% end %>
     </tr>
     <tr>
