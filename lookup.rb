@@ -80,7 +80,7 @@ def ret_array(thing)
 end
 
 arr = ret_array([ARGV[0]])
-if arr.length < 1
+if arr.length > 1
   arr = ret_array(find_alts(ARGV[0]))
 end
 if arr.length == 1
