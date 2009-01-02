@@ -18,4 +18,12 @@ class LibraryController < ApplicationController
   def overdue
     render :text => "not yet implemented"
   end
+
+  def show_book
+    render :text => "not yet implemented"
+  end
+
+  def show_copy
+    render :text => "not yet implemented"
+  end
 end
