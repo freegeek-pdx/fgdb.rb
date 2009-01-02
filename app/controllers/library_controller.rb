@@ -37,4 +37,9 @@ class LibraryController < ApplicationController
   def show_copy
     render :text => "not yet implemented"
   end
+
+  # takes a list of copy ids, linked from search maybe? dunno how to get there yet..
+  def label
+    render :text => "not yet implemented"
+  end
 end
