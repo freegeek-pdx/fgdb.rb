@@ -24,6 +24,8 @@ class LibraryController < ApplicationController
   def cataloging
   end
 
+  # these methods require lookup_loc and list_alternates, which should soon come out of a ZoomHelper or somethin
+
   private
   def findit(isbns)
     @books = Book.find_all_by_isbn(isbns)
