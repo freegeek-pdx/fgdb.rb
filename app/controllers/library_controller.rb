@@ -1,4 +1,6 @@
 class LibraryController < ApplicationController
+  layout :with_sidebar
+
   # check in books
   def checkin
     render :text => "not yet implemented"
@@ -20,7 +22,14 @@ class LibraryController < ApplicationController
   # * manually enter
   # it should have you enter the isbn, and then go down the list, finding the first possiblility, and making you use that. should also consider alternates.
   def cataloging
-    render :text => "not yet implemented"
+  end
+
+  # ajaxy magic ... wow!
+  def cataloging_update
+    render :update do |page|
+      page.replace_html "main_form", :partial => "main_form"
+      page['initial_form'].hide
+    end
   end
 
   # list of copies that are overdue
