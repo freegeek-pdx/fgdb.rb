@@ -19,10 +19,12 @@ class LibraryController < ApplicationController
     render :text => "not yet implemented"
   end
 
+  # shows information, list of copies, add new copy button
   def show_book
     render :text => "not yet implemented"
   end
 
+  # link to labels, shows history
   def show_copy
     render :text => "not yet implemented"
   end
