@@ -24,11 +24,42 @@ class LibraryController < ApplicationController
   def cataloging
   end
 
+  private
+  def findit(isbns)
+    @books = Book.find_all_by_isbn(isbns)
+    if @books.length == 1
+      @book = @books[0]
+      @method = "book"
+    else
+      @marc = lookup_loc(isbns)
+      if @marc
+        @method = "marc"
+      else
+        @method = "manual"
+      end
+    end
+  end
+
+  public
+
   # ajaxy magic ... wow!
   def cataloging_update
+    # try to find existing book
+    isbn = params[:open_struct][:isbn]
+    findit(isbn)
+    if @method == "manual"
+      isbns = list_alternates(isbn)
+      findit(isbns)
+    end
     render :update do |page|
-      page.replace_html "main_form", :partial => "main_form"
-      page['initial_form'].hide
+      case @method
+        when "manual" then page.replace_html "main_form", :partial => "main_form"
+        when "book" then page.replace_html "main_form", :partial => "show_book"
+        when "marc" then page.replace_html "main_form", :partial => "show_marc"
+      end
+      if @method != "manual"
+        page['initial_form'].hide
+      end
     end
   end
 
