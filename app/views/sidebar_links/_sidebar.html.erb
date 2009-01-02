@@ -77,6 +77,17 @@
     </div>
   <% end %>
 
+    <% if has_role?('LIBRARY') || true %>
+      library
+      <div class="sidebar_section">
+        <% for i in ['checkin', 'checkout', 'overdue', 'cataloging', 'search'] do %>
+          <div>
+            <%= link_to i, :controller => "library", :action => i %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
     fgss
     <div class="sidebar_section">
       <div>
