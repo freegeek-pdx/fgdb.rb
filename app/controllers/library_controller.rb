@@ -24,7 +24,7 @@ class LibraryController < ApplicationController
   def cataloging
   end
 
-  # these methods require lookup_loc and list_alternates, which should soon come out of a ZoomHelper or somethin
+  helper :zoom
 
   private
   def findit(isbns)
