@@ -9,4 +9,4 @@ su - postgres -c "nice cat $sql_dump | nice gzip > $sql_dump.gz"
 
 su - postgres -c "nice /usr/bin/rsync -Hqzae \
   'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 2048\
-  --delete-excluded $backup_dir 'postgres@pollen:/usr/local/soong/'"
+  --delete-excluded $backup_dir 'postgres@tulip:/usr/local/arik/'"

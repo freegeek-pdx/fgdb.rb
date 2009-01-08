@@ -3,7 +3,7 @@
 set -e
 set -x
 
-rake db:drop
-rake db:create
-rake db:schema:load
+rake db:drop --trace || true
+rake db:create --trace
+rake db:schema:load --trace
 zcat db/devel_data.sql.gz | psql fgdb_development

@@ -220,6 +220,14 @@ module XmlHelper
       @my_node
     end
 
+    def do_with_parent
+      temp = @my_node
+      @my_node = temp.parent
+      val = yield
+      @my_node = temp
+      return val
+    end
+
     def xml_if(thing = nil, type = '//')
       if _xml_value_of(thing, type) == nil
         return false

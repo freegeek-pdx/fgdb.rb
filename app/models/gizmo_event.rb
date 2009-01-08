@@ -125,7 +125,7 @@ class GizmoEvent < ActiveRecord::Base
 
   def suggested_fee_cents
     if (covered && gizmo_type.required_fee_cents != 0) || gizmo_type.suggested_fee_cents != 0
-      gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents || gizmo_type.suggested_fee_cents)
+      gizmo_count.to_i * (unit_price_cents || gizmo_type.suggested_fee_cents || gizmo_type.required_fee_cents)
     else
       0
     end

@@ -2,8 +2,14 @@ fgdb.rb (1.0.24) UNRELEASED; urgency=low
 
   * clean up some old cruft
   * create ChangeLog file
+  * allow suggested and required fees to be different
+  * printme-note program, and list-printmes to go along with it (to
+    track notes about a system, and look at paste notes)
+  * freegeek-extras support for other configuration packages (for other FreeGeeks)
+  * on the spec sheet, show whether a hard drive is ide, sata, or scsi
+  * fix some XSS bugs
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 22 Dec 2008 15:00:09 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Jan 2009 21:19:31 -0800
 
 fgdb.rb (1.0.23) released; urgency=low
 

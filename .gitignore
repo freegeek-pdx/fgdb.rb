@@ -16,6 +16,5 @@
 /vendor/activerecord
 /vendor/activeresource
 /vendor/activesupport
-/vendor/rails
 /vendor/railties
 /vendor/rails.new
