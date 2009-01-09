@@ -8,7 +8,7 @@ class Note < ActiveRecord::Base
 
   attr_accessor :lshw_output
 
-  before_save :set_system
+  before_validation :set_system
 
   def set_system
     if !self.system

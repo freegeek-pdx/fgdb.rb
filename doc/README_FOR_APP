@@ -66,7 +66,7 @@ choose one of the following: skeletal metadata (for production databases), or fu
  $> rake db:metadata:load
  $> ./script/make_admin # create the admin user (should only be used to create a contact for yourself, and turn yourself into an admin)
    :OR:
- $> wget http://dev.freegeek.org/~ryan52/devel_data.sql.gz -O db/devel_data.sql.gz && rake db:data:load # the admin user's password is 'secret'
+ $> wget http://dev.freegeek.org/~ryan52/devel_data.sql.gz -O db/devel_data.sql.gz && ./script/load_devel_data # the admin user's password is 'secret'
 
 migrate the database:
 

@@ -1,7 +1,7 @@
 # -*- Conf-Space -*-
 # place in /etc/logrotate.d/
 
-/var/www/fgdb.rb/current/log/*.log {
+/var/www/fgdb.rb/log/*.log {
         daily
         missingok
         notifempty

@@ -556,7 +556,7 @@ function add_contact_method_from_form() {
   return false;
 }
 
-function max(a,b) { return a>b ? a : b; }
+function first(a,b) { return a>0 ? a : b; }
 
 function coveredness_type_selected() {
   if($('covered') == null)
@@ -575,8 +575,12 @@ function sale_gizmo_type_selected() {
   disbursement_gizmo_type_selected();
 }
 function donation_gizmo_type_selected() {
-  $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
-  if (fees[$('gizmo_type_id').value]['required'] > fees[$('gizmo_type_id').value]['suggested']) {
+  if($('covered') && $('covered').checked == true) {
+    $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['suggested'], fees[$('gizmo_type_id').value]['required']));
+  } else {
+    $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
+  }
+  if (dollar_value(fees[$('gizmo_type_id').value]['required']) == $('unit_price').value) {
     $('unit_price').disabled=false;
   }
   else {

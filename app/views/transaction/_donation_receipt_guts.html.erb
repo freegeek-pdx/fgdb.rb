@@ -25,7 +25,7 @@
 </tr>
 
 <% @donation.gizmo_events.each do |event| -%>
-  <% if GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)-%>
+  <% if (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered -%>
   <tr>
     <td><%= event.gizmo_count %> </td>
     <td><%= h event.attry_description %> </td>
