@@ -21,7 +21,7 @@
           Type:
         </td>
         <td>
-          <% if (@parser.do_with_parent do @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) %>
+          <% if (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) %>
             <%= $1.upcase %>
           <% else %>
             Unknown

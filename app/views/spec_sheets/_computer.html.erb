@@ -65,7 +65,7 @@
         </td>
       </tr>
     <% end %>
-    <% a = []; @parser.xml_foreach("id", "storage|ide|scsi") do a << @parser.xml_value_of("description") end %>
+    <% a = []; @parser.xml_foreach("id", "storage|ide|scsi") do a << @parser.xml_value_of("product") + @parser.xml_value_of("description") end %>
     <% a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x| %>
       <tr>
         <td>
