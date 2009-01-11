@@ -83,6 +83,17 @@ class LibraryController < ApplicationController
     end
   end
 
+  def create_from_marc
+    @marc = Marc.new(params[:open_struct][:marc])
+    b = Book.new
+    b.fields = @marc.to_fields
+    if !b.save!
+      render :text => "Failed to save: #{b.errors.to_s}"
+    else
+      redirect_to :action => "show_book", :id => b.id
+    end
+  end
+
   # list of copies that are overdue
   def overdue
     render :text => "not yet implemented"

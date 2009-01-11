@@ -2,10 +2,34 @@ module ZoomHelper
   class Marc
     include LibraryModelHelper
 
+    def initialize(thing = nil)
+      super()
+      if thing
+        self.data=(thing)
+      end
+    end
+
+    def to_fields
+      fields = []
+      @data.each{|x,h|
+        h.each{|y,a|
+          [a].flatten.each{|z|
+            fields << Field.new(:field => x, :subfield => y, :data => z)
+          }
+        }
+      }
+      fields
+    end
+
     def data=(data)
       @data = {}
       @orig_data = data
-      data = show_res(data)
+      if data.class != String
+        thing = data.xml
+      else
+        thing = data
+      end
+      data = show_res(thing)
       data.each{|a|
         x, y, z = a
         x = x.to_i
@@ -36,7 +60,7 @@ module ZoomHelper
 
     private
     def show_res(res)
-      thing = REXML::Document.new(res.xml)
+      thing = REXML::Document.new(res)
       ret = []
       reses = REXML::XPath.match(thing, "/record/datafield/subfield")
       reses.each{|x|
