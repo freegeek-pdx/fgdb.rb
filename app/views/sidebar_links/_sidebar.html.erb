@@ -80,7 +80,7 @@
     </div>
   <% end %>
 
-    <% if has_role?('LIBRARY') || true %>
+    <% if has_role?('LIBRARIAN') %>
       library
       <div class="sidebar_section">
         <% for i in ['checkin', 'checkout', 'overdue', 'cataloging', 'search'] do %>

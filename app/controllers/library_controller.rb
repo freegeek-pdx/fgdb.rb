@@ -1,5 +1,10 @@
 class LibraryController < ApplicationController
   layout :with_sidebar
+  before_filter :authorized_only
+
+  def authorized_only
+    requires_role(:LIBRARIAN)
+  end
 
   # check in books
   def checkin
