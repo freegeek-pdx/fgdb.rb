@@ -30,10 +30,11 @@ class LibraryController < ApplicationController
   end
 
   helper :zoom
+  include ZoomHelper
 
   private
   def findit(isbns)
-    @books = Book.find_all_by_isbn(isbns)
+    @books = Book.find_all_by_isbn(isbns.to_i)
     if @books.length == 1
       @book = @books[0]
       @method = "book"

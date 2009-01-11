@@ -12,7 +12,7 @@ module ZoomHelper
     # returns a Marc object, or nil
   end
 
-  def list_alternatives(isbn)
+  def list_alternates(isbn)
     # returns an array of alternatives including isbn
   end
 end
