@@ -1,0 +1,9 @@
+<table>
+  <% for i in [:title, :author, :description] do %>
+    <tr><td>
+        <%= f.label i %>
+      </td><td>
+        <%= f.text_field i %>
+      </td></tr>
+  <% end %>
+</table>
