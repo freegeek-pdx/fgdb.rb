@@ -282,6 +282,10 @@ module ApplicationHelper
     %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>]
   end
 
+  def show_loading_indicator(prefix)
+    "Element.show('#{loading_indicator_id(prefix)}');"
+  end
+
   def is_logged_in()
     @current_user
   end
