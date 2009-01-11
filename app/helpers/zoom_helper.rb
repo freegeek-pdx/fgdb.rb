@@ -1,11 +1,25 @@
 module ZoomHelper
   class Marc
     include LibraryModelHelper
-    attr_accessor :data
+
+    def data=(data)
+      @data = {}
+      data.each{|a|
+        x, y, z = a
+        x = x.to_i
+        @data[x] ||= {}
+        @data[x][y] = z
+      }
+      require 'pp'
+      pp @data
+    end
 
     def [](a,b)
-      # magic
-      "#{a}-#{b}".upcase
+      if @data[a]
+        return @data[a][b]
+       else
+         return nil
+      end
     end
   end
 
@@ -80,7 +94,7 @@ module ZoomHelper
         tag = REXML::XPath.match(x, "../@tag")
         code = REXML::XPath.match(x, "@code")
         body = _xml_clean(x.to_s)
-        ret << [tag, code, body]
+        ret << [tag.to_s, code.to_s, body]
       }
       return ret
     end
