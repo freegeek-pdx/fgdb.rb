@@ -77,6 +77,7 @@ run "Checking to see if libxml-ruby is installed..." "require_test xml/libxml" "
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
 run "Checking to see if google charts is installed..." "require_test gchart" "install libgooglecharts-ruby" "fail"
+run "Checking to see if zoom is installed..." "require_test zoom" "install libzoom-ruby" "fail"
 run "Checking to see if postgres is installed and running..." "[ $(pgrep -c -x postgres) != \"0\" ]" "install and start postgres" "fail"
 
 exit $STATUS
