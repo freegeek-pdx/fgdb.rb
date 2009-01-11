@@ -10,8 +10,6 @@ module ZoomHelper
         @data[x] ||= {}
         @data[x][y] = z
       }
-      require 'pp'
-      pp @data
     end
 
     def [](a,b)
