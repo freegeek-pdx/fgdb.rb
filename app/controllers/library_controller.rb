@@ -67,6 +67,9 @@ class LibraryController < ApplicationController
       isbns = list_alternates(isbn.to_i)
       findit(isbns)
     end
+    if @method == "manual"
+      @isbn = isbn
+    end
     render :update do |page|
       case @method
         when "manual" then page.replace_html "main_form", :partial => "main_form"

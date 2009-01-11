@@ -7,7 +7,7 @@
     <% @obj = @marc %>
   <% end %>
   <% form_for @obj, :url => "nowheresville" do |f| %>
-  <%= render :partial => "book_form", :locals => {:f => f} %>
+  <%= render :partial => "book_form", :locals => {:f => f, :show_isbn => false} %>
 <% end %>
 </div>
 <%= javascript_tag "if($$('.edit_zoom_helper_marc')) $$('.edit_zoom_helper_marc').first().disable()" %>

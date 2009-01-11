@@ -1,1 +1,7 @@
-o hai ther
+<% @book = Book.new %>
+<% @book.isbn = @isbn %>
+<div class="noblock">
+  <% form_for @book, :url => {:action => "create"} do |f| %>
+  <%= render :partial => "book_form", :locals => {:f => f, :show_isbn => true} %>
+  <% end %>
+</div>

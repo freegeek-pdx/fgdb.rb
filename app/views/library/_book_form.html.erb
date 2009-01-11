@@ -1,5 +1,7 @@
 <table>
-  <% for i in [:title, :author, :description] do %>
+  <% list = [:title, :author, :description] %>
+  <% list = [:isbn, *list] if show_isbn %>
+  <% for i in list do %>
     <tr><td>
         <%= f.label i %>
       </td><td>
