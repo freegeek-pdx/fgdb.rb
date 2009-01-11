@@ -1,0 +1,4 @@
+Found existing book with ISBN #<%= @book.isbn %><br />
+<% for i in [:title, :author, :description] do %>
+<%= i.to_s.titleize %>: <%= eval("@book.#{i}") %><br />
+<% end %>
