@@ -3,7 +3,7 @@ class Book < ActiveRecord::Base
   has_many :copies
   include LibraryModelHelper
   validates_uniqueness_of :isbn
-  before_validating :suck_stuff_down
+  before_validation :suck_stuff_down
 
   def suck_stuff_down
     for i in [:author, :isbn, :title, :description]
