@@ -1,4 +1,10 @@
-fgdb.rb (1.0.24) UNRELEASED; urgency=low
+fgdb.rb (1.0.25) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 02:24:11 -0800
+
+fgdb.rb (1.0.24) released; urgency=low
 
   * clean up some old cruft
   * create ChangeLog file
@@ -8,8 +14,9 @@ fgdb.rb (1.0.24) UNRELEASED; urgency=low
   * freegeek-extras support for other configuration packages (for other FreeGeeks)
   * on the spec sheet, show whether a hard drive is ide, sata, or scsi
   * fix some XSS bugs
+  * first part of graphic reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Jan 2009 21:19:31 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 01:58:00 -0800
 
 fgdb.rb (1.0.23) released; urgency=low
 

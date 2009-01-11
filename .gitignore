@@ -18,3 +18,4 @@
 /vendor/activesupport
 /vendor/railties
 /vendor/rails.new
+/tmp/*

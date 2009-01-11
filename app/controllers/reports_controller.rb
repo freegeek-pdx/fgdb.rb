@@ -124,9 +124,9 @@ class ReportsController < ApplicationController
     @defaults = Conditions.new
   end
 
-  def income_report
+  def income_report(thing = nil)
     @defaults = Conditions.new
-    @defaults.apply_conditions(params[:defaults])
+    @defaults.apply_conditions(thing || params[:defaults])
     @income_data = {}
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
@@ -144,6 +144,7 @@ class ReportsController < ApplicationController
     [:sales, :donations].each do |x|
       @ranges[x] = "#{ranges[x][:min]}..#{ranges[x][:max]}"
     end
+    @income_data
   end
 
   protected

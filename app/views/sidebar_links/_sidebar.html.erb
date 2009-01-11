@@ -54,6 +54,9 @@
           :controller => 'reports',
           :action => 'hours' %>
     </div>
+    <div>
+      <%= link_to "over time", :controller => 'graphic_reports' %>
+    </div>
   </div>
 
   <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>

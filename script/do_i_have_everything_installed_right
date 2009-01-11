@@ -76,6 +76,7 @@ run "Checking to see if rails is correct version..." "ruby -r $(dirname $0)/../c
 run "Checking to see if libxml-ruby is installed..." "require_test xml/libxml" "install libxml-ruby" "fail"
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
+run "Checking to see if google charts is installed..." "require_test gchart" "install libgooglecharts-ruby" "fail"
 run "Checking to see if postgres is installed and running..." "[ $(pgrep -c -x postgres) != \"0\" ]" "install and start postgres" "fail"
 
 exit $STATUS

@@ -1,0 +1,57 @@
+<%= render :partial => 'in_dev' %>
+
+<center>
+<h1><%= @title %></h1>
+
+<%# generate teh graph %>
+<% max_from_data = @data.to_a.collect{|x,y| y.sort_by{|z| z}.last}.sort_by{|z| z}.last || 0 %>
+<% difference = 1000 %>
+<% for i in [1, 10, 50, 100, 250, 500, 1000]
+     if (max_from_data / i) > 1 and (max_from_data / i) < 9
+       difference = i
+       break
+     end
+   end  %>
+<% y_axis = (0..(max_from_data / difference.to_f).ceil).to_a.collect{|x| x * difference} %>
+<% max = y_axis.last %>
+<% data_arr = [] %>
+<% legend_arr = [] %>
+<% @data.each{|k,v|
+     legend_arr << k.to_s.titleize
+     data_arr << v
+   } %>
+<%= Gchart.line(:data => data_arr, :axis_with_labels => 'x,y', :axis_labels => [@x_axis, y_axis], :title => "", :line_colors => ['76A4FB', 'FF0000', '00A550'], :width => 700, :height => 300, :legend => legend_arr, :max_value => max, :format => "img_tag", :alt => "Imagine a purdy graph/chart here.") %>
+
+<% def table
+     tag("table")
+   end
+   def tr
+     tag("tr")
+   end
+   def th
+     tag("th")
+   end
+   def td
+     tag("td")
+   end
+%>
+
+<%# generate teh table %>
+<table style="border-collapse: collapse;" border="1" width="100%">
+  <tr>
+    <th />
+    <% @x_axis.each do |x| %>
+      <th><%= x %></th>
+    <% end %>
+  </tr>
+  <% @data.each do |k,v| %>
+    <tr>
+      <th><%= k.to_s.titleize %></th>
+      <% v.each do |y|%>
+        <td><%= y %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+</center>
+

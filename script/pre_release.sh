@@ -4,11 +4,11 @@ set -C
 set -e
 set -u
 
-CUR=$(svn info /var/www/fgdb.rb/current/ | awk -F : '/^URL: /{split($3, a, "/"); sub("release_1.0.", "", a[7]); print a[7]}')
+CUR=$(cat /var/www/fgdb.rb/.git/HEAD  | sed 's,ref: refs/heads/release_1.0.,,')
 NEW=$(( $CUR + 1 ))
 
 cd /var/www/fgdb.rb/
-sudo mv current/public/_release.html current/public/release.html
+sudo mv public/_release.html public/release.html
 sudo invoke-rc.d thin stop
 
 pg_dump fgdb_production > ~/pre-sprint-$NEW.sql

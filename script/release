@@ -1,58 +1,33 @@
 #!/bin/sh
 
 set -e
+set -x
 
-if [ "$1" = "--noexec" ] || [ "$1" = "--no-exec" ] || [ "$2" = "--noexec" ] || [ "$2" = "--no-exec" ]; then
-    NOEXEC="echo"
-fi
-
-cd `dirname $0`
-cd ../
-
-if (echo "$1" | grep -q -E "^[0-9]+$"); then
-    VERSION="$1"
-elif (echo "$2" | grep -q -E "^[0-9]+$"); then
-    VERSION="$2"
-else
-    echo "please provide a sprint number"
-    echo "( hint: $(( $(ls ../branches/ | awk '/^release_1.0./{sub("release_1.0.",""); print $1}' | sort -n | tail -1) + 1 )) )"
-    exit
-fi
-
-$NOEXEC svn up
-svn st
-svn di
-
-echo
-echo
-echo
-
-if [ -z "$NOEXEC" ]; then
-    echo "About to release sprint $VERSION"
-    echo "YOU ARE NOT IN DEBUG MODE"
-    echo -n "Continue? (say YES) "
-    read yesno
-
-    if [ "$yesno" != "YES" ]; then
-        echo "Aborted"
-        exit
-    fi
-fi
-
-cd ..
-
-if [ ! -d trunk ]; then
-    pwd
-    echo "Where's trunk?"
+if [ "$(cat .git/HEAD)" != "ref: refs/heads/master" ]; then
+    echo "Need to be on the master branch" >&2
     exit 1
 fi
 
-$NOEXEC sed -i "s/release_1.0.$(ruby -e "puts ${VERSION} - 1")/release_1.0.${VERSION}/g" trunk/mr/.mrconfig
-$NOEXEC svn ci trunk/mr/.mrconfig -m "updating mr config for sprint ${VERSION}"
-$NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/tags/release_1.0.${VERSION} -m "tagging sprint ${VERSION}"
-$NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/branches/release_1.0.${VERSION} -m "branching sprint ${VERSION}"
-cd trunk/script/
-#NOEXEC="$NOEXEC" ./cleanup
-cd ../..
-$NOEXEC svn up
-echo
+if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ]; then
+    echo "Need to have a fg and an origin remote branch" >&2
+    exit 1
+fi
+
+git fetch origin
+git pull
+dch -r -c ChangeLog ""
+git add ChangeLog
+git commit -m "releasing"
+VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
+git tag $VERSION
+git checkout -b release_$VERSION
+git push fg master:master
+git push fg release_$VERSION:release_$VERSION
+git config branch.release_$VERSION.remote origin
+git config branch.release_$VERSION.merge release_$VERSION
+git push fg --tags
+git checkout master
+dch -c ChangeLog -i --dist UNRELEASED ""
+git add ChangeLog
+git commit -m "add new, empty changelog entry"
+git push fg master:master

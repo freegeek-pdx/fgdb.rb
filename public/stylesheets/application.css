@@ -571,3 +571,7 @@ padding:0;
 .invisible {
   display: none;
 }
+
+@media print {
+.noprint { display: none; }
+}
