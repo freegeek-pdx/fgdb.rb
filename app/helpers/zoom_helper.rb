@@ -1,18 +1,119 @@
 module ZoomHelper
   class Marc
     include LibraryModelHelper
+    attr_accessor :data
 
     def [](a,b)
       # magic
+      "#{a}-#{b}".upcase
+    end
+  end
+
+  class Zoomer
+    def initialize
+      init_marc
+    end
+
+    private
+
+    def init_marc
+      @@init ||= false
+      if @@init
+        return
+      end
+
+      @@servers = Array.new
+
+      servers_source.each do |array|
+        begin
+          con = ZOOM::Connection.new()
+          con.preferred_record_syntax = 'MARC21'
+          con.element_set_name = 'F'
+          if array[1] then
+            con.user = array[1]
+            con.password = array[2]
+          end
+          con.connect(array[0])
+          @@servers << con
+        rescue RuntimeError
+          nil
+        end
+        @@init = true
+      end
+    end
+
+    def other_servers_source # not used
+      [
+       # Server, Username, Password
+       [ 'z3950.loc.gov:7090/Voyager' ], # Library of Congress
+       [ 'amicus.nlc-bnc.ca/ANY', 'akvadrako', 'aw4gliu' ], # Canada
+       [ 'catnyp.nypl.org:210/INNOPAC' ], # New York Public
+       [ 'z3950.copac.ac.uk:2100/COPAC' ], # United Kingdom
+       [ 'z3950.btj.se:210/BURK' ], # Sweden
+       # [ '195.249.206.204:210/Default' ], # DenMark -- broken?
+       [ 'library.ox.ac.uk:210/ADVANCE' ], # Oxford
+       [ '216.16.224.199:210/INNOPAC' ], # Cambridge
+       [ 'prodorbis.library.yale.edu:7090/Voyager' ], # Yale
+       [ 'zsrv.library.northwestern.edu:11090/Voyager' ]] # NorthWestern University
+    end
+
+    def servers_source
+      [[ 'z3950.loc.gov:7090/Voyager' ]]
+    end
+
+    def lookup_thing(isbns)
+      res = isbns.collect{|x|
+        @@servers.collect{|server|
+          server.search("@attr 1=7 #{x}").records
+        }
+      }.flatten.delete_if{|x| x.nil?}.sort_by{|x| x.to_s.length}.reverse
+      return res[0] if res.length == 1
+      return res.first if res.length > 1
+      return nil if res.length == 0
+    end
+
+    def show_res(res)
+      thing = REXML::Document.new(res.xml)
+      ret = []
+      reses = REXML::XPath.match(thing, "/record/datafield/subfield")
+      reses.each{|x|
+        tag = REXML::XPath.match(x, "../@tag")
+        code = REXML::XPath.match(x, "@code")
+        body = _xml_clean(x.to_s)
+        ret << [tag, code, body]
+      }
+      return ret
+    end
+
+    def _xml_clean(thing)
+      REXML::Text::unnormalize(thing.to_s).gsub(/<[^>]+>/, "").strip
+    end
+
+    public
+
+    def lookup_loc(isbns)
+      res = lookup_thing([isbns].flatten)
+      return res if res.nil?
+      m = Marc.new
+      m.data = show_res(res)
+      return m
+    end
+
+    def list_alternates(isbn)
+      REXML::Document.new(Net::HTTP.new('old-xisbn.oclc.org').get("/xid/isbn/#{isbn}").body).root.elements.to_a.collect{|x| x.to_s.sub(/^<isbn>(.+)<\/isbn>$/, "\\1")}.delete_if{|x| x == isbn}.flatten
+    end
+  end
+
+  def list_alternates(isbn)
+    alternates_enabled = false # SLOW! (for now, at least)
+    if alternates_enabled
+      Zoomer.new.list_alternates(isbn)
+    else
+      []
     end
   end
 
   def lookup_loc(isbns)
-    # finds the first matching in the isbns array, if it's an array
-    # returns a Marc object, or nil
-  end
-
-  def list_alternates(isbn)
-    # returns an array of alternatives including isbn
+    Zoomer.new.lookup_loc(isbns)
   end
 end
