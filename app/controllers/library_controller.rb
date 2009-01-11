@@ -41,7 +41,9 @@ class LibraryController < ApplicationController
     else
       @marc = lookup_loc(isbn)
       if @marc
-        @book = Book.find_by_isbn(@marc.isbn)
+        if @marc.isbn != isbn
+          @book = Book.find_by_isbn(@marc.isbn)
+        end
         if @book
           @method = "book"
           @marc = nil # just in case
