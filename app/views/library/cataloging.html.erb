@@ -1,12 +1,12 @@
 <% @blah = OpenStruct.new %>
 
-<div id="initial_form">
-  <%= loading_indicator_tag "library_cataloging" %>
+<div id="initial_form" class="noblock">
   <% remote_form_for(@blah, :url => {:action => "cataloging_update"}, :loading => show_loading_indicator("library_cataloging")) do |f| %>
     <%= f.label "isbn", "ISBN" %>
     <%= f.text_field "isbn" %>
     <%= f.submit "Look up" %>
   <% end %>
+  <%= loading_indicator_tag "library_cataloging" %>
 </div>
 
 <div id="main_form" />
