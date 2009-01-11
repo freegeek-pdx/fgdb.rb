@@ -55,7 +55,7 @@ class LibraryController < ApplicationController
   def cataloging_update
     # try to find existing book
     isbn = params[:open_struct][:isbn]
-    if isbn.nil? || isbn.blank? || (isbn.to_i.to_s.length != 10 && isbn.to_i.to_s.length != 13)
+    if isbn.nil? || isbn.blank? || (isbn.length != 10 && isbn.length != 13)
       render :update do |page|
         page << "alert('Invalid ISBN');"
         page.hide loading_indicator_id("library_cataloging")
