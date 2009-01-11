@@ -11,7 +11,7 @@
 <% end %>
 <% @blah = OpenStruct.new %>
   <% if @method == "book" %>
-    <% action = "show" %>
+    <% action = "show_book" %>
     <% @blah.book_id = @book.id %>
   <% else %><%# marc %>
     <% action = "create_from_marc" %>
@@ -26,5 +26,5 @@
   <%= submit_tag 'Go' %>
 <% end %>
 </div>
-<%= javascript_tag "if($$('.edit_zoom_helper_marc')) $$('.edit_zoom_helper_marc').first().disable()" %>
-<%= javascript_tag "if($$('.edit_book')) $$('.edit_book').first().disable()" %>
+<%= javascript_tag "if($$('.edit_zoom_helper_marc').length > 0) $$('.edit_zoom_helper_marc').first().disable()" %>
+<%= javascript_tag "if($$('.edit_book').length > 0) $$('.edit_book').first().disable()" %>

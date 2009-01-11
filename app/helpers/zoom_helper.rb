@@ -150,17 +150,8 @@ module ZoomHelper
       return m
     end
 
-    def list_alternates(isbn)
+    def list_alternates_fail(isbn) # FAIL. limits to 500 requests a day. don't think that's a good idea.
       REXML::Document.new(Net::HTTP.new('old-xisbn.oclc.org').get("/xid/isbn/#{isbn}").body).root.elements.to_a.collect{|x| x.to_s.sub(/^<isbn>(.+)<\/isbn>$/, "\\1")}.delete_if{|x| x == isbn}.flatten
-    end
-  end
-
-  def list_alternates(isbn)
-    alternates_enabled = false # SLOW! (for now, at least)
-    if alternates_enabled
-      Zoomer.new.list_alternates(isbn)
-    else
-      []
     end
   end
 

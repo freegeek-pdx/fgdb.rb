@@ -33,16 +33,21 @@ class LibraryController < ApplicationController
   include ZoomHelper
 
   private
-  def findit(isbns)
-    isbns.collect!{|x| x.to_i}
-    @books = Book.find_all_by_isbn(isbns)
-    if @books.length == 1
-      @book = @books[0]
+  def findit(isbn)
+    isbn = isbn.to_i
+    @book = Book.find_by_isbn(isbn)
+    if @book
       @method = "book"
     else
-      @marc = lookup_loc(isbns)
+      @marc = lookup_loc(isbn)
       if @marc
-        @method = "marc"
+        @book = Book.find_by_isbn(@marc.isbn)
+        if @book
+          @method = "book"
+          @marc = nil # just in case
+        else
+          @method = "marc"
+        end
       else
         @method = "manual"
       end
@@ -62,11 +67,7 @@ class LibraryController < ApplicationController
       end
       return
     end
-    findit([isbn])
-    if @method == "manual"
-      isbns = list_alternates(isbn.to_i)
-      findit(isbns)
-    end
+    findit(isbn)
     if @method == "manual"
       @isbn = isbn
     end
