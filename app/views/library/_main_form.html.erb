@@ -3,5 +3,6 @@
 <div class="noblock">
   <% form_for @book, :url => {:action => "create"} do |f| %>
   <%= render :partial => "book_form", :locals => {:f => f} %>
+  <%= submit_tag 'Go' %>
   <% end %>
 </div>
