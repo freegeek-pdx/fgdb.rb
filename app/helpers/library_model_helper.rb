@@ -16,6 +16,6 @@ module LibraryModelHelper
   end
 
   def isbn
-    blah(020, 'a')
+    blah(20, 'a')
   end
 end
