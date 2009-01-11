@@ -4,12 +4,26 @@ module ZoomHelper
 
     def data=(data)
       @data = {}
+      @orig_data = data
+      data = show_res(data)
       data.each{|a|
         x, y, z = a
         x = x.to_i
         @data[x] ||= {}
-        @data[x][y] = z
+        if !@data[x][y]
+          @data[x][y] = z
+        else
+          if @data[x][y].class != Array
+            temp = @data[x][y]
+            @data[x][y] = [temp]
+          end
+          @data[x][y] << z
+        end
       }
+    end
+
+    def to_s
+      @orig_data.xml # I guess..
     end
 
     def [](a,b)
@@ -18,6 +32,24 @@ module ZoomHelper
        else
          return nil
       end
+    end
+
+    private
+    def show_res(res)
+      thing = REXML::Document.new(res.xml)
+      ret = []
+      reses = REXML::XPath.match(thing, "/record/datafield/subfield")
+      reses.each{|x|
+        tag = REXML::XPath.match(x, "../@tag")
+        code = REXML::XPath.match(x, "@code")
+        body = _xml_clean(x.to_s)
+        ret << [tag.to_s, code.to_s, body]
+      }
+      return ret
+    end
+
+    def _xml_clean(thing)
+      REXML::Text::unnormalize(thing.to_s).gsub(/<[^>]+>/, "").strip
     end
   end
 
@@ -84,30 +116,13 @@ module ZoomHelper
       return nil if res.length == 0
     end
 
-    def show_res(res)
-      thing = REXML::Document.new(res.xml)
-      ret = []
-      reses = REXML::XPath.match(thing, "/record/datafield/subfield")
-      reses.each{|x|
-        tag = REXML::XPath.match(x, "../@tag")
-        code = REXML::XPath.match(x, "@code")
-        body = _xml_clean(x.to_s)
-        ret << [tag.to_s, code.to_s, body]
-      }
-      return ret
-    end
-
-    def _xml_clean(thing)
-      REXML::Text::unnormalize(thing.to_s).gsub(/<[^>]+>/, "").strip
-    end
-
     public
 
     def lookup_loc(isbns)
       res = lookup_thing([isbns].flatten)
       return res if res.nil?
       m = Marc.new
-      m.data = show_res(res)
+      m.data = res
       return m
     end
 
