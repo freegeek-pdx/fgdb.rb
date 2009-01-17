@@ -40,6 +40,16 @@ class ContactsController < ApplicationController
   ######
   public
 
+  def reset_cashier_code
+    u = User.find_by_id(params[:id])
+    u.reset_cashier_code
+    u.save
+    render :update do |page|
+      page << "$('user_cashier_code').value = #{u.cashier_code}"
+      page.hide loading_indicator_id("cashier_code")
+    end
+  end
+
   def index
     lookup
     render :action => 'lookup'

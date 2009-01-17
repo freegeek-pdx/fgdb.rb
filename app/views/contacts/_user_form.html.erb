@@ -34,6 +34,13 @@
       <%= text_field :user, :cashier_code, :readonly => true %>
     </div>
 
+    <% if @contact.is_user? %>
+      <div class='form-element'>
+        <%= button_to_function "Reset Cashier Code", remote_function({:url => {:action => :reset_cashier_code, :id => @user.id}, :loading => "Element.show('#{loading_indicator_id("cashier_code")}');"}) %>
+        <%= loading_indicator_tag("cashier_code") %>
+      </div>
+    <% end %>
+
     <% for role in Role.find(:all) %>
       <div class="form-element role-check-box">
         <input type="checkbox" id="<%= h role.name %>"

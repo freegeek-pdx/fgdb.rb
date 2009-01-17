@@ -19,18 +19,18 @@
     <% end %>
     <% form_tag(form_opts, {:multipart => true}) do %>
       <table>
-        <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
-        <tr><td>Job:</td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
-        <tr><td>System ID:</td><td><%= text_field("report", :system_id) %></td></tr>
-        <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <tr><td><label for="report_contact_id">Volunteer ID:</label></td><td><%= text_field("report", :contact_id) %></td></tr>
+        <tr><td><label for="report_action_id">Job:</label></td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <tr><td><label for="report_system_id">System ID:</label></td><td><%= text_field("report", :system_id) %></td></tr>
+        <tr><td><label for="report_type_id">Type:</label></td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
         <% if Contract.usable.length > 1 %>
-          <tr><td>Keeper label type:</td><td><%= select("report", "contract_id", Contract.usable.collect {|p| [p.description, p.id] }) %></td></tr>
+          <tr><td><label for="report_contract_id">Keeper label type:</label></td><td><%= select("report", "contract_id", Contract.usable.collect {|p| [p.label, p.id] }) %></td></tr>
         <% end %>
-        <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
+        <tr><td><label for="report_notes">Notes:</label></td><td><%= text_area("report", :notes) %></td></tr>
         <% if action_name == "new" %>
-          <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
+          <tr><td><label for="report_my_file">File:</label></td><td><%= file_field("report", :my_file) %></td></tr>
         <% elsif action_name == "edit" %>
-          <tr><td>Flag:</td><td><%= check_box("report", :flag) %></td></tr>
+          <tr><td><label for="report_flag">Flag:</label></td><td><%= check_box("report", :flag) %></td></tr>
         <% end %>
         <tr><td colspan="2"><%= submit_tag string %></td></tr>
       </table>

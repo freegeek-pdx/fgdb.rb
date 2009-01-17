@@ -1,14 +1,12 @@
-<%= render :partial => 'in_dev' %>
-
-<% form_for "conditions", :url => {:action => "view"} do |f| %>
+<% form_for :conditions, :url => {:action => "view"} do |f| %>
 <%= f.label "report_type", "Report Type" %>
-<%= f.select "report_type", ["Income"].map{|x| [x,x]} %>
+<%= f.select "report_type", @report_types.map{|x| [x,x]} %>
 <%= f.label "breakdown_type", "Breakdown Type" %>
-<%= f.select "breakdown_type", ["Weekly"].map{|x| [x,x]} %>
-<%= f.label "number", "Number of Breakdowns" %>
-<%= f.text_field "number" %>
+<%= f.select "breakdown_type", @breakdown_types.map{|x| [x,x]} %>
 <%= f.label "start_date", "Start Date" %>
 <%= calendar_box("conditions", "start_date") %>
+<%= f.label "end_date", "End Date" %>
+<%= calendar_box("conditions", "end_date") %>
 <%= f.label "submit", "" %>
 <%= f.submit "Go!" %>
 <% end %>

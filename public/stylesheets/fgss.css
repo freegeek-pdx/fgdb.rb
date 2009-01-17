@@ -13,3 +13,6 @@ table table td:first-child {text-align: right; font-weight: normal; padding-righ
 div.header {width: 100% }
 div.left {position: absolute; width: 47%; left: 1%; border-right: 1px solid black }
 div.right {position: absolute; width: 47%; right: 1%;}
+@media print {
+.noprint { display: none; }
+}

@@ -41,10 +41,19 @@
       <% if @parser.xml_if("size") %>
         <tr>
           <td>
-            Capacity:
+            Size:
           </td>
           <td>
             <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
+          </td>
+        </tr>
+      <% elsif @parser.xml_if("capacity")%>
+        <tr>
+          <td>
+            Size:
+          </td>
+          <td>
+            <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
           </td>
         </tr>
       <% end %>

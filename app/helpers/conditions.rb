@@ -6,9 +6,9 @@ class Conditions
 
   CONDS = (%w[
       id contact_type needs_attention anonymous unresolved_invoices
-      payment_method payment_amount gizmo_type_id
+      payment_method payment_amount gizmo_type_id covered
       postal_code city phone_number contact volunteer_hours email
-      flagged system contract
+      flagged system contract created_by cashier_created_by
     ] + DATES).uniq
 
   for i in CONDS
@@ -29,6 +29,10 @@ class Conditions
 
     @payment_method_id = PaymentMethod.cash.id
   end
+
+  attr_accessor :created_by, :cashier_created_by
+
+  attr_accessor :covered
 
   attr_accessor :contact_id
 
@@ -101,6 +105,10 @@ class Conditions
            ] + conds_a[1..-1] + conds_b[1..-1]
   end
 
+  def covered_conditions(klass)
+    ["gizmo_events.covered = ?", @covered != 0]
+  end
+
   def payment_amount_conditions(klass)
     # the to_s is required below because when a value of "6" is passed in
     # it is magically made into a Fixnum so the to_cents blows up
@@ -136,7 +144,13 @@ class Conditions
   end
 
   def contract_conditions(klass)
-    ["(donation_id IN (SELECT id FROM donations WHERE contract_id = ?) OR system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
+    if klass == GizmoEvent
+      ["(donation_id IN (SELECT id FROM donations WHERE contract_id = ?) OR system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
+    elsif klass == Donation
+      ["contract_id = ?", @contract_id]
+    else # recyclings and disbursements
+      ["(gizmo_events.system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR gizmo_events.recycling_contract_id = ?)", @contract_id, @contract_id]
+    end
   end
 
   def id_conditions(klass)
@@ -185,7 +199,7 @@ class Conditions
   end
 
   def flagged_conditions(klass)
-    return ["#{klass.table_name}.flagged = t"]
+    return ["#{klass.table_name}.flag = 't'"]
   end
 
   def system_conditions(klass)
@@ -238,6 +252,14 @@ class Conditions
 
   def disbursed_at_conditions(klass)
     date_range(klass, 'disbursed_at', 'disbursed_at')
+  end
+
+  def created_by_conditions(klass)
+    ["created_by = ?", @created_by]
+  end
+
+  def cashier_created_by_conditions(klass)
+    ["cashier_created_by = ?", @cashier_created_by]
   end
 
   def date_range(klass, db_field, condition_name)

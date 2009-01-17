@@ -21,6 +21,10 @@ class Donation < ActiveRecord::Base
   before_save :compute_fee_totals
   before_save :combine_cash_payments
 
+  def self.number_by_conditions(c)
+    Donation.connection.execute("SELECT count(*) FROM donations WHERE #{sanitize_sql_for_conditions(c.conditions(Donation))}").to_a[0]["count"].to_i
+  end
+
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")

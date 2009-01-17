@@ -81,7 +81,13 @@
                                            GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
       <% filters['id'] = text_field('conditions', 'id') %>
       <% filters['needs_attention'] = "" %>
-      <% filters['contract'] = collection_select("defaults", "contract_id", Contract.usable, "id", "description") %>
+      <% filters['contract'] = collection_select("conditions", "contract_id", Contract.usable, "id", "description") %>
+      <% if has_role?("ADMIN") %>
+        <% filters['created_by'] = collection_select("conditions", "created_by", [User.new, User.find(:all)].flatten, "id", "login") %>
+        <% if cashierable %>
+          <% filters['cashier_created_by'] = collection_select("conditions", "cashier_created_by", [User.new, User.find(:all)].flatten, "id", "login") %>
+        <% end %>
+      <% end %>
       <%= multiselect_of_form_elements('conditions', filters ) %>
 
       <div class="form-footer">

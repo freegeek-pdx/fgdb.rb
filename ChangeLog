@@ -1,8 +1,20 @@
-fgdb.rb (1.0.25) UNRELEASED; urgency=low
+fgdb.rb (1.0.26) UNRELEASED; urgency=low
 
   * 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 02:24:11 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jan 2009 00:37:29 -0800
+
+fgdb.rb (1.0.25) released; urgency=low
+
+  * fix searching for transactions by contract
+  * add ability to reset a persons cashier code
+  * fix spec sheets to show hard drive size on a weird system
+  * add a report over time for average amount donated for each donation
+  * add quarterly breakdown to reports over time
+  * minor bug fixes
+  * add a few conditions and stuff
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jan 2009 00:37:23 -0800
 
 fgdb.rb (1.0.24) released; urgency=low
 
