@@ -17,4 +17,9 @@ class Book < ActiveRecord::Base
     return arr[0] if arr.length == 1
     return arr
   end
+
+  def []=(value, field, subfield)
+    self.fields.delete_if{|x| x.field == field && x.subfield == subfield}
+    self.fields << Field.new(:field => field, :subfield => subfield, :data => value)
+  end
 end

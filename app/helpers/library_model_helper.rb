@@ -9,6 +9,9 @@ module LibraryModelHelper
       define_method k do
         self.[](*v)
       end
+      define_method (k.to_s + "=").to_sym do |val|
+        self.[]=(val, *v)
+      end
     }
   end
 end
