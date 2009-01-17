@@ -1,21 +1,14 @@
 module LibraryModelHelper
-  def blah(one, two)
-    self.[](one,two)
-  end
-
-  def author
-    blah(100, 'a')
-  end
-
-  def title
-    blah(245, 'a')
-  end
-
-  def description
-    blah(520, 'a')
-  end
-
-  def isbn
-    blah(20, 'a')
+  def self.included(base)
+    {
+      :author => [100, 'a'],
+      :title => [245, 'a'],
+      :description => [520, 'a'],
+      :isbn => [20, 'a']
+    }.each{|k,v|
+      define_method k do
+        self.[](*v)
+      end
+    }
   end
 end
