@@ -97,6 +97,15 @@ class LibraryController < ApplicationController
     end
   end
 
+  def create
+    b = Book.new(params[:book])
+    if !b.save!
+      render :text => "Failed to save: #{b.errors.to_s}"
+    else
+      redirect_to :action => "show_book", :id => b.id
+    end
+  end
+
   # list of copies that are overdue
   def overdue
     render :text => "not yet implemented"
