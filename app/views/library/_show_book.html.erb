@@ -11,7 +11,7 @@
 <% end %>
 <% @blah = OpenStruct.new %>
   <% if @method == "book" %>
-    <% action = "show_book" %>
+    <% action = "redirect_to_show_book" %>
     <% @blah.book_id = @book.id %>
   <% else %><%# marc %>
     <% action = "create_from_marc" %>

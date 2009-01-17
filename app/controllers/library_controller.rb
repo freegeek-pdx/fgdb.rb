@@ -58,6 +58,10 @@ class LibraryController < ApplicationController
 
   public
 
+  def redirect_to_show_book
+    redirect_to :action => :show_book, :id => params[:open_struct][:book_id]
+  end
+
   # ajaxy magic ... wow!
   def cataloging_update
     # try to find existing book
