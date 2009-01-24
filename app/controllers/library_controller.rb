@@ -34,7 +34,7 @@ class LibraryController < ApplicationController
 
   private
   def findit(isbn)
-    isbn = isbn.to_i
+    isbn = isbn
     @book = Book.find_by_isbn(isbn)
     if @book
       @method = "book"
@@ -75,7 +75,7 @@ class LibraryController < ApplicationController
     end
     findit(isbn)
     if @method == "manual"
-      @isbn = isbn
+      @book = Book.new
     end
     render :update do |page|
       case @method
@@ -85,6 +85,8 @@ class LibraryController < ApplicationController
       end
       if @method != "manual"
         page['initial_form'].hide
+      else
+        page << "$('book_isbn').value = #{isbn};"
       end
       page.hide loading_indicator_id("library_cataloging")
     end
@@ -117,7 +119,7 @@ class LibraryController < ApplicationController
 
   # shows information, list of copies, add new copy button
   def show_book
-    render :text => "not yet implemented"
+    @book = Book.find(params[:id])
   end
 
   # link to labels, shows history, has a checkout button
