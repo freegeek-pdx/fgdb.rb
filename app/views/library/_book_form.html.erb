@@ -9,5 +9,5 @@
   <% end %>
 </table>
 <% if disabled == true %>
-  <%= javascript_tag "var a = document.getElementsByClassName('book_field'); for(var i = 0; i < a.length; i += 1){field = a[i]; field.disable()}" %>
+  <%= javascript_tag "var a = document.getElementsByClassName('book_field'); for(var i = 0; i < a.length; i += 1){field = a[i]; field.readOnly = true}" %>
 <% end %>
