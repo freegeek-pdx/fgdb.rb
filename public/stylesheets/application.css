@@ -575,3 +575,7 @@ padding:0;
 @media print {
 .noprint { display: none; }
 }
+
+.book_field {
+  border: 0px;
+}

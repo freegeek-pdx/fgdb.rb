@@ -85,7 +85,6 @@ class LibraryController < ApplicationController
       if @method != "manual"
         page['initial_form'].hide
       else
-        puts isbn
         page << "$('book_isbn').value = \"#{isbn}\";"
       end
       page.hide loading_indicator_id("library_cataloging")
