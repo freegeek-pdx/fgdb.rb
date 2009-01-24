@@ -7,7 +7,7 @@
     Got information from the Library of Congress database<br />
   <% end %>
   <% form_for @obj, :url => "nowheresville" do |f| %>
-  <%= render :partial => "book_form", :locals => {:f => f} %>
+  <%= render :partial => "book_form", :locals => {:f => f, :disabled => true} %>
 <% end %>
 <% @blah = OpenStruct.new %>
   <% if data_method == "book" %>
@@ -26,5 +26,4 @@
   <%= submit_tag 'Go' %>
 <% end %>
 </div>
-<%= javascript_tag "if($$('.edit_zoom_helper_marc').length > 0) $$('.edit_zoom_helper_marc').first().disable()" %>
-<%= javascript_tag "if($$('.edit_book').length > 0) $$('.edit_book').first().disable()" %>
+

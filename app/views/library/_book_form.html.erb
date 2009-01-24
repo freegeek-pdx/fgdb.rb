@@ -4,7 +4,10 @@
     <tr><td>
         <%= f.label i %>
       </td><td>
-        <%= f.text_field i %>
+        <%= f.text_field i, :class => "book_field" %>
       </td></tr>
   <% end %>
 </table>
+<% if disabled == true %>
+  <%= javascript_tag "var a = document.getElementsByClassName('book_field'); for(var i = 0; i < a.length; i += 1){field = a[i]; field.disable()}" %>
+<% end %>
