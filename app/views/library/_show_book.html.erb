@@ -1,24 +1,24 @@
 <div class="noblock">
-  <% if @method == "book" %>
-    Found existing book with ISBN #<%= @book.isbn %><br />
-    <% @obj = @book %>
+  <% @obj = object %>
+  <% data_method = @obj.class == Book ? "book" : "marc" %>
+  <% if data_method == "book" %>
+    Found existing book with ISBN #<%= @obj.isbn %><br />
   <% else %><%# marc %>
     Got information from the Library of Congress database<br />
-    <% @obj = @marc %>
   <% end %>
   <% form_for @obj, :url => "nowheresville" do |f| %>
   <%= render :partial => "book_form", :locals => {:f => f} %>
 <% end %>
 <% @blah = OpenStruct.new %>
-  <% if @method == "book" %>
+  <% if data_method == "book" %>
     <% action = "redirect_to_show_book" %>
-    <% @blah.book_id = @book.id %>
+    <% @blah.book_id = @obj.id %>
   <% else %><%# marc %>
     <% action = "create_from_marc" %>
-    <% @blah.marc = @marc.to_s %>
+    <% @blah.marc = @obj.to_s %>
   <% end %>
   <% form_for @blah, :url => {:action => action} do |f| %>
-  <% if @method == "book" %>
+  <% if data_method == "book" %>
     <%= f.hidden_field "book_id" %>
   <% else %><%# marc %>
     <%= f.hidden_field "marc" %>

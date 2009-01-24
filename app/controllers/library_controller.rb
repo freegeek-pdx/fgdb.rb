@@ -34,7 +34,6 @@ class LibraryController < ApplicationController
 
   private
   def findit(isbn)
-    isbn = isbn
     @book = Book.find_by_isbn(isbn)
     if @book
       @method = "book"
@@ -80,13 +79,14 @@ class LibraryController < ApplicationController
     render :update do |page|
       case @method
         when "manual" then page.replace_html "main_form", :partial => "main_form"
-        when "book" then page.replace_html "main_form", :partial => "show_book"
-        when "marc" then page.replace_html "main_form", :partial => "show_book"
+        when "book" then page.replace_html "main_form", :partial => "show_book", :object => @book
+        when "marc" then page.replace_html "main_form", :partial => "show_book", :object => @marc
       end
       if @method != "manual"
         page['initial_form'].hide
       else
-        page << "$('book_isbn').value = #{isbn};"
+        puts isbn
+        page << "$('book_isbn').value = \"#{isbn}\";"
       end
       page.hide loading_indicator_id("library_cataloging")
     end
