@@ -2,12 +2,12 @@
   <% @obj = object %>
   <% data_method = @obj.class == Book ? "book" : "marc" %>
   <% if data_method == "book" %>
-    Found existing book with ISBN #<%= @obj.isbn %><br />
+    <% title = "Found existing book with ISBN #" + @obj.isbn %>
   <% else %><%# marc %>
-    Got information from the Library of Congress database<br />
+    <% title = "Got information from the Library of Congress database" %>
   <% end %>
   <% form_for @obj, :url => "nowheresville" do |f| %>
-  <%= render :partial => "book_form", :locals => {:f => f, :disabled => true} %>
+  <%= render :partial => "book_form", :locals => {:f => f, :disabled => true, :title => title} %>
 <% end %>
 <% @blah = OpenStruct.new %>
   <% if data_method == "book" %>
