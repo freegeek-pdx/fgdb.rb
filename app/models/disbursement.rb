@@ -3,7 +3,12 @@ class Disbursement < ActiveRecord::Base
   belongs_to :contact
   belongs_to :disbursement_type
   has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
+
+  def gizmo_context
+    GizmoContext.disbursement
+  end
 
   def validate
     errors.add_on_empty("contact_id")

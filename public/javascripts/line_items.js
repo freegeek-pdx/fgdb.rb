@@ -444,7 +444,7 @@ function get_donation_totals() {
   for (var x = 0; x < arr.length; x++) {
     var type;
     var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
-    type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
+    type = (fees[type_id]['required'] > 0) ? 'required' : 'suggested';
     if($('covered') && arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
       type = "suggested";
     totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));

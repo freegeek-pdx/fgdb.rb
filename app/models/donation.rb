@@ -5,6 +5,11 @@ class Donation < ActiveRecord::Base
   belongs_to :contact
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_types, :through => :gizmo_events
+
+  def gizmo_context
+    GizmoContext.donation
+  end
 
   define_amount_methods_on("reported_required_fee")
   define_amount_methods_on("amount_invoiced")
@@ -281,7 +286,8 @@ class Donation < ActiveRecord::Base
         gizmo_events << GizmoEvent.new({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,
                                          :gizmo_type => GizmoType.fee_discount,
-                                         :gizmo_context => GizmoContext.donation})
+                                         :gizmo_context => GizmoContext.donation,
+                                         :covered => false})
     end
   end
 end

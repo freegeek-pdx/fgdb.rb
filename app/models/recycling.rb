@@ -1,7 +1,12 @@
 class Recycling < ActiveRecord::Base
   include GizmoTransaction
   has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
+
+  def gizmo_context
+    GizmoContext.recycling
+  end
 
   def validate
     errors.add_on_empty("gizmo_events")

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   layout "application"
   helper :cashiers
+  helper :conditions
 
 =begin
     protect_from_forgery

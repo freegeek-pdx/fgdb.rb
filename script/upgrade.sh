@@ -4,6 +4,10 @@ set -C
 set -e
 set -u
 
+cd ~/fgdb.rb
+git pull
+./script/do_i_have_everything_installed_right
+
 CUR=$(cat /var/www/fgdb.rb/.git/HEAD  | sed 's,ref: refs/heads/release_1.0.,,')
 NEW=$(( $CUR + 1 ))
 

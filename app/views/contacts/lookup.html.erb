@@ -8,29 +8,7 @@
 <% form_tag( { :controller => '/contacts', :action => 'lookup' }, {:method => "GET"} ) do %>
 
   <div class="form-element" style="width: 100%;">
-    <% filters = {} %>
-    <% filters['created_at'] = date_or_date_range_picker('defaults', 'created_at') %>
-    <% filters['worked_at'] = date_or_date_range_picker('defaults', 'worked_at') %>
-    <% filters['bought_at'] = date_or_date_range_picker('defaults', 'bought_at') %>
-    <% filters['donated_at'] = date_or_date_range_picker('defaults', 'donated_at') %>
-    <% filters['id'] = text_field('defaults', 'id') %>
-    <% filters['city'] = text_field('defaults', 'city') %>
-    <% filters['postal_code'] = text_field('defaults', 'postal_code') %>
-    <% filters['received_at'] = date_or_date_range_picker('defaults', 'received_at') %>
-    <% filters['phone_number'] = text_field('defaults', 'phone_number') %>
-    <% filters['email'] = text_field('defaults', 'email') %>
-    <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
-    <% filters['volunteer_hours'] = select_visibility(
-                                                      'defaults',
-                                                      'volunteer_hours_type',
-                                                      [['exact', text_field('defaults', 'volunteer_hours_exact')],
-                                                       ['between', "%s to %s" % [text_field('defaults', 'volunteer_hours_low'),
-                                                                                 text_field('defaults', 'volunteer_hours_high')]],
-                                                       ['>=', text_field('defaults', 'volunteer_hours_ge')],
-                                                       ['<=', text_field('defaults', 'volunteer_hours_le')],
-                                                      ])
-       %>
-    <%= multiselect_of_form_elements( 'defaults', filters ) %>
+    <%= conditions_html("defaults", ['created_at', 'worked_at', 'bought_at', 'donated_at', 'id', 'city', 'postal_code', 'received_at', 'phone_number', 'email', 'contact_type', 'volunteer_hours']) %>
     <div class="form-footer">
       <input type="submit" value="Find Contacts" />
     </div>

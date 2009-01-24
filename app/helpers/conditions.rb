@@ -328,6 +328,10 @@ class Conditions
       string += " " if string.length > 0
       string += "for contract \"#{Contract.find_by_id(@contract_id).description}\""
     end
+    if @covered_enabled == "true"
+      string += " " if string.length > 0
+      string += "for #{covered == 0 ? "un" : ""}covered items"
+    end
     string
   end
 

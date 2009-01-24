@@ -1,5 +1,22 @@
+# TODO: reimplement Date class...we are converting between like 20
+# different formats, and it's a PITA. tho, now that I have it all
+# done, this todo will probably sit here for a few years...
+
+# make it so that you have methods like .add_month and such
+# cause there's a LOT of mess to do that kind of stuff
+# it could also help clean up getting the second date range and the
+# number between them, which are messy right now.
+
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
+
+  def get_temp_file
+    file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
+    respond_to do |format|
+      format.jpeg { render :text => File.read(file) }
+    end
+    File.unlink(file)
+  end
 
   def view
     generate_report_data
@@ -23,7 +40,10 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       (end_date - @start_date).to_i / 7
     when "Quarterly"
-      # EWWWW. this whole number_between_them needs to be eliminated
+      # EWWWW. this whole number_between_them needs to be
+      # eliminated. just do a "do {} while {current_date <=
+      # backed_up(end_date)}" or somethin like that instead of
+      # "number_between_them(blah).times{}".
       num = 0
       curdate = @start_date
       until curdate == end_date
@@ -31,22 +51,44 @@ class GraphicReportsController < ApplicationController
         num += 1
       end
       return num
+    when "Daily"
+      (end_date - @start_date).to_i
+    when "Yearly"
+      end_date.year - @start_date.year
+    when "Monthly"
+      ((end_date.year * 12) + end_date.month) - ((@start_date.year * 12) + @start_date.month)
+    else
+      raise NoMethodError
     end
   end
 
   # returns true if this is a "good" date (ie, the beginning of the
   # week), or if it needs to be backed up further
+  # NOTE: should be called is_first_thing? to make sense in this
+  # context
+  # this is pretty stupid, as it will require a lot of iterations for
+  # nothing. but it works.
   def is_last_thing?(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
-      date.strftime("%a") == "Sun"
+      date.strftime("%a") == "Mon"
     when "Quarterly"
       a = date.to_s.split("-")
       return [1,4,7,10].include?(a[1].to_i) && a[2] == "01"
+    when "Daily"
+      true
+    when "Yearly"
+      date.day == 1 && date.month == 1
+    when "Monthly"
+      date.day == 1
+    else
+      raise NoMethodError
     end
   end
 
   # get the date object for number "breakdowns" after the start date
+  # return nil if you want that breakdown to be ignored (for example,
+  # ignoring weekends on daily breakdown)
   def get_this_one(number)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -57,10 +99,33 @@ class GraphicReportsController < ApplicationController
         d = increase_arr(d)
       }
       Date.parse(d.map{|x| x.to_s}.join("-"))
+    when "Daily w/weekends" # NOT ACTUALLY used.
+      @start_date + number
+    when "Daily"
+      date = @start_date + number
+      if [0,1].include?(date.wday) # MEEP. the hard coded sunday and monday are *HORRIBLE*
+        return nil
+      else
+        return date
+      end
+    when "Yearly"
+      Date.parse((@start_date.year + number).to_s + "-01-01")
+    when "Monthly"
+      month = @start_date.month
+      year = @start_date.year
+      month += number
+      while month > 12
+        year += 1
+        month -= 12
+      end
+      Date.parse("#{year}-#{month}-01")
+    else
+      raise NoMethodError
     end
   end
 
-  # convert a date object into the string that should be put on the x axis
+  # convert a date object into the string that should be put on the x
+  # axis, and on the left side of the table
   def x_axis_for(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -73,24 +138,41 @@ class GraphicReportsController < ApplicationController
         string += k.to_s.sub(/t/, "") if v.include?(temp)
       }
       string
+    when "Daily"
+      date.to_s
+    when "Yearly"
+      date.year.to_s
+    when "Monthly"
+      date.strftime("%b %y")
+    else
+      raise NoMethodError
     end
   end
 
-  # takes in what x_axis_for outputted and reformats it for the graph
-  # (make it shorter and such)
-  def graph_x_axis_for(x_axis)
+  # takes in what x_axis_for outputted, and the date object of the
+  # start date, and reformats it for the graph (as a number that will
+  # be used to place it somewhere on the x axis)
+  def graph_x_axis_for(x_axis, date)
     case params[:conditions][:breakdown_type]
     when "Quarterly"
-      if @x_axis.length > 6
-        # make it shorter (might not have to do this if a better graphing thingy is used)
-        if x_axis.match(/Q1/)
-          return x_axis.sub(/-Q1/, "")
-        else
-          return ""
-        end
+      x_axis.match(/-Q(.)/)
+      x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
+    when "Weekly"
+      date = Date.parse(x_axis.sub(/Week of /, ""))
+      other_thing = (date.cweek / 52.0)
+      if other_thing >= 1.0
+        other_thing = 0.999
       end
+      date.cwyear.to_s + "." + other_thing.to_s.gsub(/0\./, "")
+    when "Daily"
+      date.year + (date.yday / 365.0)
+    when "Yearly"
+      x_axis
+    when "Monthly"
+      (date.year * 12) + date.month
+    else
+      raise NoMethodError
     end
-    return x_axis
   end
 
   # get the last day in the range
@@ -100,12 +182,27 @@ class GraphicReportsController < ApplicationController
       first + 6
     when "Quarterly"
       Date.parse(increase_arr(first.to_s.split("-").map{|x| x.to_i}).join("-")) - 1
+    when "Daily"
+      first
+    when "Yearly"
+      Date.parse(first.year.to_s + "-12-31")
+    when "Monthly"
+      month = first.month
+      year = first.year
+      month += 1
+      if year > 12
+        year += 1
+        month -= 1
+      end
+      Date.parse("#{year}-#{month}-01") - 1
+    else
+      raise NoMethodError
     end
   end
 
   # list of breakdown types
   def breakdown_types
-    ["Quarterly", "Weekly"]
+    ["Yearly", "Quarterly", "Monthly", "Weekly", "Daily"]
   end
 
   #####################
@@ -153,15 +250,16 @@ class GraphicReportsController < ApplicationController
     (number_between_them(end_date) + 1).times{|x|
       list << get_this_one(x)
     }
-    @title = get_title
+    list.delete_if{|x| x.nil?}
+    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")})"
     @data = {}
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
     }
     @graph_x_axis = []
-    @x_axis.each{|x|
-      @graph_x_axis << graph_x_axis_for(x)
+    @x_axis.each_with_index{|x,i|
+      @graph_x_axis << graph_x_axis_for(x, list[i])
     }
     list.each{|x|
       get_thing_for_timerange(x.to_s, second_timerange(x).to_s).each{|k,v|
@@ -171,11 +269,6 @@ class GraphicReportsController < ApplicationController
         @data[k] << v
       }
     }
-    if false # || true
-      require 'pp'
-      pp @data
-      render :text => "BLAH"
-    end
   end
 
   def back_up_to_last_thing(date)
@@ -187,7 +280,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def created_at_conditions_for_report(start_date, end_date)
-    {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date}
+    params[:conditions].merge({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date, "created_at_enabled" => true})
   end
 
   def call_income_report(*args)
@@ -202,9 +295,10 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_average_frontdesk(*args)
-    thing = call_income_report(*args)[:donations].select{|k,v| !k.match(/total/)}.map{|x| x[1]}.map{|x| {:required => x["fees"][:total], :suggested => x["suggested"][:total]}}
-    suggested = thing.map{|x| x[:suggested]}.inject(0.0){|x,y| x+y} / 100.0
-    fees = thing.map{|x| x[:required]}.inject(0.0){|x,y| x+y} / 100.0
+    thing = call_income_report(*args)
+    thing = thing[:donations]["total real"] # WHY IS THERE A SPACE!?!?!
+    suggested = thing["suggested"][:total] / 100.0
+    fees = thing["fees"][:total] / 100.0
     number = find_all_donations(*args)
     total = suggested + fees
     suggested = suggested / number

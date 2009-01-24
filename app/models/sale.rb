@@ -6,6 +6,11 @@ class Sale < ActiveRecord::Base
   has_many :payments, :dependent => :destroy
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_types, :through => :gizmo_events
+
+  def gizmo_context
+    GizmoContext.sale
+  end
 
   before_save :add_contact_types
   before_save :unzero_contact_id

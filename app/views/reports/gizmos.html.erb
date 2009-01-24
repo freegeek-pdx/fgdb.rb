@@ -1,5 +1,5 @@
 <div class="form-element">
-  <% filters = {"occurred_at" => "<label>What range of gizmos?</label>" + date_or_date_range_picker("defaults", "occurred_at"), "contract" => collection_select("defaults", "contract_id", Contract.usable, "id", "description")} %>
-  <% filters["covered"] = check_box('defaults', 'covered') if coveredness_enabled %>
-  <%= multiselect_of_form_elements('defaults', filters) %>
+  <% filters = ["occurred_at", "contract" ] %>
+  <% filters << "covered" if coveredness_enabled %>
+  <%= conditions_html('defaults', filters) %>
 </div>

@@ -1,5 +1,13 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def gt_for_txn(thing)
+    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + (thing.gizmo_types + thing.gizmo_context.gizmo_types).uniq.sort_by(&:description)
+  end
+
+  def gizmo_events_options_for_transaction
+    options_from_collection_for_select(gt_for_txn(@transaction), "id", "description")
+  end
+
   def coveredness_enabled
     Default["coveredness_enabled"] == "1"
   end

@@ -13,27 +13,15 @@
 
 <div id="main-section">
   <% form_tag :action => 'search' do -%>
-  <% filters = {} -%>
-  <% filters['flagged'] = "" -%>
+  <% filters = [] -%>
+  <% filters << 'flagged' -%>
   <% if @current_user and @current_user.has_role?('CONTACT_MANAGER') %>
-    <% filters['contact'] =
-         contact_field('@conditions', 'contact_id',
-                       :locals => {:options =>
-                         {
-                           :object_name => 'conditions',
-                           :field_name => 'contact_id',
-                           :element_prefix => 'filter_contact',
-                           :display_edit => false,
-                           :display_create => false,
-                           :show_label => false,
-                         },
-                         :contact => @conditions.contact
-                       } ) %>
+    <% filters << 'contact' %>
   <% end %>
-  <% filters['system'] = text_field('conditions', 'system_id') -%>
-  <% filters['id'] = text_field('conditions', 'id') %>
-  <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
-  <%= multiselect_of_form_elements('conditions', filters ) %>
+  <% filters << 'system' -%>
+  <% filters << 'id' %>
+  <% filters << 'created_at' %>
+  <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>
 <br />
