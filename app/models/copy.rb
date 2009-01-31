@@ -6,4 +6,12 @@ class Copy < ActiveRecord::Base
   def [](field, subfield)
     self.book.[](field, subfield)
   end
+
+  def barcode
+    id
+  end
+
+  def status
+    "blah"
+  end
 end

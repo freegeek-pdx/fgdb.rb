@@ -1,4 +1,29 @@
+<p>
 <% form_for @book, :url => "nowheresville" do |f| %>
 <%= render :partial => "book_form", :locals => {:f => f, :disabled => true, :title => "Information"} %>
 <% end %>
+</p>
 
+<p>
+<table border="1" style="border-collapse: collapse;">
+<tr><th colspan="4">Copies</th></tr>
+<tr><th>Copy #</th><th>Barcode</th><th>Status</th><th></th></tr>
+<% @book.copies.each do |copy| %>
+  <tr>
+    <td>
+      <%= copy.copy_id %>
+    </td>
+    <td>
+      <%= copy.barcode %>
+    </td>
+    <td>
+      <%= copy.status %>
+    </td>
+    <td>
+      <%= link_to "History", :action => "show_copy", :copy_id => copy.id %>
+      <%= link_to "Label" %>
+    </td>
+  </tr>
+<% end %>
+<tr><td colspan="4"><%= link_to "Add a copy", :action => "add_copy", :book_id => @book.id %></td></tr>
+</p>

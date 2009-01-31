@@ -130,4 +130,10 @@ class LibraryController < ApplicationController
   def label
     render :text => "not yet implemented"
   end
+
+  # adds a copy for that book
+  def add_copy
+    Book.find_by_id(params[:book_id]).copies << Copy.new(:copy_id => (Book.find_by_id(params[:book_id]).copies.map{|x| x.copy_id} + [0]).sort.last + 1)
+    redirect_to :action => "show_book", :id => params[:book_id]
+  end
 end
