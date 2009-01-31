@@ -1,10 +1,27 @@
-fgdb.rb (1.0.27) UNRELEASED; urgency=low
+fgdb.rb (1.0.29) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Jan 2009 00:27:22 -0800
+
+fgdb.rb (1.0.28) released; urgency=low
+
+  * upgrade to the newest stable version of will_paginate
+    - port our changes over
+    - this fixes the stack level too deep errors, afaict...probably
+      just working around them, tho.
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Jan 2009 00:27:16 -0800
+
+fgdb.rb (1.0.27) released; urgency=low
 
   * clean up conditions a lot, so that all the html form side stuff
     is shared
-  * add conditions support to graphic reports
+  * add conditions support to graphic reports [DISABLED]
+  * order the contact types alphabetically
+  * fix another xss bug
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Jan 2009 02:15:49 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 30 Jan 2009 23:05:00 -0800
 
 fgdb.rb (1.0.26) released; urgency=low
 

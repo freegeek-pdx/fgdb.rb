@@ -15,7 +15,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.display_name %>
+          <%= h c.display_name %>
         </td>
       <% end %>
     </tr>
@@ -28,7 +28,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + x.contact_method_type.description + ":</b> " + x.value} %>
+          <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + h(x.contact_method_type.description) + ":</b> " + h(x.value)} %>
         </td>
       <% end %>
     </tr>
@@ -39,7 +39,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.notes %>
+          <%= h c.notes %>
         </td>
       <% end %>
     </tr>
@@ -50,7 +50,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.contact_types.map{|x| x.description}.sort.join(", ") %>
+          <%= h c.contact_types.map{|x| x.description}.sort.join(", ") %>
         </td>
       <% end %>
     </tr>
@@ -98,7 +98,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.address.to_s + '<br />' + c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s %>
+          <%= h(c.address.to_s) + '<br />' + h(c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s) %>
         </td>
       <% end %>
     </tr>
@@ -109,7 +109,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.first_name %>
+          <%= h c.first_name %>
         </td>
       <% end %>
     </tr>
@@ -120,7 +120,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.middle_name %>
+          <%= h c.middle_name %>
         </td>
       <% end %>
     </tr>
@@ -131,7 +131,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.surname %>
+          <%= h c.surname %>
         </td>
       <% end %>
     </tr>
@@ -142,7 +142,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.organization %>
+          <%= h c.organization %>
         </td>
       <% end %>
     </tr>
@@ -167,7 +167,7 @@
         </th>
         <% for c in @contacts %>
           <td align="right">
-            <%= c.user.login if c.user %>
+            <%= h c.user.login if c.user %>
           </td>
         <% end %>
       </tr>

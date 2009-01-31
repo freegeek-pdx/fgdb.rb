@@ -46,7 +46,7 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def _lshw_output=(val)
-    write_attribute(:original_output, val)
+#    write_attribute(:original_output, val)
     file = Tempfile.new("fgss-xml")
     file.write(original_output)
     file.flush
