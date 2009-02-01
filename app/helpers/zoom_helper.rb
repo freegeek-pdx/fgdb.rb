@@ -14,7 +14,13 @@ module ZoomHelper
       @data.each{|x,h|
         h.each{|y,a|
           [a].flatten.each{|z|
-            fields << Field.new(:field => x, :subfield => y, :data => z)
+            if z.is_a?(Array)
+              z.each{|a|
+                fields << Field.new(:field => x, :subfield => y, :data => a)
+              }
+            else
+              fields << Field.new(:field => x, :subfield => y, :data => z)
+            end
           }
         }
       }
