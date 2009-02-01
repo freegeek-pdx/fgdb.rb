@@ -4,6 +4,7 @@ class Book < ActiveRecord::Base
   include LibraryModelHelper
   validates_uniqueness_of :isbn
   before_validation :suck_stuff_down
+  before_create :add_copy
 
   def suck_stuff_down
     for i in [:author, :isbn, :title, :description]
@@ -21,5 +22,11 @@ class Book < ActiveRecord::Base
   def []=(value, field, subfield)
     self.fields.delete_if{|x| x.field == field && x.subfield == subfield}
     self.fields << Field.new(:field => field, :subfield => subfield, :data => value)
+  end
+
+  def add_copy
+    c = Copy.new(:copy_id => (self.copies.map{|x| x.copy_id} + [0]).sort.last + 1)
+    self.copies << c
+    return c
   end
 end

@@ -6,6 +6,9 @@ class LibraryController < ApplicationController
     requires_role(:LIBRARIAN)
   end
 
+  def lookup
+  end
+
   # check in books
   def checkin
     render :text => "not yet implemented"
@@ -98,6 +101,7 @@ class LibraryController < ApplicationController
     if !b.save!
       render :text => "Failed to save: #{b.errors.to_s}"
     else
+      add_to_session_labels(b.copies.first.id)
       redirect_to :action => "show_book", :id => b.id
     end
   end
@@ -107,6 +111,7 @@ class LibraryController < ApplicationController
     if !b.save!
       render :text => "Failed to save: #{b.errors.to_s}"
     else
+      add_to_session_labels(b.copies.first.id)
       redirect_to :action => "show_book", :id => b.id
     end
   end
@@ -123,17 +128,24 @@ class LibraryController < ApplicationController
 
   # link to labels, shows history, has a checkout button
   def show_copy
-    render :text => "not yet implemented"
+    id = (params[:copy] ? params[:copy][:id] : params[:copy_id])
+    render :text => id
   end
 
   # takes a list of copy ids, linked from search maybe? dunno how to get there yet..
-  def label
-    render :text => "not yet implemented"
+  def labels
+    render :text => "printing teh labels: #{list_labels_in_session.join(", ")}"
+    remove_from_session_labels(list_labels_in_session)
+  end
+
+  def add_to_labels
+    add_to_session_labels(params[:id])
+    redirect_to :action => "show_book", :id => Copy.find_by_id(params[:id]).book_id
   end
 
   # adds a copy for that book
   def add_copy
-    Book.find_by_id(params[:book_id]).copies << Copy.new(:copy_id => (Book.find_by_id(params[:book_id]).copies.map{|x| x.copy_id} + [0]).sort.last + 1)
+    add_to_session_labels(Book.find_by_id(params[:book_id]).add_copy.id)
     redirect_to :action => "show_book", :id => params[:book_id]
   end
 end

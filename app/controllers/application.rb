@@ -25,6 +25,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def add_to_session_labels(id)
+    session[:labels] ||= []
+    session[:labels] << id if !session[:labels].include?(id)
+  end
+
+  def remove_from_session_labels(things)
+    session[:labels] ||= []
+    session[:labels].delete_if{|x| things.include?(x)}
+  end
+
+  def list_labels_in_session
+    session[:labels] ||= []
+  end
+
   def _set_cashier(hash)
     return hash["cashier_code"] if hash.keys.include?("cashier_code")
     for i in hash.values.select{|x| x.class == Hash}

@@ -21,7 +21,7 @@
     </td>
     <td>
       <%= link_to "History", :action => "show_copy", :copy_id => copy.id %>
-      <%= link_to "Label" %>
+      <%= link_to "Label", :action => "add_to_labels", :id => copy.id %>
     </td>
   </tr>
 <% end %>
