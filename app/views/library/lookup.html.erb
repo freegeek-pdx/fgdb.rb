@@ -1,0 +1,7 @@
+<div class="noblock">
+<% form_for :copy, :url => {:action => "show_copy"} do |f| %>
+<%= f.label "id", "Barcode" %>
+<%= f.text_field "id" %>
+<%= f.submit "Look up" %>
+<% end %>
+</end>
