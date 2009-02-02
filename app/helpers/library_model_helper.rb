@@ -1,6 +1,6 @@
 module LibraryModelHelper
   def self.included(base)
-    marc_aliases.each{|k,v|
+    MarcHelper.marc_aliases.each{|k,v|
       define_method k do
         self.[](*v)
       end
@@ -9,9 +9,11 @@ module LibraryModelHelper
       end
     }
   end
+end
 
+module MarcHelper
   # may end up being used in conditions and such
-  def marc_aliases
+  def self.marc_aliases
     {
       :author => [100, 'a'],
       :title => [245, 'a'],
