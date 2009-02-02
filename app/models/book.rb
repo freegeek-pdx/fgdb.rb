@@ -6,17 +6,14 @@ class Book < ActiveRecord::Base
   before_validation :suck_stuff_down
   before_create :add_copy
 
-  # TODO: this breaks stuff. the isbn that gets sucked down is a sucky
-  # prepresentation of array (because there's more than one), which
-  # don't work right with find_by_isbn. I should just rewrite
-  # find_by_isbn to use fields. how will this affect conditions?  I
-  # think I'll just remove the whole sucking down stuff, tho that
-  # scares me wrt search. I suppose that it will still work with SQL,
-  # just more complex. NOTE: it is stored correctly in the fields table.
-  def suck_stuff_down
-    for i in [:author, :isbn, :title, :description]
-      eval("write_attribute(:#{i.to_s}, #{i.to_s})")
-    end
+  def self.find_by_isbn(thing)
+    a, b = MarcHelper.marc_aliases[:isbn]
+    res = [thing].flatten.collect{|x|
+      Field.find(:all, :conditions => {:field => a, :subfield => b, :data => x.to_s})
+    }.delete_if{|x| x.nil?}.flatten.map{|x| x.book}.uniq
+    return nil if res.length == 0
+    return res[0] if res.length == 1
+    return res
   end
 
   def [](field, subfield)
