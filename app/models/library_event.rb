@@ -1,6 +1,11 @@
 class LibraryEvent < ActiveRecord::Base
   belongs_to :copy
   belongs_to :contact
+  before_save :set_date
+
+  def set_date
+    self.date = Time.now
+  end
 
   def self.kinds
     {
