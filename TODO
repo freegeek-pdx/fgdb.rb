@@ -1,9 +1,9 @@
-* initial schema/models (ryan52)
-* import (Library of Congress) (ryan52)
-* moving from openbiblios schema
-* search
-* checkout (jes)
-* checkin (jes)
-* print labels (jes)
-* history (later)
-* maybe other stuff (now)
+* needs work
+- moving from openbiblios schema
+- search
+- print labels
+
+* almost done/trivial
+- checkout
+- checkin
+- history
