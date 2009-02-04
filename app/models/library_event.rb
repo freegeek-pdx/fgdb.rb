@@ -3,6 +3,8 @@ class LibraryEvent < ActiveRecord::Base
   belongs_to :contact
   before_save :set_date
 
+  acts_as_userstamp
+
   def set_date
     self.date = Time.now
   end
@@ -16,5 +18,17 @@ class LibraryEvent < ActiveRecord::Base
       :lost => 5,
       :found => 6,
     }
+  end
+
+  def kind_to_s
+    LibraryEvent.kinds.select{|k,v| v == self.kind}[0][0].to_s.titleize
+  end
+
+  def contact_display
+    if contact
+      "#" + contact.id.to_s
+    else
+      ""
+    end
   end
 end

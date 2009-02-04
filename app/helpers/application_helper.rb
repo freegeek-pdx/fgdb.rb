@@ -85,7 +85,10 @@ module ApplicationHelper
   def contact_field(obj_name, field_name, options = {})
     options[:locals] ||= {}
     options[:locals][:options] ||= {}
-    obj = instance_variable_get(obj_name)
+    begin
+      obj = instance_variable_get(obj_name)
+    rescue
+    end
     if(obj && obj.respond_to?(field_name))
       options[:locals][:contact] = obj.send(field_name)
     end

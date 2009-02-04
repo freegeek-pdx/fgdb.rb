@@ -11,12 +11,20 @@ class LibraryController < ApplicationController
 
   # check in books
   def checkin
-    render :text => "not yet implemented"
+    Copy.find_by_id(params[:copy_id]).check_in
+    redirect_to :action => "show_copy", :id => params[:copy_id]
+  end
+
+  # renew books
+  def renew
+    Copy.find_by_id(params[:copy_id]).renew
+    redirect_to :action => "show_copy", :id => params[:copy_id]
   end
 
   # check out books
   def checkout
-    render :text => "not yet implemented"
+    Copy.find_by_id(params[:checkout][:copy_id]).check_out(Contact.find_by_id(params[:contact][:id]))
+    redirect_to :action => "show_copy", :id => params[:checkout][:copy_id]
   end
 
   # search field to show_book and show_copy
@@ -128,7 +136,14 @@ class LibraryController < ApplicationController
 
   # link to labels, shows history, has a checkout button
   def show_copy
-    id = (params[:copy] ? params[:copy][:id] : params[:copy_id])
+    # weee!!! :p
+    if params[:copy] && params[:copy][:id]
+      id = params[:copy][:id]
+    elsif params[:copy_id]
+      id = params[:copy_id]
+    else
+      id = params[:id]
+    end
     @c = Copy.find(id)
   end
 

@@ -4,6 +4,10 @@ class Copy < ActiveRecord::Base
   include LibraryModelHelper
   before_create :make_created_event
 
+  def book
+    Book.find_by_id(self.book_id)
+  end
+
   def make_created_event
     self.library_events = [LibraryEvent.new({:kind => LibraryEvent.kinds[:created], :date => Time.now})]
   end
@@ -58,7 +62,7 @@ class Copy < ActiveRecord::Base
   end
 
   def contact_display
-    "#" + last_event.contact.id.to_s
+    last_event.contact_display
   end
 
   def last_event
@@ -79,7 +83,7 @@ class Copy < ActiveRecord::Base
   end
 
   def renew(due_back = nil)
-    date = due_back || (last_event.date + number_of_days)
+    date = due_back || (last_event.due_back.to_date + number_of_days)
     library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:renewed], :contact => last_event.contact, :due_back => date)
   end
 
@@ -90,6 +94,14 @@ class Copy < ActiveRecord::Base
 
   def kinds
     LibraryEvent.kinds
+  end
+
+  def checked_out?
+    last_event.kind == kinds[:checked_out] || last_event.kind == kinds[:renewed]
+  end
+
+  def checked_in?
+    !checked_out? && !lost?
   end
 
   def lost?
