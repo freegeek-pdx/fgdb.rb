@@ -1,0 +1,9 @@
+<b><%= sprintf("%s (Copy #%s)", @c.book.title, @c.copy_id) %></b>
+<div class="noblock">
+<% form_for :checkout, :url => {:action => "checkout"} do |f| %>
+<%= f.hidden_field :copy_id, :value => @c.id %>
+<%= f.label :contact_id, "Check out to:" %>
+<%= contact_field :checkout, :contact_id, :locals => {:options => {:show_label => false}} %>
+<%= f.submit "Checkout" %>
+<% end %>
+</div>

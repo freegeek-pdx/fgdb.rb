@@ -129,7 +129,7 @@ class LibraryController < ApplicationController
   # link to labels, shows history, has a checkout button
   def show_copy
     id = (params[:copy] ? params[:copy][:id] : params[:copy_id])
-    render :text => id
+    @c = Copy.find(id)
   end
 
   # takes a list of copy ids, linked from search maybe? dunno how to get there yet..
