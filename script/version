@@ -4,7 +4,8 @@ cd `dirname $0`/..
 VERSION=$(head -1 ChangeLog | awk '{print $2}' | sed 's/[()]//g')
 DIST=$(head -1 ChangeLog | awk '{print $3}' | sed 's/[;]//g')
 if [ "$DIST" = "UNRELEASED" ]; then
-    echo "$VERSION (UNRELEASED)"
+    BRANCH=$(awk -F/ '{print $3}' .git/HEAD)
+    echo "$VERSION (dev, branch: $BRANCH)"
 else
     echo "$VERSION"
 fi
