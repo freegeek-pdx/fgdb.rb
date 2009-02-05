@@ -31,4 +31,12 @@ class LibraryEvent < ActiveRecord::Base
       ""
     end
   end
+
+  def librarian
+    Contact.find(created_by)
+  end
+
+  def librarian_display
+    "#" + librarian.id.to_s
+  end
 end

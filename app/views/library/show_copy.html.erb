@@ -31,7 +31,7 @@
       <td><%= event.contact_display %></td>
       <td><%= event.date.strftime("%D") %></td>
       <td><%= event.due_back ? event.due_back.strftime("%D") : "" %></td>
-      <td><%= Contact.find(event.created_by).display_name %></td>
+      <td><%= event.librarian_display %></td>
     </tr>
   <% end %>
 </table>
