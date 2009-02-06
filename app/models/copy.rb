@@ -50,8 +50,12 @@ class Copy < ActiveRecord::Base
     last_event.due_back
   end
 
+  def _days_till_due
+    (last_event.due_back.to_date - Date.today).to_i
+  end
+
   def days_till_due
-    my_days = (last_event.due_back.to_date - Date.today).to_i
+    my_days = _days_till_due
     if my_days > 1
       return "due back in " + my_days.to_s + " days"
     elsif my_days == 1
@@ -61,6 +65,37 @@ class Copy < ActiveRecord::Base
     else
       return "overdue"
     end
+  end
+
+  def _times_renewed
+    y = _last_checkout_event
+    library_events.select{|x| x.id > y.id}.length
+  end
+
+  def times_renewed
+    x = _times_renewed
+    if x > 0
+      return "#{x} times"
+    else
+      return "never"
+    end
+  end
+
+  def checked_out_at
+    _last_checkout_event.date
+  end
+
+  def overdue_for
+    x = _days_till_due * -1
+    if x == 1
+      return x.to_s + " day"
+    else
+      return x.to_s + " days"
+    end
+  end
+
+  def _last_checkout_event
+    library_events.sort_by{|x| x.date}.reverse.select{|x| x.kind == kinds[:checked_out]}.first
   end
 
   def contact_display

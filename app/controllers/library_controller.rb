@@ -126,7 +126,7 @@ class LibraryController < ApplicationController
 
   # list of copies that are overdue
   def overdue
-    render :text => "not yet implemented"
+    @copies = Copy.overdue.paginate :page => params[:page]
   end
 
   # shows information, list of copies, add new copy button

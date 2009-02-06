@@ -1,0 +1,25 @@
+<h1>Overdue list</h1>>
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th>Barcode</th>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Checked out to</th>
+    <th>Overdue for</th>
+    <th>Checked out since</th>
+    <th>Renewed</th>
+  </tr>
+<% @copies.each do |c| %>
+  <tr>
+    <td><%= link_to c.barcode, :action => "show_copy", :id => c.id %></td>
+    <td><%= c.book.title %></td>
+    <td><%= c.book.author %></td>
+    <td><%= c.last_event.contact_display %></td>
+    <td><%= c.overdue_for %></td>
+    <td><%= c.checked_out_at %></td>
+    <td><%= c.times_renewed %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @copies %>
