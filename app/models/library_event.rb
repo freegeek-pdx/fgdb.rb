@@ -1,7 +1,7 @@
 class LibraryEvent < ActiveRecord::Base
   belongs_to :copy
   belongs_to :contact
-  before_save :set_date
+  before_create :set_date
 
   acts_as_userstamp
 
