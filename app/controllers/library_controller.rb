@@ -1,6 +1,8 @@
 class LibraryController < ApplicationController
   layout :with_sidebar
   before_filter :authorized_only
+  helper :library_labels
+  include LibraryLabelsHelper
 
   def authorized_only
     requires_role(:LIBRARIAN)
@@ -149,7 +151,8 @@ class LibraryController < ApplicationController
 
   # takes a list of copy ids, linked from search maybe? dunno how to get there yet..
   def labels
-    render :text => "printing teh labels: #{list_labels_in_session.join(", ")}"
+    cols, rows = get_dimensions
+    render :text => "printing teh labels: #{list_labels_in_session.join(", ")} on labels with cols: #{cols} and rows: #{rows}"
     remove_from_session_labels(list_labels_in_session)
   end
 
