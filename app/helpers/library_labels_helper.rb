@@ -1,7 +1,7 @@
 module LibraryLabelsHelper
   PATH_TO_LABELS_STUFF=File.join(RAILS_ROOT, "vendor", "library_labels")
   # TODO: get LABEL out of the db
-  LABEL="5662" # 5962 is what ours actually is..hope this is close enough.
+  LABEL=Default["label_type"]
 
   def run_thing(thing)
     ret = `#{thing} 2>&1`.chomp
