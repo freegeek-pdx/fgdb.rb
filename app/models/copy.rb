@@ -4,6 +4,10 @@ class Copy < ActiveRecord::Base
   include LibraryModelHelper
   before_create :make_created_event
 
+  def self.overdue
+    LibraryEvent.overdue.map{|x| x.copy}
+  end
+
   def book
     Book.find_by_id(self.book_id)
   end
