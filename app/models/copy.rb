@@ -6,6 +6,7 @@ class Copy < ActiveRecord::Base
 
   named_scope :overdue, :conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND due_back < ?)", Date.today]
 
+  # WTF?!?! my belongs_to is failing...
   def book
     Book.find_by_id(self.book_id)
   end
