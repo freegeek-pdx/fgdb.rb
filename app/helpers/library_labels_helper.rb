@@ -1,6 +1,5 @@
 module LibraryLabelsHelper
   PATH_TO_LABELS_STUFF=File.join(RAILS_ROOT, "vendor", "library_labels")
-  # TODO: get LABEL out of the db
   LABEL=Default["label_type"]
 
   def run_thing(thing)
