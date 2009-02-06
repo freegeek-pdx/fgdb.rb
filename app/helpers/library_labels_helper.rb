@@ -26,7 +26,7 @@ module LibraryLabelsHelper
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp
     basename = File.basename(tempfile).sub(".", "$")
     d = Tempfile.new("blah")
-    d.write array.map{|b| {:isbn => b.isbn, :author => b.author, :callno => b.call_number, :title => b.title, :barcode => b.barcode}}.to_xml
+    d.write array.map{|x| Copy.find_by_id(x)}.map{|b| {:isbn => b.isbn, :author => b.author, :callno => b.call_number, :title => b.title, :barcode => b.barcode}}.to_xml
     d.flush
     run_labels_script("gen_pdf", tempfile, d.path, pages, LABEL, skips.join(","))
     d.close
