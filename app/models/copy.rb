@@ -126,8 +126,7 @@ class Copy < ActiveRecord::Base
   end
 
   def number_of_days
-    # TODO: add this field in a migration
-    Default[:library_due_back_days] || 14
+    Default[:library_due_back_days]
   end
 
   def kinds
