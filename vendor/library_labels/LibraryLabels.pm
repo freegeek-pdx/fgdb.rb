@@ -37,6 +37,7 @@ sub gen_pdf {
     my $pdf=PDF::API2->new;
     my $info = get_info($label);
     my @skippers = split(/[, ]+/, $skips);
+    $pages = 1 if($pages == 0);
     open(DATA, $datafile);
     my $data = join("", <DATA>);
     close(DATA);
