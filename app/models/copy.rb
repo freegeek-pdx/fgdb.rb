@@ -11,7 +11,7 @@ class Copy < ActiveRecord::Base
   end
 
   def make_created_event
-    self.library_events = [LibraryEvent.new({:kind => LibraryEvent.kinds[:created], :date => Time.now})]
+    self.library_events = [LibraryEvent.new({:kind => kinds[:created], :date => Time.now})]
   end
 
   def [](field, subfield)
@@ -28,7 +28,7 @@ class Copy < ActiveRecord::Base
 
   def status
     type = last_event.kind
-    types = LibraryEvent.kinds
+    types = kinds
     if type == types[:created] || type == types[:checked_in] || type == types[:found]
       return "checked in"
     elsif type == types[:lost]
@@ -111,17 +111,17 @@ class Copy < ActiveRecord::Base
   end
 
   def check_in
-    library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:checked_in], :contact => last_event.contact)
+    library_events << LibraryEvent.new(:kind => kinds[:checked_in], :contact => last_event.contact)
   end
 
   def check_out(contact, due_back = nil)
     date = due_back || (Date.today + number_of_days)
-    library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:checked_out], :contact => contact, :due_back => date)
+    library_events << LibraryEvent.new(:kind => kinds[:checked_out], :contact => contact, :due_back => date)
   end
 
   def renew(due_back = nil)
     date = due_back || (last_event.due_back.to_date + number_of_days)
-    library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:renewed], :contact => last_event.contact, :due_back => date)
+    library_events << LibraryEvent.new(:kind => kinds[:renewed], :contact => last_event.contact, :due_back => date)
   end
 
   def number_of_days
@@ -146,10 +146,10 @@ class Copy < ActiveRecord::Base
   end
 
   def lose(contact)
-    library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:lost], :contact => contact)
+    library_events << LibraryEvent.new(:kind => kinds[:lost], :contact => contact)
   end
 
   def found
-    library_events << LibraryEvent.new(:kind => LibraryEvent.kinds[:found], :contact => last_event.contact)
+    library_events << LibraryEvent.new(:kind => kinds[:found], :contact => last_event.contact)
   end
 end
