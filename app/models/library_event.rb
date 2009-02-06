@@ -5,8 +5,6 @@ class LibraryEvent < ActiveRecord::Base
 
   acts_as_userstamp
 
-  named_scope :overdue, :conditions => ["id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND due_back < ?", Date.today]
-
   def set_date
     self.date = Time.now
   end

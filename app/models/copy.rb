@@ -4,9 +4,7 @@ class Copy < ActiveRecord::Base
   include LibraryModelHelper
   before_create :make_created_event
 
-  def self.overdue
-    LibraryEvent.overdue.map{|x| x.copy}
-  end
+  named_scope :overdue, :conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND due_back < ?)", Date.today]
 
   def book
     Book.find_by_id(self.book_id)
