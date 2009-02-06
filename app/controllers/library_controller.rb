@@ -152,7 +152,7 @@ class LibraryController < ApplicationController
   # takes a list of copy ids, linked from search maybe? dunno how to get there yet..
   def labels
     cols, rows = get_dimensions
-    recommended_pages = (list_labels_in_session.length.to_f / cols.to_i * rows.to_i).ceil
+    recommended_pages = (list_labels_in_session.length.to_f / (cols.to_i * rows.to_i)).ceil
     recommended_pages = 1 if recommended_pages == 0
     res = gen_pdf(list_labels_in_session, recommended_pages, []) # 3rd arg is a list of label positions to skip
     remove_from_session_labels(list_labels_in_session)
