@@ -1,0 +1,26 @@
+<h1>Listing rr_items</h1>
+
+<table>
+  <tr>
+  <% for column in RrItem.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for rr_item in @rr_items %>
+  <tr>
+  <% for column in RrItem.content_columns %>
+    <td><%=h rr_item.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => rr_item %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => rr_item %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => rr_item }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @rr_items %>
+
+<br />
+
+<%= link_to 'New rr_item', :action => 'new' %>

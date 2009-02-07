@@ -1,0 +1,27 @@
+<h1>Listing customizations</h1>
+
+<table>
+  <tr>
+  <% for column in Customization.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th colspan="3">&nbsp;</th>
+  </tr>
+  
+<% for customization in @customizations %>
+  <tr>
+  <% for column in Customization.content_columns %>
+    <td><%=h customization.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => customization %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => customization %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => customization }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @customizations %>
+
+<br />
+
+<%= link_to 'New customization', :action => 'new' %>

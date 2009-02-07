@@ -1,0 +1,33 @@
+<h1>Listing unavailabilities</h1>
+
+<table>
+  <tr>
+  <th>Worker</th>
+  <th>Weekday</th>
+  <th>Start</th>
+  <th>End</th>
+  <th>Schedule</th>
+  <th colspan="4">&nbsp;</th>
+  </tr>
+  
+<% for unavailability in @unavailabilities %>
+  <tr>
+    <td><%=h unavailability.worker.name %></td>
+    <td><%=h unavailability.weekday.name %></td>
+    <td><%=h unavailability.start_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
+    <td><%=h unavailability.end_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
+    <td><%=h unavailability.schedule.name %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => unavailability %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => unavailability %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => unavailability }, :confirm => 'Are you sure?', :method => :post %></td>
+    <td><%= link_to 'Copy', { :action => 'copy', :id => unavailability.id }, :title => 'copy', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @unavailabilities %>
+
+<br />
+
+<%= link_to 'Full list', :action => 'full_list' %>
+<%= link_to 'New unavailability', :action => 'new' %>

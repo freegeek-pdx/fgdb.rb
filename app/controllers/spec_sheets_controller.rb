@@ -58,7 +58,7 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = SpecSheet.good.paginate(:page => params[:page] ? params[:page].to_i : 1, :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC", :per_page => 50)
+    @reports = SpecSheet.paginate(:page => params[:page], :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC", :per_page => 50)
     render :action => "index"
   end
 

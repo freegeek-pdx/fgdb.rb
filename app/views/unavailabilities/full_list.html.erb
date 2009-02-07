@@ -1,0 +1,33 @@
+<h1>Listing unavailabilities</h1>
+
+<table>
+  <tr>
+  <th>Worker</th>
+  <th>Weekday</th>
+  <% for column in Unavailability.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th colspan="4">&nbsp;</th>
+  </tr>
+  
+<% for unavailability in @unavailabilities %>
+  <tr>
+    <td><%=h unavailability.worker.name %></td>
+    <td><%=h unavailability.weekday.name %></td>
+  <% for column in Unavailability.content_columns %>
+    <td><%=h unavailability.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => unavailability %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => unavailability %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => unavailability }, :confirm => 'Are you sure?', :method => :post %></td>
+    <td><%= link_to 'Copy', { :action => 'copy', :id => unavailability.id }, :title => 'copy', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @unavailabilities %>
+
+<br />
+
+<%= link_to 'Basic list', :action => 'list' %>
+<%= link_to 'New unavailability', :action => 'new' %>

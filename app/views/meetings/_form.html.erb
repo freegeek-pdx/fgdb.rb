@@ -1,0 +1,47 @@
+<%= error_messages_for 'meeting' %>
+
+<!--[form:meeting]-->
+<p><label for="meeting_name">Name</label><br/>
+<%= text_field 'meeting', 'meeting_name'  %></p>
+
+<p><label for="meeting_shift_date">Meeting date</label><br/>
+ <%= calendar_box 'meeting', 'shift_date', 
+    { },
+    { :range => [2000, 2010], :showOthers => true }
+    # TODO: mess with the above to try to get date format to change
+    # TODO: http://dry.4thebusiness.com/doc/dhtml_calendar/index.html 
+ %></p>
+
+<p><label for="meeting_start_time">Start time</label><br/>
+<%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="meeting_end_time">End time</label><br/>
+<%= time_select 'meeting', 'end_time', {:minute_step => 15}  %></p>
+
+<p><label for="meeting_weekday_id">Weekday</label><br/>
+<%= select("meeting", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_schedule_id">Schedule</label><br/>
+<%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_frequency_type_id">Frequency type</label><br/>
+<%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_effective_date">Effective date</label><br/>
+<%= calendar_box 'meeting', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
+<p><label for="meeting_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
+<p><label for="workers">Workers:</label><br/>
+<ul>
+<% Worker.find(:all, :order => "name").each do |w| %>
+   <li><input type="checkbox" name="meeting[worker_ids][]" 
+          value="<%= w.id %>" 
+          <% if @meeting.workers.include?(w) %> checked="checked" <% end %> />
+<%= w.name %></li>
+<% end %>
+</ul>
+</p>
+<!--[eoform:meeting]-->
+

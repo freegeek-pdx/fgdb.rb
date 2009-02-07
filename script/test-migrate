@@ -2,17 +2,14 @@
 
 set -e
 set -x
-set -u
 
 export RAILS_ENV=development
 
 TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
 cd $TMP
-scp -i ~/.ssh/scp_key pollen:/usr/local/backup/database.sql.gz ./
+scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
-gunzip database.sql.gz 
-#createdb fgdb_$RAILS_ENV
-#psql fgdb_$RAILS_ENV < database.sql
+gunzip database.sql.gz
 sed -i "s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
 psql < database.sql
 if hostname -f | grep -q fglan; then
@@ -21,31 +18,14 @@ else
     git clone git://git.ryan52.info/git/fgdb.rb trunk
 fi
 cd trunk
-cat > config/database.yml <<EOF
-development:
-  adapter: postgresql
-  database: fgdb_development
-  host: /var/run/postgresql/
-
-# Warning: The database defined as 'test' will be erased and
-# re-generated from your development database when you run 'rake'.
-# Do not set this db to the same as development or production.
-test:
-  adapter: postgresql
-  database: fgdb_test
-  host: /var/run/postgresql/
-
-production:
-  adapter: postgresql
-  database: fgdb_production
-  host: /var/run/postgresql/
-
-EOF
+cp config/database.yml-example config/database.yml
 ln -s /usr/share/rails vendor/rails
 rake db:migrate
 cd ../
 rm -f database.sql
-dropdb fgdb_$RAILS_ENV
+if [ "$1" != "--no-drop" ]; then
+    dropdb fgdb_$RAILS_ENV
+fi
 rm -fr trunk
 cd /
 rm -fr $TMP

@@ -1,0 +1,91 @@
+<%= error_messages_for 'worker' %>
+
+<div id="workerjobs" class="right">
+<p><label for="jobs">Jobs:</label><br/>
+<ul>
+<% Job.find(:all, :order => "name").each do |j| %>
+   <li><input type="checkbox" name="worker[job_ids][]" 
+          value="<%= j.id %>" 
+          <% if @worker.jobs.include?(j) %> checked="checked" <% end %> />
+<%= j.name %></li>
+<% end %>
+</ul>
+</p>
+</div>
+
+<div class="left">
+  <div id="workerinfo" class="topleft">
+  <!--[form:worker]-->
+  <p><label for="worker_name">Name</label><br/>
+  <%= text_field 'worker', 'name'  %></p>
+  
+  <p><label for="worker_worker_type_id">Type</label><br/>
+  <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+  
+  <p><label for="worker_weekly_work_hours">Weekly work hours</label><br/>
+  <%= text_field 'worker', 'weekly_work_hours'  %></p>
+  
+  <p><label for="worker_weekly_admin_hours">Weekly admin hours</label><br/>
+  <%= text_field 'worker', 'weekly_admin_hours'  %></p>
+  
+  <p><label for="worker_effective_date">Effective date</label><br/>
+  <%= calendar_box 'worker', 'effective_date' %></p>
+  
+  <p><label for="worker_ineffective_date">Ineffective date</label><br/>
+  <%= calendar_box 'worker', 'ineffective_date' %></p>
+ 
+  </div>
+  
+  <div id="meetings" class="topright">
+  <p><label for="meetings">Meetings:</label><br/>
+  <ul>
+  <% Meeting.find(:all, :order => "meeting_name", :conditions => ["shift_date IS NULL OR shift_date > ?", Date.today ]).each do |m| %>
+     <li><input type="checkbox" name="worker[meeting_ids][]" 
+            value="<%= m.id %>" 
+            <% if @worker.meetings.include?(m) %> checked="checked" <% end %> />
+  <%= m.name %></li>
+  <% end %>
+  </ul>
+  </p>
+  </div>
+
+  <div id="workershifts" class="bottomleft">
+  <p><label for="standard_shifts">Standard shifts:</label><br/>
+  <ul>
+  <% StandardShift.find(:all, :order => "weekday_id, start_time", :conditions => ["worker_id = ?", @worker.id]).each do |s| %>
+    <li><%= link_to s.long_name, { :action => "edit", :controller => "standard_shifts", :id => s.id } %></li>
+  <% end %>
+  </ul>
+  </div>
+
+  <div id="workerexceptions" class="bottomright">
+  <p><label for="unavailabilities">Unavailabilities:</label><br/>
+  <ul>
+  <% Unavailability.find(:all, :order => "effective_date, ineffective_date", :conditions => ["worker_id = ? AND (shift_date IS NULL OR shift_date > ?)", @worker.id, Date.today ]).each do |u| %>
+    <li><%= link_to u.long_name, { :action => "edit", :controller => "unavailabilities", :id => u.id } %>:
+    <%= link_to "s", { :action => "show", :controller => "unavailabilities", :id => u.id }, :title => "show" %>,
+    <%= link_to "e", { :action => "edit", :controller => "unavailabilities", :id => u.id }, :title => "edit" %>,
+    <%= link_to "d", { :action => "destroy", :controller => "unavailabilities", :id => u.id }, :title => "destroy" %>
+  </li>
+  <% end %>
+  </ul>
+  </p>
+  <p><%= link_to "new unavailability", { :action => "new", :controller => "unavailabilities"} %></p>
+  
+  <p><label for="vacations">Vacations:</label><br/>
+  <ul>
+  <% Vacation.find(:all, :order => "effective_date, ineffective_date", :conditions => ["worker_id = ? AND (ineffective_date IS NULL OR ineffective_date > ?)", @worker.id, Date.today ]).each do |v| %>
+    <li><%= link_to v.name, { :action => "edit", :controller => "vacations", :id => v.id } %>:
+    <%= link_to "s", { :action => "show", :controller => "vacations", :id => v.id }, :title => "show" %>,
+    <%= link_to "e", { :action => "edit", :controller => "vacations", :id => v.id }, :title => "edit" %>,
+    <%= link_to "d", { :action => "destroy", :controller => "vacations", :id => v.id }, :title => "destroy" %>
+    </li>
+  <% end %>
+  </ul>
+  </p>
+  <p><%= link_to "new vacation", { :action => "new", :controller => "vacations"} %></p>
+  </div>
+  
+
+<!--[eoform:worker]-->
+

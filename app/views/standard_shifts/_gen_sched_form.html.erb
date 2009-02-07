@@ -1,0 +1,11 @@
+<div class='generate'>
+<h3>Generate work shifts:</h3>
+<% form_tag :action => 'generate' do %>
+  <label for="start_start_date">Start date:</label> <%= date_select 'generate_schedule', 'start_date'  %><br />
+  <label for="end_end_date">End date:</label> <%= date_select 'generate_schedule', 'end_date'  %><br />
+  <br />
+  <br />
+  <%= submit_tag "Generate" %><br />
+<% end %>
+</div>
+

@@ -19,6 +19,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
+#    @cleaned_conditions = params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
     generate_report_data
   end
 
@@ -280,7 +281,9 @@ class GraphicReportsController < ApplicationController
   end
 
   def created_at_conditions_for_report(start_date, end_date)
-    params[:conditions].merge({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date, "created_at_enabled" => true})
+    h = {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date, "created_at_enabled" => "true"}
+#    return @cleaned_conditions.merge
+    return h
   end
 
   def call_income_report(*args)

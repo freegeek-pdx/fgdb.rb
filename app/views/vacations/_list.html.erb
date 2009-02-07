@@ -1,0 +1,26 @@
+<h2>Listing vacations</h2>
+
+<table>
+  <tr>
+  <th>Worker</th>
+  <th>Start</th>
+  <th>End</th>
+  <% unless @readonly %>
+    <th colspan="4">&nbsp;</th>
+  <% end %>
+  </tr>
+  
+<% for vacation in @vacations %>
+  <tr>
+    <td><%=h vacation.worker.name %></td>
+    <td><%=h vacation.effective_date %></td>
+    <td><%=h vacation.ineffective_date %></td>
+    <% unless @readonly %>
+      <td><%= link_to 'Show', :action => 'show', :id => vacation %></td>
+      <td><%= link_to 'Edit', :action => 'edit', :id => vacation %></td>
+      <td><%= link_to 'Destroy', { :action => 'destroy', :id => vacation }, :confirm => 'Are you sure?', :method => :post %></td>
+      <td><%= link_to 'Copy', { :action => 'copy', :id => vacation.id }, :title => 'copy', :method => :post %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>

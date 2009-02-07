@@ -1,0 +1,28 @@
+<h2>Listing vacations</h2>
+
+<table>
+  <tr>
+  <% for column in Vacation.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th colspan="3">&nbsp;</th>
+  </tr>
+  
+<% for vacation in @vacations %>
+  <tr>
+  <% for column in Vacation.content_columns %>
+    <td><%=h vacation.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => vacation %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => vacation %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => vacation }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @vacations %>
+
+<br />
+
+<%= link_to 'Basic list', :action => 'list' %>
+<%= link_to 'New vacation', :action => 'new' %>

@@ -1,0 +1,30 @@
+<%= error_messages_for 'rr_set' %>
+
+<!--[form:rr_set]-->
+<p><label for="rr_set_name">Name</label><br/>
+<%= text_field 'rr_set', 'name'  %></p>
+
+<p><label for="rr_set_effective_date">Effective date</label><br/>
+<%= calendar_box 'rr_set', 'effective_date' %></p>
+
+<p><label for="rr_set_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box 'rr_set', 'ineffective_date' %></p>
+
+<p><label for="rr_set_match_mode">Match mode</label><br/>
+<%= text_field 'rr_set', 'match_mode'  %></p>
+
+<p><label for="rr_items">Recurrence Rules:</label><br/>
+<ul>
+<% RrItem.find(:all, :conditions => ["rr_set_id = ?", @rr_set ]).each do |i| %>
+  <li>
+  <%= link_to i.name, { :action => "edit", :controller => "rr_items", :id => i.id } %>:
+  <%= link_to "s", { :action => "show", :controller => "rr_items", :id => i.id }, :title => "show" %>,
+  <%= link_to "e", { :action => "edit", :controller => "rr_items", :id => i.id }, :title => "edit" %>,
+  <%= link_to 'd', { :action => 'destroy', :controller => "rr_items", :id => i.id }, :confirm => 'Are you sure?', :method => :post %>
+  </li>
+<% end %>
+</ul>
+</p>
+<p><%= link_to 'new rr_item', :controller => 'rr_items', :action => 'new', 'rr_set_id' => @rr_set.id %></p>
+<!--[eoform:rr_set]-->
+

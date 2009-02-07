@@ -1,0 +1,37 @@
+<%= error_messages_for 'unavailability' %>
+
+<!--[form:unavailability]-->
+<p><label for="unavailability_effective_date">Effective date</label><br/>
+<%= calendar_box 'unavailability', 'effective_date' %></p>
+
+<p><label for="unavailability_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box :unavailability, :ineffective_date %></p>
+
+<p><label for="unavailability_all_day">All day</label><br/>
+<select id="unavailability_all_day" name="unavailability[all_day]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="unavailability_start_time">Start time</label><br/>
+<%= time_select 'unavailability', 'start_time', {:minute_step => 15} %></p>
+
+<p><label for="unavailability_end_time">End time</label><br/>
+<%= time_select 'unavailability', 'end_time', {:minute_step => 15} %></p>
+
+<p><label for="unavailability_repeats_every">Repeats every</label><br/>
+<%= text_field 'unavailability', 'repeats_every'  %></p>
+
+<p><label for="unavailability_repeats_on">Repeats on</label><br/>
+<%= text_field 'unavailability', 'repeats_on'  %></p>
+
+<p><label for="unavailability_worker_id">Worker</label><br/>
+<%= select("unavailability", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="unavailability_weekday_id">Weekday</label><br/>
+<%= select("unavailability", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="unavailability_schedule_id">Schedule</label><br/>
+<%= select("unavailability", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="unavailability_frequency_type_id">Frequency type</label><br/>
+<%= select("unavailability", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<!--[eoform:unavailability]-->
+

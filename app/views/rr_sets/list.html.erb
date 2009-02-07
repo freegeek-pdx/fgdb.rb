@@ -1,0 +1,27 @@
+<h1>Listing rr_sets</h1>
+
+<table>
+  <tr>
+  <% for column in RrSet.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for rr_set in @rr_sets %>
+  <tr>
+  <% for column in RrSet.content_columns %>
+    <td><%=h rr_set.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => rr_set %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => rr_set %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => rr_set }, :confirm => 'Are you sure?', :method => :post %></td>
+    <td><%= link_to 'Check', { :action => 'check_date', :id => rr_set }, :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @rr_sets %>
+
+<br />
+
+<%= link_to 'New rr_set', :action => 'new' %>

@@ -1,0 +1,116 @@
+<h2>Listing standard shifts</h2>
+
+<% 
+  # set up control variables and loop through all standard shifts
+  #  in proper order (weekday, worker.name, start_time)
+  start_schedule = true
+  start_weekday = true
+  start_worker = true
+  shift_style = 'shift'
+ 
+  for @shift in @standard_shifts 
+    @day_length = (( @shift.weekday.end_time - @shift.weekday.start_time ) / ( 60 * 30 )).to_int
+    @sched_start_time = @shift.weekday.start_time
+    @width = 90 / @day_length
+    if start_schedule
+      # first time through
+      if @opts['presentation_mode']!='Preview'
+        %> <%= render :partial => 'filter_criteria'
+        %> <%= render :partial => 'gen_sched_form' %> 
+        <div class='content'> <% 
+      end
+    else
+      # now previous shift should be defined, figure out what
+      # needs to happen:
+      if (@prev_shift[:weekday_id] != @shift.weekday_id)
+        start_weekday = true
+        end_weekday = true
+      end
+      if (@prev_shift[:weekday_id] != @shift.weekday_id)
+        overlap = false
+      elsif (@prev_shift[:worker_id] != @shift.worker_id)
+        overlap = false
+      elsif (@prev_shift[:end_time] <= @shift.start_time ) 
+        overlap = false
+      else
+        overlap = true
+      end
+
+      if @shift.meeting
+        shift_style = 'meeting'
+      elsif @shift.worker_id == 0
+        shift_style = 'unfilled'
+      elsif overlap
+        # can't seem to get this part quite right
+        # i expect a stupid syntax error
+        # what should happen:
+        # two overlapping anchored shifts should result 
+        #   in hardconflict
+        # two overlapping shifts where only one is anchored 
+        #   should result in mediumconflict
+        # other overlapping shifts should result in 
+        #   softconflict
+        # can't figure out if a shift is anchored?
+        #   pretend it is anchored
+        if @prev_shift[:coverage_type_name] == 'anchored'
+          if not @shift.coverage_type
+            shift_style = 'hardconflict'
+          elsif @shift.coverage_type.name == 'anchored'
+            shift_style = 'hardconflict'
+          else
+            shift_style = 'mediumconflict'
+          end
+        elsif @shift[:coverage_type_name] == 'anchored'
+          shift_style = 'mediumconflict'
+        else
+          shift_style = 'softconflict'
+        end
+        # end of problem code
+      else
+        shift_style = 'shift'
+      end
+      if (@prev_shift[:worker_id] != @shift.worker_id) or overlap or start_weekday
+        start_worker = true
+      end
+    end
+    if start_weekday
+      if not start_schedule
+        %> <%= render :partial => 'row_footer', :locals => { :shift => @shift } %>
+        <%= render :partial => 'table_footer' %> <%
+      end 
+      %> <%= render :partial => 'table_head', :locals => { :shift => @shift } %> <%
+    end
+    if start_worker
+      if not start_weekday
+        %> <%= render :partial => 'row_footer', :locals => { :shift => @shift } %> <%
+      end
+    end
+    if start_worker
+      %> <%= render :partial => 'row_head', :locals => { :shift => @shift } %> <%
+      start_worker = false
+    else
+    %> <%= render :partial => 'tween_time', :locals => { :shift => @shift } %> <%
+    end
+    
+    %> <%= render :partial => 'shift_specs', :locals => { :shift => @shift, :shift_style => shift_style } %> <%
+
+    # prepare to compare next shift with this one
+    @prev_shift = { 
+      :end_time => @shift.end_time, 
+      :start_time => @shift.start_time, 
+      :weekday_id => @shift.weekday_id, 
+      :worker_id => @shift.worker_id }
+    if @shift.coverage_type
+      @prev_shift[:coverage_type_name] = @shift.coverage_type.name
+    else
+      @prev_shift[:coverage_type_name] = 'anchored'
+    end
+    start_weekday = false
+    start_schedule = false
+  end
+%>
+<%= render :partial => 'row_footer', :locals => { :shift => @shift } %>
+<%= render :partial => 'table_footer' %>
+<% if @opts['presentation_mode']!='Preview' %>
+  </div>
+<% end %>

@@ -1,0 +1,15 @@
+    <tr>
+    <th>
+      <% if @opts['presentation_mode']=='Preview' %>
+        <%= @shift.worker.name %>
+      <% else %>
+        <%= link_to @shift.worker.name, { :action => 'edit', :controller => 'workers', :id => @shift.worker.id }, :title => 'edit', :popup => true %>
+      <% end %>
+    </th>
+
+    <% # output leading cells as padding %>
+    <% lead_time = ( @shift.start_time - @shift.weekday.start_time ) / (60*15) %>
+    <% for i in (1..lead_time) %>
+      <td>&nbsp;</td>
+    <% end %>
+

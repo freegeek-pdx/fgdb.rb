@@ -1,0 +1,20 @@
+<p><label for="rr_items">Recurrence Rules:</label><br/>
+<ul>
+<% RrItem.find(:all, :conditions => ["rr_set_id = ?", @rr_set ]).each do |i| %>
+  <li>
+  <%= link_to i.name, { :action => "edit", :controller => "rr_items", :id => i.id } %>:
+  <%= link_to "s", { :action => "show", :controller => "rr_items", :id => i.id }, :title => "show" %>,
+  <%= link_to "e", { :action => "edit", :controller => "rr_items", :id => i.id }, :title => "edit" %>,
+  <%= link_to 'd', { :action => 'destroy', :controller => "rr_items", :id => i.id }, :confirm => 'Are you sure?', :method => :post %>
+  </li>
+<% end %>
+</ul>
+</p>
+
+<% form_tag :action => 'check_date', :id => @rr_set do %>
+  <%= calendar_box 'checker', 'check_date' %></p>
+  <%= submit_tag 'Check date' %>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @rr_set %> |
+<%= link_to 'Back', :action => 'list' %>

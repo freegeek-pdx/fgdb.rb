@@ -1,0 +1,8 @@
+<%= render :partial => 'list' %>
+
+<%= will_paginate @vacations %>
+
+<br />
+
+<%= link_to 'Full list', :action => 'full_list' %>
+<%= link_to 'New vacation', :action => 'new' %>

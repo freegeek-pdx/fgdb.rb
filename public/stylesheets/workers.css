@@ -1,0 +1,74 @@
+div.left {
+    position: absolute;
+    margin-top: 10px
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #CCCCCC;
+    float: left;
+    width: 65%;
+}
+div.right {
+    position: relative;
+    margin-top: 10px
+    margin-left: 10px
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #CCCC99;
+    float: right;
+    width: 30%;
+}
+div.extremebottom {
+    position: relative;
+    margin-top: 10px
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #CCCC99;
+    float: left;
+    width: 100%;
+}
+div.topleft {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 00px;
+    padding-bottom: 10px;
+    float: left;
+    background-color: #CC99CC;
+    width: 45%;
+}
+div.topright {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    float: left;
+    background-color: #CCFF66;
+    width: 45%;
+}
+div.bottomleft {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #99CCFF;
+    float: left;
+    width: 45%;
+}
+div.bottomright {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 35px;
+    background-color: #33FFCC;
+    float: left;
+    width: 45%;
+}

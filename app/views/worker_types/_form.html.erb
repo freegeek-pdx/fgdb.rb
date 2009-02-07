@@ -1,0 +1,10 @@
+<%= error_messages_for 'worker_type' %>
+
+<!--[form:worker_type]-->
+<p><label for="worker_type_name">Name</label><br/>
+<%= text_field 'worker_type', 'name'  %></p>
+
+<p><label for="worker_type_description">Description</label><br/>
+<%= text_area 'worker_type', 'description', :cols => 50, :rows => 10 %></p>
+<!--[eoform:worker_type]-->
+

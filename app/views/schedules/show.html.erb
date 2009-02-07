@@ -1,0 +1,22 @@
+<% for column in Schedule.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @schedule.send(column.name) %>
+</p>
+<% end %>
+
+<% if @schedule.all_children and @schedule.all_children.size > 0 %>
+  <p>Children: <br />
+  <ul>
+  <% @schedule.all_children.each do |child| %>
+    <li><%= link_to child.name, { :action => 'show', :id => child.id }, :title => 'see ' + child.name %></li>
+  <% end %>
+  </ul>
+  </p>
+<% end %>
+
+<% if @schedule.parent %>
+  <p>Parent: <%= link_to @schedule.parent.name, { :action => 'show', :id => @schedule.parent.id }, :title => 'see ' + @schedule.parent.name %></p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @schedule %> |
+<%= link_to 'Back', :action => 'list' %>

@@ -39,6 +39,10 @@ class ApplicationController < ActionController::Base
     session[:labels] ||= []
   end
 
+  def skedjulnator_role
+    requires_role("SKEDJULNATOR")
+  end
+
   def _set_cashier(hash)
     return hash["cashier_code"] if hash.keys.include?("cashier_code")
     for i in hash.values.select{|x| x.class == Hash}
@@ -102,5 +106,47 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => 'sidebar_links'
       return false
     end
+  end
+
+  before_filter :fix_null_date
+
+  def fix_this_null_date (c1, c2)
+    if params[c1]
+      if params[c1][c2]
+        if params[c1][c2].empty?
+          params[c1][c2] = nil
+        end
+      end
+    end
+  end
+
+  def fix_null_date
+    return if !([:coverage_types, :customizations, :frequency_types, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
+    # fields to check. these are date fields that allow NULL
+    # values in the database. the dhtml-calendar plugin passes an
+    # empty string when the date is left blank, this turns into
+    # an arbitrary and unwanted date rather than a NULL. fix
+    # these by explicitly setting these values to nil. 
+    fix_this_null_date(:holiday, :holiday_date)
+    fix_this_null_date(:meeting, :meeting_date)
+    fix_this_null_date(:meeting, :effective_date)
+    fix_this_null_date(:meeting, :ineffective_date)
+    fix_this_null_date(:rr_set, :effective_date)
+    fix_this_null_date(:rr_set, :ineffective_date)
+    fix_this_null_date(:schedule, :effective_date)
+    fix_this_null_date(:schedule, :ineffective_date)
+    fix_this_null_date(:shift, :shift_date)
+    fix_this_null_date(:shift, :effective_date)
+    fix_this_null_date(:shift, :ineffective_date)
+    fix_this_null_date(:standard_shift, :shift_date)
+    fix_this_null_date(:unavailability, :effective_date)
+    fix_this_null_date(:unavailability, :ineffective_date)
+    fix_this_null_date(:vacation, :effective_date)
+    fix_this_null_date(:vacation, :ineffective_date)
+    fix_this_null_date(:work_shift, :shift_date)
+    fix_this_null_date(:work_shift, :effective_date)
+    fix_this_null_date(:work_shift, :ineffective_date)
+    fix_this_null_date(:worker, :effective_date)
+    fix_this_null_date(:worker, :ineffective_date)
   end
 end

@@ -1,0 +1,12 @@
+acts_as_tree -- tree structures
+active_scaffold -- probably don't need
+actsasrevisions -- saves all changes
+actsastrashable -- saves deleted item
+arts -- js testing
+dhtml-calendar -- yup
+guid -- nope
+manage_fixtures -- copying live db into test
+rails_sql_views -- view in db
+redhillonrails_core -- fk support
+restful_authentication -- authentication
+will_paginate -- need for 2.0.2

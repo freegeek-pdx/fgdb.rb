@@ -1,0 +1,11 @@
+<table border="0" width="100%" summary="<%=h shift.weekday.name %>">
+    <caption><%=h shift.weekday.name %> (standard shifts, <%=h shift.schedule.name %>)</caption>
+    <tr>
+    <th width="10%">&nbsp;</th>
+    <% for i in (0..(@day_length-1)) %>
+      <% time = (@sched_start_time + (i * 60 * 30 )) %>
+      <% display_time = time.strftime(" %I:%M").gsub( ' 0', '' ) %>
+      <th colspan="2" width="<%= @width %>%"><%= display_time %></th>
+    <% end %>
+    </tr>
+

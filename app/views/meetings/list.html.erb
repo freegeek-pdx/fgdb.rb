@@ -1,0 +1,42 @@
+<h2>Listing meetings</h2>
+
+<table>
+  <tr>
+  <th>Name</th>
+  <th>Date</th>
+  <th>Start</th>
+  <th>End</th>
+  <th>Weekday</th>
+  <th>Freq type</th>
+  <th>Schedule</th>
+  <th colspan="5">&nbsp;</th>
+  </tr>
+  
+<% for meeting in @meetings %>
+  <tr>
+    <td><%=h meeting.meeting_name %></td>
+    <td><%=h meeting.shift_date %></td>
+    <td><%=h meeting.start_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
+    <td><%=h meeting.end_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
+    <td><%=h meeting.weekday.short_name %></td>
+    <td><%=h meeting.frequency_type.name %></td>
+    <td><%=h meeting.schedule.name %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %></td>
+    <td><%= link_to 'Copy', { :action => 'copy', :id => meeting.id }, :title => 'copy', :method => :post %></td>
+    <td><% if meeting.shift_date %> 
+      <%= link_to 'Generate', { :action => 'generate', :id => meeting.id }, :title => 'generate', :method => :post %>
+    <% else %> 
+      &nbsp; 
+    <% end %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @meetings %>
+
+<br />
+
+<%= link_to 'Full list', :action => 'full_list' %>
+<%= link_to 'New meeting', :action => 'new' %>

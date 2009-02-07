@@ -1,0 +1,9 @@
+<h1>Editing standard_shift</h1>
+
+<% form_tag :action => 'update', :id => @standard_shift do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @standard_shift %> |
+<%= link_to 'Back', :action => 'list' %>

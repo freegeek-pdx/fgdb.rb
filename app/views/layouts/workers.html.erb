@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>The Skedjulnator! (<%= controller.controller_name %>)</title>
+  <%= stylesheet_link_tag 'scaffold', :media => "all" %>
+  <%= stylesheet_link_tag 'schedule', :media => "all" %>
+  <%= stylesheet_link_tag 'workers', :media => "all" %>
+  <%= stylesheet_link_tag 'print', :media => "print" %>
+
+  <%= dhtml_calendar_includes %>
+
+</head>
+<body>
+<div class="header">
+  <h1>The Skedjulnator!</h1>
+</div>
+
+<p style="color: green"><%= flash[:notice] %></p>
+
+<%= yield  %>
+
+  <div id="footer" class="extremebottom">
+    <a href='/holidays'>holidays</a>
+    <a href='/meetings'>meetings</a>
+    <a href='/vacations'>vacations</a>
+    <a href='/shifts/view_weekly_schedule'>shifts</a>
+    <a href='/work_shifts/list'>work shifts</a>
+    <br/>
+    <a href='/jobs'>jobs</a>
+    <a href='/schedules'>schedules</a>
+    <a href='/weekdays'>weekdays</a>
+    <a href='/workers'>workers</a>
+    <a href='/unavailabilities'>unavailabilities</a>
+    <br/>
+    <a href='/coverage_types'>coverage types</a>
+    <a href='/frequency_types'>frequency types</a>
+    <a href='/worker_types'>worker types</a>
+  </div>
+</body>
+</html>

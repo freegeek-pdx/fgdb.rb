@@ -1,0 +1,28 @@
+<%= error_messages_for 'holiday' %>
+
+<!--[form:holiday]-->
+<p><label for="holiday_name">Name</label><br/>
+<%= text_field 'holiday', 'name'  %></p>
+
+<p><label for="holiday_holiday_date">Holiday date</label><br/>
+<%= calendar_box 'holiday', 'holiday_date' %></p>
+
+<p><%= check_box "holiday", "is_all_day" %>
+<label for="holiday_is_all_day">Is all day</label></p>
+
+<p><label for="holiday_start_time">Start time</label><br/>
+<%= time_select 'holiday', 'start_time', {:minute_step => 15} %></p>
+
+<p><label for="holiday_end_time">End time</label><br/>
+<%= time_select 'holiday', 'end_time', {:minute_step => 15}  %></p>
+
+<p><label for="holiday_weekday_id">Weekday</label><br/>
+<%= select("holiday", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="holiday_schedule_id">Schedule</label><br/>
+<%= select("holiday", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="holiday_frequency_type_id">Frequency type</label><br/>
+<%= select("holiday", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<!--[eoform:holiday]-->
+

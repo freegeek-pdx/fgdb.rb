@@ -1,0 +1,29 @@
+<h2>Listing workers</h2>
+
+<table>
+  <tr>
+  <% for column in Worker.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th>Type</th>
+  <th colspan="3">&nbsp;</th>
+  </tr>
+  
+<% for worker in @workers %>
+  <tr>
+  <% for column in Worker.content_columns %>
+    <td><%=h worker.send(column.name) %></td>
+  <% end %>
+    <td><%=h worker.worker_type.name %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => worker %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => worker %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => worker }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @workers %>
+
+<br />
+
+<%= link_to 'New worker', :action => 'new' %>

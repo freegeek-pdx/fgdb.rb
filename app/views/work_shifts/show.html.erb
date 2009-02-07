@@ -1,0 +1,8 @@
+<% for column in WorkShift.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @work_shift.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @work_shift %> |
+<%= link_to 'Back', :action => 'list' %>

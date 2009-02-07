@@ -1,0 +1,100 @@
+Milestone 1: Create a multiweek capable general schedule (plan)
+- drop downs to select all 1:M relations
+  - this example assumes xxx has a 1:M with xxx_type:
+  - make sure migrate has xxx_id as an integer in xxx
+  - has_many :xxx in model of xxx_type
+  - belongs_to :xxx_type in model of xxx
+  - snippet in view/xxxs/_form
+<p><label for="xxx_xxx_type">Zxx Type</label><br/>
+<select id="xxx_xxx_type" name="xxx[xxx_type_id]">
+<%= options_from_collection_for_select ZxxType.find_all, "id",
+"name", @xxx.xxx_type_id %>
+</select></p>
+
+- display items that have drop downs in _form when showing or
+  listing them as well
+- track workers
+  - name
+  - type of worker
+    - sub
+    - regular
+    - trainee
+    - other
+  - hours to schedule per week
+  - ideal hours of time needed unscheduled (to do off schedule
+    job duties)
+- track jobs
+- track which workers can do which jobs
+- basic CRUD of shifts and jobs:
+  - fixed or movable
+  - day of week and time
+  - job type
+- track when worker is available to work by schedule:
+  - start and stop times for each day of week
+
+Unfinished:
+- set parent from an orphaned child
+  - DONE, except a new plan automatically sets its parent, which
+    is dumb, maybe?
+- from plan, allow creation of child (if parent_id is NULL)
+  - child plan should be a copy of parent with a different name
+    and a parent_id that points to parent
+- from plan, provide link to parent (if parent_id is not NULL)
+- track plans and their grouping:
+  - effective and ineffective dates of plan
+  - one record for default plan (parent_id IS NULL)
+  - other related records to be added onto default (such as week
+    A and week B)
+
+
+Milestone 2: Apply general schedule (plan) to actual date range,
+taking into account vacations and holidays creating a specific
+schedule
+
+- track holidays (dates and times when no one is working) 
+- track vacations (dates and times when a worker is not available
+  to work) 
+- create and edit meetings
+  - frequencies:
+    - weekly (every Nth week on a given day of the week) 
+    - monthly (every Nth month on a given day of the month) 
+    - Nth weekday of every Nth month
+    - once
+  - attendees
+- a worker is available for a shift when:
+  - there is an availabilities record associated with this worker
+    and weekday, AND:
+  - there is not already a shift for this worker where job =
+    (unavailable) and start to end times overlap with this
+    shift's start to end times
+
+Milestone 3: Easy to use UI for CRUD for plans and schedules
+(shift oriented)
+- when scheduling (at schedule group level):
+  - display when workers are double scheduled
+  - display number of hours each worker is scheduled per day and
+    per week
+  - display total hours per week by worker type
+    - compare to hours to schedule minus needed unscheduled time
+  - display total hours per week by job
+  - standard CRUD plus:
+    - copy shift (from existing shift)
+    - move shift (to different time or date)
+    - split shift (at an arbitrary time, with automatic 15 minute
+      overlap)
+- be able to easily:
+  - mark an ineffective date for current schedule
+  - copy current schedule to new schedule with effective date set
+    to ineffective date of retired schedule
+- be able to easily:
+  - copy a current schedule to a temp schedule (and next schedule
+    as well) 
+  - old schedule gets ineffective date
+  - temporary schedule gets effective one day after
+    old.ineffective
+  - next schedule gets effective one day after temp.ineffective
+
+Milestone 4: Use the specific schedule as a basis for recording
+hours actually worked by a worker and jobs performed
+
+- show comparison between what was scheduled and what was worked

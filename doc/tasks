@@ -1,0 +1,64 @@
+Bugs:
+- how to get a new rr_item to set its rr_set_id properly when 
+  being created from views/rr_sets/_form.rhtml
+- explain routes
+- differentiate by examples what goes in models vs controllers
+- to bring code up to rails 2 (?) what are the main tasks i need
+  to accomplish?
+- are there plugins fgdb is using that might be useful to skedj?
+
+- first shift generated is often wrong color
+- drop downs on filter criteria, etc. lose values
+- WorkShift.create_from_XXX can't set coverage_type_id
+- limit shifts to a single worker who has no shifts bombs
+- check all tables for FK constraints, there are some missing:
+  (work_shifts.meeting_id, shifts.meeting_id,
+  work_shifts.shift_id)
+
+Features:
+- effective and ineffective date UI components for meetings
+- effective and ineffective date UI components for workers
+- make all effective and ineffective dates generate SQL that
+  assumes a NULL ineffective is way in the future and a NULL
+  effective date is way in the past
+- when editing work shifts, log what changes happen so that a log
+  can be displayed if those days are re-generated
+- "sprinkle" function: copy shift to every day in the week
+  (standard shifts) or date range (work shifts)
+- inventory all FKs to see if they are in the UI. put there if
+  needed
+- one stylesheet system so links appear at bottom (or elsewhere
+  but consistently)
+- include unavailabilities as shifts with job 0 in generated
+  work shifts
+- "split" function: copy shift and set end_time of this shift to
+  start_time of new shift (with a default overlap of 15 minutes)
+- "automerge" shifts during generation -- if the same worker (but
+  not worker 0) does the same job and it overlaps slightly just
+  create one shift out of the two
+- on the shift edit pages limit choice of workers to who can do
+  the given job -- this implies that we won't be changing jobs or
+  that the worker list is dynamically generated based on the job
+  value
+- "copy schedule" -- this should ask for a cutoff date, set
+  current schedule family's ineffective dates to that cutoff date
+  minus one, create new family of schedules with effective dates
+  being the cutoff date, then copy all standard shifts and meetings
+  associated with the old schedule family, associating them with
+  the corresponding schedule in the new schedule family
+- when generating shifts, make sure to check to see which
+  schedules are to be used (using schedule's effective and
+  ineffective dates). expect date ranges that use >1 schedule
+  family
+- part day vacation support during shift generation
+- part day holiday support during shift generation
+- ability to filter on >1 worker and/or >1 job, in addition to
+  present UI which allows filtering on 0 or 1 of each
+- ability to present shifts by worker (showing job name on shift)
+  OR by job (showing worker name on shift). note that meetings
+  would only show up once in the job view (with many worker
+  names) but would show up many times in the worker view
+
+Database changes:
+- add the 'lock_version', 'created_at' and 'updated_at' columns
+  to get optimistic locking and auto-timestamping

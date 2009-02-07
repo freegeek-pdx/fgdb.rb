@@ -104,11 +104,6 @@ END
   add_index "actions", ["name"], :name => "actions_name_uk", :unique => true
   add_index "actions", ["description"], :name => "roles_name_index"
 
-  create_table "backuptable", :force => true do |t|
-    t.datetime "updated_at"
-    t.datetime "created_at"
-  end
-
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
     t.float    "hours_multiplier",                :default => 1.0, :null => false

@@ -1,0 +1,18 @@
+<div class='filter'>
+<h3>Filter standard shifts:</h3>
+<% form_tag :action => 'list' do %>
+  <%= select :filter_criteria, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] } %>
+  <%= radio_button :filter_criteria, :which_way, 'Solo', :checked => (@opts['which_way']=='Solo') %> Solo
+  <%= radio_button :filter_criteria, :which_way, 'Family', :checked => (@opts['which_way']=='Family') %> Family
+  <%= radio_button :filter_criteria, :which_way, 'Solo + root', :checked => (@opts['which_way']=='Solo + root') %> Solo + root <br />
+  <%= check_box :filter_criteria, :limit_to_worker, :checked => (@opts['limit_to_worker']=='1') %> Limit to worker:
+  <%= select(:filter_criteria, :worker_id, Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %><br />
+  <%= check_box :filter_criteria, :limit_to_job, :checked => (@opts['limit_to_job']=='1') %> Limit to job
+  <%= select(:filter_criteria, :job_id, Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %><br />
+  <%= radio_button :filter_criteria, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
+  <%= radio_button :filter_criteria, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
+  <%= radio_button :filter_criteria, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
+  <br />
+  <%= submit_tag "Apply" %><br />
+<% end %>
+</div>

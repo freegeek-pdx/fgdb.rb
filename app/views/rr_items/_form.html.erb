@@ -1,0 +1,66 @@
+<%= error_messages_for 'rr_item' %>
+
+<!--[form:rr_item]-->
+<%= hidden_field "rr_item", "rr_set_id" %>
+
+<p>Select when the event can happen. Select the days of the week, the weeks of the month, and the months of the year when the event might occur. 
+When a date matches all these criteria together, that is when it will happen. For instance, to indicate the third wednesday in March, 
+select only Wednesday in the weekday section, only the third week in the week of month section, and only March in the month section.
+If an event is to occur on a particular day of a month, select that month in the month section and enter the day number in the start and end
+fields in the day of month section. Also see the note below about alternating weeks.  </p>
+
+<p>Can occur on:<br/>
+<%= check_box "rr_item", "weekday_0" %> <label for="rr_item_weekday_0">Sunday</label><br/>
+<%= check_box "rr_item", "weekday_1" %> <label for="rr_item_weekday_1">Monday</label><br/>
+<%= check_box "rr_item", "weekday_2" %> <label for="rr_item_weekday_2">Tuesday</label><br/>
+<%= check_box "rr_item", "weekday_3" %> <label for="rr_item_weekday_3">Wednesday</label><br/>
+<%= check_box "rr_item", "weekday_4" %> <label for="rr_item_weekday_4">Thursday</label><br/>
+<%= check_box "rr_item", "weekday_5" %> <label for="rr_item_weekday_5">Friday</label><br/>
+<%= check_box "rr_item", "weekday_6" %> <label for="rr_item_weekday_6">Saturday</label>
+</p>
+
+<p>
+Can happen during:<br/>
+<%= check_box "rr_item", "week_of_month_1" %> <label for="rr_item_week_of_month_1">1st week of month (1-7th)</label><br/>
+<%= check_box "rr_item", "week_of_month_2" %> <label for="rr_item_week_of_month_2">2nd week of month (8-14th)</label><br/>
+<%= check_box "rr_item", "week_of_month_3" %> <label for="rr_item_week_of_month_3">3rd week of month (15-21st)</label><br/>
+<%= check_box "rr_item", "week_of_month_4" %> <label for="rr_item_week_of_month_4">4th week of month (22-28th)</label><br/>
+<%= check_box "rr_item", "week_of_month_5" %> <label for="rr_item_week_of_month_5">5th week of month (29-end)</label><br/>
+<%= check_box "rr_item", "week_of_month_final" %> <label for="rr_item_week_of_month_final">Final week of month (last 7 days)</label>
+</p>
+
+<p>
+Can happen during month of:<br/>
+<%= check_box "rr_item", "month_of_year_01" %> <label for="rr_item_month_of_year_01">January</label><br/>
+<%= check_box "rr_item", "month_of_year_02" %> <label for="rr_item_month_of_year_02">February</label><br/>
+<%= check_box "rr_item", "month_of_year_03" %> <label for="rr_item_month_of_year_03">March</label><br/>
+<%= check_box "rr_item", "month_of_year_04" %> <label for="rr_item_month_of_year_04">April</label><br/>
+<%= check_box "rr_item", "month_of_year_05" %> <label for="rr_item_month_of_year_05">May</label><br/>
+<%= check_box "rr_item", "month_of_year_06" %> <label for="rr_item_month_of_year_06">June</label><br/>
+<%= check_box "rr_item", "month_of_year_07" %> <label for="rr_item_month_of_year_07">July</label><br/>
+<%= check_box "rr_item", "month_of_year_08" %> <label for="rr_item_month_of_year_08">August</label><br/>
+<%= check_box "rr_item", "month_of_year_09" %> <label for="rr_item_month_of_year_09">September</label><br/>
+<%= check_box "rr_item", "month_of_year_10" %> <label for="rr_item_month_of_year_10">October</label><br/>
+<%= check_box "rr_item", "month_of_year_11" %> <label for="rr_item_month_of_year_11">November</label><br/>
+<%= check_box "rr_item", "month_of_year_12" %> <label for="rr_item_month_of_year_12">December</label>
+</p>
+
+<p>
+<label for="rr_item_min_day_of_month">Would start on day of month #</label> <%= text_field 'rr_item', 'min_day_of_month' %><br/>
+and would end on day #<label for="rr_item_max_day_of_month"> <%= text_field 'rr_item', 'max_day_of_month' %><br/>
+<%= check_box "rr_item", "day_of_month_final" %> <label for="rr_item_day_of_month_final">Final day of month</label>
+</p>
+
+<p>To indicate that an event may only happen on alternating weeks, 
+enter a 2 in the "occurs every" field and either a 0 or a 1 in the "occurs on" field. 
+(The "occurs on" field will determine if the event happens on "even" or "odd" weeks where the number of weeks since an old arbitrary date is used.)
+This same approach works if you need to designate a different number of weeks that two. 
+For example, to indicate something happens every third week, enter 3 in the "occurs every" field and a 0, 1, or 2 in the "occurs on" field.
+(Note that every two weeks is not the same as twice per month since most month contain extra days.
+Likewise, even and odd weeks do not refer to the week number in a year, since some years contain an odd number of weeks.)</p>
+<p>
+<label for="rr_item_repeats_every">Occurs every</label> <%= text_field 'rr_item', 'repeats_every' %> weeks<br/>
+<label for="rr_item_repeats_on">Occurs on week #</label> <%= text_field 'rr_item', 'repeats_on' %>
+</p>
+<!--[eoform:rr_item]-->
+

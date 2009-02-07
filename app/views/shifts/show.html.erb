@@ -1,0 +1,8 @@
+<% for column in Shift.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @shift.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @shift %> |
+<%= link_to 'Back', :action => 'view_weekly_schedule' %>

@@ -1,0 +1,33 @@
+<%= error_messages_for 'standard_shift' %>
+
+<!--[form:standard_shift]-->
+<p><label for="standard_shift_start_time">Start time</label><br/>
+<%= time_select 'standard_shift', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="standard_shift_end_time">End time</label><br/>
+<%= time_select 'standard_shift', 'end_time', {:minute_step => 15}  %></p>
+
+<p><%= check_box "standard_shift", "splitable" %>
+<label for="standard_shift_splitable">Splitable</label></p>
+
+<p><%= check_box "standard_shift", "mergeable" %>
+<label for="standard_shift_mergeable">Mergeable</label></p>
+
+<p><%= check_box "standard_shift", "resizable" %>
+<label for="standard_shift_resizable">Resizable</label></p>
+
+<p><label for="standard_shift_coverage_type_id">Coverage Type</label><br/>
+<%= select("standard_shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="standard_shift_job_id">Job</label><br/>
+<%= select("standard_shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="standard_shift_worker_id">Worker</label><br/>
+<%= select("standard_shift", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="standard_shift_weekday_id">Weekday</label><br/>
+<%= select("standard_shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="standard_shift_schedule_id">Schedule</label><br/>
+<%= select("standard_shift", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<!--[eoform:standard_shift]-->

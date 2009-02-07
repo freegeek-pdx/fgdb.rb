@@ -18,4 +18,5 @@
 /vendor/activesupport
 /vendor/railties
 /vendor/rails.new
+/vendor/rails
 /tmp/*

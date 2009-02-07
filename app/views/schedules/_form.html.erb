@@ -1,0 +1,22 @@
+<%= error_messages_for 'schedule' %>
+
+<!--[form:schedule]-->
+<p><label for="schedule_name">Name</label><br/>
+<%= text_field 'schedule', 'name'  %></p>
+
+<p><label for="schedule_description">Description</label><br/>
+<%= text_field 'schedule', 'description'  %></p>
+
+<p><label for="schedule_effective_date">Effective date</label><br/>
+<%= calendar_box 'schedule', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
+<p><label for="schedule_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box 'schedule', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
+<p><label for="schedule_repeats_every">Repeats every</label><br/>
+<%= text_field 'schedule', 'repeats_every'  %></p>
+
+<p><label for="schedule_repeats_on">Repeats on</label><br/>
+<%= text_field 'schedule', 'repeats_on'  %></p>
+<!--[eoform:schedule]-->
+

@@ -1,0 +1,9 @@
+<h1>Editing weekday</h1>
+
+<% form_tag :action => 'update', :id => @weekday do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @weekday %> |
+<%= link_to 'Back', :action => 'list' %>

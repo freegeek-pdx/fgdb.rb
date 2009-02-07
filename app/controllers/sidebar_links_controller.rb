@@ -4,4 +4,8 @@ class SidebarLinksController < ApplicationController
   def fgss_moved
     render :layout => false
   end
+
+  def staffsched_moved
+    render :layout => false
+  end
 end

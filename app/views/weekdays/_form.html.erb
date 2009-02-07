@@ -1,0 +1,19 @@
+<%= error_messages_for 'weekday' %>
+
+<!--[form:weekday]-->
+<p><label for="weekday_name">Name</label><br/>
+<%= text_field 'weekday', 'name'  %></p>
+
+<p><label for="weekday_short">Short name</label><br/>
+<%= text_field 'weekday', 'short_name'  %></p>
+
+<p><%= check_box "weekday", "is_open" %>
+<label for="weekday_is_open">Is open</label></p>
+
+<p><label for="weekday_start_time">Start time</label><br/>
+<%= time_select 'weekday', 'start_time', {:minute_step => 60} %></p>
+
+<p><label for="weekday_end_time">End time</label><br/>
+<%= time_select 'weekday', 'end_time', {:minute_step => 60}  %></p>
+<!--[eoform:weekday]-->
+

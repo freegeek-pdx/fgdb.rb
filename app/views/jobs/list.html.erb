@@ -1,0 +1,29 @@
+<h2>Listing jobs</h2>
+
+<table>
+  <tr>
+  <% for column in Job.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th>Type</th>
+  <th colspan="3">&nbsp;</th>
+  </tr>
+  
+<% for job in @jobs %>
+  <tr>
+  <% for column in Job.content_columns %>
+    <td><%=h job.send(column.name) %></td>
+  <% end %>
+    <td><%=h job.coverage_type.name %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => job %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => job %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => job }, :confirm => 'WARNING! This will destroy all shifts related to this job! Are you sure you want to do this? (OK will destroy job and shifts. Cancel will abort.)', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @jobs %>
+
+<br />
+
+<%= link_to 'New job', :action => 'new' %>

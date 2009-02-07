@@ -80,6 +80,18 @@
     </div>
   <% end %>
 
+  staff schedule
+  <div class="sidebar_section">
+    <div>
+      <%= link_to "staffsched", "/staffsched" %>
+    </div>
+    <% if false %>
+      <% if has_role?('SKEDJULNATOR') %>
+        <%= link_to "edit schedule", :controller => "work_shifts" %>
+      <% end %>
+    <% end %>
+  </div>
+
     <% if has_role?('LIBRARIAN') %>
       library
       <div class="sidebar_section">

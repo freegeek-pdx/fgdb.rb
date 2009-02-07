@@ -1,0 +1,35 @@
+<%= error_messages_for 'work_shift' %>
+
+<!--[form:work_shift]-->
+<p><label for="work_shift_shift_date">Shift date</label><br/>
+<%= calendar_box 'work_shift', 'shift_date'  %></p>
+
+<p><label for="work_shift_start_time">Start time</label><br/>
+<%= time_select 'work_shift', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="work_shift_end_time">End time</label><br/>
+<%= time_select 'work_shift', 'end_time', {:minute_step => 15}  %></p>
+
+<p><label for="work_shift_splitable">Splitable</label><br/>
+<select id="work_shift_splitable" name="work_shift[splitable]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="work_shift_mergeable">Mergeable</label><br/>
+<select id="work_shift_mergeable" name="work_shift[mergeable]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="work_shift_resizable">Resizable</label><br/>
+<select id="work_shift_resizable" name="work_shift[resizable]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="work_shift_coverage_type_id">Coverage Type</label><br/>
+<%= select("work_shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="work_shift_job_id">Job</label><br/>
+<%= select("work_shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="work_shift_worker_id">Worker</label><br/>
+<%= select("work_shift", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="work_shift_weekday_id">Weekday</label><br/>
+<%= select("work_shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<!--[eoform:work_shift]-->
+

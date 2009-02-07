@@ -1,0 +1,8 @@
+    <% 
+    # output between cells as padding -- called right before
+    # the next shift is rendered (excluding first shift of day)
+    %>
+    <% tween_time = ( @shift.start_time - @prev_shift[:end_time] ) / (60*15) %>
+    <% for i in (1..tween_time) %>
+      <td>&nbsp;</td>
+    <% end %>

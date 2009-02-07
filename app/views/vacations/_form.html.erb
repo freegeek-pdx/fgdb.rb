@@ -1,0 +1,22 @@
+<%= error_messages_for 'vacation' %>
+
+<!--[form:vacation]-->
+<p><label for="vacation_effective_date">Effective date</label><br/>
+<%= calendar_box 'vacation', 'effective_date' %></p>
+
+<p><label for="vacation_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box 'vacation', 'ineffective_date' %></p>
+
+<p><%= check_box "vacation", "is_all_day" %>
+<label for="vacation_is_all_day">Is all day</label></p>
+
+<p><label for="vacation_start_time">Start time</label><br/>
+<%= time_select 'vacation', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="vacation_end_time">End time</label><br/>
+<%= time_select 'vacation', 'end_time', {:minute_step => 15}  %></p>
+
+<p><label for="vacation_worker_id">Worker</label><br/>
+<%= select("vacation", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+<!--[eoform:vacation]-->
+

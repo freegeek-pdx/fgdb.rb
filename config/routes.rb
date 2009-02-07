@@ -37,7 +37,8 @@ ActionController::Routing::Routes.draw do |map|
   # map.root :controller => "welcome"
 
   map.root :controller => "soap", :conditions => { :method => :post, :soap => true }
-  map.root :controller => "sidebar_links", :action => "fgss_moved", :conditions => {:host => /^(printme|fgss|rocky)(fglan)?$/i}
+  map.root :controller => "sidebar_links", :action => "fgss_moved", :conditions => {:host => /^(printme|fgss|rocky)(.fglan)?$/i}
+  map.root :controller => "sidebar_links", :action => "staffsched_moved", :conditions => {:host => /^(bullwinkle)(.fglan)?$/i}
   map.root :controller => "sidebar_links"
 
   # See how all your routes lay out with "rake routes"
@@ -45,4 +46,5 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+  map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
 end

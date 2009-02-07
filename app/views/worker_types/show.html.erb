@@ -1,0 +1,8 @@
+<% for column in WorkerType.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @worker_type.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @worker_type %> |
+<%= link_to 'Back', :action => 'list' %>

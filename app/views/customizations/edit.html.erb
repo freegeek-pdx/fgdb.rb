@@ -1,0 +1,9 @@
+<h1>Editing customization</h1>
+
+<% form_tag :action => 'update', :id => @customization do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @customization %> |
+<%= link_to 'Back', :action => 'list' %>

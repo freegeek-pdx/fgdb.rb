@@ -1,0 +1,19 @@
+div.header {
+    display: none;
+}
+div.footer {
+    display: none;
+}
+div.filter {
+    display: none;
+}
+div.generate {
+    display: none;
+}
+div.content {
+    position: absolute;
+    margin-top: 20px;
+}
+td.shift {
+    background-color: #FFFFFF;
+}

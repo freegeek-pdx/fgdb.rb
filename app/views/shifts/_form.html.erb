@@ -1,0 +1,55 @@
+<%= error_messages_for 'shift' %>
+
+<!--[form:shift]-->
+<p><label for="shift_start_time">Start time</label><br/>
+<%= time_select 'shift', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="shift_end_time">End time</label><br/>
+<%= time_select 'shift', 'end_time', {:minute_step => 15}  %></p>
+
+<p><%= check_box "shift", "splitable" %>
+<label for="shift_splitable">Splitable</label></p>
+
+<p><%= check_box "shift", "mergeable" %>
+<label for="shift_mergeable">Mergeable</label></p>
+
+<p><%= check_box "shift", "resizable" %>
+<label for="shift_resizable">Resizable</label></p>
+
+<p><label for="shift_meeting_name">Meeting name</label><br/>
+<%= text_field 'shift', 'meeting_name'  %></p>
+
+<p><label for="shift_shift_date">Shift date</label><br/>
+<%= calendar_box 'shift', 'shift_date' %></p>
+
+<p><label for="shift_coverage_type_id">Coverage Type</label><br/>
+<%= select("shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="shift_job_id">Job</label><br/>
+<%= select("shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="shift_worker_id">Worker</label><br/>
+<%= select("shift", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="shift_weekday_id">Weekday</label><br/>
+<%= select("shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="shift_schedule_id">Schedule</label><br/>
+<%= select("shift", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="shift_effective_date">Effective date</label><br/>
+<%= calendar_box 'shift', 'effective_date' %></p>
+
+<p><label for="shift_ineffective_date">Ineffective date</label><br/>
+<%= calendar_box 'shift', 'ineffective_date' %></p>
+
+<p><label for="shift_all_day">All day</label><br/>
+<select id="shift_all_day" name="shift[all_day]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="shift_repeats_every">Repeats every</label><br/>
+<%= text_field 'shift', 'repeats_every'  %></p>
+
+<p><label for="shift_repeats_on">Repeats on</label><br/>
+<%= text_field 'shift', 'repeats_on'  %></p>
+<!--[eoform:shift]-->
+

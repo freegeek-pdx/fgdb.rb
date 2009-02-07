@@ -1,0 +1,61 @@
+div.filter {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #CCCC99;
+    float: left;
+    width: 45%;
+}
+div.generate {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #CCCC99;
+    float: right;
+    width: 45%;
+}
+div.footer {
+    position: absolute;
+    margin-top: 270px;
+}
+div.content {
+    position: absolute;
+    margin-top: 340px;
+}
+caption {
+    background: #FFFF99;
+    font-weight: bold;
+    text-align: right;
+}
+th {
+    background: #FFCCCC;
+    text-align: left;
+}
+td {
+    background: #FFCCCC;
+}
+td.shift {
+    background: #CCFFFF;
+}
+td.meeting {
+    background: #CCCC99;
+    font-style: italic;
+    font-weight: bold;
+}
+td.unavailable {
+    background: #99CCFF;
+}
+td.hardconflict {
+    background: #FF0000;
+}
+td.mediumconflict {
+    background: #FF8800;
+}
+td.softconflict {
+    background: #FFFF00;
+}
+td.unfilled {
+    background: #FFFF33;
+}
