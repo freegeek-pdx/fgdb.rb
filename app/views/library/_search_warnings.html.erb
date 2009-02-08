@@ -1,0 +1,7 @@
+<% if !File.exists?(RunXapianDaemon.path) %>
+<span style="color: red"><b>There is a problem with the search. It will not work at all. Please alert the database admin(s).</b></span>
+<% elsif !RunXapianDaemon.is_ready? %>
+<span style="color: red"><b>There is a problem with the search. The search results may be outdated. Please alert the database admin(s).</b></span>
+<% else %>
+<span style="color: green">Please note that it can take up to a minute for cataloging changes to show up in search results.</span>
+<% end %>

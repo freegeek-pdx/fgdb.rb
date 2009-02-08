@@ -168,6 +168,10 @@ end
 
 # TODO: go through all the scenarios and check for race conditions
 class RunXapianDaemon
+  def self.path
+    File.join(RAILS_ROOT, "db", "xapian")
+  end
+
   def self.run
     return if !lock_parent_process
     system("env I_AM_TEH_XAPIAN_DAEMON=true #{File.join(RAILS_ROOT, "bin", "daemon")} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run'")
