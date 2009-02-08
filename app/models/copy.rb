@@ -20,7 +20,8 @@ class Copy < ActiveRecord::Base
   end
 
   def barcode
-    id
+    return sprintf("%6d", id).gsub(" ", "0") if id.to_s.length < 6
+    return id.to_s # else
   end
 
   def self.find_by_barcode(*args)
