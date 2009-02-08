@@ -191,9 +191,9 @@ class GraphicReportsController < ApplicationController
       month = first.month
       year = first.year
       month += 1
-      if year > 12
+      if month > 12
         year += 1
-        month -= 1
+        month -= 12
       end
       Date.parse("#{year}-#{month}-01") - 1
     else

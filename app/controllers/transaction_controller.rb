@@ -28,8 +28,13 @@ class TransactionController < ApplicationController
 
   public
 
-  def component_update
+  def update_stuff
     @show_wrapper = false
+    params[:continue] = false
+  end
+
+  def component_update
+    update_stuff
     search
   end
 
@@ -37,6 +42,9 @@ class TransactionController < ApplicationController
     @show_wrapper = true if @show_wrapper.nil?
     @conditions = Conditions.new
     @model = model
+    if params[:dont_show_wrapper]
+      update_stuff
+    end
 
     if params[:continue] && !session[:search_bookmark].nil?
       params[:conditions] = session[:search_bookmark][:conditions]
