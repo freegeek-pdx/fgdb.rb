@@ -20,3 +20,5 @@
 /vendor/rails.new
 /vendor/rails
 /tmp/*
+/db/xapian/
+/bin/
