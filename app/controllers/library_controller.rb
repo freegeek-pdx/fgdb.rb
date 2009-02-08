@@ -31,7 +31,10 @@ class LibraryController < ApplicationController
 
   # search field to show_book and show_copy
   def search
-    render :text => "not yet implemented"
+  end
+
+  def search_results
+    @books = Book.search(params[:search][:query]).paginate({:page => params[:page]})
   end
 
   # enter new books and new copies ... three options
