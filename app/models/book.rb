@@ -2,9 +2,19 @@ class Book < ActiveRecord::Base
   has_many :fields
   has_many :copies
   include LibraryModelHelper
-  validates_uniqueness_of :isbn
-  before_validation :suck_stuff_down
   before_create :add_copy
+  acts_like_xapian :a => 1
+  validate :uniq_isbn
+
+  def uniq_isbn
+    errors.add('isbn', 'is not unique') if find_books_with_my_isbn != [self.id]
+  end
+
+  def find_books_with_my_isbn
+    isbns = [self.isbn].flatten
+    isbns_conditions = isbns.map{|this_isbn| "data = '#{this_isbn}'"}.join(" OR ")
+    Book.connection.execute("SELECT book_id FROM fields WHERE field = 20 AND subfield = 'a' AND (#{isbns_conditions})").to_a.map{|x| x["book_id"].to_i}.uniq
+  end
 
   def self.find_by_isbn(thing)
     a, b = MarcHelper.marc_aliases[:isbn]
