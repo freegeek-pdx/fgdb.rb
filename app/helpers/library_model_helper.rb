@@ -27,7 +27,7 @@ module LibraryModelHelper
       end
     end
     arr.flatten!
-    return arr
+    return arr.join(" ")
   end
 end
 

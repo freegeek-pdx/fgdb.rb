@@ -11,7 +11,8 @@ class Book < ActiveRecord::Base
   end
 
   def find_books_with_my_isbn
-    isbns = [self.isbn].flatten
+    isbns = self.isbn.split(" ")
+    return [self.id] if isbns.nil? or isbns.empty? or isbns.length == 0 or isbns[0].length == 0
     isbns_conditions = isbns.map{|this_isbn| "data = '#{this_isbn}'"}.join(" OR ")
     Book.connection.execute("SELECT book_id FROM fields WHERE field = 20 AND subfield = 'a' AND (#{isbns_conditions})").to_a.map{|x| x["book_id"].to_i}.uniq
   end
