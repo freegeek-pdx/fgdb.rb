@@ -15,7 +15,7 @@ module LibraryModelHelper
   end
 
   def m(*a)
-    str = ""
+    arr = []
     while a.length > 1
       b = a[0]
       a.delete_at(0)
@@ -23,11 +23,11 @@ module LibraryModelHelper
       a.delete_at(0)
       t = self.[](b,c)
       if t
-        str += " " if str.length > 0
-        str += t
+        arr << t
       end
     end
-    return str
+    arr.flatten!
+    return arr
   end
 end
 
