@@ -80,6 +80,7 @@ class XapianWriter < XapianBase
       destroy_entry(thing_id, klass, opts)
     end
     puts "processed #{klass.to_s} ##{thing_id} with options #{opts.inspect}"
+    $stdout.flush
   end
 
   def update_entry(*args)
@@ -153,7 +154,7 @@ module ActsAsXapian
         after_create :update_record_xapian
         before_destroy :update_record_xapian
         def search(*p)
-          $xr.search(*p)
+          XapianReader.new.search(*p)
         end
         def self.rebuild_index
           self.find(:all).each{|x| x.update_record_xapian}
@@ -199,11 +200,6 @@ class RunXapianDaemon
       RunXapianDaemon.run
       RunXapianDaemon.wait_for_daemon_process
     end
-    RunXapianDaemon.setup_xapian_reader
-  end
-
-  def self.setup_xapian_reader
-    $xr = XapianReader.new
   end
 
   def self.wait_for_daemon_process
@@ -257,7 +253,13 @@ class XapianDaemon
   def initialize
     RunXapianDaemon.lock_daemon_process
     @xw = XapianWriter.new
+    @out = File.open(File.join(RAILS_ROOT, "log", "xapian.log"), "a")
+    @err = File.open(File.join(RAILS_ROOT, "log", "xapian.error.log"), "a")
+    $stderr.reopen(@err)
+    $stdout.reopen(@out)
     RunXapianDaemon.lock_ready
+    puts "I'm ready (pid: #{Process.pid})"
+    $stdout.flush
   end
 
   def get_pending_jobs
@@ -282,10 +284,17 @@ class XapianDaemon
   end
 
   def run
+    i = 20
     while RunXapianDaemon.parent_process_running?
-      process_all_pending_jobs
-      sleep 10
+      if i == 20
+        process_all_pending_jobs
+        i = 0
+      end
+      sleep 0.5
+      i += 1
     end
+    puts "I'm done (pid: #{Process.pid})"
+    $stdout.flush
   end
 end
 
