@@ -81,6 +81,7 @@ class XapianWriter < XapianBase
     end
     puts "processed #{klass.to_s} ##{thing_id} with options #{opts.inspect}"
     $stdout.flush
+    @db.flush
   end
 
   def update_entry(*args)
