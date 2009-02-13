@@ -176,8 +176,10 @@ class RunXapianDaemon
 
   def self.run
     return if !lock_parent_process
-    d = File.join(RAILS_ROOT, "script", "daemonize.pl")
-    system("env I_AM_TEH_XAPIAN_DAEMON=true #{d} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run'")
+    out = `env I_AM_TEH_XAPIAN_DAEMON=true #{File.join(RAILS_ROOT, "script", "daemonize.pl")} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run' 2>&1`
+    if $?.exitstatus != 0
+      raise out
+    end
   end
 
   def self.lock_parent_process
