@@ -244,8 +244,12 @@ class RunXapianDaemon
     FileUtils.touch(file)
     f = File.open(file, "w")
     ret = f.lockf(lock, 0)
-    @@pids ||= []
-    @@pids << f
+    if ![File::F_TESTW, File::F_TESTR].include?(lock)
+      @@pids ||= []
+      @@pids << f
+    else
+      f.close
+    end
     return ret
   end
 end
