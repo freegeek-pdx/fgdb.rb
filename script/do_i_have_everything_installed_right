@@ -5,6 +5,12 @@ echo
 
 STATUS=0
 p=$0
+DEBUG=false
+
+if [ "$1" = "--debug" -o "$1" = "-d" ]; then
+    DEBUG=true
+    shift
+fi
 
 fail(){
     STATUS=1
@@ -37,11 +43,19 @@ perl_use_test(){
     perl "-M$1" -e "print"
 }
 
+runit(){
+    if [ "$DEBUG" = "true" ]; then
+        $1
+    else
+        $1 2>/dev/null 1>/dev/null
+    fi
+}
+
 run(){
     if [ "$4" != "return" ]; then
         echo -n $1
     fi
-    $2 2>/dev/null 1>/dev/null
+    runit "$2"
     if [ $? != 0 ]; then
         if [ "$4" = "error" ]; then
             error "$3"
@@ -74,6 +88,10 @@ check_a_version(){
     ruby -r "$(dirname $p)/../config/boot.rb" -e "test_version($(echo $@ | sed 's/[.]/,/g'))"
 }
 
+check_for_postgres(){
+    [ -n "$(pgrep -x postgres)$(pgrep -x postmaster)" ]
+}
+
 test_my_rails_version(){
     check_a_version 2.1.2 || check_a_version 2.1.0
 }
@@ -93,7 +111,7 @@ run "Checking to see if posixlock is installed..." "require_test posixlock" "ins
 run "Checking to see if XML::XPath is installed..." "perl_use_test XML::XPath" "install libxml-xpath-perl" "fail"
 run "Checking to see if PDF::API2 is installed..." "perl_use_test PDF::API2" "install libpdf-api2-perl" "fail"
 run "Checking to see if Paper::Specs is installed..." "perl_use_test Paper::Specs" "install libpaper-specs-perl" "fail"
-run "Checking to see if postgres is installed and running..." "[ $(pgrep -c -x postgres) != \"0\" ]" "install and start postgres" "fail"
+run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
 
 exit $STATUS
 
