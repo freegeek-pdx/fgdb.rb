@@ -52,13 +52,12 @@ module MarcHelper
     {
       :author => [100, 'a'],
       :title => [245, 'a'],
-      :description => [520, 'a'],
       :isbn => [20, 'a'],
       :call_number => [50, 'a', 50, 'b']
     }
   end
 
   def self.show_list
-    [:isbn, :title, :author, :description, :call_number]
+    [:isbn, :title, :author, :call_number]
   end
 end
