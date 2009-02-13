@@ -7,14 +7,20 @@ class Book < ActiveRecord::Base
   validate :uniq_isbn
 
   def uniq_isbn
-    errors.add('isbn', 'is not unique') if find_books_with_my_isbn != [self.id]
+    if self.internal_isbn.length == 0
+      errors.add('isbn', 'needs to be entered')
+      return
+    end
+    books = find_books_with_my_isbn
+    errors.add('isbn', 'is not unique') if books != [self.id] && books != []
   end
 
   def find_books_with_my_isbn
-    isbns = self.isbn.split(" ")
+    isbns = self.internal_isbn.split(" ")
     return [self.id] if isbns.nil? or isbns.empty? or isbns.length == 0 or isbns[0].length == 0
     isbns_conditions = isbns.map{|this_isbn| "data = '#{this_isbn}'"}.join(" OR ")
-    Book.connection.execute("SELECT book_id FROM fields WHERE field = 20 AND subfield = 'a' AND (#{isbns_conditions})").to_a.map{|x| x["book_id"].to_i}.uniq
+    sql = "SELECT book_id FROM fields WHERE field = 20 AND subfield = 'a' AND (#{isbns_conditions})"
+    Book.connection.execute(sql).to_a.map{|x| x["book_id"].to_i}.uniq
   end
 
   def self.find_by_isbn(thing)
@@ -35,8 +41,11 @@ class Book < ActiveRecord::Base
   end
 
   def []=(value, field, subfield)
+    values = [value].flatten
     self.fields.delete_if{|x| x.field == field && x.subfield == subfield}
-    self.fields << Field.new(:field => field, :subfield => subfield, :data => value)
+    values.each{|val|
+      self.fields << Field.new(:field => field, :subfield => subfield, :data => val)
+    }
   end
 
   def add_copy

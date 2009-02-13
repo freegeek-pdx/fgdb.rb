@@ -56,15 +56,7 @@ class LibraryController < ApplicationController
     else
       @marc = lookup_loc(isbn)
       if @marc
-        if @marc.isbn != isbn
-          @book = Book.find_by_isbn(@marc.isbn)
-        end
-        if @book
-          @method = "book"
-          @marc = nil # just in case
-        else
-          @method = "marc"
-        end
+        @method = "marc"
       else
         @method = "manual"
       end
@@ -80,8 +72,9 @@ class LibraryController < ApplicationController
   # ajaxy magic ... wow!
   def cataloging_update
     # try to find existing book
-    isbn = params[:open_struct][:isbn]
-    if isbn.nil? || isbn.blank? || (isbn.length != 10 && isbn.length != 13)
+    isbns_object = ISBNs.new(params[:open_struct][:isbn]).add_alternates
+    isbn = isbns_object.to_a
+    if isbn.length == 0
       render :update do |page|
         page << "alert('Invalid ISBN');"
         page.hide loading_indicator_id("library_cataloging")
@@ -101,7 +94,7 @@ class LibraryController < ApplicationController
       if @method != "manual"
         page['initial_form'].hide
       else
-        page << "$('book_isbn').value = \"#{isbn}\";"
+        page << "$('book_isbn').value = \"#{isbns_object.to_s}\";"
       end
       page.hide loading_indicator_id("library_cataloging")
     end
@@ -120,6 +113,7 @@ class LibraryController < ApplicationController
   end
 
   def create
+    params[:book][:isbn] = ISBNs.new(params[:book][:isbn]).to_a
     b = Book.new(params[:book])
     if !b.save!
       render :text => "Failed to save: #{b.errors.to_s}"

@@ -2,7 +2,7 @@
   <% @obj = object %>
   <% data_method = @obj.class == Book ? "book" : "marc" %>
   <% if data_method == "book" %>
-    <% title = "Found existing book with ISBN #" + @obj.isbn %>
+    <% title = "Found existing book with ISBN #" + ISBN.new(params[:open_struct][:isbn]).as_purdy %>
   <% else %><%# marc %>
     <% title = "Got information from the Library of Congress database" %>
   <% end %>
