@@ -107,7 +107,7 @@ end
 
 class ISBNs
   def initialize(*isbns)
-    @isbns = isbns.map{|x| x.split(/,? /)}.flatten.map{|x| ISBN.new(x)}.delete_if{|x| x.nil?}
+    @isbns = isbns.map{|x| x.split(/[, ]/)}.flatten.map{|x| ISBN.new(x)}.delete_if{|x| x.nil?}
   end
 
   def add_alternates
