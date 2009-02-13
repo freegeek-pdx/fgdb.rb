@@ -110,6 +110,7 @@ run "Checking to see if xapian is installed..." "require_test xapian" "install l
 run "Checking to see if posixlock is installed..." "require_test posixlock" "install libposixlock-ruby" "fail"
 run "Checking to see if XML::XPath is installed..." "perl_use_test XML::XPath" "install libxml-xpath-perl" "fail"
 run "Checking to see if PDF::API2 is installed..." "perl_use_test PDF::API2" "install libpdf-api2-perl" "fail"
+run "Checking to see if Proc::Daemon is installed..." "perl_use_test Proc::Daemon" "install libproc-daemon-perl" "fail"
 run "Checking to see if Paper::Specs is installed..." "perl_use_test Paper::Specs" "install libpaper-specs-perl" "fail"
 run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
 

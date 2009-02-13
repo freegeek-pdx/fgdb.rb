@@ -176,8 +176,7 @@ class RunXapianDaemon
 
   def self.run
     return if !lock_parent_process
-    d = File.join(RAILS_ROOT, "bin", "daemon")
-    system("./script/install_daemon.c") if !File.exists?(d)
+    d = File.join(RAILS_ROOT, "script", "daemonize.pl")
     system("env I_AM_TEH_XAPIAN_DAEMON=true #{d} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run'")
   end
 
