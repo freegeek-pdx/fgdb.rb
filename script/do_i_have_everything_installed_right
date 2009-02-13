@@ -30,11 +30,7 @@ good(){
 # Usage: run "checking for blah..." "which thing_to_look_for" "message_to_fix" "fail|error|return"
 
 require_test(){
-    if [ "$GEMS" = "true" ]; then
-        ruby -r rubygems -r $1 -e puts
-    else
-        ruby -r $1 -e puts
-    fi
+    echo "require '$1'" | ruby
 }
 
 perl_use_test(){
