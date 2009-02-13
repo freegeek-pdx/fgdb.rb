@@ -4,6 +4,7 @@ echo "Testing to see if you have everything required for fgdb to run..."
 echo
 
 STATUS=0
+p=$0
 
 fail(){
     STATUS=1
@@ -73,11 +74,19 @@ setup_stuff(){
     fi
 }
 
+check_a_version(){
+    ruby -r "$(dirname $p)/../config/boot.rb" -e "test_version($(echo $@ | sed 's/[.]/,/g'))"
+}
+
+test_my_rails_version(){
+    check_a_version 2.1.2 || check_a_version 2.1.0
+}
+
 run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
 run "Checking to see if perl is installed..." "which perl" "install perl" "error"
 setup_stuff # only runable if ruby is installed
 run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
-run "Checking to see if rails is correct version..." "ruby -r $(dirname $0)/../config/boot.rb -e test_version(2,1,0)" "upgrade rails to version 2.1.0" "fail"
+run "Checking to see if rails is correct version..." "test_my_rails_version" "upgrade rails to version 2.1.0" "fail"
 run "Checking to see if libxml-ruby is installed..." "require_test xml/libxml" "install libxml-ruby" "fail"
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
