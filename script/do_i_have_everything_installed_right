@@ -38,7 +38,7 @@ require_test(){
 }
 
 perl_use_test(){
-    perl "-M$1" -e "print" >/dev/null 2>/dev/null
+    perl "-M$1" -e "print"
 }
 
 run(){
