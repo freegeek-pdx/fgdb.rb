@@ -42,7 +42,7 @@ class Copy < ActiveRecord::Base
 
   def long_status
     if status == "checked out"
-      return "checked out by " + contact_display + " (#{days_till_due})"
+      return "checked out to " + contact_display + " (#{days_till_due})"
     else
       return status
     end
