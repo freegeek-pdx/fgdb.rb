@@ -15,7 +15,12 @@ class SidebarLinksController < ApplicationController
 
   def thing_moved(thing, controller)
     @thing = thing
-    @url_ = "http://data/#{controller}"
+    if RAILS_ENV == "production"
+      first_part = "data"
+    else
+      first_part = "dev:3000"
+    end
+    @url_ = "http://#{first_part}/#{controller}"
     render :action => "thing_moved", :layout => false
   end
 end
