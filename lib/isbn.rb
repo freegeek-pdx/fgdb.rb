@@ -47,7 +47,7 @@ class ISBNBase
   end
 
   def valid_format?
-    @isbn.match(/^(\d{3})?\d{9}[\dX]{1}$/)
+    @isbn.match(/^(\d{3})?\d{9}[\dX]$/)
   end
 
   def isbn
