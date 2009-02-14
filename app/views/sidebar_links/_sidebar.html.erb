@@ -6,12 +6,21 @@ a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.len
 function f_hideall() {
 a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){a[i].hide();};
 }
+
+function show_thing(thing) {
+if($(thing + '_sidebar_section').style.display == "none"){
+hideall();
+Effect.SlideDown(thing + '_sidebar_section');
+} else {
+Effect.SlideUp(thing + '_sidebar_section');
+}
+}
 </script>
 <% aliases, sidebar_hash = sidebar_stuff %>
 <div id="sidebar">
   <% sidebar_hash.each do |main_name, my_hash| %>
     <% if my_hash.length > 0 %>
-      <a onClick="hideall(); Effect.SlideDown('<%= main_name %>_sidebar_section')"><%= main_name %></a>
+      <a onClick="show_thing('<%= main_name %>')"><%= main_name %></a>
       <div></div>
       <div class="sidebar_section" id="<%= main_name %>_sidebar_section">
         <% my_hash.each do |this_name, opts| %>
