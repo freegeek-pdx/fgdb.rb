@@ -1,7 +1,6 @@
 <% arr = [:search] %>
-<% arr += [:lookup, :cataloging] %>
+<% arr += [:lookup, :cataloging] if has_role?("LIBRARIAN") %>
 <% arr.each do |x| %>
 <h2><%= x.to_s.titleize %></h2>
 <%= render_thing(x) %>
 <% end %>
-
