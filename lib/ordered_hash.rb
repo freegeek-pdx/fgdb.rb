@@ -28,8 +28,20 @@ class OrderedHash
     OrderedHash.new(*args)
   end
 
+  def default_class=(my_default)
+    @set_default = true
+    @default = my_default
+  end
+
+  def default_class
+    @default
+  end
+
   def [](key)
-    @hash[key]
+    if not @arr.include?(key) and @set_default
+      self[key] = @default.new
+    end
+    return @hash[key]
   end
 
   def []=(key, val)

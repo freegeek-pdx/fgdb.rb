@@ -23,9 +23,7 @@ module SidebarHelper
     # base
     aliases = {:a => :action, :c => :controller}
     sidebar_hash = OH.n
-    for i in ["hours", 'donations', 'sales', 'recyclings', 'disbursements', "reports", "contacts", "staff schedule", "library", "fgss"]
-      sidebar_hash[i] = OH.n
-    end
+    sidebar_hash.default_class = OH
     # hours
     if has_role?("VOLUNTEER_MANAGER")
       sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
