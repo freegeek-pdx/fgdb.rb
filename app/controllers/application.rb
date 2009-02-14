@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   layout "application"
   helper :cashiers
   helper :conditions
+  helper :sidebar
 
 =begin
     protect_from_forgery
