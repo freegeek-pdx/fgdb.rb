@@ -1,5 +1,10 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  # I'm stupid. :P
+  def render_thing(a)
+    render :inline => File.read(File.join(RAILS_ROOT, "app", "views", params[:controller], "#{a}.html.erb"))
+  end
+
   def gt_for_txn(thing)
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + (thing.gizmo_types + thing.gizmo_context.gizmo_types).uniq.sort_by(&:description)
   end
