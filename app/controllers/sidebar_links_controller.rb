@@ -8,4 +8,8 @@ class SidebarLinksController < ApplicationController
   def staffsched_moved
     render :layout => false
   end
+
+  def library_moved
+    render :layout => false
+  end
 end
