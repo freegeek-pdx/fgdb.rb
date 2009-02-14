@@ -25,18 +25,35 @@ class LibraryEvent < ActiveRecord::Base
   end
 
   def contact_display
+    setup_user
     if contact
-      "#" + contact.id.to_s
+      if has_role?("LIBRARIAN", "CONTACT_MANAGER")
+        contact.display_name
+      else
+        "#" + contact.id.to_s
+      end
     else
       ""
     end
   end
+
+  include ApplicationHelper
 
   def librarian
     Contact.find(created_by)
   end
 
   def librarian_display
-    "#" + librarian.id.to_s
+    setup_user
+    if has_role?("LIBRARIAN", "CONTACT_MANAGER")
+      librarian.display_name
+    else
+      "#" + librarian.id.to_s
+    end
+  end
+
+  # a hack
+  def setup_user
+    @current_user ||= Thread.current['user']
   end
 end
