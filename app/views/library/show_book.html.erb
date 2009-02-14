@@ -6,8 +6,8 @@
 
 <p>
 <table border="1" style="border-collapse: collapse;">
-<tr><th colspan="4">Copies</th></tr>
-<tr><th>Copy #</th><th>Barcode</th><th>Status</th><th></th></tr>
+<tr><th colspan="<%= has_role?("LIBRARIAN") ? 4 : 3 %>">Copies</th></tr>
+<tr><th>Copy #</th><th>Barcode</th><th>Status</th><% if has_role?("LIBRARIAN") %><th></th><% end %></tr>
 <% @book.copies.each do |copy| %>
   <tr>
     <td>
@@ -17,13 +17,21 @@
       <%= copy.barcode %>
     </td>
     <td>
-      <%= copy.status %>
+      <% if has_role?("LIBRARIAN") %>
+        <%= copy.status %>
+      <% else %>
+        <%= copy.long_status %>
+      <% end %>
     </td>
-    <td>
-      <%= link_to "History", :action => "show_copy", :copy_id => copy.id %>
-      <%= link_to "Label", :action => "add_to_labels", :id => copy.id %>
-    </td>
+    <% if has_role?("LIBRARIAN") %>
+      <td>
+        <%= link_to "History/Circulation", :action => "show_copy", :copy_id => copy.id %>
+        <%= link_to "Label", :action => "add_to_labels", :id => copy.id %>
+      </td>
+    <% end %>
   </tr>
 <% end %>
+<% if has_role?("LIBRARIAN") %>
 <tr><td colspan="4"><%= link_to "Add a copy", :action => "add_copy", :book_id => @book.id %></td></tr>
+<% end %>
 </p>
