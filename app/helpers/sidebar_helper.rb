@@ -48,13 +48,11 @@ module SidebarHelper
     reports["over time"] = {:c => 'graphic_reports'}
     sidebar_hash.a("reports", reports)
     # contacts
-    if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
-      contacts = OH.n
-      contacts.a("contacts", :c => "contacts") if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
-      contacts.a("dedup", :c => 'contact_duplicates') if has_role?('CONTACT_MANAGER')
-      contacts.a("duplicates list", :c => 'contact_duplicates', :a => "list_dups") if has_role?('CONTACT_MANAGER')
-      sidebar_hash.a("contacts", contacts)
-    end
+    contacts = OH.n
+    contacts.a("contacts", :c => "contacts") if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
+    contacts.a("dedup", :c => 'contact_duplicates') if has_role?('CONTACT_MANAGER')
+    contacts.a("duplicates list", :c => 'contact_duplicates', :a => "list_dups") if has_role?('CONTACT_MANAGER')
+    sidebar_hash.a("contacts", contacts)
     # staffsched
     staffsched = OH.n("staffsched", "/staffsched")
     staffsched.a("edit schedule", :c => "work_shifts") if should_show_edit_schedule and has_role?('SKEDJULNATOR')
