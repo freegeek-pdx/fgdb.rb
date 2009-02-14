@@ -1,6 +1,7 @@
 <h1><%= sprintf("%s (Copy #%s, Barcode #%s)", @c.book.title, @c.copy_id, @c.barcode) %></h1>
 <h2>Status</h2>
-<%= @c.long_status  %>
+<%= @c.long_status  %><br />
+<%= link_to "book info", :action => "show_book", :id => @c.book.id %>
 <% if has_role?("LIBRARIAN") %>
 <h2>Circulation</h2>
 <% if @c.checked_in? %>
