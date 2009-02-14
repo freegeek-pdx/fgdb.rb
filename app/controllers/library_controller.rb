@@ -1,6 +1,6 @@
 class LibraryController < ApplicationController
   layout :with_sidebar
-  before_filter :authorized_only, :except => [:show_copy, :show_book, :search, :search_results]
+  before_filter :authorized_only, :except => [:show_copy, :show_book, :search, :search_results, :lookup]
   helper :library_labels
   include LibraryLabelsHelper
 
