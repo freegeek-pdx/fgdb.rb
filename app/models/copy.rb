@@ -127,7 +127,7 @@ class Copy < ActiveRecord::Base
   end
 
   def number_of_days
-    Default[:library_due_back_days]
+    Default["library_due_back_days"].to_i
   end
 
   def kinds
