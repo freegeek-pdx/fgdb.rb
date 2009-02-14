@@ -1,6 +1,7 @@
-<h1><%= sprintf("%s (Copy #%s)", @c.book.title, @c.copy_id) %></h1>
+<h1><%= sprintf("%s (Copy #%s, Barcode #%s)", @c.book.title, @c.copy_id, @c.barcode) %></h1>
 <h2>Status</h2>
 <%= @c.long_status  %>
+<% if has_role?("LIBRARIAN") %>
 <h2>Circulation</h2>
 <% if @c.checked_in? %>
 <div class="noblock">
@@ -38,3 +39,4 @@
   <% end %>
 </table>
 </p>
+<% end %>
