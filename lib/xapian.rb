@@ -2,11 +2,18 @@ require 'xapian'
 require 'posixlock'
 
 class XapianBase
+  def self.path
+    base = File.join(RAILS_ROOT, "tmp", "xapian")
+    if !File.exists?(base)
+      FileUtils.mkdir(base)
+    end
+    return File.join(base, RAILS_ENV)
+  end
 end
 
 class XapianReader < XapianBase
   def initialize
-    db = Xapian::Database.new(File.join(RAILS_ROOT, "db", "xapian"))
+    db = Xapian::Database.new(XapianBase.path)
     stem = Xapian::Stem.new("english")
     @enquire = Xapian::Enquire.new(db)
     @qp = Xapian::QueryParser.new()
@@ -60,7 +67,7 @@ end
 
 class XapianWriter < XapianBase
   def initialize
-    file = File.join(RAILS_ROOT, "db", "xapian")
+    file = File.join(XapianBase.path)
     if !File.exists?(file)
       XapianJob.destroy_all
       Book.rebuild_index
@@ -171,12 +178,12 @@ end
 # TODO: go through all the scenarios and check for race conditions
 class RunXapianDaemon
   def self.path
-    File.join(RAILS_ROOT, "db", "xapian")
+    XapianBase.path
   end
 
   def self.run
     return if !lock_parent_process
-    out = `env I_AM_TEH_XAPIAN_DAEMON=true #{File.join(RAILS_ROOT, "script", "daemonize.pl")} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run' 2>&1`
+    out = `env I_AM_TEH_XAPIAN_DAEMON=true RAILS_ENV=#{RAILS_ENV} #{File.join(RAILS_ROOT, "script", "daemonize.pl")} #{File.join(RAILS_ROOT, "script", "runner")} 'XapianDaemon.new.run' 2>&1`
     if $?.exitstatus != 0
       raise out
     end
