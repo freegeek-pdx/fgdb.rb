@@ -42,7 +42,7 @@ module SidebarHelper
     ["income", "gizmos", "volunteering"].each do |x|
       sidebar_hash["reports"][x] = {:c => "reports", :a => x}
     end
-    sidebar_hash["reports"]["over time"] = {:c => 'graphic_reports'}
+    sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     # contacts
     sidebar_hash["contacts"]["contacts"] = {:c => "contacts"} if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'} if has_role?('CONTACT_MANAGER')
