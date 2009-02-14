@@ -1,4 +1,6 @@
 <h1><%= sprintf("%s (Copy #%s)", @c.book.title, @c.copy_id) %></h1>
+<h2>Status</h2>
+<%= @c.long_status  %>
 <h2>Circulation</h2>
 <% if @c.checked_in? %>
 <div class="noblock">
@@ -11,7 +13,6 @@
 </div>
 <% end %>
 <% if @c.checked_out? %>
-<%= @c.long_status  %>
 <%= button_to "Renew", :action => "renew", :copy_id => @c.id %>
 <%= button_to "Check in", :action => "checkin", :copy_id => @c.id %>
 <% end %>
