@@ -39,7 +39,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "soap", :conditions => { :method => :post, :soap => true }
   map.root :controller => "sidebar_links", :action => "fgss_moved", :conditions => {:host => /^(printme|fgss|rocky)(.fglan)?$/i}
   map.root :controller => "sidebar_links", :action => "staffsched_moved", :conditions => {:host => /^(bullwinkle)(.fglan)?$/i}
-  map.root :controller => "sidebar_links", :action => "library_moved", :conditions => {:host => /^(library|marian)(.fglan)?$/i}
+  map.root :controller => "sidebar_links", :action => "library_moved", :conditions => {:host => /^(library|marian)(.fglan|.freegeek.org)?$/i}
   map.root :controller => "sidebar_links"
 
   # See how all your routes lay out with "rake routes"
