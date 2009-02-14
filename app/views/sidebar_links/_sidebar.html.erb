@@ -1,9 +1,19 @@
+<script>
+function hideall() {
+a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){if(a[i].style.display != "none") {Effect.SlideUp(a[i].id)}};
+}
+
+function f_hideall() {
+a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){a[i].hide();};
+}
+</script>
 <% aliases, sidebar_hash = sidebar_stuff %>
 <div id="sidebar">
   <% sidebar_hash.each do |main_name, my_hash| %>
     <% if my_hash.length > 0 %>
-      <%= main_name %>
-      <div class="sidebar_section">
+      <a onClick="hideall(); Effect.SlideDown('<%= main_name %>_sidebar_section')"><%= main_name %></a>
+      <div></div>
+      <div class="sidebar_section" id="<%= main_name %>_sidebar_section">
         <% my_hash.each do |this_name, opts| %>
           <div>
             <% my_opts = opts %>
@@ -20,3 +30,27 @@
     <% end %>
   <% end %>
 </div>
+<script>
+<% if params[:controller] == "sidebar_links" %>
+hideall();
+<% else %>
+f_hideall();
+<% end %>
+<%= thing = case params[:controller]
+            when "recyclings": "recyclings"
+            when "volunteer_tasks": "hours"
+            when "sales": "sales"
+            when "donations": "donations"
+            when "disbursements": "disbursements"
+            when "reports": "reports"
+            when "graphic_reports": "reports"
+            when "work_shifts": "staff schedule"
+            when "contacts": "contacts"
+            when "contact_duplicates": "contacts"
+            when "library": "library"
+            when "spec_sheets": "fgss"
+            else ""
+            end
+   thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()"
+ %>
+</script>
