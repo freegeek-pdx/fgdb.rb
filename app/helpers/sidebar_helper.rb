@@ -1,4 +1,24 @@
 module SidebarHelper
+  # TODO: add methods like this that control it for all 4 transactions + hours, reports, and contact dedup
+  # TODO: get this from some table or something
+
+  def should_show_library
+    true
+  end
+
+  def should_show_fgss
+    true
+  end
+
+  def should_show_schedule
+    true
+  end
+
+  # TODO: kill this once rfs tells me to
+  def should_show_edit_schedule
+    false
+  end
+
   def sidebar_stuff
     # base
     aliases = {:a => :action, :c => :controller}
@@ -37,8 +57,8 @@ module SidebarHelper
     end
     # staffsched
     staffsched = OH.n("staffsched", "/staffsched")
-    staffsched.a("edit schedule", :c => "work_shifts") if false and has_role?('SKEDJULNATOR')
-    sidebar_hash.a("staff schedule", staffsched)
+    staffsched.a("edit schedule", :c => "work_shifts") if should_show_edit_schedule and has_role?('SKEDJULNATOR')
+    sidebar_hash.a("staff schedule", staffsched) if should_show_schedule
     # library
     lib = OH.n
     requires_librarian = ['overdue', 'labels']
@@ -47,11 +67,11 @@ module SidebarHelper
         lib.add(i, :c => "library", :a => i)
       end
     end
-    sidebar_hash.add("library", lib)
+    sidebar_hash.add("library", lib) if should_show_library
     # fgss
     fgss = OH.n("printme", :c => 'spec_sheets')
     fgss.a("fix contract", :c => 'spec_sheets', :a => "fix_contract") if Contract.find(:all).length > 1 && has_role?("ADMIN") # TODO: fix this
-    sidebar_hash.add("fgss", fgss)
+    sidebar_hash.add("fgss", fgss) if should_show_fgss
     # done
     return aliases, sidebar_hash
   end
