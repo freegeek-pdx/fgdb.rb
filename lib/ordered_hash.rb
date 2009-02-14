@@ -52,6 +52,10 @@ class OrderedHash
       @hash[x]
     }
   end
+
+  def length
+    @arr.length
+  end
 end
 
 OH = OrderedHash

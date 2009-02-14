@@ -1,20 +1,22 @@
 <% aliases, sidebar_hash = sidebar_stuff %>
 <div id="sidebar">
   <% sidebar_hash.each do |main_name, my_hash| %>
-    <%= main_name %>
-    <div class="sidebar_section">
-      <% my_hash.each do |this_name, opts| %>
-        <div>
-          <% my_opts = opts %>
-          <% aliases.each do |a, b| %>
-            <% if opts[a] and !opts[b] %>
-              <% my_opts[b] = opts[a] %>
-              <% my_opts.delete(a) %>
+    <% if my_hash.length > 0 %>
+      <%= main_name %>
+      <div class="sidebar_section">
+        <% my_hash.each do |this_name, opts| %>
+          <div>
+            <% my_opts = opts %>
+            <% aliases.each do |a, b| %>
+              <% if opts[a] and !opts[b] %>
+                <% my_opts[b] = opts[a] %>
+                <% my_opts.delete(a) %>
+              <% end %>
             <% end %>
-          <% end %>
-          <%= link_to this_name, my_opts %>
-        </div>
-      <% end %>
-    </div>
+            <%= link_to this_name, my_opts %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
