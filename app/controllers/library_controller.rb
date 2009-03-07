@@ -151,8 +151,12 @@ class LibraryController < ApplicationController
     cols, rows = get_dimensions
     recommended_pages = (list_labels_in_session.length.to_f / (cols.to_i * rows.to_i)).ceil
     res = gen_pdf(list_labels_in_session, recommended_pages, []) # 3rd arg is a list of label positions to skip
-    remove_from_session_labels(list_labels_in_session)
-    redirect_to :action => "show_pdf", :id => res
+#    remove_from_session_labels(list_labels_in_session)
+    file = File.join(RAILS_ROOT, "tmp", "tmp", res.sub("$", "."))
+    respond_to do |format|
+      format.pdf { render :text => File.read(file) }
+    end
+    File.unlink(file)
   end
 
   def add_to_labels
@@ -164,13 +168,5 @@ class LibraryController < ApplicationController
   def add_copy
     add_to_session_labels(Book.find_by_id(params[:book_id]).add_copy.id)
     redirect_to :action => "show_book", :id => params[:book_id]
-  end
-
-  def show_pdf
-    file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
-    respond_to do |format|
-      format.pdf { render :text => File.read(file) }
-    end
-    File.unlink(file)
   end
 end
