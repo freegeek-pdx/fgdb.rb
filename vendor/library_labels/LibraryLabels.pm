@@ -99,11 +99,12 @@ sub process_thing {
     my ($x, $y) = get_magic_location($info, $cur_row, $cur_col);
     $x += 10;
     $y -= 10;
-    my $rectangle = PDF::Rectangle->new($text, $x, $y - 30, $x + 50, $y - 60);
+    my $y_offset = 20;
+    my $y_limit = $y - $info->label_height(); # wtf?
+    my $rectangle = PDF::Rectangle->new($text, $x, $y - $y_offset, $x + 50, $y_limit);
     if(!$rectangle->add_text($callno)) {
         die("epic fail"); # TODO: FIXME
     }
-#    $text->paragraph($callno, 50, -spillover => 0);
     # based on http://osdir.com/ml/lang.perl.modules.pdfapi2/2004-06/msg00014.html
     my $bar = $pdf->xo_3of9(-font => $pdf->corefont('Helvetica-Bold'), # the font to use for text
                             -code => $barcode, # the code of the barcode
@@ -116,12 +117,10 @@ sub process_thing {
                             -text => $barcode
         );
     $gfx->formimage($bar, $x + 50, ($y - $bar->height()));
-    $text->translate($x + 50 + $bar->width(), $y - 30);
-    my(undef, $first_height) = $text->paragraph($title, $info->label_width - 50 - $bar->width(), $info->label_height - 30, -spillover => 0);
-    $text->translate($x + 50 + $bar->width(), $first_height);
-    my(undef, $second_height) = $text->paragraph($author, $info->label_width - 50 - $bar->width(), $first_height, -spillover => 0);
-    $text->translate($x + 50 + $bar->width(), $y - 30 - ($first_height + $second_height));
-    $text->text("Free Geek Library"); # TODO: get this from the db
+    $rectangle = PDF::Rectangle->new($text, $x + 50 + $bar->width(), $y - $y_offset, $x + 50 + $bar->width() + 50, $y_limit);
+    $rectangle->add_text($title);
+    $rectangle->add_text($author);
+    $rectangle->add_text("Free Geek Library");
 }
 
 1;

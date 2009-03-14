@@ -149,8 +149,9 @@ sub add_text {
         $pdftext->text("@temp");
         $self->move_down($self->word_height());
     }
-    return 0 if(scalar @list > 0);
-    return 1; #TODO: FIXME
+#    return 0 if(scalar @list > 0); #TODO: FIXME
+    carp("epic fail") if(scalar @list > 0);
+    return 1;
 }
 
 1;
