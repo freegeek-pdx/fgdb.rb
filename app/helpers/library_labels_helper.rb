@@ -11,7 +11,8 @@ module LibraryLabelsHelper
   end
 
   def run_labels_script(scriptname, *args)
-    run_thing(["perl", "-I#{PATH_TO_LABELS_STUFF}", File.join(PATH_TO_LABELS_STUFF, scriptname + ".pl"), *args].join(" "))
+    puts "#{scriptname} #{args.join(" ")}"
+    run_thing([File.join(PATH_TO_LABELS_STUFF, scriptname + ".pl"), *args].join(" "))
   end
 
   # returns (cols, rows)
@@ -28,7 +29,7 @@ module LibraryLabelsHelper
     d.flush
     run_labels_script("gen_pdf", tempfile, d.path, pages, LABEL, skips.join(","))
     d.close
-    d.unlink
+#    d.unlink
     return basename
   end
 end

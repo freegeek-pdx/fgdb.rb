@@ -14,6 +14,7 @@ use Paper::Specs brand => 'Avery', layout => 'pdf';
 use XML::XPath;
 use PDF::API2;
 use Carp;
+use PDF::Rectangle;
 
 sub get_number {
     my $label = shift;
@@ -72,6 +73,7 @@ sub gen_pdf {
     }
   }
     $pdf->saveas($filename);
+    $pdf->end();
 }
 
 sub add_blank_thing {
@@ -97,8 +99,11 @@ sub process_thing {
     my ($x, $y) = get_magic_location($info, $cur_row, $cur_col);
     $x += 10;
     $y -= 10;
-    $text->translate($x, $y - 30);
-    $text->text($callno);
+    my $rectangle = PDF::Rectangle->new($text, $x, $y - 30, $x + 50, $y - 60);
+    if(!$rectangle->add_text($callno)) {
+        die("epic fail"); # TODO: FIXME
+    }
+#    $text->paragraph($callno, 50, -spillover => 0);
     # based on http://osdir.com/ml/lang.perl.modules.pdfapi2/2004-06/msg00014.html
     my $bar = $pdf->xo_3of9(-font => $pdf->corefont('Helvetica-Bold'), # the font to use for text
                             -code => $barcode, # the code of the barcode
@@ -112,10 +117,10 @@ sub process_thing {
         );
     $gfx->formimage($bar, $x + 50, ($y - $bar->height()));
     $text->translate($x + 50 + $bar->width(), $y - 30);
-    $text->text($title);
-    $text->translate($x + 50 + $bar->width(), $y - 40);
-    $text->text($author);
-    $text->translate($x + 50 + $bar->width(), $y - 50);
+    my(undef, $first_height) = $text->paragraph($title, $info->label_width - 50 - $bar->width(), $info->label_height - 30, -spillover => 0);
+    $text->translate($x + 50 + $bar->width(), $first_height);
+    my(undef, $second_height) = $text->paragraph($author, $info->label_width - 50 - $bar->width(), $first_height, -spillover => 0);
+    $text->translate($x + 50 + $bar->width(), $y - 30 - ($first_height + $second_height));
     $text->text("Free Geek Library"); # TODO: get this from the db
 }
 
