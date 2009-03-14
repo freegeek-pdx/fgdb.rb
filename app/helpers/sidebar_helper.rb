@@ -14,9 +14,8 @@ module SidebarHelper
     true
   end
 
-  # TODO: kill this once rfs tells me to
   def should_show_edit_schedule
-    false
+    true
   end
 
   def sidebar_stuff
