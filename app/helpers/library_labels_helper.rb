@@ -11,7 +11,6 @@ module LibraryLabelsHelper
   end
 
   def run_labels_script(scriptname, *args)
-    puts "#{scriptname} #{args.join(" ")}"
     run_thing([File.join(PATH_TO_LABELS_STUFF, scriptname + ".pl"), *args].join(" "))
   end
 
