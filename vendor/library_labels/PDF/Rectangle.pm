@@ -121,16 +121,15 @@ sub add_text {
     # * we can move down and then back up the height of a line
     while(scalar @list > 0 && ($self->move_down($self->word_height()) && $self->move_up($self->word_height()))) {
         # if there's too much
-        if($pdftext->advancewidth(" $list[0]") > $self->width_left() && 0) {
+        if($pdftext->advancewidth(" $list[0]") > $self->width_left()) {
             # loop through until we fill it up
             my $bad = shift @list;
             my $good1 = "";
             my $good2 = "";
             my $i = 0;
-#            while($pdftext->advancewidth(substr($bad, 0, $i + 1)) < $self->width_left()) {
-#                $i += 1;
-#            }
-            $i = 5;
+            while($pdftext->advancewidth(substr($bad, 0, $i + 1)) < $self->width_left() && length($bad) > $i) {
+                $i += 1;
+            }
             $good1 = substr($bad, 0, $i);
             $good2 = substr($bad, $i, length($bad) - length($good1));
             unshift @list, $good2;
@@ -143,7 +142,7 @@ sub add_text {
         # while:
         # if we add the next thing, then it will fit width wise
         # out list is not empty
-        until($pdftext->advancewidth("@temp $list[0]") > $self->width_left() || scalar @list == 0) {
+        until($pdftext->advancewidth(join(" ", (@temp, $list[0]))) > $self->width_left() || scalar @list == 0) {
             push @temp, shift @list;
         }
         $pdftext->text("@temp");
