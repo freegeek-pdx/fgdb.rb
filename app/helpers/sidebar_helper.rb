@@ -39,7 +39,7 @@ module SidebarHelper
     end
     # reports
     ["income", "gizmos", "volunteering"].each do |x|
-      sidebar_hash["reports"][x] = {:c => "reports", :a => x}
+      sidebar_hash["reports"][x] = {:c => "reports", :a => x.sub("ing", "s")}
     end
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     # contacts
