@@ -306,7 +306,7 @@ class ReportsController < ApplicationController
     data = {}
     sections.each {|section|
       data[section] = {}
-      eval((section).classify).find(:all).each {|type|
+      eval((section).to_s.classify).find(:all).each {|type|
         data[section][type.description] = 0.0
       }
       data[section]['Total'] = 0.0

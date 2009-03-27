@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
     if uid && (u = User.find_by_cashier_code(uid.to_i))
       Thread.current['cashier'] = u
     else
+      Thread.current['cashier'] = nil
       logger.warn "Cashier not found" # die better
     end
   end

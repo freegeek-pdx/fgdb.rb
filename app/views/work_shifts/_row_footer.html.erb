@@ -1,6 +1,6 @@
 
     <% # output trailing cells as padding %>
-    <% trail_time = ( @shift.weekday.end_time - @prev_shift[:end_time] ) / (60*15) %>
+    <% trail_time = (begin; ( @shift.weekday.end_time - @prev_shift[:end_time] ); rescue; 0; end) / (60*15) %>
     <% for i in (1..trail_time) %>
       <td>&nbsp;</td>
     <% end %>

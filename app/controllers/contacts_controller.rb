@@ -4,8 +4,19 @@ class ContactsController < ApplicationController
   filter_parameter_logging "user_password", "user_password_confirmation"
 
   around_filter :transaction_wrapper
-  before_filter :authorized_only
+  before_filter :authorized_only, :except => [:check_cashier_code]
   before_filter :be_stupid
+
+  def check_cashier_code
+    uid = params[:cashier_code]
+    t = ""
+    if uid && (User.find_by_cashier_code(uid.to_i))
+      t = "yep"
+    else
+      t = "nope"
+    end
+    render :text => t
+  end
 
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')

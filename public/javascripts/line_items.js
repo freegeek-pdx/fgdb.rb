@@ -34,6 +34,30 @@ function update_contract_notes(){
   }
 }
 
+function disable_all_links() {
+  var arr = document.getElementsByClassName("disable_link");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    if(thing.status == undefined || thing.status == 0) {
+      thing.origOnClick = thing.onclick;
+      thing.onclick = function () { return false; };
+      thing.status = 1;
+    }
+  }
+}
+
+function enable_all_links() {
+  var arr = document.getElementsByClassName("disable_link");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    if(thing.status == 1) {
+      thing.onclick = thing.origOnClick;
+      thing.origOnClick = "";
+      thing.status = 0
+    }
+  }
+}
+
 function toggle_description(evt) {
   show_description++;
   var arr = document.getElementsByClassName('description');
@@ -60,6 +84,7 @@ function add_line_item(args, hook1, hook2, update_hook, edit_hook, show_edit_but
   };
   if(show_edit_button) {
     a.appendChild(document.createTextNode('e'));
+    a.className = 'disable_link';
     td.appendChild(a);
   }
   td.appendChild(document.createTextNode(' '));
@@ -69,6 +94,7 @@ function add_line_item(args, hook1, hook2, update_hook, edit_hook, show_edit_but
     update_hook();
   };
   a.appendChild(document.createTextNode('x'));
+  a.className = 'disable_link';
   td.appendChild(a);
   tr.appendChild(td);
   $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_lines').lastChild.lastChild.previousSibling);

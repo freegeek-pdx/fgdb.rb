@@ -8,7 +8,7 @@
 
 <% table_width = 2 %>
 <% for section,types in @data %>
-  <div id="<%= section -%>_report"><p><%= (section).titleize %></p>
+  <div id="<%= section -%>_report"><p><%= (section).to_s.titleize %></p>
     <% for type in types.keys.sort {|a,b|
            if /total/i.match(a)
              1

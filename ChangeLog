@@ -1,8 +1,18 @@
 fgdb.rb (1.0.30) UNRELEASED; urgency=low
 
-  * 
+  * add some helper scripts to manipulate the ChangeLog (dch, debcommit,
+    dpkg-parsechangelog)
+  * no javascript/dhtml stylesheets on the skedjul when in readonly mode
+  * make skedjul sort of work a little bit with a borked database
+    (apparently after a while it breaks itself...), hopefully not
+    breaking the production database...
+  * when the cashier code is not entered, don't allow the x/e links for
+    line items to be clicked
+  * don't unlock the form for just any 4 digit number...check if it's
+    a valid cashier code first
+  * fix volunteering report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 23:37:16 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 16:28:37 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
