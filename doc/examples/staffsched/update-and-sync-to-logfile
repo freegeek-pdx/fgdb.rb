@@ -1,0 +1,18 @@
+#!/bin/sh
+
+BAR="=========================================================================="
+
+set -e
+cd ~
+echo >> update-and-sync.log
+echo >> update-and-sync.log
+echo >> update-and-sync.log
+echo $BAR >> update-and-sync.log
+echo "Starting update-and-sync at $(date -R)" >> update-and-sync.log
+echo $BAR >> update-and-sync.log
+echo >> update-and-sync.log
+./update-and-sync 2>&1 | tee -a update-and-sync.log >/dev/null
+echo >> update-and-sync.log
+echo $BAR >> update-and-sync.log
+echo "Finished update-and-sync at $(date -R)" >> update-and-sync.log
+echo $BAR >> update-and-sync.log

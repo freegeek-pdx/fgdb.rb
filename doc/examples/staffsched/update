@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+set -x
+
+SERVER=localhost
+
+mkdir -p ~/web
+cd ~/web
+wget http://$SERVER/staffsched -O index.html
+mkdir -p stylesheets
+for i in schedule print scaffold; do
+    wget http://$SERVER/stylesheets/$i.css -O stylesheets/$i.css
+done
+

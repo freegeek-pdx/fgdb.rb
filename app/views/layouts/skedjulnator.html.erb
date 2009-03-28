@@ -42,5 +42,8 @@
     <a href='/worker_types'>worker types</a>
   </div>
   <% end %>
+  <% if @readonly %>
+    <pre>Generated on <%= `date -R | sed s/,//` %></pre>
+  <% end %>
 </body>
 </html>

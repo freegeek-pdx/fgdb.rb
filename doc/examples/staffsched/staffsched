@@ -1,0 +1,12 @@
+# -*- Conf-Space -*-
+# place in /etc/logrotate.d/
+
+/home/staffsched/update-and-sync.log {
+        daily
+        missingok
+        notifempty
+        nocreate
+        rotate 50
+        compress
+        delaycompress
+}

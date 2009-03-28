@@ -1,0 +1,8 @@
+.bash*
+.profile
+.ssh
+.emacs.d
+*~
+*.log.*
+*.log
+web
