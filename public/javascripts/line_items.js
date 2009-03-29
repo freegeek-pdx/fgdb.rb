@@ -1,3 +1,45 @@
+function sales_hanle_gizmo_events(){
+  return add_priced_gizmo_event_from_form();
+}
+
+function donations_handle_gizmo_events(){
+  return add_priced_gizmo_event_from_form();
+}
+
+function disbursements_handle_gizmo_events(){
+  return add_unpriced_gizmo_event_from_form();
+}
+
+function recyclings_handle_gizmo_events(){
+  return add_unpriced_gizmo_event_from_form();
+}
+
+function sales_handle_payments(){
+  return add_payment_from_form(sale_compute_totals);
+}
+
+function donations_handle_payments(){
+  return add_payment_from_form(donation_compute_totals);
+}
+
+function sales_handle_all(){
+  sales_hanle_gizmo_events();
+  sales_handle_payments();
+}
+
+function donations_handle_all(){
+  donations_handle_gizmo_events();
+  donations_handle_payments()
+}
+
+function disbursements_handle_all(){
+  disbursements_handle_gizmo_events();
+}
+
+function recyclings_handle_all(){
+  recyclings_handle_gizmo_events();
+}
+
 function update_contract_notes(){
   if($('contract_notes') == null)
     return;

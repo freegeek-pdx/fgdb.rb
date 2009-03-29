@@ -119,6 +119,18 @@ font-size: 11px;
 border-left: 1px solid #DDD;
 }
 
+div.hours_detail_report table.list tr td {
+font-size: 18px;
+}
+
+div.hours_detail_report table.list tr th {
+font-size: 18px;
+}
+
+div.hours_detail_report {
+font-size: 18px;
+}
+
 table.list tr.even td {
 background-color: #E2F2FF;
 }

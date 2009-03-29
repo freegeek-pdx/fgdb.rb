@@ -14,6 +14,13 @@
     <%= javascript_include_tag 'boxover' %>
     <%= javascript_include_tag 'keybindings' %>
 
+    <%= javascript_tag "function good_cashier_code(code) {
+" + remote_function(
+          :url => {:controller => "contacts", :action => "check_cashier_code"},
+                          :loading => "Element.show('#{loading_indicator_id("cashier_loading")}');",
+                          :with => "{cashier_code: code}") + "
+}" %>
+
     <%= dhtml_calendar_includes %>
     <% if defined?(@gizmo_context) %>
       <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>

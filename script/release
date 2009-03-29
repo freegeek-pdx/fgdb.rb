@@ -27,6 +27,7 @@ git config branch.release_$VERSION.remote origin
 git config branch.release_$VERSION.merge release_$VERSION
 git push fg --tags
 git checkout master
+./dpkg-parsechangelog | ssh xyzzy.ryan52.info mail -s "FGDB.rb version $VERSION released" coders@lists.freegeek.org
 dch -c ChangeLog -i --dist UNRELEASED ""
 git add ChangeLog
 git commit -m "add new, empty changelog entry"

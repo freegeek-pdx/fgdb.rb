@@ -26,7 +26,7 @@
                                     :after_input => "function(e) {Element.update($('#{searchbox_display_id(options)}'), '')}",
                                     :skip_style => true,
                                     :indicator => loading_indicator_id("contact_autocomplete_loading"),
-                                    :auto_select => true,
+                                    :auto_select => false,
                                     :method => 'GET'
                                   },
                                   :object_name => contact_object_name(options),

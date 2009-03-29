@@ -13,8 +13,24 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * fix volunteering report
   * add 'generated on' to the bottom of the staff schedule
   * add the scripts that sync the staffsched to freegeek.org to git
+  * don't autoselect the autocomplete
+  * make SQL for gizmos report contacts condition faster
+  * dont have the saved password be entered into the cashier code
+    field...silly firefox.
+  * allow the user to click the cancel button before entering their
+    cashier code
+  * finish off the line items when you click the submit button if you
+    forgot to tab
+  * add a contributor contact checkbox [pdx only]
+  * make the hours report have bigger text (Closes: #13066)
+  * remove contact_methods after they no longer have a contact (Closes: #13087)
+    - clean up date: remove all contact_methods without a contact
+  * send out the output of dpkg-parsechangelog to the coders list when
+    releasing
+  * remove extra <td> in recycling's gizmo events line item
+  * use proper ajax for the cashier code checking, add loading indicator
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 17:10:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 17:29:49 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
