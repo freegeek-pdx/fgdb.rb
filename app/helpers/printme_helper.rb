@@ -2,23 +2,24 @@ module PrintmeHelper
   include XmlHelper
 
   def parse_stuff(my_lshw_output)
-    @parser = load_xml(my_lshw_output)
+    @parser = load_xml(my_lshw_output) or return false
 
     @system_model = @system_serial_number = @system_vendor = @mobo_model = @mobo_serial_number = @mobo_vendor = @macaddr = nil
 
-    @parser.xml_foreach("class", "system") {
-      @system_model ||= @parser._xml_value_of("product", '/')
-      @system_serial_number ||= @parser._xml_value_of("serial", '/')
-      @system_vendor ||= @parser._xml_value_of("vendor", '/')
-      @mobo_model ||= @parser.xml_first("id", "core") do @parser._xml_value_of("product", '/') end
-      @mobo_serial_number ||= @parser.xml_first("id", "core") do @parser._xml_value_of("serial", '/') end
-      @mobo_vendor ||= @parser.xml_first("id", "core") do @parser._xml_value_of("vendor", '/') end
-      @macaddr ||= @parser.xml_first("id", "network") do @parser._xml_value_of("serial", '/') end
+    @parser.xml_foreach("//*[@class='system']") {
+      @system_model ||= @parser._xml_value_of("/node/product")
+      @system_serial_number ||= @parser._xml_value_of("/node/serial")
+      @system_vendor ||= @parser._xml_value_of("/node/vendor")
+      @mobo_model ||= @parser._xml_value_of("//*[contains(@id, 'core')]/product")
+      @mobo_serial_number ||= @parser._xml_value_of("//*[contains(@id, 'core')]/serial")
+      @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")
+      @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network')]/serial")
     }
 
     get_vendor
     get_serial
     get_model
+    return @parser
   end
 
   def find_system_id

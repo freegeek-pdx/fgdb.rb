@@ -1,6 +1,6 @@
 <div id="hard_drives">
   <h2>Hard Drives</h2>
-  <% @parser.xml_foreach("id", "disk") do %>
+  <% @parser.xml_foreach("//*[contains(@id, 'disk')]") do %>
     <table>
       <tr>
         <td>
@@ -15,7 +15,7 @@
           Type:
         </td>
         <td>
-          <% if (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) %>
+          <% if (@parser.do_with_parent do @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end).match(/(scsi|sata|ide)/i) %>
             <%= $1.upcase %>
           <% else %>
             Unknown
@@ -58,13 +58,13 @@
         </tr>
       <% end %>
       <% counter = 0 %>
-      <% @parser.xml_foreach("id", "volume") do counter += 1 end %>
+      <% @parser.xml_foreach(".//*[contains(@id, 'volume')]") do counter += 1 end %>
       <% if counter > 0 %>
         <tr>
           <td valign="top">Volumes: </td>
           <td>
             <table>
-              <% @parser.xml_foreach("id", "volume") do %>
+              <% @parser.xml_foreach(".//*[contains(@id, 'volume')]") do %>
                 <tr>
                   <td>
                     <%= @parser.xml_value_of("logicalname") %>

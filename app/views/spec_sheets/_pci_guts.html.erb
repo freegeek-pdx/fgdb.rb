@@ -32,7 +32,7 @@
       </td>
     </tr>
   <% end %>
-  <% if false && @parser.xml_value_of("@class")=="display" && @parser.xml_if("size") %>
+  <% if false && @parser.xml_value_of("@class")=="display" && @parser.xml_if("size") %><%# not tested after nokogiri %>
     <tr>
       <td>Video Ram: </td>
       <td>
@@ -40,7 +40,7 @@
       </td>
     </tr>
   <% end %>
-  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']") %>
+  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']") %><%# not tested after nokogiri %>
     <tr>
       <td>Wireless Capabilities: </td>
       <td>
@@ -48,7 +48,7 @@
       </td>
     </tr>
   <% end %>
-  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("logicalname") %>
+  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("logicalname") %><%# not tested after nokogiri %>
     <tr>
       <td>Ethernet Interface: </td>
       <td>
@@ -57,7 +57,7 @@
     </tr>
   <% end %>
   <% if @parser.xml_value_of("@class")=="network" && @parser.xml_if("capabilities") %>
-    <% @parser.find_the_biggest("element", "capability", "@id") do |value| %>
+    <% @parser.find_the_biggest(".//capability/@id") do |value| %>
       <tr>
         <td>Speed: </td>
         <td>

@@ -29,8 +29,24 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     releasing
   * remove extra <td> in recycling's gizmo events line item
   * use proper ajax for the cashier code checking, add loading indicator
+  * allow spaces in the RAILS_ROOT...*sigh*
+  * scramble some of the newer tables when making devel data
+  * don't use a gzipped version for the devel data...look for it
+    uncompressed.
+  * download lzma devel data
+  * make a script to download the devel data
+  * always download the data when loading, but only if there's a new
+    version
+  * move the svn post-commit hook for the devel data from svn to git
+  * export all versions of devel data
+  * script to create devel data
+  * updated devel data
+  * keep the current devel data version with each branch, and download
+    that version if we're in a branch
+  * mirroring the devel data on my VPS, and downloading it from there
+  * switch to nokogiri for the xml parsing...*phew*
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 17:29:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 17:54:42 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 

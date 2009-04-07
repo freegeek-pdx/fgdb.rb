@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: volunteer_task_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('volunteer_task_types_id_seq', 53, true);
+SELECT pg_catalog.setval('volunteer_task_types_id_seq', 54, true);
 
 
 --
@@ -59,6 +59,7 @@ COPY volunteer_task_types (id, description, parent_id, hours_multiplier, instant
 21	quality control	24	1.000	t	2	2006-12-13 11:00:21	2006-12-13 10:46:44	quality_control
 26	build, assembly	24	1.000	t	0	2006-12-13 10:48:52	2006-12-13 10:48:52	assembly
 38	education	17	1.000	t	1	2006-12-30 18:22:11	2006-12-30 08:40:54	education
+54	case management	24	1.000	t	0	2008-12-12 17:17:50.467874	2008-12-12 17:17:50.467874	case management
 \.
 
 

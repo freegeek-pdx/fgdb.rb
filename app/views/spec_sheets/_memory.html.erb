@@ -1,20 +1,19 @@
 <div id="memory">
   <h2>Memory</h2>
-  <% @parser.xml_foreach("id", "memory") do %>
-    <% if @parser.xml_if("size", '/') %>
+  <% @parser.xml_foreach("//*[contains(@id, 'memory')]") do %>
+    <% if @parser.xml_if("size") %>
       <table>
         <tr>
           <td>
             Total:
           </td>
           <td>
-            <%= @parser.xml_value_of("size", '/').to_bytes(1) %>
+            <%= @parser.xml_value_of("size").to_bytes(1) %>
           </td>
         </tr>
       </table>
     <% end %>
-    <% @parser.xml_foreach("id", "bank") do %>
-
+    <% @parser.xml_foreach(".//*[contains(@id, 'bank')]") do %>
       <div class="indent">
         <table>
           <tr>

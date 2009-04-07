@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('defaults_id_seq', 9, true);
+SELECT pg_catalog.setval('defaults_id_seq', 15, true);
 
 
 --
@@ -33,6 +33,10 @@ COPY defaults (id, name, value, lock_version, updated_at, created_at) FROM stdin
 1	city	Portland	1	2007-04-16 14:34:29	2007-04-16 14:15:10
 8	my_email_address	fgdb@freegeek.org	0	\N	\N
 9	volunteer_reports_to	inreach@todo.freegeek.org	0	\N	\N
+15	is-pdx	true	0	2008-12-22 09:01:02.01784	2008-12-22 09:01:02.01784
+13	fully_covered_contact_covered_gizmo	-1	0	2008-12-22 09:00:53.770448	2008-12-22 09:00:53.770448
+14	unfully_covered_contact_covered_gizmo	7	0	2008-12-22 09:00:53.78511	2008-12-22 09:00:53.78511
+12	coveredness_enabled	0	1	2009-04-04 08:31:19.715846	2008-12-22 09:00:53.614147
 \.
 
 

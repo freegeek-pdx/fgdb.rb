@@ -25,7 +25,7 @@
         <%= h @report.system.serial_number %>
       </td>
     </tr>
-    <% @parser.xml_foreach("class", "processor") do %>
+    <% @parser.xml_foreach("//*[@class='processor']") do %>
       <% if @parser.xml_if("product") %>
         <tr>
           <td>
@@ -52,10 +52,10 @@
         BIOS Version:
       </td>
       <td>
-        <%= @parser.xml_first("id", "firmware") do @parser.xml_value_of("version") end %>
+        <%= @parser.xml_value_of("//*[contains(@id, 'firmware')]/version") %>
       </td>
     </tr>
-    <% @parser.find_the_biggest("id", "usbhost", "capability", "USB ") do |value| %>
+    <% @parser.find_the_biggest("//node[contains(@id, 'usbhost')]/capabilities/capability", "USB ") do |value| %>
       <tr>
         <td>
           Supports:
@@ -65,7 +65,7 @@
         </td>
       </tr>
     <% end %>
-    <% a = []; @parser.xml_foreach("id", "storage|ide|scsi") do a << @parser.xml_value_of("product") + @parser.xml_value_of("description") end %>
+    <% a = []; @parser.xml_foreach("//*[contains(@id, 'storage') or contains(@id, 'ide') or contains(@id, 'scsi')]") do a << @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end %>
     <% a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x| %>
       <tr>
         <td>

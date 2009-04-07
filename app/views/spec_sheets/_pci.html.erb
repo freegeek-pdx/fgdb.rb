@@ -1,8 +1,10 @@
 <div id="pci">
   <h2>PCI Bus</h2>
-  <% @parser.xml_foreach("id", "pci|pcmcia") do %>
+  <% @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do %>
+    <% if @parser._xml_value_of("product") %>
     <h3><%= @parser._xml_value_of("product") %></h3>
-    <% @parser.xml_foreach("handle", "PCI:|PCMCIA:", '/') do %>
+    <% end %>
+    <% @parser.xml_foreach("./node[contains(@handle, 'PCI:') or contains(@handle, 'PCMCIA:')]") do %>
       <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
         <%= render :partial => "pci_guts" %>
       <% end %>

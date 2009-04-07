@@ -5,6 +5,10 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 digits = "0123456789".split("")
 chars = "abcdefghijklmnopqrstuvwxyz".split("")
 
+D = Default
+D.destroy_all "name LIKE '%_cashier_%'"
+D["coveredness_enabled"] = 0
+
 def non_empty(val)
   return val && !val.empty?
 end
@@ -13,10 +17,14 @@ def add(list, val)
   list << val if non_empty(val)
 end
 
-def fix_tx(txs, chars, digits)
+def fix_tx(txs, chars, digits, thing = "comments")
   txs.each do |tx|
-    tx.comments = tx.comments.gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
-    tx.comments = tx.comments.gsub(/[0-9]/) { digits[rand(digits.size)] }
+    evalstr1 = "tx.#{thing}"
+    evalstr = "tx.#{thing}=a"
+    a = eval(evalstr1).gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
+    eval(evalstr)
+    a = eval(evalstr1).gsub(/[0-9]/) { digits[rand(digits.size)] }
+    eval(evalstr)
     tx.save!
   end
 end
@@ -56,6 +64,9 @@ fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <
 
 puts "fixing up recyclings"
 fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
+
+puts "fixing up notes"
+fix_tx(Note.find(:all, :conditions=>"body is not null and body <> ''"), chars, digits, "body")
 
 all = Contact.find(:all)
 
@@ -153,12 +164,22 @@ User.find(:all).each do |u|
   u.save!
 end
 
-admin = User.find_by_name("admin")
+names = Worker.find(:all).map(&:name).sort{rand<=>rand}
+contacts = Worker.find(:all).map(&:contact_id).sort{rand<=>rand}
+Worker.find(:all).each do |w|
+  next if w.id == 0
+  w.name = names.pop
+  w.contact_id = contacts.pop
+  w.save!
+end
+
+User.reset_all_cashier_codes
+admin = User.find_by_login("admin")
 admin.cashier_code = 1234
 admin.save!
 
 ContactDuplicate.destroy_all
-[:donations => :contract_id, :systems => :contract_id, :gizmo_events => :recyclings_contract_id, :contacts => :contract_id].each{|table,column
-  Inflector.classify(table.to_s).constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} NOT NULL")
+{:donations => :contract_id, :systems => :contract_id, :gizmo_events => :recycling_contract_id, :contacts => :contract_id}.each{|table,column|
+  Inflector.classify(table.to_s).constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} IS NOT NULL")
 }
 Contract.destroy_all "name != 'default'"

@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: contracts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('contracts_id_seq', 1, true);
+SELECT pg_catalog.setval('contracts_id_seq', 2, true);
 
 
 --
@@ -23,8 +23,8 @@ SELECT pg_catalog.setval('contracts_id_seq', 1, true);
 
 ALTER TABLE contracts DISABLE TRIGGER ALL;
 
-COPY contracts (id, name, description, label, notes, created_at, updated_at) FROM stdin;
-1	default	normal	keeper	\N	2008-11-08 16:27:06.347692	2008-11-08 16:27:06.347692
+COPY contracts (id, name, description, label, notes, created_at, updated_at, instantiable) FROM stdin;
+1	default	normal	keeper	\N	2008-11-01 03:36:20.074472	2008-11-01 03:36:20.074472	t
 \.
 
 

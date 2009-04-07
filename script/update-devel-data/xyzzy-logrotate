@@ -1,0 +1,7 @@
+/var/log/rsync-to-xyzzy {
+			weekly
+			mailfirst
+			mail root@freegeek.org
+			rotate 5
+			create 640 ryan52 ryan52
+}

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+num=100
+
+cd results
+echo -n > bad
+for i in `seq $num`; do
+    x=$((i * 50))
+    echo $x
+    wget http://home.ryan52.info:3000/spec_sheets/show/$x -O $x.mine
+    wget http://data/spec_sheets/show/$x -O $x.good
+    clear
+    diff $x.good $x.mine | less -F -X -E
+    echo -n "Is it good? (number $x) [y] "
+    read YESNO
+    if [ "$YESNO" = "" ]; then
+        YESNO=y
+    fi
+    case $YESNO in
+        y*)
+            ;;
+        *)
+            echo $x >> bad
+            ;;
+    esac
+done

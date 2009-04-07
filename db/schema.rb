@@ -9,11 +9,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081101220817) do
+ActiveRecord::Schema.define(:version => 20090207052819) do
 
   create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
     <<-contact_trigger_sql
-
 
 
 
@@ -25,12 +24,10 @@ END;
 
 
 
-
     contact_trigger_sql
   }
   create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-get_sort_name_sql
-
 
 
 
@@ -64,12 +61,10 @@ END;
 
 
 
-
     get_sort_name_sql
   }
   create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
     <<-uncertify_address_sql
-
 
 BEGIN
   IF tg_op = 'UPDATE' THEN
@@ -88,7 +83,6 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-
     uncertify_address_sql
   }
   create_table "actions", :force => true do |t|
@@ -166,27 +160,30 @@ END
   add_index "contact_types_contacts", ["contact_id", "contact_type_id"], :name => "contact_types_contacts_contact_id_key", :unique => true
 
   create_table "contacts", :force => true do |t|
-    t.boolean  "is_organization",                  :default => false
-    t.string   "sort_name",         :limit => 100
-    t.string   "first_name",        :limit => 25
-    t.string   "middle_name",       :limit => 25
-    t.string   "surname",           :limit => 50
-    t.string   "organization",      :limit => 100
-    t.string   "extra_address",     :limit => 52
-    t.string   "address",           :limit => 52
-    t.string   "city",              :limit => 30
-    t.string   "state_or_province", :limit => 15
-    t.string   "postal_code",       :limit => 25
-    t.string   "country",           :limit => 100
+    t.boolean  "is_organization",                   :default => false
+    t.string   "sort_name",          :limit => 100
+    t.string   "first_name",         :limit => 25
+    t.string   "middle_name",        :limit => 25
+    t.string   "surname",            :limit => 50
+    t.string   "organization",       :limit => 100
+    t.string   "extra_address",      :limit => 52
+    t.string   "address",            :limit => 52
+    t.string   "city",               :limit => 30
+    t.string   "state_or_province",  :limit => 15
+    t.string   "postal_code",        :limit => 25
+    t.string   "country",            :limit => 100
     t.text     "notes"
-    t.integer  "lock_version",                     :default => 0,     :null => false
+    t.integer  "lock_version",                      :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",                                          :null => false
+    t.integer  "created_by",                                           :null => false
     t.integer  "updated_by"
-    t.integer  "next_milestone",                   :default => 100
-    t.boolean  "addr_certified",                   :default => false, :null => false
-    t.integer  "contract_id",                      :default => 1,     :null => false
+    t.integer  "next_milestone",                    :default => 100
+    t.boolean  "addr_certified",                    :default => false, :null => false
+    t.integer  "contract_id",                       :default => 1,     :null => false
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
+    t.boolean  "fully_covered"
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -214,6 +211,17 @@ END
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "instantiable", :default => true, :null => false
+  end
+
+  create_table "coverage_types", :force => true do |t|
+    t.string "name"
+    t.string "description"
+  end
+
+  create_table "customizations", :force => true do |t|
+    t.string "key"
+    t.string "value"
   end
 
   create_table "defaults", :force => true do |t|
@@ -243,6 +251,10 @@ END
     t.datetime "created_at"
     t.datetime "disbursed_at",                            :null => false
     t.boolean  "needs_attention",      :default => false, :null => false
+    t.integer  "created_by",                              :null => false
+    t.integer  "updated_by"
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
   end
 
   add_index "disbursements", ["created_at"], :name => "disbursements_created_at_index"
@@ -281,14 +293,22 @@ END
     t.boolean  "needs_attention",                            :default => false, :null => false
     t.datetime "invoice_resolved_at"
     t.integer  "contract_id",                                :default => 1,     :null => false
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
   end
 
+  add_index "donations", ["contract_id"], :name => "donations_contract_id"
   add_index "donations", ["created_at"], :name => "donations_created_at_index"
   add_index "donations", ["contact_id"], :name => "index_donations_on_contact_id"
 
   create_table "engine_schema_info", :id => false, :force => true do |t|
     t.string  "engine_name"
     t.integer "version"
+  end
+
+  create_table "frequency_types", :force => true do |t|
+    t.string "name"
+    t.string "description"
   end
 
   create_table "generics", :force => true do |t|
@@ -344,13 +364,16 @@ END
     t.integer  "size"
     t.integer  "recycling_contract_id"
     t.integer  "system_id"
+    t.boolean  "covered"
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
   add_index "gizmo_events", ["disbursement_id"], :name => "gizmo_events_disbursement_id_index"
   add_index "gizmo_events", ["donation_id"], :name => "gizmo_events_donation_id_index"
+  add_index "gizmo_events", ["recycling_contract_id"], :name => "gizmo_events_recycling_contract_id"
   add_index "gizmo_events", ["recycling_id"], :name => "gizmo_events_recycling_id_index"
   add_index "gizmo_events", ["sale_id"], :name => "gizmo_events_sale_id_index"
+  add_index "gizmo_events", ["system_id"], :name => "gizmo_events_system_id"
 
   create_table "gizmo_types", :force => true do |t|
     t.string   "description",         :limit => 100
@@ -362,15 +385,89 @@ END
     t.integer  "suggested_fee_cents",                               :null => false
     t.integer  "gizmo_category_id"
     t.string   "name",                :limit => 40,                 :null => false
+    t.boolean  "covered"
+    t.integer  "rank"
   end
 
   add_index "gizmo_types", ["name"], :name => "gizmo_types_name_uk", :unique => true
+
+  create_table "holidays", :force => true do |t|
+    t.string  "name"
+    t.date    "holiday_date"
+    t.boolean "is_all_day"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.integer "frequency_type_id"
+    t.integer "schedule_id"
+    t.integer "weekday_id"
+  end
+
+  add_index "holidays", ["frequency_type_id"], :name => "index_holidays_on_frequency_type_id"
+  add_index "holidays", ["schedule_id"], :name => "index_holidays_on_schedule_id"
+  add_index "holidays", ["weekday_id"], :name => "index_holidays_on_weekday_id"
+
+  create_table "jobs", :force => true do |t|
+    t.string  "name"
+    t.string  "description"
+    t.integer "coverage_type_id"
+  end
+
+  add_index "jobs", ["coverage_type_id"], :name => "index_jobs_on_coverage_type_id"
+
+  create_table "jobs_workers", :id => false, :force => true do |t|
+    t.integer "job_id"
+    t.integer "worker_id"
+  end
+
+  add_index "jobs_workers", ["job_id"], :name => "index_jobs_workers_on_job_id"
+  add_index "jobs_workers", ["worker_id"], :name => "index_jobs_workers_on_worker_id"
+  add_index "jobs_workers", ["job_id", "worker_id"], :name => "jobs_workers_link", :unique => true
+
+  create_table "logs", :force => true do |t|
+    t.string   "table_name"
+    t.string   "action"
+    t.integer  "user_id"
+    t.integer  "thing_id"
+    t.datetime "date"
+    t.integer  "cashier_id"
+  end
 
   create_table "mailings", :force => true do |t|
     t.string   "name",        :limit => 20
     t.string   "description", :limit => 100, :null => false
     t.integer  "created_by",                 :null => false
     t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "meetings", :force => true do |t|
+    t.string  "name"
+    t.date    "meeting_date"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.boolean "splitable"
+    t.boolean "mergeable"
+    t.boolean "resizable"
+    t.integer "coverage_type_id"
+    t.integer "frequency_type_id"
+    t.integer "schedule_id"
+    t.integer "weekday_id"
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+  end
+
+  create_table "meetings_workers", :id => false, :force => true do |t|
+    t.integer "meeting_id"
+    t.integer "worker_id"
+  end
+
+  add_index "meetings_workers", ["meeting_id", "worker_id"], :name => "meetings_workers_link", :unique => true
+
+  create_table "notes", :force => true do |t|
+    t.integer  "contact_id"
+    t.integer  "system_id"
+    t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -398,13 +495,22 @@ END
   add_index "payments", ["donation_id"], :name => "payments_donation_id_index"
   add_index "payments", ["sale_id"], :name => "payments_sale_id_index"
 
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
+  end
+
   create_table "recyclings", :force => true do |t|
     t.text     "comments"
-    t.integer  "lock_version",    :default => 0,     :null => false
+    t.integer  "lock_version",       :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.datetime "recycled_at",                        :null => false
-    t.boolean  "needs_attention", :default => false, :null => false
+    t.datetime "recycled_at",                           :null => false
+    t.boolean  "needs_attention",    :default => false, :null => false
+    t.integer  "created_by",                            :null => false
+    t.integer  "updated_by"
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
   end
 
   add_index "recyclings", ["created_at"], :name => "recyclings_created_at_index"
@@ -422,6 +528,47 @@ END
 
   add_index "roles_users", ["role_id", "user_id"], :name => "roles_users_uk", :unique => true
 
+  create_table "rr_items", :force => true do |t|
+    t.integer "rr_set_id"
+    t.integer "repeats_every",       :default => 1
+    t.integer "repeats_on",          :default => 0
+    t.boolean "weekday_0",           :default => true
+    t.boolean "weekday_1",           :default => true
+    t.boolean "weekday_2",           :default => true
+    t.boolean "weekday_3",           :default => true
+    t.boolean "weekday_4",           :default => true
+    t.boolean "weekday_5",           :default => true
+    t.boolean "weekday_6",           :default => true
+    t.boolean "day_of_month_final",  :default => false
+    t.integer "min_day_of_month"
+    t.integer "max_day_of_month"
+    t.boolean "week_of_month_final", :default => false
+    t.boolean "week_of_month_1",     :default => true
+    t.boolean "week_of_month_2",     :default => true
+    t.boolean "week_of_month_3",     :default => true
+    t.boolean "week_of_month_4",     :default => true
+    t.boolean "week_of_month_5",     :default => true
+    t.boolean "month_of_year_01",    :default => true
+    t.boolean "month_of_year_02",    :default => true
+    t.boolean "month_of_year_03",    :default => true
+    t.boolean "month_of_year_04",    :default => true
+    t.boolean "month_of_year_05",    :default => true
+    t.boolean "month_of_year_06",    :default => true
+    t.boolean "month_of_year_07",    :default => true
+    t.boolean "month_of_year_08",    :default => true
+    t.boolean "month_of_year_09",    :default => true
+    t.boolean "month_of_year_11",    :default => true
+    t.boolean "month_of_year_10",    :default => true
+    t.boolean "month_of_year_12",    :default => true
+  end
+
+  create_table "rr_sets", :force => true do |t|
+    t.string  "name"
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.integer "match_mode",       :default => 0
+  end
+
   create_table "sales", :force => true do |t|
     t.integer  "contact_id"
     t.string   "postal_code",                    :limit => 25
@@ -437,10 +584,55 @@ END
     t.integer  "reported_amount_due_cents"
     t.boolean  "needs_attention",                              :default => false, :null => false
     t.datetime "invoice_resolved_at"
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
   end
 
   add_index "sales", ["contact_id"], :name => "sales_contact_id"
   add_index "sales", ["created_at"], :name => "sales_created_at_index"
+
+  create_table "schedules", :force => true do |t|
+    t.string  "name"
+    t.string  "description"
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.integer "parent_id"
+    t.integer "repeats_every",    :default => 1
+    t.integer "repeats_on",       :default => 0
+    t.integer "lft"
+    t.integer "rgt"
+  end
+
+  add_index "schedules", ["lft"], :name => "index_schedules_on_lft"
+  add_index "schedules", ["rgt"], :name => "index_schedules_on_rgt"
+
+  create_table "schema_info", :id => false, :force => true do |t|
+    t.integer "version"
+  end
+
+  create_table "shifts", :force => true do |t|
+    t.string  "type"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.boolean "splitable"
+    t.boolean "mergeable"
+    t.boolean "resizable"
+    t.string  "meeting_name"
+    t.date    "shift_date"
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.boolean "all_day"
+    t.integer "repeats_every",     :default => 1
+    t.integer "repeats_on",        :default => 0
+    t.integer "coverage_type_id"
+    t.integer "frequency_type_id"
+    t.integer "job_id"
+    t.integer "meeting_id"
+    t.integer "schedule_id"
+    t.integer "weekday_id"
+    t.integer "worker_id",         :default => 0
+    t.boolean "actual",            :default => false
+  end
 
   create_table "spec_sheets", :force => true do |t|
     t.integer  "system_id"
@@ -449,8 +641,6 @@ END
     t.integer  "lock_version",    :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",      :default => 1, :null => false
-    t.integer  "updated_by",      :default => 1, :null => false
     t.integer  "old_id"
     t.text     "notes"
     t.integer  "type_id",                        :null => false
@@ -467,6 +657,21 @@ END
   add_index "spec_sheets", ["system_id"], :name => "reports_system_id_index"
   add_index "spec_sheets", ["type_id"], :name => "reports_type_id_index"
 
+  create_table "standard_shifts", :force => true do |t|
+    t.time    "start_time"
+    t.time    "end_time"
+    t.boolean "splitable"
+    t.boolean "mergeable"
+    t.boolean "resizable"
+    t.integer "coverage_type_id"
+    t.integer "job_id"
+    t.integer "meeting_id"
+    t.integer "schedule_id"
+    t.integer "weekday_id"
+    t.integer "worker_id",        :default => 0
+    t.date    "shift_date"
+  end
+
   create_table "systems", :force => true do |t|
     t.string   "system_vendor"
     t.string   "system_model"
@@ -474,8 +679,6 @@ END
     t.integer  "lock_version",         :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",           :default => 1, :null => false
-    t.integer  "updated_by",           :default => 1, :null => false
     t.string   "mobo_vendor"
     t.string   "mobo_model"
     t.string   "mobo_serial_number"
@@ -485,6 +688,7 @@ END
     t.integer  "contract_id",          :default => 1, :null => false
   end
 
+  add_index "systems", ["contract_id"], :name => "systems_contract_id"
   add_index "systems", ["system_model"], :name => "systems_model_index"
   add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
@@ -502,6 +706,18 @@ END
   add_index "types", ["description"], :name => "types_name_index"
   add_index "types", ["name"], :name => "types_name_uk", :unique => true
 
+  create_table "unavailabilities", :force => true do |t|
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.boolean "all_day"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.integer "repeats_every",    :default => 1
+    t.integer "repeats_on",       :default => 0
+    t.integer "weekday_id"
+    t.integer "worker_id"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
@@ -514,7 +730,19 @@ END
     t.integer  "contact_id"
     t.integer  "created_by",                              :null => false
     t.integer  "updated_by"
+    t.integer  "cashier_code"
   end
+
+  create_table "vacations", :force => true do |t|
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.boolean "is_all_day"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.integer "worker_id"
+  end
+
+  add_index "vacations", ["worker_id"], :name => "index_vacations_on_worker_id"
 
   create_table "volunteer_task_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -540,6 +768,8 @@ END
     t.date     "date_performed"
     t.integer  "created_by",                               :null => false
     t.integer  "updated_by"
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
   end
 
   add_index "volunteer_tasks", ["community_service_type_id"], :name => "index_volunteer_tasks_on_community_service_type_id"
@@ -547,6 +777,57 @@ END
   add_index "volunteer_tasks", ["duration"], :name => "index_volunteer_tasks_on_duration"
   add_index "volunteer_tasks", ["volunteer_task_type_id"], :name => "index_volunteer_tasks_on_volunteer_task_type_id"
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
+
+  create_table "weekdays", :force => true do |t|
+    t.string  "name"
+    t.string  "short_name"
+    t.boolean "is_open"
+    t.time    "start_time"
+    t.time    "end_time"
+  end
+
+  create_table "work_shifts", :force => true do |t|
+    t.string  "kind"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.boolean "splitable"
+    t.boolean "mergeable"
+    t.boolean "resizable"
+    t.string  "meeting_name"
+    t.date    "shift_date"
+    t.date    "effective_date"
+    t.date    "ineffective_date"
+    t.boolean "all_day"
+    t.integer "repeats_every",     :default => 1
+    t.integer "repeats_on",        :default => 0
+    t.integer "coverage_type_id"
+    t.integer "frequency_type_id"
+    t.integer "job_id"
+    t.integer "meeting_id"
+    t.integer "schedule_id"
+    t.integer "shift_id"
+    t.integer "weekday_id"
+    t.integer "worker_id",         :default => 0
+    t.boolean "actual",            :default => true
+  end
+
+  create_table "worker_types", :force => true do |t|
+    t.string "name"
+    t.string "description"
+  end
+
+  create_table "workers", :force => true do |t|
+    t.string  "name"
+    t.float   "weekly_work_hours"
+    t.float   "weekly_admin_hours"
+    t.integer "worker_type_id"
+    t.integer "contact_id"
+    t.date    "effective_date",     :default => '1901-12-22'
+    t.date    "ineffective_date",   :default => '2100-12-31'
+  end
+
+  add_index "workers", ["contact_id"], :name => "index_workers_on_contact_id"
+  add_index "workers", ["worker_type_id"], :name => "index_workers_on_worker_type_id"
 
   add_foreign_key "actions", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_created_by_fkey"
   add_foreign_key "actions", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_updated_by_fkey"
@@ -561,9 +842,9 @@ END
   add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
   add_foreign_key "contact_types_contacts", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_types_contacts_contacts_fk"
 
+  add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
   add_foreign_key "contacts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_created_by_fkey"
   add_foreign_key "contacts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_updated_by_fkey"
-  add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
 
   add_foreign_key "contacts_mailings", ["contact_id"], "contacts", ["id"], :name => "contacts_mailings_contact_id_fkey"
   add_foreign_key "contacts_mailings", ["mailing_id"], "mailings", ["id"], :name => "contacts_mailings_mailing_id_fkey"
@@ -575,9 +856,9 @@ END
   add_foreign_key "discount_schedules_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_gizmo_types_fk"
 
   add_foreign_key "donations", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "donations_contacts_fk"
+  add_foreign_key "donations", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "donations_contract_id_fkey"
   add_foreign_key "donations", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_created_by_fkey"
   add_foreign_key "donations", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_updated_by_fkey"
-  add_foreign_key "donations", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "donations_contract_id_fkey"
 
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk"
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_types_fk"
@@ -586,16 +867,36 @@ END
   add_foreign_key "gizmo_events", ["donation_id"], "donations", ["id"], :on_delete => :set_null, :name => "gizmo_events_donations_fk"
   add_foreign_key "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_contexts_fk"
   add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
+  add_foreign_key "gizmo_events", ["recycling_contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "gizmo_events_recycling_contract_id_fkey"
   add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
   add_foreign_key "gizmo_events", ["sale_id"], "sales", ["id"], :on_delete => :set_null, :name => "gizmo_events_sales_fk"
-  add_foreign_key "gizmo_events", ["recycling_contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "gizmo_events_recycling_contract_id_fkey"
   add_foreign_key "gizmo_events", ["system_id"], "systems", ["id"], :on_delete => :restrict, :name => "gizmo_events_system_id_fkey"
 
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
 
+  add_foreign_key "holidays", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "holidays_frequency_types"
+  add_foreign_key "holidays", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "holidays_schedules"
+  add_foreign_key "holidays", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "holidays_weekdays"
+
+  add_foreign_key "jobs", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "jobs_coverage_types"
+
+  add_foreign_key "jobs_workers", ["job_id"], "jobs", ["id"], :on_delete => :cascade, :name => "jobs_workers_jobs"
+  add_foreign_key "jobs_workers", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "jobs_workers_workers"
+
   add_foreign_key "mailings", ["created_by"], "contacts", ["id"], :name => "mailings_created_by_fkey"
   add_foreign_key "mailings", ["updated_by"], "contacts", ["id"], :name => "mailings_updated_by_fkey"
+
+  add_foreign_key "meetings", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "meetings_coverage_types"
+  add_foreign_key "meetings", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "meetings_frequency_types"
+  add_foreign_key "meetings", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "meetings_schedules"
+  add_foreign_key "meetings", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "meetings_weekdays"
+
+  add_foreign_key "meetings_workers", ["meeting_id"], "shifts", ["id"], :on_delete => :cascade, :name => "meetings_workers_meetings"
+  add_foreign_key "meetings_workers", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "meetings_workers_workers"
+
+  add_foreign_key "notes", ["contact_id"], "contacts", ["id"], :name => "notes_contact_id_fkey"
+  add_foreign_key "notes", ["system_id"], "systems", ["id"], :name => "notes_system_id_fkey"
 
   add_foreign_key "payments", ["donation_id"], "donations", ["id"], :on_delete => :cascade, :name => "payments_donation_id_fk"
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
@@ -604,28 +905,47 @@ END
   add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :name => "roles_users_role_id_fkey"
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :name => "roles_users_user_id_fkey"
 
+  add_foreign_key "rr_items", ["rr_set_id"], "rr_sets", ["id"], :on_delete => :cascade, :name => "rr_items_rr_sets"
+
   add_foreign_key "sales", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "sales_contacts_fk"
   add_foreign_key "sales", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_created_by_fkey"
   add_foreign_key "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :restrict, :name => "sales_discount_schedules_fk"
   add_foreign_key "sales", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_updated_by_fkey"
 
+  add_foreign_key "schedules", ["parent_id"], "schedules", ["id"], :on_delete => :cascade, :name => "schedules_schedules"
+
+  add_foreign_key "shifts", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "shifts_coverage_types"
+  add_foreign_key "shifts", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "shifts_frequency_types"
+  add_foreign_key "shifts", ["job_id"], "jobs", ["id"], :on_delete => :cascade, :name => "shifts_jobs"
+  add_foreign_key "shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :cascade, :name => "shifts_schedules"
+  add_foreign_key "shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "shifts_weekdays"
+  add_foreign_key "shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "shifts_workers"
+
   add_foreign_key "spec_sheets", ["action_id"], "actions", ["id"], :name => "spec_sheets_action_id_fkey"
   add_foreign_key "spec_sheets", ["contact_id"], "contacts", ["id"], :name => "spec_sheets_contact_id_fkey"
-  add_foreign_key "spec_sheets", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "spec_sheets_created_by_fkey"
   add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey"
   add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey"
-  add_foreign_key "spec_sheets", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "spec_sheets_updated_by_fkey"
 
-  add_foreign_key "systems", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "systems_created_by_fkey"
-  add_foreign_key "systems", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "systems_updated_by_fkey"
+  add_foreign_key "standard_shifts", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "standard_shifts_coverage_types"
+  add_foreign_key "standard_shifts", ["job_id"], "jobs", ["id"], :on_delete => :cascade, :name => "standard_shifts_jobs"
+  add_foreign_key "standard_shifts", ["meeting_id"], "meetings", ["id"], :on_delete => :cascade, :name => "standard_shifts_meetings"
+  add_foreign_key "standard_shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :cascade, :name => "standard_shifts_schedules"
+  add_foreign_key "standard_shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "standard_shifts_weekdays"
+  add_foreign_key "standard_shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "standard_shifts_workers"
+
   add_foreign_key "systems", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "systems_contract_id_fkey"
 
   add_foreign_key "types", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "types_created_by_fkey"
   add_foreign_key "types", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "types_updated_by_fkey"
 
+  add_foreign_key "unavailabilities", ["weekday_id"], "weekdays", ["id"], :on_delete => :cascade, :name => "unavailabilities_weekdays"
+  add_foreign_key "unavailabilities", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "unavailabilities_workers"
+
   add_foreign_key "users", ["contact_id"], "contacts", ["id"], :name => "users_contacts_fk"
   add_foreign_key "users", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "users_created_by_fkey"
   add_foreign_key "users", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "users_updated_by_fkey"
+
+  add_foreign_key "vacations", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "vacations_workers"
 
   add_foreign_key "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_task_types_parent_fk"
 
@@ -634,6 +954,15 @@ END
   add_foreign_key "volunteer_tasks", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_created_by_fkey"
   add_foreign_key "volunteer_tasks", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_updated_by_fkey"
   add_foreign_key "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_volunteer_task_type_id_fk"
+
+  add_foreign_key "work_shifts", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "work_shifts_coverage_types"
+  add_foreign_key "work_shifts", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "work_shifts_frequency_types"
+  add_foreign_key "work_shifts", ["job_id"], "jobs", ["id"], :on_delete => :set_null, :name => "work_shifts_jobs"
+  add_foreign_key "work_shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "work_shifts_schedules"
+  add_foreign_key "work_shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "work_shifts_weekdays"
+  add_foreign_key "work_shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "work_shifts_workers"
+
+  add_foreign_key "workers", ["worker_type_id"], "worker_types", ["id"], :on_delete => :set_null, :name => "workers_worker_types"
 
   create_view "v_donation_totals", "SELECT d.id, sum(p.amount_cents) AS total_paid FROM (donations d LEFT JOIN payments p ON ((p.donation_id = d.id))) GROUP BY d.id;", :force => true do |v|
     v.column :id

@@ -1,6 +1,6 @@
 <div id="optical_drives">
   <h2>Optical Drives</h2>
-  <% @parser.xml_foreach("id", "cdrom") do %>
+  <% @parser.xml_foreach("//node[contains(@id, 'cdrom')]") do %>
     <table>
       <tr>
         <td>Drive:</td>

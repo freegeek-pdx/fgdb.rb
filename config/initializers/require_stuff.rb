@@ -1,4 +1,4 @@
-require 'xml/libxml'
+require 'nokogiri'
 require 'digest/sha1'
 require 'ostruct'
 require 'tempfile'

@@ -101,7 +101,7 @@ run "Checking to see if perl is installed..." "which perl" "install perl" "error
 setup_stuff # only runable if ruby is installed
 run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
 run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.1.x" "fail"
-run "Checking to see if libxml-ruby is installed..." "require_test xml/libxml" "install libxml-ruby" "fail"
+run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
 run "Checking to see if zoom is installed..." "require_test zoom" "install libzoom-ruby" "fail"

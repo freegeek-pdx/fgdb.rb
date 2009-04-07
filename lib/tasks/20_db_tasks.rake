@@ -3,7 +3,7 @@
 require 'yaml'
 
 SCHEMADUMPFILE = 'db/schema.sql'
-DATADUMPFILE = 'db/devel_data.sql.gz'
+DATADUMPFILE = ENV['FGDB_INTERNAL_DUMP_FILE'] || 'db/devel_data.sql'
 METADATADIR = 'db/metadata'
 METADATATABLES = %w[
         contact_method_types contact_types discount_schedules
@@ -56,7 +56,7 @@ def dump_data( rails_env = "development" )
   case abcs[rails_env]["adapter"]
   when "postgresql"
     print "Dumping the data..."
-    `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O #{search_path} #{abcs[rails_env]["database"]} | gzip -v > #{DATADUMPFILE}`
+    `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O #{search_path} #{abcs[rails_env]["database"]} > #{DATADUMPFILE}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
   else
@@ -133,7 +133,7 @@ def load_data( rails_env = "development" )
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Loading the data..."
-    `zcat #{DATADUMPFILE} | psql #{$PSQL_OPTS} #{dbname}`
+    `psql #{$PSQL_OPTS} #{dbname} < #{DATADUMPFILE}`
     raise "Error loading data" if $?.exitstatus == 1
     puts "done"
   else
