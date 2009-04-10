@@ -14,6 +14,10 @@ class Copy < ActiveRecord::Base
     Book.find_by_id(self.book_id)
   end
 
+  def long_description
+    sprintf("%s (Copy #%s, Barcode #%s)", self.book.title, self.copy_id, self.barcode)
+  end
+
   def make_created_event
     self.library_events = [LibraryEvent.new({:kind => kinds[:created], :date => Time.now})]
   end

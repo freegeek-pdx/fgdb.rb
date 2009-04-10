@@ -12,6 +12,7 @@ class Contact < ActiveRecord::Base
   has_one :user
   has_one :contact_duplicate
   belongs_to :contract
+  has_many :library_events
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by

@@ -7,26 +7,8 @@
 <p>
 <table border="1" style="border-collapse: collapse;">
 <tr><th colspan="<%= has_role?("LIBRARIAN") ? 4 : 3 %>">Copies</th></tr>
-<tr><th>Copy #</th><th>Barcode</th><th>Status</th><% if has_role?("LIBRARIAN") %><th></th><% end %></tr>
-<% @book.copies.each do |copy| %>
-  <tr>
-    <td>
-      <%= copy.copy_id %>
-    </td>
-    <td>
-      <%= copy.barcode %>
-    </td>
-    <td>
-      <%= link_for_my_links(copy.long_status) %>
-    </td>
-    <% if has_role?("LIBRARIAN") %>
-      <td>
-        <%= link_to "History/Circulation", :action => "show_copy", :copy_id => copy.id %>
-        <%= link_to "Label", :action => "add_to_labels", :id => copy.id %>
-      </td>
-    <% end %>
-  </tr>
-<% end %>
+<% @some_copies = @book.copies %>
+<%= render :partial => 'copies' %>
 <% if has_role?("LIBRARIAN") %>
 <tr><td colspan="4"><%= link_to "Add a copy", :action => "add_copy", :book_id => @book.id %></td></tr>
 <% end %>

@@ -14,6 +14,8 @@ class LibraryController < ApplicationController
   def member
     @contact = Contact.find(params[:id])
     @overdue = @contact.overdue
+    @events = @contact.library_events
+    @some_copies = @contact.checked_out_n_good
   end
 
   # check in books

@@ -1,4 +1,4 @@
-<h1><%= sprintf("%s (Copy #%s, Barcode #%s)", @c.book.title, @c.copy_id, @c.barcode) %></h1>
+<h1><%= @c.long_description %></h1>
 <h2>Status</h2>
 <%= link_for_my_links @c.long_status  %><br />
 <%= link_to "book info", :action => "show_book", :id => @c.book.id %>
@@ -19,25 +19,6 @@
 <%= button_to "Check in", :action => "checkin", :copy_id => @c.id %>
 <% end %>
 <%= button_to "Label", :action => "add_to_labels", :id => @c.id %>
-<h2>History</h2>
-<p>
-<table border="1" style="border-collapse: collapse;">
-  <tr>
-    <th>Action</th>
-    <th>Contact</th>
-    <th>Date</th>
-    <th>Due Back</th>
-    <th>Librarian</th>
-  </tr>
-  <% @c.library_events.to_a.reverse.each do |event| %>
-    <tr>
-      <td><%= event.kind_to_s %></td>
-      <td><%= link_for_my_links(event.contact_display_with_link) %></td>
-      <td><%= event.date.strftime("%D") %></td>
-      <td><%= event.due_back ? event.due_back.strftime("%D") : "" %></td>
-      <td><%= event.librarian_display %></td>
-    </tr>
-  <% end %>
-</table>
-</p>
+<% @events = @c.library_events.to_a %>
+<%= render :partial => 'history' %>
 <% end %>

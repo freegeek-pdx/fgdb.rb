@@ -1,0 +1,23 @@
+<h2>History</h2>
+<p>
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th>Copy</th>
+    <th>Action</th>
+    <th>Contact</th>
+    <th>Date</th>
+    <th>Due Back</th>
+    <th>Librarian</th>
+  </tr>
+  <% @events.to_a.reverse.each do |event| %>
+    <tr>
+      <td><%= link_to event.copy.long_description, :controller => 'library', :action => 'show_copy', :id => event.copy.id %></td>
+      <td><%= event.kind_to_s %></td>
+      <td><%= link_for_my_links(event.contact_display_with_link) %></td>
+      <td><%= event.date.strftime("%D") %></td>
+      <td><%= event.due_back ? event.due_back.strftime("%D") : "" %></td>
+      <td><%= event.librarian_display %></td>
+    </tr>
+  <% end %>
+</table>
+</p>
