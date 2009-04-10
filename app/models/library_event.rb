@@ -9,6 +9,10 @@ class LibraryEvent < ActiveRecord::Base
     self.date = Time.now
   end
 
+  def self.these_kinds(*names)
+    names.collect{|x| LibraryEvent.kinds[x]}
+  end
+
   def self.kinds
     {
       :created => 1,

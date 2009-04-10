@@ -6,6 +6,8 @@ class Copy < ActiveRecord::Base
 
   named_scope :overdue, lambda {{ :conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND due_back < ?)", Date.today] }}
   named_scope :overdue_for_contact, lambda {|cid| { :conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND due_back < ? AND contact_id = ?)", Date.today, cid] }}
+  named_scope :checked_out_to, lambda {|cid| {:conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND kind IN (?) AND contact_id = ?)", LibraryEvent.these_kinds(:checked_out, :renewed), cid]}}
+  named_scope :lost_by, lambda {|cid| {:conditions => ["id in (SELECT copy_id FROM library_events WHERE id IN (SELECT max(id) FROM library_events GROUP BY copy_id) AND kind = ? AND contact_id = ?)", LibraryEvent.kinds[:lost], cid]}}
 
   # WTF?!?! my belongs_to is failing...
   def book
