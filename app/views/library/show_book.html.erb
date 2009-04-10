@@ -17,11 +17,7 @@
       <%= copy.barcode %>
     </td>
     <td>
-      <% if has_role?("LIBRARIAN") %>
-        <%= copy.status %>
-      <% else %>
-        <%= link_for_my_links(copy.long_status) %>
-      <% end %>
+      <%= link_for_my_links(copy.long_status) %>
     </td>
     <% if has_role?("LIBRARIAN") %>
       <td>
