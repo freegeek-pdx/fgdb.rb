@@ -1,4 +1,10 @@
-fgdb.rb (1.0.30) UNRELEASED; urgency=low
+fgdb.rb (1.0.31) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 10 Apr 2009 00:29:53 -0700
+
+fgdb.rb (1.0.30) released; urgency=low
 
   * add some helper scripts to manipulate the ChangeLog (dch, debcommit,
     dpkg-parsechangelog)
@@ -46,7 +52,7 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * mirroring the devel data on my VPS, and downloading it from there
   * switch to nokogiri for the xml parsing...*phew*
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 17:54:42 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 10 Apr 2009 00:29:44 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 

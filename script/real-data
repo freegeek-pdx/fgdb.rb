@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -ex
+
+rake db:drop --trace || true
+make -C db all_clean
+make -C db tmp/devel_data/database.sql
+psql fgdb_development < db/tmp/devel_data/database.sql
