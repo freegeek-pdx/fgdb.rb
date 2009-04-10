@@ -104,7 +104,7 @@ class Copy < ActiveRecord::Base
   end
 
   def contact_display
-    last_event.contact_display
+    last_event.contact_display_with_link
   end
 
   def last_event

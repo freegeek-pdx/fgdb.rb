@@ -41,6 +41,20 @@ class LibraryEvent < ActiveRecord::Base
     end
   end
 
+  def contact_display_with_link
+    setup_user
+    c = ""
+    if (c = contact_display).length > 0
+      if has_role?("LIBRARIAN", "CONTACT_MANAGER")
+        return my_link_to(c, {:controller => "library", :action => "member", :id => contact.id})
+      else
+        return c
+      end
+    else
+      return c
+    end
+  end
+
   include ApplicationHelper
 
   def librarian

@@ -5,6 +5,18 @@ module ApplicationHelper
     render :inline => File.read(File.join(RAILS_ROOT, "app", "views", params[:controller], "#{a}.html.erb"))
   end
 
+  def link_for_my_links(str)
+    if str.match(/^(.*)@LINK@(.*)@PARAMS@(.*)@ENDLINK@(.*)$/)
+      before = $1
+      name = $2
+      params = eval($3)
+      after = $4
+      return before + link_to(name, params) + after
+    else
+      return str
+    end
+  end
+
   def gt_for_txn(thing)
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + (thing.gizmo_types + thing.gizmo_context.gizmo_types).uniq.sort_by(&:description)
   end

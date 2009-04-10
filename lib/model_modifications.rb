@@ -146,6 +146,10 @@ class Fixnum
 end
 
 class ActiveRecord::Base
+  def my_link_to(name, opts)
+    "@LINK@" + name.to_s + "@PARAMS@" + opts.inspect + "@ENDLINK@"
+  end
+
   def self.acts_as_userstamp
     include ActiveRecord::UserMonitor
   end

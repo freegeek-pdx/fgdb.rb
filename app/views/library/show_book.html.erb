@@ -20,7 +20,7 @@
       <% if has_role?("LIBRARIAN") %>
         <%= copy.status %>
       <% else %>
-        <%= copy.long_status %>
+        <%= link_for_my_links(copy.long_status) %>
       <% end %>
     </td>
     <% if has_role?("LIBRARIAN") %>

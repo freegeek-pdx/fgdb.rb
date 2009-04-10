@@ -1,6 +1,6 @@
 <h1><%= sprintf("%s (Copy #%s, Barcode #%s)", @c.book.title, @c.copy_id, @c.barcode) %></h1>
 <h2>Status</h2>
-<%= @c.long_status  %><br />
+<%= link_for_my_links @c.long_status  %><br />
 <%= link_to "book info", :action => "show_book", :id => @c.book.id %>
 <% if has_role?("LIBRARIAN") %>
 <h2>Circulation</h2>
@@ -32,7 +32,7 @@
   <% @c.library_events.to_a.reverse.each do |event| %>
     <tr>
       <td><%= event.kind_to_s %></td>
-      <td><%= event.contact_display %></td>
+      <td><%= link_for_my_links(event.contact_display_with_link) %></td>
       <td><%= event.date.strftime("%D") %></td>
       <td><%= event.due_back ? event.due_back.strftime("%D") : "" %></td>
       <td><%= event.librarian_display %></td>
