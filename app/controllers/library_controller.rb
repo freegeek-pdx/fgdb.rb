@@ -11,6 +11,11 @@ class LibraryController < ApplicationController
   def lookup
   end
 
+  def member
+    @contact = Contact.find(params[:id])
+    @overdue = @contact.overdue
+  end
+
   # check in books
   def checkin
     Copy.find_by_id(params[:copy_id]).check_in
@@ -125,7 +130,7 @@ class LibraryController < ApplicationController
 
   # list of copies that are overdue
   def overdue
-    @copies = Copy.overdue.paginate :page => params[:page]
+    @overdue = Copy.overdue.paginate :page => params[:page]
   end
 
   # shows information, list of copies, add new copy button

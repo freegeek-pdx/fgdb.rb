@@ -18,6 +18,22 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
+  def checked_out
+    @checked_out ||= Copy.checked_out_to(self.id)
+  end
+
+  def overdue
+    @overdue ||= Copy.overdue_for_contact(self.id)
+  end
+
+  def lost
+    @lost ||= Copy.lost_by(self.id)
+  end
+
+  def checked_out_n_good
+    checked_out - (overdue + lost)
+  end
+
   def fully_covered_
     case self.fully_covered
     when nil: 'nil'
