@@ -1,4 +1,5 @@
 <% @books.each do |b| %>
-  <p><%= link_to b.title, :action => "show_book", :id => b.id %></p>
+  <p><%= link_to b.title, :action => "show_book", :id => b.id %>
+  <br/>By: <%= b.author %></p>
 <% end %>
 <%= will_paginate @books, :remote_options => {:loading => show_loading_indicator("library_search")}, :params => {:search => {:query => params[:search][:query]}} %>
