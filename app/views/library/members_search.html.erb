@@ -1,0 +1,7 @@
+<% form_for :contact, nil, :url => {:action => "member"}, :method => "GET" do |f| %>
+<% if flash[:error] %>
+  <div class="error"><%= flash[:error] %></div>
+<% end %>
+<%= contact_field 'contact', 'id' %>
+<%= submit_tag 'Search' %>
+<% end %>
