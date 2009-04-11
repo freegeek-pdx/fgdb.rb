@@ -1,9 +1,12 @@
 <%= render :partial => "search_warnings" %>
 
 <div class="noblock">
-<% form_for :search, :url => {:action => "search_results"} do |f| %>
+<% form_remote_for :search, :url => {:action => "search_results"}, :loading => show_loading_indicator("library_search") do |f| %>
 <%= f.label "query", "Search Query" %>
 <%= f.text_field "query" %>
 <%= f.submit "Search!" %>
+<%= loading_indicator_tag("library_search") %>
 <% end %>
 </end>
+<div id="results">
+</div>

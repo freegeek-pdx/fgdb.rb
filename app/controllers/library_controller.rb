@@ -55,6 +55,11 @@ class LibraryController < ApplicationController
 
   def search_results
     @books = Book.search(params[:search][:query]).paginate({:page => params[:page]})
+    render :update do |page|
+      page.replace_html "results", :partial => 'search_results'
+      page.hide loading_indicator_id("library_search")
+      page.visual_effect(:highlight, "results")
+    end
   end
 
   # enter new books and new copies ... three options

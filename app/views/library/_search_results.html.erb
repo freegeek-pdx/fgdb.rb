@@ -1,5 +1,3 @@
-<%= render :partial => "search_warnings" %>
-
 <% @books.each do |b| %>
   <p><%= link_to b.title, :action => "show_book", :id => b.id %></p>
 <% end %>
