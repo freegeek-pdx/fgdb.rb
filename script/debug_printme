@@ -1,0 +1,4 @@
+#!/bin/sh
+
+while :; do socat -v TCP4-LISTEN:5000 TCP4:localhost:3000; done 2>&1 | tee log/debug_printme.log
+
