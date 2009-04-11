@@ -11,8 +11,21 @@ class LibraryController < ApplicationController
   def lookup
   end
 
+  def borrowers
+    member_search
+  end
+
+  def member_search
+    render :action => 'members_search'
+  end
+
   def member
-    @contact = Contact.find(params[:id])
+    params[:id] = params[:contact][:id] || params[:contact_id] || (flash[:error] = "Contact not found"; redirect_to :action => "member_search"; return) if params[:id].nil?
+    begin
+      @contact = Contact.find(params[:id])
+    rescue
+      (flash[:error] = "Contact not found"; redirect_to :action => "member_search"; return)
+    end
     @overdue = @contact.overdue
     @events = @contact.library_events
     @some_copies = @contact.checked_out_n_good

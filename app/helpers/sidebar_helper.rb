@@ -51,7 +51,7 @@ module SidebarHelper
     sidebar_hash["staff schedule"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_role?('SKEDJULNATOR')
     # library
     requires_librarian = ['overdue', 'labels']
-    for i in ['lookup', 'overdue', 'cataloging', 'search', 'labels'] do
+    for i in ['lookup', 'overdue', 'cataloging', 'search', 'labels', 'borrowers'] do
       if !requires_librarian.include?(i) or has_role?("LIBRARIAN")
         sidebar_hash["library"][i] = {:c => "library", :a => i}
       end

@@ -1,4 +1,4 @@
-<h1><%= @contact.display_name %></h1>
+<h1><%= @contact.display_name + " (#" + @contact.id.to_s + ")" %></h1>
 <%= render :partial => 'overdue' %>
 <h2>Checked Out</h2>
 <table border="1" style="border-collapse: collapse;">
