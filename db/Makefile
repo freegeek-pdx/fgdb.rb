@@ -34,6 +34,7 @@ full_clean: clean other_clean
 
 other_clean:
 	rm -f db/devel_data*
+	rm -f devel_data*
 
 fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
 	ln -s db/tmp/devel_data/svn_repo/ ../fgdb-devel-data

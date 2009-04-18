@@ -180,7 +180,7 @@ function cent_value(value) {
 }
 
 function dollar_value(cents) {
-  cents = "" + cents;
+  cents = "" + Math.floor(cents);
   if (cents.length == 0) {
     return "0.00";
   }
@@ -689,4 +689,39 @@ function validate_disbursement() {
 }
 function is_tab(event) {
   return (event.keyCode==9 && !event.shiftKey);
+}
+
+function is_enabled_visable_there_field_thing(name) {
+  var el = $(name);
+  if(!el) {
+    return false;
+  }
+  if(el == null) {
+    return false;
+  }
+  if(el.disabled) {
+    return false;
+  }
+  if(!el.visible) {
+    return false;
+  }
+  return true;
+}
+
+function last_enabled_visable_there_field_thing_in_line_item(names) {
+  var last = null;
+  for(var i in names) {
+    if(is_enabled_visable_there_field_thing(names[i])) {
+      last = names[i];
+    }
+  }
+  return last;
+}
+
+function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
+  if(last_enabled_visable_there_field_thing_in_line_item(names) == name) {
+    return true;
+  } else {
+    return false;
+  }
 }

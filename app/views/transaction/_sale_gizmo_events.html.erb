@@ -46,12 +46,13 @@
         <%= gizmo_events_options_for_transaction %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled && ($('system_id') == null || $('system_id').disabled) && ($('covered') == null || $('covered').disabled)) {return add_priced_gizmo_event_from_form();}"></td>
+    <%= javascript_tag "linelist = ['gizmo_count', 'system_id', 'covered', 'unit_price']" %>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item('gizmo_count', linelist)) {return add_priced_gizmo_event_from_form();}"></td>
     <% if params[:controller] == "sales" %>
-    <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>
+    <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item('system_id', linelist)) {return add_priced_gizmo_event_from_form();}"></td>
     <% else # donations %>
       <% if coveredness_enabled %>
-        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected()"></td>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item('covered', linelist)) {return add_priced_gizmo_event_from_form();}" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected()"></td>
       <% end %>
     <% end %>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(is_tab(event)) {return add_priced_gizmo_event_from_form();}"></td>

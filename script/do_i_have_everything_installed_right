@@ -99,6 +99,7 @@ test_my_rails_version(){
 run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
 run "Checking to see if perl is installed..." "which perl" "install perl" "error"
 setup_stuff # only runable if ruby is installed
+run "Checking to see if make is installed..." "which make" "install make" "fail"
 run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
 run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.1.x" "fail"
 run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"

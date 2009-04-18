@@ -34,7 +34,7 @@ git checkout master
 git merge release_$VERSION
 git rm db/branch_devel_data_version
 git commit -m "remove devel data version for master"
-./dpkg-parsechangelog | ssh xyzzy.ryan52.info mail -s "FGDB.rb version $VERSION released" coders@lists.freegeek.org
+./dpkg-parsechangelog | ssh xyzzy.ryan52.info ./sendannouncement $VERSION
 dch -c ChangeLog -i --dist UNRELEASED ""
 git add ChangeLog
 git commit -m "add new, empty changelog entry"
