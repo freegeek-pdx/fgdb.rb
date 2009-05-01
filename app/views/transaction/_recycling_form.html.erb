@@ -18,9 +18,9 @@
 
     <div id="transaction_line_items_div">
       <div id="recycling_gizmo_events" class="datalist line_item">
-        <%= render :partial => 'unpriced_gizmo_events' %>
+        <%= render :partial => 'gizmo_events' %>
       </div>
-
+      <%= javascript_tag @gizmos_and_payments_js %>
     </div>
     <!--[eoform:recycling]-->
 

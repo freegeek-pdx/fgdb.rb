@@ -64,7 +64,7 @@
       <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
       <%= submit_tag(@options[:action].titleize,
                      :id => "commit",
-                     :onclick => "#{@transaction_type.pluralize}_handle_all(); return validate_#{@transaction_type}();",
+                     :onclick => "handle_all(); return validate_#{@transaction_type}();",
                      :class => "submit save")
           %>
       <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" %>

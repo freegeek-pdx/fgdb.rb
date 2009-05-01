@@ -265,3 +265,35 @@ function add_condition(obj_name, value)
   }
 }
 
+function disable_all_links() {
+  var arr = document.getElementsByClassName("disable_link");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    if(thing.status == undefined || thing.status == 0) {
+      thing.origOnClick = thing.onclick;
+      thing.onclick = function () { return false; };
+      thing.status = 1;
+    }
+  }
+}
+
+function enable_all_links() {
+  var arr = document.getElementsByClassName("disable_link");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    if(thing.status == 1) {
+      thing.onclick = thing.origOnClick;
+      thing.origOnClick = "";
+      thing.status = 0
+    }
+  }
+}
+
+function toggle_description(evt) {
+  show_description++;
+  var arr = document.getElementsByClassName('description');
+  for (var i = 0; i < arr.length; i++) {
+    set_visibility(arr[i], show_description & 1)
+  }
+  return true;
+}

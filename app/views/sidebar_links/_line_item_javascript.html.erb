@@ -55,14 +55,13 @@
     end
 %>
 
-<%= if ["donations", "recyclings"].include?(params[:controller])
-      js = ""
+<%= js = ""
       js += "var gizmo_types_covered = new Array;"
       for gizmo_type in GizmoType.find(:all)
         js += "gizmo_types_covered[#{gizmo_type.id}] = true;" if gizmo_type.covered
       end
       javascript_tag js
-end %>
+%>
 
 <%=
    case params[:controller]
