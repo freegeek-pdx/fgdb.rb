@@ -14,17 +14,20 @@ if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ];
 fi
 
 git fetch origin
-git pull
+git fetch fg
+for i in .git/refs/remotes/fg/master .git/refs/remotes/origin/master; do
+    diff .git/refs/heads/master $i > /dev/null || { echo "$(echo $i | cut -d '/' -f 4)'s master is different from ours"; exit 1; } ;
+done
 dch -r -c ChangeLog ""
 git add ChangeLog
-git commit -m "releasing"
 VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
+git commit -m "releasing version $VERSION"
 git checkout -b release_$VERSION
 wget http://dev.freegeek.org/~ryan52/devel_data/version -O db/branch_devel_data_version
 touch db/branch_devel_data_version
 git add db/branch_devel_data_version
 git commit -m "add devel data version number to branch"
-git tag $VERSION
+git tag -s -m "fgdb.rb version $VERSION" $VERSION
 git push fg master:master
 git push fg release_$VERSION:release_$VERSION
 git config branch.release_$VERSION.remote origin

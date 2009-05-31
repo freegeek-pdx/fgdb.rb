@@ -183,3 +183,5 @@ ContactDuplicate.destroy_all
   Inflector.classify(table.to_s).constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} IS NOT NULL")
 }
 Contract.destroy_all "name != 'default'"
+
+Default["is-pdx"] = "false"

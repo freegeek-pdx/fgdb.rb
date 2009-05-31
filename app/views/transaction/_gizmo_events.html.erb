@@ -42,7 +42,7 @@
            else
              raise "BUG"
            end
-           if defined?(line.description)
+           if !line.description.nil?
              description = line.description
            else
              description = ''
@@ -51,7 +51,7 @@
            hash[:unit_price] = price if (params[:controller] == "donations" or params[:controller] == "sales")
            hash[:system_id] = line.system_id if line.system_id
            hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
-           hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if (params[:controller] == "donations" or params[:controller] == "recyclings") && coveredness_enabled
+           hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if (params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements") && coveredness_enabled
            @gizmos_and_payments_js += "add_gizmo_event(#{hash.to_json});"
          end
          %>
@@ -62,20 +62,20 @@
         <%= gizmo_events_options_for_transaction %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="handle_ge(event);"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="return handle_ge(event);"></td>
     <% if params[:controller] == "sales" or params[:controller] == "disbursements" %>
-    <td><input name="system_id" id="system_id" size="6" onkeydown="handle_ge(event);"></td>
+    <td><input name="system_id" id="system_id" size="6" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if params[:controller] == "recyclings" %>
       <% if Contract.usable.length > 1 %>
-        <td><select id="contract_id" onkeydown="handle_ge(event);">
+        <td><select id="contract_id" onkeydown="return handle_ge(event);">
             <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
           </select></td>
       <% end %>
     <% end %>
     <% if params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements" %>
       <% if coveredness_enabled %>
-        <td><input name="covered" id="covered" type="checkbox" onkeydown="handle_ge(event);" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected()"></td>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="return handle_ge(event);" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();"></td>
       <% end %>
     <% end %>
     <% if params[:controller] == "sales" or params[:controller] == "donations" %>

@@ -12,9 +12,11 @@ PATH=$PATH:~/bin/
 cd
 wget http://dev.freegeek.org/~ryan52/devel_data/version -O /var/tmp/version.new
 mkdir /tmp/rsync-to-xyzzy || { echo "rsync-to-xyzzy is already running"; exit 1; }
-if [ "$?" != "0" ] || [ "$1" = "--force" -o "$1" = "-f" -o "$1" = "force" ] || [ ! -f /var/tmp/version ] || ! diff /var/tmp/version.new /var/tmp/version; then
+if [ "$1" = "--force" -o "$1" = "-f" -o "$1" = "force" ] || [ ! -f devel_data/version ] || ! diff /var/tmp/version.new devel_data/version; then
     under-myagent rsync --progress --delete-excluded -azv dev.freegeek.org:public_html/devel_data/ devel_data/
     RETURN="$?"
+else
+    RETURN=0
 fi
 rmdir /tmp/rsync-to-xyzzy
 

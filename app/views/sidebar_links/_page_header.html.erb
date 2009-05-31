@@ -29,7 +29,7 @@
   <body>
 
     <div id="logo">
-      <a href="/"><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" class="image-link"/></a>
+      <a href="/"><img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png" class="image-link"/></a>
     </div>
 
     <% if !(session[:unauthorized_error] && !logged_in?) %>

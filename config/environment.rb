@@ -1,11 +1,10 @@
-# Be sure to restart your server when you modify this file
+# HEY, LOOK HERE!!!
+# NEVER, EVER, EVER CHANGE THIS FILE.
+# CREATE A environment.local.rb FILE INSTEAD
 
-# Uncomment below to force Rails into production mode when
-# you don't control web/app server and can't set it the proper way
-# ENV['RAILS_ENV'] ||= 'production'
-
-# Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+if File.exists?(__FILE__.sub(/\.rb$/, ".local.rb"))
+  require __FILE__.sub(/\.rb$/, ".local.rb")
+end
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')

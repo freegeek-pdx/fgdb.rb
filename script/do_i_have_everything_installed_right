@@ -1,16 +1,41 @@
 #!/bin/sh
 
-echo "Testing to see if you have everything required for fgdb to run..."
-echo
-
 STATUS=0
 p=$0
 DEBUG=false
+AUTO_INSTALL=false
 
-if [ "$1" = "--debug" -o "$1" = "-d" ]; then
-    DEBUG=true
+helpme(){
+echo "Usage: $(basename $0) [options]"
+echo ""
+echo "Options:"
+echo "  --help, -h          -- displays this help message"
+echo "  --debug, -d         -- shows the output of the test commands"
+echo "  --auto-install, -i  -- automatically installs missing dependencies (not yet implemented)"
+echo ""
+}
+
+while [ -n "$1" ]; do
+    case "$1" in
+        --debug|-d)
+            DEBUG=true
+            ;;
+        --auto-install|-i)
+            AUTO_INSTALL=true
+            ;;
+        --help|-h)
+            helpme
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo
+            helpme
+            exit 1
+            ;;
+    esac
     shift
-fi
+done
 
 fail(){
     STATUS=1
@@ -96,6 +121,8 @@ test_my_rails_version(){
     check_a_version 2.1.2 || check_a_version 2.1.0
 }
 
+echo "Testing to see if you have everything required for fgdb to run..."
+echo
 run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
 run "Checking to see if perl is installed..." "which perl" "install perl" "error"
 setup_stuff # only runable if ruby is installed

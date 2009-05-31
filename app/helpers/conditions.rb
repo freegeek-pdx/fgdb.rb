@@ -8,7 +8,8 @@ class Conditions
       id contact_type needs_attention anonymous unresolved_invoices
       payment_method payment_amount gizmo_type_id covered
       postal_code city phone_number contact volunteer_hours email
-      flagged system contract created_by cashier_created_by
+      flagged system contract created_by cashier_created_by extract
+      empty
     ] + DATES).uniq
 
   for i in CONDS
@@ -60,6 +61,8 @@ class Conditions
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
+  attr_accessor :extract_type, :extract_value, :extract_field
+
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
@@ -95,6 +98,10 @@ class Conditions
     return conds
   end
 
+  def empty_conditions(klass)
+    return ["1=1"]
+  end
+
   def join_conditions(conds_a, conds_b)
     raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
     raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
@@ -125,6 +132,10 @@ class Conditions
     when 'exact'
       return ["payments.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
     end
+  end
+
+  def extract_conditions(klass)
+    return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.#{@extract_field} ) = ?", @extract_value]
   end
 
   def volunteer_hours_conditions(klass)
@@ -203,7 +214,11 @@ class Conditions
   end
 
   def system_conditions(klass)
-    return ["#{klass.table_name}.system_id = ?", @system_id]
+    if klass == GizmoEvent
+      return ["#{klass.table_name}.system_id = ?", @system_id]
+    else
+      return ["? IN (gizmo_events.system_id)", @system_id]
+    end
   end
 
   def worked_at_conditions(klass)

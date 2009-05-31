@@ -1,7 +1,6 @@
 # TODO: reimplement Date class...we are converting between like 20
 # different formats, and it's a PITA. tho, now that I have it all
 # done, this todo will probably sit here for a few years...
-
 # make it so that you have methods like .add_month and such
 # cause there's a LOT of mess to do that kind of stuff
 # it could also help clean up getting the second date range and the
@@ -19,7 +18,6 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
-#    @cleaned_conditions = params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
     generate_report_data
   end
 
@@ -33,6 +31,53 @@ class GraphicReportsController < ApplicationController
   #########################
   # Time range type stuff #
   #########################
+
+  # list of breakdown types:
+
+  # line breakdown types are when the whole date range is chunked up
+  # based on something
+  def line_breakdown_types
+    ["Yearly", "Quarterly", "Monthly", "Weekly", "Daily"]
+  end
+
+  # bar breakdown types are when you want to compare things like
+  # "which day of the week has the highest average" and such
+  def bar_breakdown_types
+    ["Day", "Hour"]
+  end
+
+  # convert a date object into the string that should be put on the x
+  # axis
+  def x_axis_for(date)
+    case params[:conditions][:breakdown_type]
+    when "Weekly"
+      "Week of " + date.to_s
+    when "Quarterly"
+      string = date.strftime("%Y-Q")
+      temp = date.strftime("%m").to_i
+      hash = {:t1 => [1,2,3], :t2 => [4,5,6], :t3 => [7,8,9], :t4 => [10,11,12]}
+      hash.each{|k,v|
+        string += k.to_s.sub(/t/, "") if v.include?(temp)
+      }
+      string
+    when "Daily"
+      date.to_s
+    when "Yearly"
+      date.year.to_s
+    when "Monthly"
+      date.strftime("%b %y")
+    when "Day"
+      Date.strptime(date.to_s, "%w").strftime("%A")
+    when "Hour"
+      DateTime.strptime(date.to_s, "%H").strftime("%I:00 %p")
+    else
+      raise NoMethodError
+    end
+  end
+
+  ###################
+  # only if is_line #
+  ###################
 
   # should return the total number of things that should be on the x
   # axis, minus one (this makes logical sense for simplicity)
@@ -125,31 +170,6 @@ class GraphicReportsController < ApplicationController
     end
   end
 
-  # convert a date object into the string that should be put on the x
-  # axis, and on the left side of the table
-  def x_axis_for(date)
-    case params[:conditions][:breakdown_type]
-    when "Weekly"
-      "Week of " + date.to_s
-    when "Quarterly"
-      string = date.strftime("%Y-Q")
-      temp = date.strftime("%m").to_i
-      hash = {:t1 => [1,2,3], :t2 => [4,5,6], :t3 => [7,8,9], :t4 => [10,11,12]}
-      hash.each{|k,v|
-        string += k.to_s.sub(/t/, "") if v.include?(temp)
-      }
-      string
-    when "Daily"
-      date.to_s
-    when "Yearly"
-      date.year.to_s
-    when "Monthly"
-      date.strftime("%b %y")
-    else
-      raise NoMethodError
-    end
-  end
-
   # takes in what x_axis_for outputted, and the date object of the
   # start date, and reformats it for the graph (as a number that will
   # be used to place it somewhere on the x axis)
@@ -201,9 +221,43 @@ class GraphicReportsController < ApplicationController
     end
   end
 
-  # list of breakdown types
-  def breakdown_types
-    ["Yearly", "Quarterly", "Monthly", "Weekly", "Daily"]
+  ##################
+  # only if is_bar #
+  ##################
+
+  def extract_name_for_breakdown_type
+    case params[:conditions][:breakdown_type]
+    when "Day"
+      return "DOW"
+    when "Hour"
+      return "hour"
+    else
+      raise NoMethodError
+    end
+  end
+
+  def get_bar_list
+    case params[:conditions][:breakdown_type]
+    when "Day"
+      v = 0..6
+    when "Hour"
+      v = 0..23
+    else
+      raise NoMethodError
+    end
+    return v.to_a
+  end
+
+  def check_date_for_extract_type(args, date)
+    case args[:extract_type]
+    when "DOW"
+      return true if args[:extract_value] == date.cwday
+    when "hour"
+      return true
+    else
+      raise NoMethodError
+    end
+    return false
   end
 
   #####################
@@ -212,7 +266,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers"]
   end
 
   # returns the title for that report type
@@ -222,19 +276,30 @@ class GraphicReportsController < ApplicationController
       "Income report"
       when "Average Frontdesk Income"
       "Report of Average Income at Front Desk"
+      when "Active Volunteers"
+      "Report of Number of Active Volunteers"
     end
   end
 
-  # calls a method specific to that report that takes two arguements,
-  # a start date and an end date, and returns a hash (one element for
-  # each line) with the key being the name of the line and the value
-  # the number to be plotted for that date range
-  def get_thing_for_timerange(*args)
+  # calls a method specific to that report that takes args, explained
+  # below, and returns a hash (one element for each line) with the key
+  # being the name of the line and the value the number to be plotted
+  # for that date range
+
+  # anywhere in this file where you see a variable called args, it is a hash with these options:
+  # :start_date - the first date to include
+  # :end_date - the second date to inlcude
+  # :extract_type - if also limiting by day of week, hour, etc, this will be not nil, so extract this and make sure it's equal to :extract_value
+  # :extract_value - the value to make sure that the thing extracted from the date matches
+  # :number_of_days - the numbef of days matching these criteria (for averaging, etc)
+  def get_thing_for_timerange(args)
     case params[:conditions][:report_type]
     when "Income"
-      get_income_for_timerange(*args)
+      get_income_for_timerange(args)
     when "Average Frontdesk Income"
-      get_average_frontdesk(*args)
+      get_average_frontdesk(args)
+    when "Active Volunteers"
+      get_active_volunteers(args)
     end
   end
 
@@ -245,31 +310,110 @@ class GraphicReportsController < ApplicationController
   def generate_report_data
     list = []
     @start_date = Date.parse(params[:conditions][:start_date])
-    @start_date = back_up_to_last_thing(@start_date)
     end_date = Date.parse(params[:conditions][:end_date])
-    end_date = back_up_to_last_thing(end_date)
-    (number_between_them(end_date) + 1).times{|x|
-      list << get_this_one(x)
-    }
+    if is_line
+      @start_date = back_up_to_last_thing(@start_date)
+      end_date = back_up_to_last_thing(end_date)
+    elsif is_bar
+    else
+      raise NoMethodError
+    end
+    if is_line
+      (number_between_them(end_date) + 1).times{|x|
+        list << get_this_one(x)
+      }
+    elsif is_bar
+      list = get_bar_list.to_a
+    else
+      raise NoMethodError
+    end
     list.delete_if{|x| x.nil?}
-    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")})"
+    @broken_down_by = params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
+    @title = get_title + " (broken down by #{@broken_down_by})"
     @data = {}
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
     }
     @graph_x_axis = []
+    @table_x_axis = {}
     @x_axis.each_with_index{|x,i|
-      @graph_x_axis << graph_x_axis_for(x, list[i])
+      if is_line
+        @graph_x_axis << graph_x_axis_for(x, list[i])
+      elsif is_bar
+        @graph_x_axis << list[i]
+      else
+        raise NoMethodError
+      end
+      if is_line
+        @table_x_axis[x] = list[i].to_s
+      elsif is_bar
+        @table_x_axis[x] = @x_axis[i]
+      else
+        raise NoMethodError
+      end
     }
-    list.each{|x|
-      get_thing_for_timerange(x.to_s, second_timerange(x).to_s).each{|k,v|
+    if is_line
+      list.map!{|x|
+        {:start_date => x.to_s, :end_date => second_timerange(x).to_s}
+      }
+    elsif is_bar
+      list.map!{|x|
+        {:start_date => @start_date.to_s, :end_date => end_date.to_s, :extract_type => extract_name_for_breakdown_type, :extract_value => x}
+      }
+    else
+      raise NoMethodError
+    end
+    list.each{|args|
+      if is_line
+        args[:number_of_days] = (Date.strptime(args[:end_date]) - Date.strptime(args[:start_date])).ceil
+      elsif is_bar
+        args[:number_of_days] = 0
+        array_of_dates(args[:start_date], args[:end_date]).each do |date|
+          args[:number_of_days] += 1 if check_date_for_extract_type(args, date)
+        end
+      else
+        raise NoMethodError
+      end
+    }
+    list.each{|args|
+      get_thing_for_timerange(args).each{|k,v|
         if !@data[k]
           @data[k] = []
         end
         @data[k] << v
       }
     }
+  end
+
+  def array_of_dates(start, stop)
+    start = Date.parse(start) if start.class == String
+    stop = Date.parse(stop) if stop.class == String
+    if start > stop
+      temp = start
+      start = stop
+      stop = temp
+    end
+    stop += 1
+    arr = []
+    i = start
+    while i != stop
+      arr << i
+      i = i + 1
+    end
+    return arr
+  end
+
+  def breakdown_types
+    line_breakdown_types + bar_breakdown_types
+  end
+
+  def is_line
+    line_breakdown_types.include?(params[:conditions][:breakdown_type])
+  end
+
+  def is_bar
+    bar_breakdown_types.include?(params[:conditions][:breakdown_type])
   end
 
   def back_up_to_last_thing(date)
@@ -280,29 +424,68 @@ class GraphicReportsController < ApplicationController
     return temp
   end
 
-  def created_at_conditions_for_report(start_date, end_date)
-    h = {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date, "created_at_enabled" => "true"}
-#    return @cleaned_conditions.merge
-    return h
+  def created_at_conditions_for_report(args)
+    conditions_with_daterange_for_report(args, "created_at")
   end
 
-  def call_income_report(*args)
-    r = ReportsController.new
-    r.income_report(created_at_conditions_for_report(*args))
-  end
-
-  def find_all_donations(*args)
+  def sql_for_report(model, conditions)
     c = Conditions.new
-    c.apply_conditions(created_at_conditions_for_report(*args))
+    c.apply_conditions(conditions)
+    return DB.prepare_sql(c.conditions(model))
+  end
+
+  def conditions_with_daterange_for_report(args, field)
+    h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+    conditions_for_report(args, field, h)
+  end
+
+  def conditions_for_report(args, field, extra_conditions = {})
+    h = extra_conditions
+    if args[:extract_type]
+      h["extract_enabled"] = "true"
+      h["extract_type"] = args[:extract_type]
+      h["extract_value"] = args[:extract_value]
+      h["extract_field"] = args[field]
+    end
+    h["empty_enabled"] = "true"
+    return params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}.merge(h)
+  end
+
+  def call_income_report(args)
+    r = ReportsController.new
+    r.income_report(created_at_conditions_for_report(args))
+  end
+
+  def find_all_donations(args)
+    c = Conditions.new
+    c.apply_conditions(created_at_conditions_for_report(args))
     n = Donation.number_by_conditions(c)
   end
 
-  def get_average_frontdesk(*args)
-    thing = call_income_report(*args)
+  def get_active_volunteers(args)
+    raise "stupid" if args[:extract_type]
+    res = DB.execute("SELECT count( distinct contact_id ) as vol_count
+    FROM volunteer_tasks
+    WHERE contact_id IN (
+    SELECT xxx.contact_id
+      FROM volunteer_tasks AS xxx
+      WHERE xxx.date_performed BETWEEN
+        ?::date - 90 AND ?::date
+      GROUP BY xxx.contact_id
+      HAVING SUM(xxx.duration) > 4) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", args[:start_date], args[:start_date])
+    final = 0
+    if res.first
+      final = res.first['vol_count']
+    end
+    return {:active => final}
+  end
+
+  def get_average_frontdesk(args)
+    thing = call_income_report(args)
     thing = thing[:donations]["total real"] # WHY IS THERE A SPACE!?!?!
     suggested = thing["suggested"][:total] / 100.0
     fees = thing["fees"][:total] / 100.0
-    number = find_all_donations(*args)
+    number = find_all_donations(args)
     total = suggested + fees
     suggested = suggested / number
     fees = fees / number
@@ -316,8 +499,8 @@ class GraphicReportsController < ApplicationController
     {:fees => fees, :suggested => suggested, :total => total}
   end
 
-  def get_income_for_timerange(*args)
-    thing = call_income_report(*args)[:grand_totals]["total"]["total"][:total] / 100.0
+  def get_income_for_timerange(args)
+    thing = call_income_report(args)[:grand_totals]["total"]["total"][:total] / 100.0
     {:income => thing}
   end
 

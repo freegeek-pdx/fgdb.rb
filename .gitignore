@@ -23,3 +23,4 @@
 /db/devel_data_version
 /db/devel_data.sql
 /db/devel_data.sql.lzma
+/config/environment.local.rb

@@ -11,6 +11,8 @@ module ConditionsHelper
     multiselect_of_form_elements(params_key, hash)
   end
 
+  private
+
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
   end

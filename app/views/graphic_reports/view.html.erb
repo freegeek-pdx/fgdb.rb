@@ -36,14 +36,16 @@
 <%# generate teh table %>
 <table style="border-collapse: collapse;" border="1" width="100%">
   <tr>
-    <th />
+    <th>
+      <%= @broken_down_by.capitalize %> of
+    </th>
     <% @data.each do |k,v| %>
         <th><%= k.to_s.titleize %></th>
     <% end %>
   </tr>
   <% @x_axis.each_with_index do |x,i| %>
     <tr>
-      <th><%= x %></th>
+      <th><%= @table_x_axis[x] %></th>
       <% @data.each do |k,v|%>
         <td><%= v[i] %></td>
       <% end %>

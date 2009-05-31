@@ -1,8 +1,42 @@
-fgdb.rb (1.0.32) UNRELEASED; urgency=low
+fgdb.rb (1.0.35) UNRELEASED; urgency=low
 
-  * 
+  * use actual hours, not effective, for the last ninety days
+  * add support for day of week reports to the trends thingy
+  * add system condition to sales and disbursements (Closes: #13357)
+  * in the table show actual dates (Closes: #13629)
+  * add keyboard, mouse, and speakers to the list of gizmos on the
+    disbursement section of the printme report (Closes: #13607)
+  * implement the hour breakdown type
+  * add support for conditions in the reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Apr 2009 13:20:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:06:21 -0700
+
+fgdb.rb (1.0.34) released; urgency=low
+
+  * use points, allow capping it off at 24 (or any number)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 May 2009 23:33:57 -0700
+
+fgdb.rb (1.0.33) released; urgency=low
+
+  * add active volunteers report
+  * fix empty contact methods
+  * fix coveredness defaulting to true when it's not coverable
+  * fix tabbing to actually focus on the type selection instead of the
+    next field
+  * cleanup uncoverable types that got marked as covered on accident
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:36:37 -0700
+
+fgdb.rb (1.0.32) released; urgency=low
+
+  * add description to the disbursements and recyclings
+  * add covered to the disbursements
+  * add environment.local.rb and logo defaults for more customizing
+  * add ./script/defaults to help with editing the defaults table
+  * lots of cleanup to the line items stuff
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 03:08:13 -0700
 
 fgdb.rb (1.0.31) released; urgency=low
 

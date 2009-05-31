@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+if ARGV.length == 0
+  puts Default.keys.join(", ")
+elsif ARGV.length == 1
+   puts Default[ARGV[0]]
+elsif ARGV.length == 2
+  Default[ARGV[0]] = ARGV[1]
+else
+  puts "Usage: defaults [name [value]]"
+end
+

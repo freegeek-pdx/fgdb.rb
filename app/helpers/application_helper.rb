@@ -196,9 +196,12 @@ module ApplicationHelper
         end
       end
       js += "$('#{obj_name}_nil').selected = true;"
-    else
+    elsif choices.length == 1
       html += choices.values.first
       js = "$('#{obj_name}_#{choices.keys.first}_enabled').value = 'true'"
+    else
+      html += ""
+      js = ""
     end
     html += "</div>"
     return html + javascript_tag(js)

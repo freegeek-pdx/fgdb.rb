@@ -27,7 +27,10 @@ endif
 
 create: create_devel_data
 clean: clean_devel_data
-create_devel_data: clean_devel_data fgdb-devel-data ohaither
+create_devel_data: clean_devel_data git-update fgdb-devel-data ohaither
+
+git-update:
+	under-myagent git pull
 
 all_clean: full_clean
 full_clean: clean other_clean

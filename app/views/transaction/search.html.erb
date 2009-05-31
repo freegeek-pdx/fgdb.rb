@@ -61,6 +61,9 @@
           <% filters << 'cashier_created_by' %>
         <% end %>
       <% end %>
+      <% if @model == Sale or @model == Disbursement %>
+        <% filters << 'system' %>
+      <% end %>
       <%= conditions_html("conditions", filters) %>
 
       <div class="form-footer">

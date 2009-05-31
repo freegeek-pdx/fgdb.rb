@@ -1,4 +1,4 @@
-<% last_ninety = @contact.last_ninety_days_of_effective_hours %>
+<% last_ninety = @contact.last_ninety_days_of_actual_hours %>
 <% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
 last 90 days [<%= link_to('edit',
@@ -10,7 +10,7 @@ last 90 days [<%= link_to('edit',
                                              :controller=>"reports",
                                              :contact_id=>@contact.id
                                              ) %>]
-<br /><span class="hours"><%= adoption %></span> effective towards adoption
+<br /><span class="hours"><%= adoption %></span> points for adoption
 <% if @contact.date_of_last_adoption %>
   <br /><span class="hours"><%= Date.today - @contact.date_of_last_adoption %></span> days since last adoption
 <% end %>

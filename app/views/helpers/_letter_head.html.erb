@@ -1,6 +1,6 @@
 <div class="letter_head">
   <div class="logos">
-    <img src="/images/freegeeklogo.png" alt="freegeeklogo.png"/>
+    <img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
     <img src="<%= h Default['address image'] %>" alt="<%= h Default['contact info'] %>"/>
   </div>
   <div class="contact-info"><%= contact_information.nil? ? "" : contact_information.map{|x| h(x)}.join('<br />') %></div>

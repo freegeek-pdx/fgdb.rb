@@ -172,7 +172,9 @@ class Contact < ActiveRecord::Base
 
   # effective for adoption
   def adoption_hours
-    hours_effective
+    h = hours_effective
+    h = Default['max_effective_hours'].to_f if Default['max_effective_hours'] and Default['max_effective_hours'].to_f < h
+    return h
   end
 
   def effective_discount_hours
