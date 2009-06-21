@@ -1,4 +1,19 @@
-fgdb.rb (1.0.35) UNRELEASED; urgency=low
+fgdb.rb (1.0.37) UNRELEASED; urgency=low
+
+  * add Volunteer Hours by Program report
+  * fix spelling of disbursement
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 18 Jun 2009 16:40:41 -0700
+
+fgdb.rb (1.0.36) released; urgency=low
+
+  * fix searching by system, oops, I'm an idiot
+  * fix trend reports when one daterange gives a result but another
+    doesn't
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 17 Jun 2009 01:25:45 -0700
+
+fgdb.rb (1.0.35) released; urgency=low
 
   * use actual hours, not effective, for the last ninety days
   * add support for day of week reports to the trends thingy
@@ -8,8 +23,10 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
     disbursement section of the printme report (Closes: #13607)
   * implement the hour breakdown type
   * add support for conditions in the reports
+  * add sales income trend report
+  * add donations count report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:06:21 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Jun 2009 23:19:44 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 

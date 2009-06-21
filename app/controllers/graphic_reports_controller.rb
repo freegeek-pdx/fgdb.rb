@@ -23,7 +23,23 @@ class GraphicReportsController < ApplicationController
 
   def index
     @report_types = report_types
+  end
+
+  def index2
+    @valid_conditions = []
     @breakdown_types = breakdown_types
+    case params[:conditions][:report_type]
+    when "Average Frontdesk Income"
+    when "Income"
+    when "Active Volunteers"
+      @breakdown_types = line_breakdown_types
+    when "Sales Total"
+    when "Donations Count"
+    when "Volunteer Hours by Program"
+      @breakdown_types = breakdown_types - ["Hour"]
+    else
+      raise NoMethodError
+    end
   end
 
   private
@@ -43,7 +59,7 @@ class GraphicReportsController < ApplicationController
   # bar breakdown types are when you want to compare things like
   # "which day of the week has the highest average" and such
   def bar_breakdown_types
-    ["Day", "Hour"]
+    ["Day of week", "Hour"]
   end
 
   # convert a date object into the string that should be put on the x
@@ -66,7 +82,7 @@ class GraphicReportsController < ApplicationController
       date.year.to_s
     when "Monthly"
       date.strftime("%b %y")
-    when "Day"
+    when "Day of week"
       Date.strptime(date.to_s, "%w").strftime("%A")
     when "Hour"
       DateTime.strptime(date.to_s, "%H").strftime("%I:00 %p")
@@ -227,7 +243,7 @@ class GraphicReportsController < ApplicationController
 
   def extract_name_for_breakdown_type
     case params[:conditions][:breakdown_type]
-    when "Day"
+    when "Day of week"
       return "DOW"
     when "Hour"
       return "hour"
@@ -238,7 +254,7 @@ class GraphicReportsController < ApplicationController
 
   def get_bar_list
     case params[:conditions][:breakdown_type]
-    when "Day"
+    when "Day of week"
       v = 0..6
     when "Hour"
       v = 0..23
@@ -266,18 +282,26 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program"]
   end
 
   # returns the title for that report type
   def get_title
     case params[:conditions][:report_type]
-      when "Income"
+    when "Income"
       "Income report"
-      when "Average Frontdesk Income"
+    when "Average Frontdesk Income"
       "Report of Average Income at Front Desk"
-      when "Active Volunteers"
+    when "Active Volunteers"
       "Report of Number of Active Volunteers"
+    when "Sales Total"
+      "Report of total sales in dollars"
+    when "Donations Count"
+      "Report of number of donations"
+    when "Volunteer Hours by Program"
+      "Report of volunteer hours by program"
+    else
+      raise NoMethodError
     end
   end
 
@@ -300,6 +324,14 @@ class GraphicReportsController < ApplicationController
       get_average_frontdesk(args)
     when "Active Volunteers"
       get_active_volunteers(args)
+    when "Donations Count"
+      get_donations_count(args)
+    when "Sales Total"
+      get_sales_money(args)
+    when "Volunteer Hours by Program"
+      get_volunteer_hours_by_program(args)
+    else
+      raise NoMethodError
     end
   end
 
@@ -376,11 +408,17 @@ class GraphicReportsController < ApplicationController
         raise NoMethodError
       end
     }
-    list.each{|args|
-      get_thing_for_timerange(args).each{|k,v|
-        if !@data[k]
-          @data[k] = []
-        end
+    resultlist = list.map{|args|
+      get_thing_for_timerange(args)
+    }
+    lines = resultlist.map{|x| x.keys}.flatten.uniq
+    lines.each{|x|
+      @data[x] = []
+    }
+    resultlist.each{|thing|
+      lines.each{|k|
+        v = thing[k]
+        v = 0 if v.nil?
         @data[k] << v
       }
     }
@@ -445,7 +483,7 @@ class GraphicReportsController < ApplicationController
       h["extract_enabled"] = "true"
       h["extract_type"] = args[:extract_type]
       h["extract_value"] = args[:extract_value]
-      h["extract_field"] = args[field]
+      h["extract_field"] = field
     end
     h["empty_enabled"] = "true"
     return params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}.merge(h)
@@ -462,8 +500,28 @@ class GraphicReportsController < ApplicationController
     n = Donation.number_by_conditions(c)
   end
 
+  def get_sales_money(args)
+    res = DB.execute("SELECT SUM( reported_amount_due_cents )/100.0 AS amount
+  FROM sales WHERE " + sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at")))
+    return {:total => res.first["amount"]}
+  end
+
+  def get_donations_count(args)
+    return {:count => find_all_donations(args).to_s}
+  end
+
+  def get_volunteer_hours_by_program(args)
+    res = DB.execute("SELECT programs.description, SUM( duration )
+  FROM volunteer_tasks
+  LEFT JOIN volunteer_task_types ON volunteer_tasks.volunteer_task_type_id = volunteer_task_types.id
+  LEFT JOIN volunteer_task_types AS programs ON volunteer_task_types.parent_id = programs.id
+  WHERE #{sql_for_report(VolunteerTask, created_at_conditions_for_report(args))}
+  GROUP BY programs.id, programs.description
+  ORDER BY programs.description;")
+    Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
+  end
+
   def get_active_volunteers(args)
-    raise "stupid" if args[:extract_type]
     res = DB.execute("SELECT count( distinct contact_id ) as vol_count
     FROM volunteer_tasks
     WHERE contact_id IN (

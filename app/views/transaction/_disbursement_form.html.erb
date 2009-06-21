@@ -14,7 +14,7 @@
       </div>
 
       <div class="form-element">
-        <label for="disbursement_disbursement_type_id">Type of dispersment</label>
+        <label for="disbursement_disbursement_type_id">Type of disbursement</label>
         <select id="disbursement_disbursement_type_id" name="disbursement[disbursement_type_id]">
           <option></option>
           <%= options_from_collection_for_select DisbursementType.find(:all), "id", "description", @disbursement.disbursement_type_id %>

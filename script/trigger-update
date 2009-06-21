@@ -1,0 +1,4 @@
+#!/bin/sh
+
+wget "http://ryan52.info/update-mirror.php?project=fgdb.rb&type=git"
+rm -f update-mirror.php\?project\=fgdb.rb\&type\=git

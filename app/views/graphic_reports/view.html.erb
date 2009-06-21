@@ -37,7 +37,7 @@
 <table style="border-collapse: collapse;" border="1" width="100%">
   <tr>
     <th>
-      <%= @broken_down_by.capitalize %> of
+      <%= @broken_down_by.capitalize %><%= @broken_down_by.match(/of/) ? "" : " of" %>
     </th>
     <% @data.each do |k,v| %>
         <th><%= k.to_s.titleize %></th>
