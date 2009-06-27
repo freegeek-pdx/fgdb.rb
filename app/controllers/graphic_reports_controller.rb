@@ -37,6 +37,12 @@ class GraphicReportsController < ApplicationController
     when "Donations Count"
     when "Volunteer Hours by Program"
       @breakdown_types = breakdown_types - ["Hour"]
+    when "Donations gizmo count by type"
+      @valid_conditions = ["gizmo_category_id", "gizmo_type_id"]
+    when "Sales gizmo count by type"
+      @valid_conditions = ["gizmo_category_id", "gizmo_type_id"]
+    when "Sales amount by gizmo type"
+      @valid_conditions = ["gizmo_category_id", "gizmo_type_id"]
     else
       raise NoMethodError
     end
@@ -282,7 +288,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program", "Donations gizmo count by type", "Sales gizmo count by type", "Sales amount by gizmo type"]
   end
 
   # returns the title for that report type
@@ -300,6 +306,12 @@ class GraphicReportsController < ApplicationController
       "Report of number of donations"
     when "Volunteer Hours by Program"
       "Report of volunteer hours by program"
+    when "Donations gizmo count by type"
+      "Count of gizmos donated by type"
+    when "Sales gizmo count by type"
+      "Count of gizmos sold by type"
+    when "Sales amount by gizmo type"
+      "Sales amount by gizmo type"
     else
       raise NoMethodError
     end
@@ -330,6 +342,12 @@ class GraphicReportsController < ApplicationController
       get_sales_money(args)
     when "Volunteer Hours by Program"
       get_volunteer_hours_by_program(args)
+    when "Donations gizmo count by type"
+     get_donation_count_by_gizmo(args)
+    when "Sales gizmo count by type"
+     get_sales_count_by_gizmo(args)
+    when "Sales amount by gizmo type"
+     get_sales_amount_by_gizmo(args)
     else
       raise NoMethodError
     end
@@ -536,6 +554,30 @@ class GraphicReportsController < ApplicationController
       final = res.first['vol_count']
     end
     return {:active => final}
+  end
+
+  def get_sales_amount_by_gizmo(args)
+    res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/100.0 AS due
+FROM gizmo_events
+WHERE sale_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+    return {:amount => res.first["due"]}
+  end
+
+  def get_donation_count_by_gizmo(args)
+    res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE donation_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+    return {:count => res.first["count"]}
+  end
+
+  def get_sales_count_by_gizmo(args)
+    res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE sale_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+    return {:count => res.first["count"]}
   end
 
   def get_average_frontdesk(args)

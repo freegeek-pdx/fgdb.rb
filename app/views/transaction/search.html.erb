@@ -46,6 +46,9 @@
       <% if @model.new.respond_to?( :postal_code ) %>
         <% filters << 'anonymous' %>
       <% end %>
+      <% if @model.new.respond_to?( :disbursement_type ) %>
+        <% filters << 'disbursement_type_id' %>
+      <% end %>
       <% if @model.new.respond_to?( :payments ) %>
         <% filters << 'payment_method' %>
         <% filters << 'unresolved_invoices' %>

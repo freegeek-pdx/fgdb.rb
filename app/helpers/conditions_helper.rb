@@ -57,6 +57,14 @@ module ConditionsHelper
     select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
   end
 
+  def html_for_gizmo_category_id_condition(params_key)
+    select(params_key, 'gizmo_category_id', GizmoCategory.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+  end
+
+  def html_for_disbursement_type_id_condition(params_key)
+    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+  end
+
   def html_for_covered_condition(params_key)
     check_box(params_key, 'covered')
   end

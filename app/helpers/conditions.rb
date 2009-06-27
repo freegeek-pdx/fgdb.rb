@@ -6,10 +6,10 @@ class Conditions
 
   CONDS = (%w[
       id contact_type needs_attention anonymous unresolved_invoices
-      payment_method payment_amount gizmo_type_id covered
+      payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty
+      empty disbursement_type_id
     ] + DATES).uniq
 
   for i in CONDS
@@ -53,6 +53,8 @@ class Conditions
 
   attr_accessor :gizmo_type_id
 
+  attr_accessor :gizmo_category_id
+
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
   attr_accessor :contact_type
@@ -62,6 +64,8 @@ class Conditions
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
   attr_accessor :extract_type, :extract_value, :extract_field
+
+  attr_accessor :disbursement_type_id
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -317,6 +321,14 @@ class Conditions
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
+  end
+
+  def gizmo_category_id_conditions(klass)
+    return ["(SELECT gizmo_category_id FROM gizmo_types WHERE id = gizmo_events.gizmo_type_id) = ?", gizmo_category_id]
+  end
+
+  def disbursement_type_id_conditions(klass)
+    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id]
   end
 
   def some_date_enabled
