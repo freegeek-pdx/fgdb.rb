@@ -7,14 +7,36 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :recycling
   belongs_to :gizmo_type
   belongs_to :gizmo_category
-  belongs_to  :gizmo_context
+  belongs_to :gizmo_context
   belongs_to :system
+  has_many :store_credits
 
   validates_presence_of :gizmo_count
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
 
+  before_save :set_storecredit_difference_cents, :if => :is_store_credit
+
   define_amount_methods_on("unit_price")
+
+  def is_store_credit
+    self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
+  end
+
+  def set_storecredit_difference_cents
+    # TODO: check that this will for sure keep the old IDs on editing.
+    while self.store_credits.length < self.gizmo_count
+      self.store_credits << StoreCredit.new
+    end
+    # FIXME: DO NOT DELETE USED ONES. die. die in a very scary way.
+    while self.store_credits.length > self.gizmo_count
+      self.store_credits.pop
+    end
+    # FIXME: DO NOT DECREASE USED ONES. die. die in a very scary way.
+    self.store_credits.each{|x|
+      x.amount_cents = self.unit_price_cents
+    }
+  end
 
   def validate
     if gizmo_type && gizmo_type.gizmo_category && gizmo_type.gizmo_category.name == "system" && !system_id.nil? && gizmo_count != 1

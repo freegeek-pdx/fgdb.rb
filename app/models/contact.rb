@@ -13,6 +13,7 @@ class Contact < ActiveRecord::Base
   has_one :contact_duplicate
   belongs_to :contract
   has_many :library_events
+  has_many :gizmo_returns
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by
@@ -235,6 +236,10 @@ class Contact < ActiveRecord::Base
 
   def csz
     "#{city}, #{state_or_province}  #{postal_code}"
+  end
+
+  def p_id
+    return ["Contact ##{self.id}"]
   end
 
   def display_name_address

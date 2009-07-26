@@ -1,0 +1,41 @@
+<fieldset>
+  <div class="row">
+    <!--[form:sale]-->
+    <div id="transaction_info">
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <%= render( :partial => 'contact_search' ) %>
+      </div>
+
+      <div id="gizmo_return_transaction_links">
+        <div class="form-element">
+          <%= label 'gizmo_return', 'disbursement_id' %>
+          <%= text_field 'gizmo_return', 'disbursement_id', :maxlength => 20 %>
+        </div>
+        <div class="form-element">
+          <%= label 'gizmo_return', 'sale_id' %>
+          <%= text_field 'gizmo_return', 'sale_id', :maxlength => 20 %>
+        </div>
+      </div>
+
+      <div class="form-extras">
+        <div class="form-element">
+          <label for="gizmo_return_comments">Comments</label>
+          <%= text_area 'gizmo_return', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+        </div>
+      </div>
+    </div>
+
+    <div id="transaction_line_items_div">
+      <div id="gizmo_return_gizmos" class="datalist line_item">
+        <%= render :partial => 'gizmo_events' %>
+      </div>
+
+      <%= render :partial => 'gizmo_return_totals' %>
+
+      <%= javascript_tag @gizmos_and_payments_js %>
+    </div>
+
+    <!--[eoform:sale]-->
+
+  </div>
+</fieldset>

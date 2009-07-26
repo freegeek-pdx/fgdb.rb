@@ -1,6 +1,5 @@
 class GizmoContext < ActiveRecord::Base
   has_and_belongs_to_many  :gizmo_types
-  has_and_belongs_to_many  :gizmo_typeattrs
 
   def to_s
     description
@@ -16,6 +15,18 @@ class GizmoContext < ActiveRecord::Base
 
   def GizmoContext.donation
     @@donation ||= find_by_name('donation')
+  end
+
+  def GizmoContext._gizmo_return
+    g = find_by_name('gizmo_return')
+    def g.gizmo_types
+      (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
+    end
+    return g
+  end
+
+  def GizmoContext.gizmo_return
+    @@gizmo_return ||= GizmoContext._gizmo_return
   end
 
   def GizmoContext.sale

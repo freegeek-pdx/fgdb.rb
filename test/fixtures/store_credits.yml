@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  gizmo_return_id: 1
+  gizmo_event_id: 1
+  payment_id: 1
+  amount_cents: 1
+
+two:
+  gizmo_return_id: 1
+  gizmo_event_id: 1
+  payment_id: 1
+  amount_cents: 1

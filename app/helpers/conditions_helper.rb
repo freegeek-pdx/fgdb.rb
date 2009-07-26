@@ -65,6 +65,10 @@ module ConditionsHelper
     select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
   end
 
+  def html_for_store_credit_id_condition(params_key)
+    text_field(params_key, 'store_credit_id')
+  end
+
   def html_for_covered_condition(params_key)
     check_box(params_key, 'covered')
   end
@@ -79,6 +83,10 @@ module ConditionsHelper
 
   def html_for_phone_number_condition(params_key)
     text_field(params_key, 'phone_number')
+  end
+
+  def html_for_organization_condition(params_key)
+    check_box(params_key,"is_organization")
   end
 
   def html_for_contact_condition(params_key)

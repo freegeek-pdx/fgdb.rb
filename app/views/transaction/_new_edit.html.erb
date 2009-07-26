@@ -30,8 +30,14 @@
     <h4><%= (@options[:action] + " " + @transaction_type).titleize
             %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
     <% if @transaction.created_at && @transaction.updated_at %>
-      <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{h User.find_by_id(@transaction.cashier_created_by).login} " end %>at <%= @transaction.created_at %></span>
-      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{u User.find_by_id(@transaction.cashier_updated_by).login} " end %>at <%= @transaction.updated_at %></span>
+      <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{link_to User.find_by_id(@transaction.cashier_created_by).login, {:controller => "contacts", :action => "index", :contact_id => User.find_by_id(@transaction.cashier_created_by).contact_id}} " end %>at <%= @transaction.created_at %></span>
+      <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{link_to User.find_by_id(@transaction.cashier_updated_by).login, {:controller => "contacts", :action => "index", :contact_id => User.find_by_id(@transaction.cashier_updated_by).contact_id}} " end %>at <%= @transaction.updated_at %></span>
+    <% end %>
+    <% if ["sale", "disbursement"].include?(@gizmo_context.name) && @transaction.id %>
+      <br/>
+      <% returns_array = @transaction.gizmo_returns.map{|x| link_to x.link_text, {:controller => "gizmo_returns", :action => "edit", :id => x.id}} %>
+      <% returns_array << link_to("Add a new return", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {(@gizmo_context.name + "_id").to_sym => @transaction.id}}}) %>
+      <%= returns_array.length != 1 ? "Returns: " : "" %><%= returns_array.join(" - ") %>
     <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>

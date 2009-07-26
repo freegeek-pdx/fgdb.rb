@@ -9,7 +9,7 @@ class Conditions
       payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty disbursement_type_id
+      empty disbursement_type_id store_credit_id organization
     ] + DATES).uniq
 
   for i in CONDS
@@ -59,6 +59,8 @@ class Conditions
 
   attr_accessor :contact_type
 
+  attr_accessor :is_organization
+
   attr_accessor :city, :postal_code, :phone_number, :email
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
@@ -66,6 +68,8 @@ class Conditions
   attr_accessor :extract_type, :extract_value, :extract_field
 
   attr_accessor :disbursement_type_id
+
+  attr_accessor :store_credit_id
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -195,7 +199,21 @@ class Conditions
   end
 
   def contact_type_conditions(klass)
-    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
+    if klass == Contact
+      i = "id"
+    else
+      i = "contact_id"
+    end
+    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
+  end
+
+  def organization_conditions(klass)
+    if klass == Contact
+      i = "id"
+    else
+      i = "contact_id"
+    end
+    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
   end
 
   def needs_attention_conditions(klass)
@@ -329,6 +347,14 @@ class Conditions
 
   def disbursement_type_id_conditions(klass)
     return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id]
+  end
+
+  def store_credit_id_conditions(klass)
+    if klass == GizmoReturn
+      return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", store_credit_id]
+    else
+      raise NoMethodError
+    end
   end
 
   def some_date_enabled

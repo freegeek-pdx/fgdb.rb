@@ -11,6 +11,12 @@ module GizmoTransaction
     end
   end
 
+  def calculated_subtotal_cents
+    gizmo_events.inject(0) {|tot,gizmo|
+      tot + gizmo.total_price_cents
+    }
+  end
+
   def real_payments
     payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
   end
@@ -24,7 +30,11 @@ module GizmoTransaction
   end
 
   def money_tendered_cents
-    real_payments.inject(0) {|total,payment| total + payment.amount_cents}
+    amount_from_some_payments(real_payments)
+  end
+
+  def amount_from_some_payments(arr)
+    return arr.inject(0) {|total,payment| total + payment.amount_cents}
   end
 
   def amount_invoiced_cents
@@ -32,6 +42,7 @@ module GizmoTransaction
   end
 
   def invoiced?
+    return if ! self.respond_to?(:payments)
     payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
@@ -49,7 +60,7 @@ module GizmoTransaction
 
   def contact_information
     if contact
-      contact.display_name_address
+      contact.p_id
     elsif postal_code
       ["Anonymous (#{postal_code})"]
     else
@@ -70,7 +81,7 @@ module GizmoTransaction
       payments.reject!{|x|
         x.payment_method.name == "cash"
       }
-      payments << cash
+      payments << cash if cash.amount_cents > 0
     end
   end
 

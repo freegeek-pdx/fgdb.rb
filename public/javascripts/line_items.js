@@ -172,7 +172,11 @@ function edit_gizmo_event(id) {
 function edit_payment(id) {
   thing = $(id);
   $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
+  eval(gizmo_context_name + "_payment_method_selected();");
   $('payment_amount').value = getValueBySelector(thing, ".amount");
+  if($('store_credit_id')) {
+    $('store_credit_id').value = getValueBySelector(thing, ".store_credit_id");
+  }
   $('payment_method_id').focus();
 }
 
@@ -212,11 +216,19 @@ function donation_hooks(args, tr) {
 function is_priced() {
   if(gizmo_context_name == "donation" || gizmo_context_name == "sale")
     return true;
-  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement")
+  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement" || gizmo_context_name == "gizmo_return")
     return false;
   else
     alert("BUG. go yell at Ryan.");
   return false;
+}
+
+function update_amount_for_storecredit() {
+  var a = dollar_value(all_store_credits[$('store_credit_id').value]);
+  if(a == "NaN") {
+    a = "";
+  }
+  $('payment_amount').value = a;
 }
 
 function _add_gizmo_event_from_form()
@@ -279,21 +291,21 @@ function _add_gizmo_event_from_form()
 function add_payment_from_form() {
   if(!is_priced())
     return;
-  if(gizmo_context_name == "donation")
-    return internal_add_payment_from_form(donation_compute_totals);
-  else if(gizmo_context_name == "sale")
-    return internal_add_payment_from_form(sale_compute_totals);
-  else
-    alert("BUG. go yell at Ryan.");
-}
-
-function internal_add_payment_from_form(compute_totals) {
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
   }
-  add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals);
+  var args = new Object();
+  args['payment_method_id'] = $('payment_method_id').value;
+  args['payment_amount'] = $('payment_amount').value;
+  if($('store_credit_id')) {
+    args['store_credit_id'] = $('store_credit_id').value;
+  }
+  add_payment(args);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
+  if($('store_credit_id')) {
+    $('store_credit_id').value = $('store_credit_id').defaultValue;
+  }
   $('payment_method_id').focus();
   return false;
 }
@@ -396,6 +408,10 @@ function payment_stuff(args, tr){
   amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, line_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
+  if($('store_credit_id')) {
+    var storecredit_id = args['store_credit_id'];
+    tr.appendChild(make_hidden("payments", "store_credit_id", storecredit_id, storecredit_id, line_id));
+  }
 }
 
 function contact_method_stuff(args, tr){
@@ -475,17 +491,39 @@ function sale_compute_totals() {
   var subtotal = get_subtotal();
   var grand_total = get_grand_total();
   var discount = subtotal - grand_total;
+  var store_credit = get_storecredit();
+  var not_store_credit = get_not_storecredit();
   var payment = get_total_payment();
 
   $('subtotal').innerHTML = dollar_value(subtotal);
   $('discount').innerHTML = dollar_value(discount);
   $('grand_total').innerHTML = dollar_value(grand_total);
   $('total_payments').innerHTML = dollar_value(payment);
-  $('change_due').innerHTML = dollar_value(payment - grand_total);
-  if(payment - grand_total < 0) {
+  var storecredit_left = store_credit - grand_total;
+  if(storecredit_left > 0) {
+    // show the row, show how much is left
+    $('storecredit_left_tr').show();
+    $('storecredit_left').innerHTML = dollar_value(storecredit_left);
+    // no more money owed
+    grand_total = 0;
+  } else if (storecredit_left <= 0) {
+    // hide the row
+    $('storecredit_left_tr').hide();
+    // spent too much, leave it to the real money
+    grand_total = -1 * storecredit_left;
+  }
+  var change_due = not_store_credit - grand_total;
+  $('change_due').innerHTML = dollar_value(change_due);
+  if(change_due < 0) {
     $('change_due_tr').addClassName('short_row');
   }
   update_contract_notes();
+}
+
+function gizmo_return_compute_totals(){
+  update_gizmo_events_totals();
+  var subtotal = get_subtotal();
+  $('grand_total').innerHTML = dollar_value(subtotal);
 }
 
 function get_grand_total(){
@@ -512,6 +550,28 @@ function get_total_payment() {
   var arr = find_these_lines('payment_lines');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.amount"));
+  }
+  return total;
+}
+
+function get_storecredit(){
+  var total = 0;
+  var arr = find_these_lines('payment_lines');
+  for (var x = 0; x < arr.length; x++) {
+    if(get_node_value(arr[x], "td.payment_method_id") == "store credit") {
+      total += cent_value(get_node_value(arr[x], "td.amount"));
+    }
+  }
+  return total;
+}
+
+function get_not_storecredit(){
+  var total = 0;
+  var arr = find_these_lines('payment_lines');
+  for (var x = 0; x < arr.length; x++) {
+    if(get_node_value(arr[x], "td.payment_method_id") != "store credit") {
+      total += cent_value(get_node_value(arr[x], "td.amount"));
+    }
   }
   return total;
 }
@@ -615,9 +675,24 @@ function last_and_tab(event) {
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
+function last_and_tab_p(event) {
+  linelist = ['payment_amount', 'store_credit_id'];
+  return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
+}
+
 function handle_ge(event) {
   if(last_and_tab(event)) {
+    if(event.target.onchange)
+      event.target.onchange();
     return handle_gizmo_events();
+  }
+}
+
+function handle_p(event) {
+  if(last_and_tab_p(event)) {
+    if(event.target.onchange)
+      event.target.onchange();
+    return handle_payments();
   }
 }
 
@@ -625,12 +700,9 @@ function handle_ge(event) {
 // ADD LINE ITEM //
 ///////////////////
 
-function add_payment(payment_method_id, payment_amount, compute_totals) {
-  args = new Object();
-  args['payment_method_id'] = payment_method_id;
-  args['payment_amount'] = dollar_cent_value(payment_amount);
+function add_payment(args) {
   args['prefix'] = 'payment';
-  add_line_item(args, payment_stuff, compute_totals, edit_payment);
+  add_line_item(args, payment_stuff, eval(gizmo_context_name + "_compute_totals"), edit_payment);
 }
 
 function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
@@ -680,6 +752,15 @@ function add_sale_gizmo_event(args) {
     args['system_id'] = '';
   }
   add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
+}
+
+function add_gizmo_return_gizmo_event(args) {
+  args['prefix'] = 'gizmo_event';
+  args['unit_price'] = dollar_cent_value(args['unit_price']);
+  if(args['system_id'] == undefined) {
+    args['system_id'] = '';
+  }
+  add_line_item(args, sales_hooks, gizmo_return_compute_totals, edit_gizmo_event);
 }
 
 function add_disbursement_gizmo_event(args) {
@@ -736,9 +817,30 @@ function coveredness_type_selected() {
     $('covered').checked = false;
   }
 }
-
+function get_name_of_selected(name) {
+  return $(name).options[$(name).selectedIndex].innerHTML;
+}
+function sale_payment_method_selected(){
+  if(get_name_of_selected('payment_method_id') == "store credit" && (typeof(old_selected_payment_method) == "undefined" || old_selected_payment_method != "store credit")) {
+    $('store_credit_id').enable();
+    $('payment_amount').disable();
+    $('payment_amount').value = "";
+    $('store_credit_id').value = "";
+  } else if (get_name_of_selected('payment_method_id') != "store credit" && (typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "store credit"){
+    $('store_credit_id').disable();
+    $('payment_amount').enable();
+    $('payment_amount').value = "";
+    $('store_credit_id').value = "";
+  }
+  old_selected_payment_method = get_name_of_selected('payment_method_id');
+}
+function donation_payment_method_selected(){
+}
 function sale_gizmo_type_selected() {
   coveredness_type_selected();
+  systems_type_selected();
+}
+function gizmo_return_gizmo_type_selected() {
   systems_type_selected();
 }
 function donation_gizmo_type_selected() {

@@ -1,7 +1,10 @@
+== for developers ==
 1. Go to http://area.freegeek.org/ and check to make sure the last build succeeded.
 2. Run test-migrate on a devel system
 3. Manually test as much of the application as possible
 4. Run next-milestone on dev.freegeek.org
 5. Run release on a devel system
+
+== for users ==
 6. Run pre_release.sh on the production system
 7. Run upgrade.sh on the production system

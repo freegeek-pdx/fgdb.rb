@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  contact_id: 1
+  created_by: 1
+  updated_by: 1
+  storecredit_difference_cents: 1
+  comments: MyText
+  cashier_created_by: 1
+  cashier_updated_by: 1
+
+two:
+  contact_id: 1
+  created_by: 1
+  updated_by: 1
+  storecredit_difference_cents: 1
+  comments: MyText
+  cashier_created_by: 1
+  cashier_updated_by: 1

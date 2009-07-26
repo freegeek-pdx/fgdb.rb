@@ -11,7 +11,7 @@
 
 <%= javascript_include_tag 'line_items' %>
 
-<% if ["sales", "disbursements"].include?(params[:controller]) %>
+<% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
   <% js = "all_systems = new Array;" %>
   <% System.find(:all).each do |x| %>
     <% js += "all_systems[#{x.id}] = #{x.contract_id};" %>
@@ -19,7 +19,15 @@
   <%= javascript_tag js %>
 <% end %>
 
-<% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
+<% if ["sales"].include?(params[:controller]) %>
+  <% js = "all_store_credits = new Array;" %>
+  <% StoreCredit.find(:all).each do |x| %>
+    <% js += "all_store_credits[#{x.id}] = #{x.amount_cents};" %>
+  <% end %>
+  <%= javascript_tag js %>
+<% end %>
+
+<% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(params[:controller]) -%>
   <%= js = "var gizmo_types = new Array;"
       for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description)
         js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
@@ -94,7 +102,7 @@
    %>
 
 <%=
-   if params[:controller] == 'sales' || params[:controller] == 'disbursements'
+   if params[:controller] == 'sales' || params[:controller] == 'disbursements' || params[:controller] == 'gizmo_returns'
      system_types = GizmoType.find(:all, :conditions => ['gizmo_category_id = ?', GizmoCategory.find_by_name('system').id]).collect(&:id)
      javascript_tag "var system_types = new Array(#{system_types.join(', ')});"
    end

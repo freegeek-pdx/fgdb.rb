@@ -1,0 +1,36 @@
+<div class="item_list">
+  <table bgcolor="#cccccc" width="100%" align="center" border="1">
+    <tbody><tr>
+        <td width="31%"><strong>Description:</strong></td>
+        <td width="11%"><strong>Unit Price:</strong></td>
+        <td width="11%"><strong>Quantity:</strong></td>
+        <td width="11%"><strong>Subtotal:</strong></td>
+        <td width="12%"></td>
+      </tr>
+
+      <% @gizmo_return.gizmo_events.each do |event| %>
+        <tr>
+          <td> <%= h event.attry_description( :ignore => ['unit_price'] ) %> </td>
+          <td> <%= my_number_to_currency event.unit_price_cents %> </td>
+          <td> <%= event.gizmo_count %> </td>
+          <td> <%= my_number_to_currency event.total_price_cents %> </td>
+        </tr>
+      <% end %>
+
+      <% if @gizmo_return.storecredit_difference_cents > 0 %>
+      <tr><td colspan="4">&nbsp;</td></tr>
+
+      <tr>
+        <td colspan="2">&nbsp;</td>
+        <td align="right" colspan="1">Store Credit:</td>
+        <td><%= my_number_to_currency(@gizmo_return.calculated_subtotal_cents) %></td>
+      </tr>
+      <tr>
+        <td colspan="2">&nbsp;</td>
+        <td align="right" colspan="1">Store Credit Spent:</td>
+        <td><%= @gizmo_return.store_credit.payment_id ? "yes" : "no" %></td>
+      </tr>
+      <% end %>
+    </tbody></table>
+  <p><%= h @gizmo_return.comments %></p>
+</div>

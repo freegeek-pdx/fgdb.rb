@@ -89,7 +89,7 @@ class TransactionController < ApplicationController
   end
 
   def new
-    @transaction ||= model.new
+    @transaction ||= model.new(params[@gizmo_context.name.to_sym])
     @successful ||= true
 
     @conditions = Conditions.new
@@ -248,7 +248,7 @@ class TransactionController < ApplicationController
 
   def set_transaction_type(type)
     @transaction_type = type
-    @gizmo_context = GizmoContext.send(@transaction_type)
+    @gizmo_context = GizmoContext.send(@transaction_type) or raise "UGH"
   end
 
   def totals_id(params)
@@ -265,6 +265,8 @@ class TransactionController < ApplicationController
       Disbursement
     when 'recycling'
       Recycling
+    when 'gizmo_return'
+      GizmoReturn
     else
       raise "UNKNOWN TX-TYPE #{@transaction_type}"
     end

@@ -49,6 +49,9 @@
       <% if @model.new.respond_to?( :disbursement_type ) %>
         <% filters << 'disbursement_type_id' %>
       <% end %>
+      <% if @model.new.respond_to?( :store_credit ) %>
+        <% filters << 'store_credit_id' %>
+      <% end %>
       <% if @model.new.respond_to?( :payments ) %>
         <% filters << 'payment_method' %>
         <% filters << 'unresolved_invoices' %>
@@ -58,6 +61,8 @@
       <% filters << 'id' %>
       <% filters << 'needs_attention' %>
       <% filters << 'contract' %>
+      <% filters << 'contact_type' %>
+      <% filters << 'organization' %>
       <% if has_role?("ADMIN") %>
         <% filters << 'created_by' %>
         <% if cashierable %>

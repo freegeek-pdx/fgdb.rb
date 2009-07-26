@@ -36,7 +36,7 @@
     <tr>
       <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
-        <%= @context.titleize %> <strong># <%= @txn.id %></strong>
+        <%= @gizmo_context == GizmoContext.gizmo_return ? "Store Credit" : @context.titleize %> <strong># <%= @gizmo_context == GizmoContext.gizmo_return ? @txn.store_credit.id : @txn.id %></strong><%= @gizmo_context == GizmoContext.gizmo_return ? "(Gizmo Return # #{@txn.id})" : "" %>
       </td>
       <td align="right">
         <% if @txn.invoiced? %>

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if which ack >/dev/null; then
+    ACK=ack
+elif which ack-grep >/dev/null; then
+    ACK=ack-grep
+else
+    echo "Install ack from CPAN or the ack-grep Debian package"
+    exit 1
+fi
+
+git diff $($(dirname $0)/sorted-tags | tail -1).. | $ACK --color "FIXME|TODO|^diff"  | grep -B 1 ^+ | grep -v "^--" | sed -r '/--git/{s/.*--git a\/([^ ]*) .*/\1/}' | perl -MTerm::ANSIColor -p -e 'if(/^[^+]/) {$_ = color("bold green") . $_ . color("reset")}'

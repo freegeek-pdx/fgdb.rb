@@ -4,6 +4,7 @@ class Disbursement < ActiveRecord::Base
   belongs_to :disbursement_type
   has_many :gizmo_events, :dependent => :destroy
   has_many :gizmo_types, :through => :gizmo_events
+  has_many :gizmo_returns
   acts_as_userstamp
 
   def gizmo_context

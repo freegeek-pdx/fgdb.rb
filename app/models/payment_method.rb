@@ -23,6 +23,10 @@ class PaymentMethod < ActiveRecord::Base
     @@credit ||= find_by_name('credit')
   end
 
+  def PaymentMethod.store_credit
+    @@store_credit ||= find_by_name('store_credit')
+  end
+
   def PaymentMethod.is_till_method?(id)
     return [cash, check].map(&:id).include?(id)
   end
@@ -44,7 +48,7 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.fake_money_methods()
-    return [invoice, coupon]
+    return [invoice, coupon, store_credit]
   end
 
   def PaymentMethod.descriptions

@@ -30,11 +30,12 @@ module SidebarHelper
       sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks", :contact_id => current_user.contact_id}
     end
     # transactions
-    {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER']}.each do |i,x|
+    {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER'], :gizmo_return => ['STORE', 'TEC
       if x.nil? || has_role?(*x)
         pl = i.to_s.pluralize
-        sidebar_hash[pl]["entry"] = {:c => pl}
-        sidebar_hash[pl]["search"] = {:c => pl, :a => 'search'}
+        disp = pl.sub("gizmo_", "")
+        sidebar_hash[disp]["entry"] = {:c => pl} unless disp == "returns"
+        sidebar_hash[disp]["search"] = {:c => pl, :a => 'search'}
       end
     end
     # reports

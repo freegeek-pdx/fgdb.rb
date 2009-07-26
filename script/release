@@ -1,7 +1,6 @@
 #!/bin/sh
 
 set -e
-set -x
 
 if [ "$(cat .git/HEAD)" != "ref: refs/heads/master" ]; then
     echo "Need to be on the master branch" >&2
@@ -12,6 +11,23 @@ if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ];
     echo "Need to have a fg and an origin remote branch" >&2
     exit 1
 fi
+
+if [ -z "$IGNORE_FIXME" ]; then
+    ACK_DIFF="$(dirname $0)/ack-the-diff"
+    if [ -n "$($ACK_DIFF)" ]; then
+        echo "There are some new TODOs/FIXMEs since the last release"
+        echo "Either fix them or set the IGNORE_FIXME environment variable"
+        $ACK_DIFF
+        exit 1
+    fi
+fi
+
+if [ "$(GIT_PS1_SHOWDIRTYSTATE=42 git ps1 %s)" != "master" ]; then
+    echo "The working tree or index is dirty. Clean it up."
+    exit 1
+fi
+
+set -x
 
 git fetch origin
 git fetch fg
