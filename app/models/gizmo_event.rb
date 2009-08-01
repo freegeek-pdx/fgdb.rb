@@ -100,10 +100,14 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
     gizmo_count.is_a?(Fixnum) and gizmo_count > 0
   end
 
-  def attry_description(options = {})
-    junk = [:unit_price, :as_is, :size, :system_id] - (options[:ignore] || [])
+  def store_credit_ids
+    self.store_credits.map{|x| "#" + x.id.to_s}.ryan52s_join
+  end
 
-    junk.reject!{|x| z = read_attribute(x); z.nil? || z.to_s.empty?}
+  def attry_description(options = {})
+    junk = [:store_credit_ids, :unit_price, :as_is, :size, :system_id].map{|x| x.to_s} - (options[:ignore] || [])
+
+    junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
     g_desc = gizmo_type.description
     m_desc = self.description
@@ -113,7 +117,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
     if junk.empty?
       return desc
     else
-      return desc + "(" + junk.map{|x| x.to_s.classify.gsub(/(.)([A-Z])/, "\\1 \\2") + ": " + read_attribute(x).to_s}.join(", ") + ")"
+      return desc + "(" + junk.map{|x| x.to_s.classify.gsub(/(.)([A-Z])/, "\\1 \\2") + ": " + eval("self.#{x}").to_s}.join(", ") + ")"
     end
   end
 
