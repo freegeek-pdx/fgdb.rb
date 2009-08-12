@@ -196,10 +196,6 @@ class Donation < ActiveRecord::Base
     ContactType.find(7)
   end
 
-  def occurred_at
-    created_at
-  end
-
   def reported_total_cents
     reported_required_fee_cents + reported_suggested_fee_cents
   end
@@ -271,13 +267,6 @@ class Donation < ActiveRecord::Base
     when 'dumped'
       self.postal_code = self.contact_id = nil
     end
-  end
-
-  def set_occurred_at_on_gizmo_events
-    if self.created_at == nil
-      self.created_at = Time.now
-    end
-    self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
   end
 
   def add_dead_beat_discount

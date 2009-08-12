@@ -1,4 +1,10 @@
-fgdb.rb (1.0.38) UNRELEASED; urgency=low
+fgdb.rb (1.0.39) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 01:37:46 -0700
+
+fgdb.rb (1.0.38) released; urgency=low
 
   * add organization conditions to sales (and other things) (Closes: #14399)
   * link to the contact who edited/created a transaction (Closes:
@@ -7,7 +13,7 @@ fgdb.rb (1.0.38) UNRELEASED; urgency=low
   * implement returns (Closes: #12563)
   * fix soap errors going through the nginx proxy
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 25 Jul 2009 15:40:51 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 01:37:34 -0700
 
 fgdb.rb (1.0.37) released; urgency=low
 

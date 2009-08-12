@@ -4,6 +4,7 @@
     <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
   </div>
 </div>
+<%= @transaction.html_explaination %>
 <div id="<%= h element_messages_id(@options) %>" class="messages-container">
   <div id="<%= messages_id(params) %>">
     <%= render :partial => 'form_messages' %>

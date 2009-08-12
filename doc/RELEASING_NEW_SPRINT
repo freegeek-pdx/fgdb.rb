@@ -6,5 +6,5 @@
 5. Run release on a devel system
 
 == for users ==
-6. Run pre_release.sh on the production system
-7. Run upgrade.sh on the production system
+1. Run pre_release.sh on the production system
+2. Run upgrade.sh on the production system

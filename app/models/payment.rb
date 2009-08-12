@@ -12,6 +12,10 @@ class Payment < ActiveRecord::Base
   define_amount_methods_on("amount")
   validate :sc_ok
 
+  def editable
+    return true
+  end
+
   def store_credit_id=(v)
     return if v.to_i == 0
     s = StoreCredit.find_by_id(v)
@@ -22,7 +26,7 @@ class Payment < ActiveRecord::Base
 
   def sc_ok
     return if ! is_storecredit?
-    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && self.store_credit.spent_on.sale.id != self.sale.id
+    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && (self.sale.nil? || self.store_credit.spent_on.sale.id != self.sale.id)
   end
 
   def store_credit_id
@@ -35,9 +39,7 @@ class Payment < ActiveRecord::Base
   end
 
   def mostly_empty?
-    # Allow negative payments (e.g. credits)
-    #  http://svn.freegeek.org/projects/fgdb.rb/ticket/224
-    ! ( valid? && amount_cents && (amount_cents != 0) )
+    amount_cents == 0
   end
 
   def to_s

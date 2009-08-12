@@ -17,7 +17,9 @@ function disable_cashierable(){
     thing.disable();
     document.getElementsByClassName('cancel')[0].disabled = false;
     disable_all_links();
+  if(typeof(form_is_editable) == "undefined" || form_is_editable) {
     $('cashier_code').enable();
+  }
     $('cashier_code').focus();
 }
 

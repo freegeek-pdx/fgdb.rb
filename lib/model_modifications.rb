@@ -201,6 +201,43 @@ class ActiveRecord::Base
     execute(*arr)
   end
 
+  def self.new_or_edit(hash)
+    obj = nil
+    if hash[:id] and hash[:id].to_i != 0
+      obj = self.find(hash[:id].to_i)
+      hash.delete(:id)
+      obj.attributes_with_editable = hash
+    else
+      obj = self.new
+      hash.delete(:id)
+      obj.attributes = hash
+    end
+    return obj
+  end
+
+  def editable?
+    editable = true
+    if self.respond_to?(:editable)
+      if ! self.editable
+        editable = false
+      end
+    end
+    return editable
+  end
+
+  def attributes_with_editable=(hash)
+    should_check = editable?
+    before = attributes
+    retval = self.attributes = hash
+    after = attributes
+    if should_check
+      if before != after
+        raise
+      end
+    end
+    return retval
+  end
+
   acts_as_logged
 end
 

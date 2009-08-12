@@ -95,6 +95,21 @@ function cent_value(value) {
 // LINE ITEM JUNK //
 ////////////////////
 
+
+function prefix_to_container(prefix) {
+  // why is this not the sames as args['prefix']? FIX THIS!!!
+  if(prefix == "contact_method") {
+    return "contact_methods";
+  } else if (prefix == "payment") {
+    return "payments";
+  } else if (prefix == "gizmo_event") {
+    return "line";
+  } else {
+    alert("BROKEN");
+  }
+}
+
+
 function add_line_item(args, stupid_hook, update_hook, edit_hook){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
@@ -123,7 +138,10 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
   a.appendChild(document.createTextNode('x'));
   a.className = 'disable_link';
   td.appendChild(a);
-  tr.appendChild(td);
+  if(!args['uneditable']) {
+    tr.appendChild(td);
+  }
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
   $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_lines').lastChild.lastChild.previousSibling);
   counters[args['prefix'] + '_line_id']++;
   update_hook();
@@ -332,7 +350,7 @@ function coveredness_stuff(args, tr){
   if($('covered') == null)
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden("line", "covered", args['covered'], args['covered'], line_id));
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "covered", args['covered'], args['covered'], line_id));
 }
 
 function systems_stuff(args, tr){
@@ -360,15 +378,15 @@ function systems_stuff(args, tr){
         td.appendChild(document.createTextNode("]"));
         tr.appendChild(td);
       } else {
-        tr.appendChild(make_hidden("line", "system_id", args['system_id'], args['system_id'], line_id));
+        tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", args['system_id'], args['system_id'], line_id));
       }
     }
     else {
-      tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
+      tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
     }
   }
   else {
-    tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
+    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
   }
 }
 
@@ -376,15 +394,15 @@ function contracts_stuff(args, tr){
   if($('contract_id') != null) {
     var line_id = counters[args['prefix'] + '_line_id'];
     var contract = all_contracts[args['contract_id']];
-    tr.appendChild(make_hidden("line", "recycling_contract_id", contract, args['contract_id'], line_id));
+    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "recycling_contract_id", contract, args['contract_id'], line_id));
   }
 }
 
 function unit_price_stuff(args, tr){
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden("line", "unit_price", args['unit_price'], args['unit_price'], line_id));
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "unit_price", args['unit_price'], args['unit_price'], line_id));
   td = document.createElement("td");
-  td.appendChild(make_hidden("line", "total_price", "$0.00", "$0.00", line_id));
+  td.appendChild(make_hidden(prefix_to_container(args['prefix']), "total_price", "$0.00", "$0.00", line_id));
   tr.appendChild(td);
 }
 
@@ -394,23 +412,23 @@ function gizmo_events_stuff(args, tr){
   var description = args['description'];
   var gizmo_type = all_gizmo_types[gizmo_type_id];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
-  var desc = make_hidden("line", "description", description, description, line_id)
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
+  var desc = make_hidden(prefix_to_container(args['prefix']), "description", description, description, line_id)
   set_visibility(desc, show_description);
   tr.appendChild(desc);
-  tr.appendChild(make_hidden("line", "gizmo_count", gizmo_count, gizmo_count, line_id));
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_count", gizmo_count, gizmo_count, line_id));
 }
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
   var payment_method_id = args['payment_method_id'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
-  amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, line_id);
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
+  amount_node = make_hidden(prefix_to_container(args['prefix']), "amount", payment_amount, payment_amount, line_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
   if($('store_credit_id')) {
     var storecredit_id = args['store_credit_id'];
-    tr.appendChild(make_hidden("payments", "store_credit_id", storecredit_id, storecredit_id, line_id));
+    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "store_credit_id", storecredit_id, storecredit_id, line_id));
   }
 }
 
@@ -419,11 +437,11 @@ function contact_method_stuff(args, tr){
   var contact_method_type_id = args['contact_method_type_id'];
   var contact_method_usable = args['contact_method_usable'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden("contact_methods", "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-  usable_node = make_hidden("contact_methods", "ok", contact_method_usable, contact_method_usable, line_id);
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+  usable_node = make_hidden(prefix_to_container(args['prefix']), "ok", contact_method_usable, contact_method_usable, line_id);
   usable_node.className = "ok";
   tr.appendChild(usable_node);
-  description_node = make_hidden("contact_methods", "value", contact_method_value, contact_method_value, line_id);
+  description_node = make_hidden(prefix_to_container(args['prefix']), "value", contact_method_value, contact_method_value, line_id);
   description_node.className = "description";
   tr.appendChild(description_node);
 }

@@ -44,6 +44,16 @@ class Sale < ActiveRecord::Base
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
     errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
+    payments.each{|x|
+      x.errors.each{|y, z|
+        errors.add("payments", z)
+      }
+    }
+    gizmo_events.each{|x|
+      x.errors.each{|y, z|
+        errors.add("gizmos", z)
+      }
+    }
   end
 
   def storecredits_repeat
@@ -70,10 +80,6 @@ class Sale < ActiveRecord::Base
          GROUP BY payments.payment_method_id, sales.discount_schedule_id"
                          )
     end
-  end
-
-  def occurred_at
-    created_at
   end
 
   def buyer
@@ -121,13 +127,6 @@ class Sale < ActiveRecord::Base
     self.reported_discount_amount_cents = self.calculated_discount_cents
   end
 
-  def set_occurred_at_on_gizmo_events
-    if self.created_at == nil
-      self.created_at = Time.now
-    end
-    self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
-  end
-
   # WOAH! commented code.
   def _figure_it_all_out
     amount_i_owe = calculated_total_cents
@@ -161,7 +160,6 @@ class Sale < ActiveRecord::Base
   def add_change_line_item()
     storecredit_back, cash_back = _figure_it_all_out
     if storecredit_back > 0
-      puts storecredit_back
       # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!
       # mebbe we should fix that.
       gizmo_events << GizmoEvent.new({:unit_price_cents => storecredit_back,

@@ -20,12 +20,4 @@ class Recycling < ActiveRecord::Base
       "recycled_at DESC"
     end
   end
-
-  #######
-  private
-  #######
-
-  def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.recycled_at; event.save!}
-  end
 end

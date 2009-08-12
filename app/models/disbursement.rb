@@ -29,19 +29,7 @@ class Disbursement < ActiveRecord::Base
     end
   end
 
-  def occurred_at
-    disbursed_at
-  end
-
   def recipient
     contact
-  end
-
-  #######
-  private
-  #######
-
-  def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.disbursed_at; event.save!}
   end
 end

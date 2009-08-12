@@ -1,4 +1,12 @@
 module GizmoTransaction
+  def usable_gizmo_types
+    self.gizmo_context.gizmo_types
+  end
+
+  def showable_gizmo_types
+    (self.gizmo_types + self.usable_gizmo_types).uniq.sort_by(&:description)
+  end
+
   def gizmos
     gizmo_events.map {|ge| ge.display_name}.join(', ')
   end
@@ -83,6 +91,55 @@ module GizmoTransaction
       }
       payments << cash if cash.amount_cents > 0
     end
+  end
+
+  def has_some_uneditable
+    gizmo_events.collect{|x| x.editable}.select{|x| x == false}.length > 0
+  end
+
+  def hooman_class_name
+    self.class.to_s.tableize.humanize.singularize.downcase
+  end
+
+  def editable_explaination
+    str = ""
+    if ! self.editable?
+      str = "This #{self.hooman_class_name} is not editable because its associated store credit has already been spent"
+    elsif self.has_some_uneditable
+      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated store credit has already been spent"
+    end
+    return str
+  end
+
+  def html_explaination
+    if !editable_explaination.blank?
+      return '<pre style="background: yellow">' +
+        editable_explaination +
+        '</pre>'
+    end
+    return ""
+  end
+
+  def occurred_at
+    value = case self
+           when Sale
+             self.created_at
+           when Donation
+             self.created_at
+           when GizmoReturn
+             self.created_at
+           when Disbursement
+             self.disbursed_at
+           when Recycling
+             self.recycled_at
+           else
+             raise NoMethodError
+           end
+    return value || Time.now
+  end
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
   end
 
   #########

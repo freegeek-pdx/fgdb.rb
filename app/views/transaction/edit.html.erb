@@ -1,3 +1,5 @@
+<%= javascript_tag "form_is_editable = false;" if ! @transaction.editable? %>
+
 <% @options = { :action => "update", :id => params[:id]} %>
 <% @view_options = @options.merge(:action => "view") %>
 <%= render :partial => 'new_edit' %>

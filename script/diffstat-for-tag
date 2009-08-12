@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git diff $($(dirname $0)/sorted-tags | sed "/$1/,$ d" | tail -1)..$1 | diffstat

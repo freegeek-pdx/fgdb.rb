@@ -287,7 +287,7 @@ class TransactionController < ApplicationController
       lines = params[:line]
       @lines = []
       for line in lines.values
-        @lines << GizmoEvent.new(line.merge({:gizmo_context => @gizmo_context}))
+        @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))
       end
       @transaction.gizmo_events = @lines
     end

@@ -14,6 +14,8 @@
         <% hash[:payment_method_id] = line.payment_method_id %>
         <% hash[:payment_amount] = line.amount %>
         <% hash[:store_credit_id] = line.store_credit ? line.store_credit.id : nil %>
+        <% hash[:uneditable] = true if !line.editable? %>
+        <% hash[:id] = line.id %>
         <% @gizmos_and_payments_js += "add_payment(#{hash.to_json});" %>
       <% end %>
     <% end %>

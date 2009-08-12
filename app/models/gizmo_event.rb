@@ -24,18 +24,28 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def set_storecredit_difference_cents
-    # TODO: check that this will for sure keep the old IDs on editing.
     while self.store_credits.length < self.gizmo_count
       self.store_credits << StoreCredit.new
     end
-    # FIXME: DO NOT DELETE USED ONES. die. die in a very scary way.
     while self.store_credits.length > self.gizmo_count
+      raise if store_credits.last.spent?
       self.store_credits.pop
     end
-    # FIXME: DO NOT DECREASE USED ONES. die. die in a very scary way.
     self.store_credits.each{|x|
+      raise if x.spent? and x.amount_cents != self.unit_price_cents
       x.amount_cents = self.unit_price_cents
     }
+  end
+
+  def editable
+    self.gizmo_type.name != "store_credit" || !self.spent?
+  end
+
+  def spent?
+    for i in self.store_credits
+      return true if i.spent?
+    end
+    return false
   end
 
   def validate

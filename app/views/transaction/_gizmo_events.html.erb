@@ -52,6 +52,8 @@
            hash[:system_id] = line.system_id if line.system_id
            hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
            hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if (params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements") && coveredness_enabled
+           hash[:uneditable] = true if ! line.editable?
+           hash[:id] = line.id
            @gizmos_and_payments_js += "add_gizmo_event(#{hash.to_json});"
          end
          %>
