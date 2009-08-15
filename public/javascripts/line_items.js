@@ -889,7 +889,6 @@ function systems_type_selected() {
     return;
   if(system_types.include($('gizmo_type_id').value)) {
     $('system_id').enable();
-    $('system_id').value = '';
   } else {
     $('system_id').disable();
     $('system_id').value = '';

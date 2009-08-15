@@ -30,7 +30,7 @@ module SidebarHelper
       sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks", :contact_id => current_user.contact_id}
     end
     # transactions
-    {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER'], :gizmo_return => ['STORE', 'TEC
+    {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER'], :gizmo_return => ['STORE', 'TECH_SUPPORT']}.each do |i,x|
       if x.nil? || has_role?(*x)
         pl = i.to_s.pluralize
         disp = pl.sub("gizmo_", "")
@@ -47,6 +47,8 @@ module SidebarHelper
     sidebar_hash["contacts"]["contacts"] = {:c => "contacts"} if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'} if has_role?('CONTACT_MANAGER')
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"} if has_role?('CONTACT_MANAGER')
+    # bean counters
+    sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"} if has_role?('BEAN_COUNTER')
     # staffsched
     sidebar_hash["staff schedule"]["staffsched"] = "/staffsched" if should_show_schedule
     sidebar_hash["staff schedule"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_role?('SKEDJULNATOR')

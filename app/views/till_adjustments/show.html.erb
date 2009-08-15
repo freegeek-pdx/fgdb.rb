@@ -1,0 +1,18 @@
+<p>
+  <b>Till type:</b>
+  <%=h @till_adjustment.till_type.description %>
+</p>
+
+<p>
+  <b>Till date:</b>
+  <%=h @till_adjustment.till_date %>
+</p>
+
+<p>
+  <b>Adjustment cents:</b>
+  <%=h @till_adjustment.adjustment %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @till_adjustment.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

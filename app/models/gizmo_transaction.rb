@@ -76,6 +76,24 @@ module GizmoTransaction
     end
   end
 
+  def hidable_contact_information
+    if contact
+      contact.display_name_address
+    else
+      return ""
+    end
+  end
+
+  def should_i_hide_it?
+    if gizmo_context == GizmoContext.donation
+      return true
+    elsif gizmo_context == GizmoContext.sale or gizmo_context == GizmoContext.gizmo_return
+      return false
+    else
+      raise NoMethodError
+    end
+  end
+
   def combine_cash_payments
     cashes = payments.find_all{|x| x.payment_method.name == "cash"}
     if cashes.length > 0

@@ -317,7 +317,7 @@ margin-right: 10px;
 margin-bottom: 2px;
 }
 
-div.noblock label {
+.noblock label {
   display: inline;
 }
 
@@ -591,3 +591,6 @@ padding:0;
 .book_field {
   border: 0px;
 }
+
+.hidden { display: none; }
+

@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  till_type_id: 1
+  till_date: 2009-07-26
+  adjustment_cents: 1
+
+two:
+  till_type_id: 1
+  till_date: 2009-07-26
+  adjustment_cents: 1

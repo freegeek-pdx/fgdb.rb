@@ -1,0 +1,12 @@
+<h1>Editing till_adjustment</h1>
+
+<% form_for(@till_adjustment, {:url => {:id => @till_adjustment.id, :action => "update"}}) do |f| %>
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', {:action => "show", :id => @till_adjustment.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

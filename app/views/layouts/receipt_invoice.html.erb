@@ -2,12 +2,13 @@
 <head>
   <title class="banner"><%= @context %></title>
   <%= stylesheet_link_tag 'application', :media => 'all' %>
+  <%= javascript_include_tag :defaults %>
 </head>
 <body>
   <table  width="75%">
     <tr>
       <td colspan="3"><%= render :partial=>"helpers/letter_head",
-                          :locals=> {:contact_information => @txn.contact_information}%></td>
+                          :locals=> {:contact_information => @txn.contact_information, :hidable_contact_information => @transaction.hidable_contact_information, :hideit => @transaction.should_i_hide_it?}%></td>
     </tr>
     <tr>
       <td colspan="3"><hr /></td>
@@ -36,7 +37,8 @@
     <tr>
       <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
-        <%= @gizmo_context == GizmoContext.gizmo_return ? "Store Credit" : @context.titleize %> <strong># <%= @gizmo_context == GizmoContext.gizmo_return ? @txn.store_credit.id : @txn.id %></strong><%= @gizmo_context == GizmoContext.gizmo_return ? "(Gizmo Return # #{@txn.id})" : "" %>
+        <% is_store_credit = (@gizmo_context == GizmoContext.gizmo_return && @txn.store_credit) %>
+        <%= is_store_credit ? "Store Credit" : @context.titleize %> <strong># <%= is_store_credit ? @txn.store_credit.id : @txn.id %></strong><%= is_store_credit ? "(Gizmo Return # #{@txn.id})" : "" %>
       </td>
       <td align="right">
         <% if @txn.invoiced? %>
@@ -50,7 +52,7 @@
     <%= yield %>
 
     <p>
-      <span id="button_span">
+      <span id="button_span" class="noprint">
         <INPUT type="button" id="print_button" value="Print"
                onclick="window.print(); window.close();" >
 

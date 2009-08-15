@@ -3,7 +3,7 @@
 @print_options = @options.merge(:action => "receipt")
 
 if @successful
-  if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
+  if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped") or (@transaction_type == "gizmo_return" and @transaction.store_credit)
     page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
   end
   page << "Form.enable('#{element_form_id(@create_options)}');"

@@ -1,0 +1,14 @@
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :till_type_id, 'Till type' %>
+    <%= select("till_adjustment", "till_type_id", [TillType.new, TillType.all].flatten.collect {|p| [ p.description, p.id ] }) %>
+  </p>
+  <p>
+    <%= f.label :till_date %>
+    <%= calendar_box "till_adjustment", :till_date %>
+  </p>
+  <p>
+    <%= f.label :adjustment %>
+    <%= f.text_field :adjustment %>
+  </p>

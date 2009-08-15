@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -C
+set -e
+set -u
+
+fail() {
+    echo "Usage: $(basename $0) --pull|--branch"
+    exit 1
+}
+
+if [ "$#" != "1" ]; then
+    fail
+fi
+
+if [ "$1" != "--pull" -a "$1" != "--branch" ]; then
+    fail
+fi
+
+cd ~/fgdb.rb
+git pull
+./script/do_i_have_everything_installed_right
+
+CUR=$(cat /var/www/fgdb.rb/.git/HEAD  | sed 's,ref: refs/heads/release_1.0.,,')
+NEW=$(( $CUR + 1 ))
+
+cd /var/www/fgdb.rb/
+git fetch origin
+if [ "$1" = "--pull" ]; then
+    git pull
+elif [ "$1" = "--branch" ]; then
+    git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
+else
+    fail
+fi
+~/fgdb.rb/script/nice-restart
+

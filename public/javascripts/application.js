@@ -13,6 +13,19 @@ function update_cashier_code() {
   }
 }
 
+function process_hide(){
+  if($('hideable_check').checked) {
+    _hide_changes("hidden", "hideable", "show", "hide");
+  } else {
+    _hide_changes("hideable", "hidden", "hide", "show");
+  }
+}
+
+function _hide_changes(one, two, three, four){
+  document.getElementsByClassName(one)[0].className = two;
+//  $('hideable_label').innerHTML = $('hideable_label').innerHTML.replace(three, four);
+}
+
 function disable_cashierable(){
     thing.disable();
     document.getElementsByClassName('cancel')[0].disabled = false;

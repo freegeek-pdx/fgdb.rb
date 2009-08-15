@@ -1,0 +1,25 @@
+<h1>Listing till_adjustments</h1>
+
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th>Till type</th>
+    <th>Till date</th>
+    <th>Adjustment</th>
+    <th />
+  </tr>
+
+<% for till_adjustment in @till_adjustments %>
+  <tr>
+    <td><%=h till_adjustment.till_type.description %></td>
+    <td><%=h till_adjustment.till_date %></td>
+    <td><%=h till_adjustment.adjustment %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => till_adjustment.id} %>
+      <%= link_to 'Edit', {:action => "edit", :id => till_adjustment.id} %>
+      <%= link_to 'Destroy', {:action => "destroy", :id => till_adjustment.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New till_adjustment', {:action => "new"} %>

@@ -415,4 +415,23 @@ module ApplicationHelper
       page << "if($('#{name}_#{field}')) {$('#{name}_#{field}').addClassName('fieldWithErrors')}"
     }
   end
+
+  def array_to_html(*args)
+    args.flatten.join('<br />')
+  end
+
+  def h_over_array(*args)
+    args.flatten.map{|x| h(x)}
+  end
+
+  def hideable(html, title, default = false)
+    if html.length > 0
+      if html.class == Array
+        html = array_to_html(h_over_array(html))
+      else
+        html = h(html)
+      end
+      return "<span class=\"noprint noblock\"><input onchange=process_hide() type=checkbox id=hideable_check " + (default ? "checked" : "") + " /><label id=hideable_label for=hideable_check>" + "show " + h(title) + "</label></span>" + "<div class=hideable>" + html + "</div>" + javascript_tag("process_hide()")
+    end
+  end
 end

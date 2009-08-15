@@ -133,6 +133,8 @@ run "Checking to see if nokogiri is installed..." "require_test nokogiri" "insta
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
 run "Checking to see if zoom is installed..." "require_test zoom" "install libzoom-ruby" "fail"
+run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
+run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"
 run "Checking to see if xapian is installed..." "require_test xapian" "install libxapian-ruby" "fail"
 run "Checking to see if posixlock is installed..." "require_test posixlock" "install libposixlock-ruby" "fail"
