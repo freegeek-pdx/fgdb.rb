@@ -5,7 +5,7 @@ use Carp;
 
 sub new {
     my $class = shift;
-    my $self = { 'pdftext' => shift, 'x' => shift, 'y' => shift, 'x2' => shift, 'y2' => shift, 'cur_x' => 0, 'cur_y' => 0 };
+    my $self = { 'pdf' => shift, 'pdftext' => shift, 'x' => shift, 'y' => shift, 'x2' => shift, 'y2' => shift, 'cur_x' => 0, 'cur_y' => 0 };
     # make y the upper (bigger) of the two
     if($self->{'y'} < $self->{'y2'}) {
         my $temp = $self->{'y'};
@@ -72,7 +72,8 @@ sub bad_x {
 }
 
 sub word_height {
-    return 10;
+  my $self = shift;
+  return $self->{'fontsize'};
 }
 
 sub bad_y {
@@ -112,10 +113,19 @@ sub total_height {
     return $self->{'height'};
 }
 
+sub set_fontsize {
+  my $self = shift;
+  my $height = shift;
+  $self->{'fontsize'} = $height;
+  return $self->word_height();
+}
+
 sub add_text {
     my($self, $text) = @_;
     my @list = split(" ", $text);
     my $pdftext = $self->{'pdftext'};
+    my $pdf = $self->{'pdf'};
+    $pdftext->font($pdf->corefont('Helvetica'),$self->word_height());
     # while:
     # * we still have words
     # * we can move down and then back up the height of a line
@@ -149,7 +159,7 @@ sub add_text {
         $self->move_down($self->word_height());
     }
 #    return 0 if(scalar @list > 0); #TODO: FIXME
-    carp("epic fail") if(scalar @list > 0);
+    carp("epic fail: @list") if(scalar @list > 0);
     return 1;
 }
 

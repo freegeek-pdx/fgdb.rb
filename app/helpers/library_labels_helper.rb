@@ -1,6 +1,6 @@
 module LibraryLabelsHelper
   PATH_TO_LABELS_STUFF=File.join(RAILS_ROOT, "vendor", "library_labels")
-  LABEL=Default["label_type"]
+  LABEL=Default["label_type"] # 5662
 
   def run_thing(thing)
     ret = `#{thing} 2>&1`.chomp
@@ -27,6 +27,7 @@ module LibraryLabelsHelper
     d.write array.map{|x| Copy.find_by_id(x)}.map{|b| {:isbn => b.isbn, :author => b.author, :callno => b.call_number, :title => b.title, :barcode => b.barcode}}.to_xml
     d.flush
     run_labels_script("gen_pdf", tempfile, d.path, pages, LABEL, skips.join(","))
+    system("cp #{d.path} foo")
     d.close
 #    d.unlink
     return basename

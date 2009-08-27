@@ -93,6 +93,7 @@ sub get_magic_location {
 sub process_thing {
     my ($xpath, $thing, $text, $pdf, $page, $cur_col, $cur_row, $info, $gfx) = @_;
     my $barcode = $xpath->find("barcode", $thing);
+    $barcode = substr($barcode, 2, 4) if(substr($barcode, 0, 2) eq "00");
     my $title = $xpath->find("title", $thing);
     my $callno = $xpath->find("callno", $thing);
     my $author = $xpath->find("author", $thing); # hrm. maybe I shoulda used XML::Simple...*shrug*
@@ -101,7 +102,9 @@ sub process_thing {
     $y -= 10;
     my $y_offset = 20;
     my $y_limit = $y - $info->label_height(); # wtf?
-    my $rectangle = PDF::Rectangle->new($text, $x, $y - $y_offset, $x + 50, $y_limit);
+    my $x_limit = $x + $info->label_width(); # wtf?
+    my $rectangle = PDF::Rectangle->new($pdf, $text, $x, $y - $y_offset, $x + 50, $y_limit);
+    $rectangle->set_fontsize(8);
     if(!$rectangle->add_text($callno)) {
         die("epic fail"); # TODO: FIXME
     }
@@ -117,7 +120,8 @@ sub process_thing {
                             -text => $barcode
         );
     $gfx->formimage($bar, $x + 50, ($y - $bar->height()));
-    $rectangle = PDF::Rectangle->new($text, $x + 50 + $bar->width(), $y - $y_offset, $x + 50 + $bar->width() + 50, $y_limit);
+    $rectangle = PDF::Rectangle->new($pdf, $text, $x + 50 + $bar->width(), $y - $y_offset, $x + 50 + $bar->width() + 50, $y_limit);
+    $rectangle->set_fontsize(8);
     $rectangle->add_text($title);
     $rectangle->add_text($author);
     $rectangle->add_text("Free Geek Library");
