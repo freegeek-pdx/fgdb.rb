@@ -5,7 +5,7 @@ shift
 FILE=$(mktemp)
 ssh-agent > $FILE
 . $FILE
-if [ "$(hostname)" = "borked" ]; then
+if [ "$(hostname)" = "borked" -o "$(hostname)" = "oahu" ]; then
     ssh-add /home/ryan52/.ssh/scp_key
 elif [ "$(hostname)" = "xyzzy" ]; then
     ssh-add /home/ryan52/.ssh/freegeek-git

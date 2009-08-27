@@ -1,8 +1,10 @@
 fgdb.rb (1.0.41) UNRELEASED; urgency=low
 
-  * always ignore the unit price
+  needs to be released with freegeek-extras, see changelog
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 13 Aug 2009 23:30:59 -0700
+  * reword the contracts question
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 27 Aug 2009 14:31:05 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
