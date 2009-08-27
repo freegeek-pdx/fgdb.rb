@@ -98,11 +98,12 @@ sub process_thing {
     my $callno = $xpath->find("callno", $thing);
     my $author = $xpath->find("author", $thing); # hrm. maybe I shoulda used XML::Simple...*shrug*
     my ($x, $y) = get_magic_location($info, $cur_row, $cur_col);
-    $x += 10;
-    $y -= 10;
-    my $y_offset = 20;
     my $y_limit = $y - $info->label_height(); # wtf?
     my $x_limit = $x + $info->label_width(); # wtf?
+    $x += 15;
+    $y -= 10;
+    $x_limit -= 10;
+    my $y_offset = 20;
     my $rectangle = PDF::Rectangle->new($pdf, $text, $x, $y - $y_offset, $x + 50, $y_limit);
     my $size = 8; # use for all sizes
     $rectangle->set_fontsize($size);
