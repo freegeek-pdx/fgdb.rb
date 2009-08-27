@@ -106,7 +106,7 @@ sub process_thing {
     my $y_offset = 20;
     my $rectangle = PDF::Rectangle->new($pdf, $text, $x, $y - $y_offset, $x + 50, $y_limit);
     my $size = 8; # use for all sizes
-    $rectangle->set_fontsize($size);
+    $rectangle->set_fontsize($size); #    $rectangle->set_fontsize($size + 2);
     $rectangle->be_bold();
     if(!$rectangle->add_text($callno)) {
         die("epic fail"); # TODO: FIXME
