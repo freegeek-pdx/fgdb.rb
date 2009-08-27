@@ -120,12 +120,25 @@ sub set_fontsize {
   return $self->word_height();
 }
 
+sub bold {
+  my $self = shift;
+  if($self->{'boldit'}) {
+    return 1;
+  }
+  return 0;
+}
+
+sub be_bold {
+  my $self = shift;
+  $self->{'boldit'} = 1;
+}
+
 sub add_text {
     my($self, $text) = @_;
     my @list = split(" ", $text);
     my $pdftext = $self->{'pdftext'};
     my $pdf = $self->{'pdf'};
-    $pdftext->font($pdf->corefont('Helvetica'),$self->word_height());
+    $pdftext->font($pdf->corefont('Helvetica' . ($self->bold() ? '-Bold' : '')),$self->word_height());
     # while:
     # * we still have words
     # * we can move down and then back up the height of a line

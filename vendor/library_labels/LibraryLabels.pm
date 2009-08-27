@@ -93,7 +93,7 @@ sub get_magic_location {
 sub process_thing {
     my ($xpath, $thing, $text, $pdf, $page, $cur_col, $cur_row, $info, $gfx) = @_;
     my $barcode = $xpath->find("barcode", $thing);
-    $barcode = substr($barcode, 2, 4) if(substr($barcode, 0, 2) eq "00");
+#    $barcode = substr($barcode, 2, 4) if(substr($barcode, 0, 2) eq "00");
     my $title = $xpath->find("title", $thing);
     my $callno = $xpath->find("callno", $thing);
     my $author = $xpath->find("author", $thing); # hrm. maybe I shoulda used XML::Simple...*shrug*
@@ -104,24 +104,26 @@ sub process_thing {
     my $y_limit = $y - $info->label_height(); # wtf?
     my $x_limit = $x + $info->label_width(); # wtf?
     my $rectangle = PDF::Rectangle->new($pdf, $text, $x, $y - $y_offset, $x + 50, $y_limit);
-    $rectangle->set_fontsize(8);
+    my $size = 8; # use for all sizes
+    $rectangle->set_fontsize($size);
+    $rectangle->be_bold();
     if(!$rectangle->add_text($callno)) {
         die("epic fail"); # TODO: FIXME
     }
     # based on http://osdir.com/ml/lang.perl.modules.pdfapi2/2004-06/msg00014.html
-    my $bar = $pdf->xo_3of9(-font => $pdf->corefont('Helvetica-Bold'), # the font to use for text
+    my $bar = $pdf->xo_3of9(-font => $pdf->corefont('Helvetica'), # the font to use for text
                             -code => $barcode, # the code of the barcode
                             -umzn => 10, # (u)pper (m)ending (z)o(n)e
                             -lmzn => 10, # (l)ower (m)ending (z)o(n)e
                             -zone => 50, # height (zone) of bars
                             -quzn => 10, # (qu)iet (z)o(n)e
                             -ofwt => 0.01, # (o)ver(f)low (w)id(t)h
-                            -fnsz => 10, # (f)o(n)t(s)i(z)e
+                            -fnsz => $size, # (f)o(n)t(s)i(z)e
                             -text => $barcode
         );
     $gfx->formimage($bar, $x + 50, ($y - $bar->height()));
-    $rectangle = PDF::Rectangle->new($pdf, $text, $x + 50 + $bar->width(), $y - $y_offset, $x + 50 + $bar->width() + 50, $y_limit);
-    $rectangle->set_fontsize(8);
+    $rectangle = PDF::Rectangle->new($pdf, $text, $x + 50 + $bar->width(), $y - $y_offset, $x_limit, $y_limit);
+    $rectangle->set_fontsize($size);
     $rectangle->add_text($title);
     $rectangle->add_text($author);
     $rectangle->add_text("Free Geek Library");
