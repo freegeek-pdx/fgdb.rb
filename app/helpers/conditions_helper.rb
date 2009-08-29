@@ -13,6 +13,18 @@ module ConditionsHelper
 
   private
 
+  def html_for_can_login_condition(params_key)
+    ""
+  end
+
+  def html_for_role_condition(params_key)
+    collection_select(params_key, "role", Role.find(:all), "id", "name")
+  end
+
+  def html_for_action_condition(params_key)
+    collection_select(params_key, "action", Action.find(:all), "id", "description")
+  end
+
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
   end

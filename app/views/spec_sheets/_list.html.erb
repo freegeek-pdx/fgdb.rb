@@ -23,7 +23,7 @@
           <%= "Unknown" %>
         <% end %>
       </td>
-      <td><%= link_to report.system_id.to_s, {:action => "search", :conditions => {:system_enabled => true, :system_id => report.system.id}} %></td>
+      <td><%= link_to report.system_id.to_s, {:action => "system", :id => report.system_id} %></td>
       <td><%= h(report.type && report.type.description) || "Unknown" %></td>
       <td><%= h(report.action && report.action.description) || "Unknown" %></td>
       <td><%= h report.os %></td>

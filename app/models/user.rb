@@ -19,9 +19,14 @@ class User < ActiveRecord::Base
 
   belongs_to :contact
 
+  ####################################################
+  # I HAVE NO IDEA WHAT THIS IS HERE FOR, BUT IF YOU #
+  # FORGET ABOUT IT YOU WILL SPEND AN HOUR TRYING TO #
+  # FIGURE OUT WHAT YOU DID WRONG                    #
+  ####################################################
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation
+  attr_accessible :login, :email, :password, :password_confirmation, :can_login
 
   def self.reset_all_cashier_codes
     self.find(:all).each{|x|
@@ -52,6 +57,7 @@ class User < ActiveRecord::Base
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     u = find_by_login(login) # need to get the salt
+    return nil if ! u.can_login
     u && u.authenticated?(password) ? u : nil
   end
 

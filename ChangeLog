@@ -2,9 +2,22 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
 
   needs to be released with freegeek-extras, see changelog
 
-  * reword the contracts question
+  * reword the contracts question (Closes: 15011)
+  * add search conditions for role and can login (Closes: 15013)
+  * allow to disable users (Closes: 15026)
+  * show actual hours, not effective hours (aka points) on last 90 days
+    on hours edit page (Closes: 14932)
+  * show sales/disbursements/returns on the systems page (Closes:
+    #14942)
+  * add an action condition to spec sheets search
+  * show recent returns (Closes: 14854)
+  * if they search then click new, auto fill in the first and last name
+    (Closes: #14828)
+  * printme compat bumped to 11
+  * make the foreign keys on the roles_users table cascade (Closes:
+    #14966)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 27 Aug 2009 14:31:05 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 23:56:53 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 

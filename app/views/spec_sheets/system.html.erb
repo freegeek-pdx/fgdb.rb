@@ -1,15 +1,20 @@
 <% if @system = System.find_by_id(params[:id]) %>
-  <% things = [@system.notes, @system.spec_sheets].flatten.sort_by{|x| x.created_at} %>
+  <% things = [@system.notes, @system.spec_sheets, @system.gizmo_events].flatten.sort_by{|x| x.created_at} %>
   <% things.each do |thing| %>
     <div style="border: 1px solid rgb(0, 0, 0); display: block;">
+      <% if thing.class == GizmoEvent %>
+        <% transaction = thing.sale || thing.disbursement || thing.gizmo_return %>
+        <b><% what = (if thing.gizmo_context.name == "disbursement"; "disbursed to"; elsif thing.gizmo_context.name == "sale"; "sold to"; elsif thing.gizmo_context.name == "gizmo_return"; "returned by"; else; raise NoMethodError; end) %><% what = what.split(' ') %><%= link_to what[0], :controller => transaction.class.table_name, :action => "edit", :id => transaction.id %> <%= what[1] %> <%= transaction.contact_information_web %></b><br/>
+      <% else %>
       <b><%= thing.contact.display_name %> created a <%= if thing.class == SpecSheet
                                                            link_to thing.class.to_s, :controller => "spec_sheets", :action => "show", :id => thing.id
                                                          else
                                                            thing.class.to_s
                                                          end%> at <%= thing.created_at %></b><br/>
+      <% end %>
       <% if thing.class == Note %>
         <%= thing.body %>
-      <% else %> <%# aka SpecSheet %>
+      <% elsif thing.class == SpecSheet %>
         Action: <%= thing.action.description %><br />
         Type: <%= thing.type.description %><br />
         Notes: <%= thing.notes %>

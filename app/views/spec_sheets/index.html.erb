@@ -1,11 +1,17 @@
 <div id="form-header">
-  <h1>Go to report:</h1>
-
   <% if @error!=nil %>
     <span style="color: red">ERROR: <%= @error %></span>
   <% end %>
-
 </div>
+
+<h2>Show system history</h2>
+
+<% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
+<%= (f.text_field "id").sub(/\[id\]/, "id") %>
+<%= submit_tag 'Show' %>
+<% end %>
+
+<h2>Search for reports</h2>
 
 <% if @reports -%>
   <%= render :partial => 'list', 'reports' => @reports %>
@@ -21,6 +27,7 @@
   <% filters << 'system' -%>
   <% filters << 'id' %>
   <% filters << 'created_at' %>
+  <% filters << 'action' %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>

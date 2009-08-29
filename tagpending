@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./script/RT-close.pl --pending

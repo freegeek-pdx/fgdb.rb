@@ -40,7 +40,8 @@
     <% end -%>
     <% for txn,intro in [["sale", "purchases"],
                          ["disbursement", "disbursements"],
-                         ["donation", "donations"]] %>
+                         ["donation", "donations"],
+                         ["gizmo_returns", "returns"]] %>
       <% last_one = @contact.send("last_#{(txn).pluralize}") %>
       <% unless last_one.empty?() %>
         <div class="<%= txn %>">

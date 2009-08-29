@@ -13,6 +13,10 @@
 
   <input type="hidden" name="contact_query_id" value="<%= h contact_query_id(params) %>" />
 
+  <% if @contact.id.nil? %>
+    <%= javascript_tag "set_contact_name()" %>
+  <% end %>
+
   <%= render :partial => 'form' %>
 
   <p class="form-footer">

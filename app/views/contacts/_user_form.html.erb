@@ -1,4 +1,5 @@
 <div class="user">
+  <% if ! @contact.is_user? %>
   <div class='form-element'>
     <%= check_box "contact", "is_user", {:class => 'person'} %>
     <%= observe_field(
@@ -7,8 +8,19 @@
                       ) %>
     <label for="contact_is_user">can login?</label>
   </div>
+  <% else %>
+    <%= hidden_field "contact", "is_user", :value => 1 %>
+  <% end %>
 
   <div id="contact_user" <%= @contact.is_user? or "style='display:none'"%>>
+  <% if @contact.is_user? %>
+    <div class='form-element'>
+      <label for="user_can_login">can login?</label>
+      <%= check_box :user, :can_login %>
+    </div>
+  <% end %>
+
+
     <div class='login form-element'>
       <label for="user_login">Login</label>
       <%= text_field :user, :login %>

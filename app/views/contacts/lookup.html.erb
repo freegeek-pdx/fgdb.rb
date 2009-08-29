@@ -8,7 +8,9 @@
 <% form_tag( { :controller => '/contacts', :action => 'lookup' }, {:method => "GET"} ) do %>
 
   <div class="form-element" style="width: 100%;">
-    <%= conditions_html("defaults", ['created_at', 'worked_at', 'bought_at', 'donated_at', 'id', 'city', 'postal_code', 'received_at', 'phone_number', 'email', 'contact_type', 'volunteer_hours', 'organization']) %>
+    <% list = ['created_at', 'worked_at', 'bought_at', 'donated_at', 'id', 'city', 'postal_code', 'received_at', 'phone_number', 'email', 'contact_type', 'volunteer_hours', 'organization'] %>
+    <% list.push('can_login', 'role') if has_role?('ADMIN') %>
+    <%= conditions_html("defaults", list) %>
     <div class="form-footer">
       <input type="submit" value="Find Contacts" />
     </div>

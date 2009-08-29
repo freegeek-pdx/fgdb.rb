@@ -6,6 +6,7 @@ class System < ActiveRecord::Base
   validates_existence_of :contract
   has_many :spec_sheets
   has_many :notes
+  has_many :gizmo_events
 
   def validate
     if self.contract.nil?

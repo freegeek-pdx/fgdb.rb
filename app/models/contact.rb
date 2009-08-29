@@ -300,6 +300,10 @@ class Contact < ActiveRecord::Base
     return last_gizmos("donations")
   end
 
+  def last_gizmo_returns
+    return last_gizmos("gizmo_returns")
+  end
+
   def is_user?
     !!user
   end

@@ -76,6 +76,16 @@ module GizmoTransaction
     end
   end
 
+  def contact_information_web
+    if contact
+      contact.display_name
+    elsif postal_code
+      ["Anonymous (#{postal_code})"]
+    else
+      ["Dumped"]
+    end
+  end
+
   def hidable_contact_information
     if contact
       contact.display_name_address
