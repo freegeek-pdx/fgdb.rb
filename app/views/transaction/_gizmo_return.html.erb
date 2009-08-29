@@ -15,7 +15,7 @@
     <%= loading_indicator_tag("gizmo_return_#{gizmo_return.id}_loading") %>
     <% print_options = @options.merge(:action => 'receipt') %>
     <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= gizmo_return.id %>','');" title="Print" style="cursor: pointer;">
-      <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
+      Print
     </a>
     <%= render :partial=> "edit_update_transaction",
         :locals => {:transaction => gizmo_return,

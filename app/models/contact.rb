@@ -19,6 +19,21 @@ class Contact < ActiveRecord::Base
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
+  before_save :strip_some_fields
+
+  def cleanup_string(str)
+    return nil if str.nil?
+    str = str.strip
+    str = str.gsub(/\s+/, " ")
+    return str
+  end
+
+  def strip_some_fields
+    self.first_name = cleanup_string(self.first_name)
+    self.surname = cleanup_string(self.surname)
+    self.middle_name = cleanup_string(self.middle_name)
+    self.organization = cleanup_string(self.organization)
+  end
 
   def checked_out
     @checked_out ||= Copy.checked_out_to(self.id)
@@ -53,6 +68,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts_mailings SET contact_id = NULL WHERE contact_id = #{other.id} AND mailing_id IN (SELECT mailing_id FROM contacts_mailings WHERE contact_id IN (#{self.id}, #{other.id}) GROUP BY mailing_id HAVING count(*) > 1)")

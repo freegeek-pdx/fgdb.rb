@@ -16,5 +16,6 @@
     <%= render :partial => "edit_update_transaction",
         :locals => {:transaction => disbursement,
           :allowed_roles => ["BEAN_COUNTERS"]}%>
+    <%= link_to("Returns", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {("disbursement_id").to_sym => disbursement.id}}}) %>
   </td>
 </tr>

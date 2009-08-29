@@ -20,7 +20,7 @@
       <%= render :partial => "getting_attention" %>
     <% else %>
       <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
-      <a id="<%= t_id %>_attention_open" onclick="return false;"><img src="/images/stock_unknown.png" alt="flag as needing attention" title="flag as needing attention"></a>
+      <a id="<%= t_id %>_attention_open" onclick="return false;" alt="flag as needing attention" title="flag as needing attention">Flag</a>
       <%= custom_observer("#{t_id}_attention_open",
                           "Element.show('#{t_id}_attention_div'); $('#{t_id}_attention_comment').focus();",
                           "click") %>

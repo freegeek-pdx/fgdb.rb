@@ -46,12 +46,16 @@ class User < ActiveRecord::Base
   end
 
   def merge_in(other)
-    for i in [:actions, :donations, :sales, :spec_sheets, :systems, :types, :users, :volunteer_tasks, :contacts]
+    for i in [:actions, :donations, :sales, :types, :users, :volunteer_tasks, :contacts, :gizmo_returns]
       User.connection.execute("UPDATE #{i.to_s} SET created_by = #{self.id} WHERE created_by = #{other.id}")
       User.connection.execute("UPDATE #{i.to_s} SET updated_by = #{self.id} WHERE updated_by = #{other.id}")
-      self.roles = (self.roles + other.roles).uniq
-      self.save!
     end
+    ["donations", "sales", "volunteer_tasks", "disbursements", "recyclings", "contacts"].each{|x|
+      User.connection.execute("UPDATE #{x.to_s} SET cashier_created_by = #{self.id} WHERE cashier_created_by = #{other.id}")
+      User.connection.execute("UPDATE #{x.to_s} SET cashier_updated_by = #{self.id} WHERE cashier_updated_by = #{other.id}")
+    }
+    self.roles = (self.roles + other.roles).uniq
+    self.save!
   end
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.

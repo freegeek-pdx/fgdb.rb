@@ -354,21 +354,24 @@ module ApplicationHelper
 
   def edit_link(link_id, options, form_id = nil)
     make_link(link_id,
-              image_tag("edit.png", :alt => "edit", :title => "edit"),
+              "E",
+              "Edit",
               options,
               form_id)
   end
 
   def delete_link(link_id, options, form_id = nill)
     make_link(link_id,
-              image_tag("remove.png", :alt => "delete", :title => "delete"),
+              "D",
+              "Delete",
               options,
               form_id)
   end
 
-  def make_link(link_id, image_tag, options, form_id = nil)
+  def make_link(link_id, image_tag, title, options, form_id = nil)
+    image_tag = title
     html = %Q[
-      <a id="#{link_id}"
+      <a id="#{link_id}" title="#{title}"
          onclick="return false">
         #{image_tag}
       </a>
@@ -384,22 +387,25 @@ module ApplicationHelper
 
   def new_edit_link(link_id, options, form_id = nil)
     new_make_link(link_id,
-                  image_tag("edit.png", :alt => "edit", :title => "edit", :class => "image-link"),
+                  "E",
+                  "Edit",
                   options,
                   form_id)
   end
 
   def new_delete_link(link_id, options, form_id = nill)
     new_make_link(link_id,
-                  image_tag("remove.png", :alt => "delete", :title => "delete", :class => "image-link"),
+                  "D",
+                  "Delete",
                   options,
                   form_id)
   end
 
-  def new_make_link(link_id, image_tag, options, form_id = nil)
+  def new_make_link(link_id, image_tag, title, options, form_id = nil)
+    image_tag = title
     ify = form_id ? "form_has_not_been_edited('#{h form_id}') ||" : ""
     html = %Q[
-      <a id="#{link_id}" href="#{h options[:url][:controller]}/#{h options[:url][:action]}/#{h options[:url][:id]}#{h options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
+      <a id="#{link_id}" title="#{title}" href="#{h options[:url][:controller]}/#{h options[:url][:action]}/#{h options[:url][:id]}#{h options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
          onclick="if(#{h ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{h remote_function(options)}
                              }">

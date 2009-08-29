@@ -15,10 +15,11 @@
     <%= loading_indicator_tag("sale_#{sale.id}_loading") %>
     <% print_options = @options.merge(:action => 'receipt') %>
     <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= sale.id %>','');" title="Print" style="cursor: pointer;">
-      <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
+      Print
     </a>
     <%= render :partial=> "edit_update_transaction",
         :locals => {:transaction => sale,
           :allowed_roles => ["STORE_ADMIN", "BEAN_COUNTER"]} %>
+    <%= link_to("Returns", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {("sale_id").to_sym => sale.id}}}) %>
   </td>
 </tr>
