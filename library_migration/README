@@ -1,0 +1,8 @@
+dump the mysql database
+load it into my mysql server
+use sqlfairy to take its schema and load it into a postgres db
+use a rails project with convert.rake and database.yml to load it into the postgres db
+dump the postgres database (schema and all), and load it into an fgdb database
+use library_migration/TABLES to load fgdb's tables
+dump the fgdb library specific tables (without schema), and load it on the production db (hope it works, may need to disable triggers..)
+
