@@ -1,0 +1,23 @@
+here's the SQL syntax: INSERT INTO newtable(f1,f2,f3,f4) SELECT a1,a2,a3,a4 FROM oldtable;
+
+in the conversion between their schema and mine (I haven't tested this yet):
+
+biblio_copy -> copies
+========================
+barcode_nmbr -> barcode
+book_id -> bibid
+copyid -> copy_id
+
+biblio -> books
+========================
+nothing
+
+biblio_field -> fields
+========================
+bibid -> book_id
+tag -> field
+subfield_cd -> subfield
+field_data -> data
+
+nothing -> library_events
+========================
