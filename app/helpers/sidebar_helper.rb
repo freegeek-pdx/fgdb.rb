@@ -34,7 +34,7 @@ module SidebarHelper
       if x.nil? || has_role?(*x)
         pl = i.to_s.pluralize
         disp = pl.sub("gizmo_", "")
-        sidebar_hash[disp]["entry"] = {:c => pl} unless disp == "returns"
+        sidebar_hash[disp]["entry"] = {:c => pl}
         sidebar_hash[disp]["search"] = {:c => pl, :a => 'search'}
       end
     end

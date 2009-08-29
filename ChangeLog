@@ -2,7 +2,7 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
 
   needs to be released with freegeek-extras, see changelog
 
-  TODO: 14865, 14431, 14856, 14797
+  TODO: 14865, 14431, 14797, 15050
 
   * reword the contracts question (Closes: 15011)
   * add search conditions for role and can login (Closes: 15013)
@@ -26,8 +26,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * add cashier and gizmo_returns merging to dedup (closes: 14969)
   * add some old indexes that were created on the production db (Closes:
     13244)
+  * add an entry page for returns (Closes: 14856)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 13:51:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 14:09:28 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 

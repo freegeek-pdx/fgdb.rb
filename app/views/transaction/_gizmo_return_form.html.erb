@@ -7,14 +7,18 @@
       </div>
 
       <div id="gizmo_return_transaction_links">
+        <% if @gizmo_return.disbursement_id.to_s != "" %>
         <div class="form-element">
           <%= label 'gizmo_return', 'disbursement_id' %>
-          <%= text_field 'gizmo_return', 'disbursement_id', :maxlength => 20 %>
+          <%= text_field 'gizmo_return', 'disbursement_id', :maxlength => 20, :disabled => true, :class => "always_disabled" %>
         </div>
+        <% end %>
+        <% if @gizmo_return.sale_id.to_s != "" %>
         <div class="form-element">
           <%= label 'gizmo_return', 'sale_id' %>
-          <%= text_field 'gizmo_return', 'sale_id', :maxlength => 20 %>
+          <%= text_field 'gizmo_return', 'sale_id', :maxlength => 20, :disabled => true, :class => "always_disabled" %>
         </div>
+        <% end %>
       </div>
 
       <div class="form-extras">

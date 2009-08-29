@@ -44,8 +44,17 @@ function disable_cashierable(){
     $('cashier_code').focus();
 }
 
+function disable_always_disabled(){
+  var arr = document.getElementsByClassName("always_disabled");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    thing.disable();
+  }
+}
+
 function enable_cashierable(){
     thing.enable();
+    disable_always_disabled();
     enable_all_links();
 }
 
