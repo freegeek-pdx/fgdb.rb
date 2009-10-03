@@ -1,4 +1,4 @@
 #!/bin/sh
 
-wget "http://ryan52.info/update-mirror.php?project=fgdb.rb&type=git"
+wget --header="Host: mirror.freegeek.org" "http://git.freegeek.org/update-mirror.php?project=fgdb.rb&type=git"
 rm -f update-mirror.php\?project\=fgdb.rb\&type\=git

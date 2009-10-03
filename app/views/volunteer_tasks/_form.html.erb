@@ -22,13 +22,7 @@
         <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
       </div>
 
-      <div class="form-element">
-        <label for="volunteer_task_volunteer_task_type">Task type</label>
-        <% dropdown_list = VolunteerTaskType.instantiable_nodes %>
-        <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
-          <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.volunteer_task_type_id) %>
-        </select>
-      </div>
+      <%= render :partial => 'task_type' %>
 
       <div class="form-element">
         <label for="volunteer_task_community_service_type">Community service type</label>
@@ -41,7 +35,7 @@
 
       <div class="form-element">
         <label for="volunteer_task_date_performed">what day?</label>
-        <%= calendar_box 'volunteer_task', 'date_performed',{},{:showOthers => true} %>
+        <%= calendar_box 'volunteer_task', 'date_performed',{:onchange => "foobarbaz();"},{:showOthers => true} %>
   </div>
 </div>
 

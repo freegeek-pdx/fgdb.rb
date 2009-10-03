@@ -7,6 +7,6 @@ sql_dump=$backup_dir/database.sql
 su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb_production > $sql_dump"
 su - postgres -c "nice cat $sql_dump | nice gzip > $sql_dump.gz"
 
-su - postgres -c "nice /usr/bin/rsync -Hqzae \
-  'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 2048\
+su - postgres -c "nice /usr/bin/rsync -WHqzae \
+  'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 4096\
   --delete-excluded $backup_dir 'postgres@tulip:/usr/local/arik/'"

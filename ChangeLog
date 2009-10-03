@@ -1,8 +1,9 @@
-fgdb.rb (1.0.41) UNRELEASED; urgency=low
+fgdb.rb (1.0.42) UNRELEASED; urgency=low
 
-  needs to be released with freegeek-extras, see changelog
 
-  TODO: 14865, 14431, 14797, 15050
+ -- Ryan Niebur <ryan@debian.org>  Fri, 02 Oct 2009 22:33:25 -0700
+
+fgdb.rb (1.0.41) released; urgency=low
 
   * reword the contracts question (Closes: 15011)
   * add search conditions for role and can login (Closes: 15013)
@@ -27,8 +28,20 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * add some old indexes that were created on the production db (Closes:
     13244)
   * add an entry page for returns (Closes: 14856)
+  * use nginx rate limiting (closes: 14797)
+  * effective/ineffective dates on some metadata (Closes: 14431)
+  * get rid of double time (Closes: 14865)
+  * add a contact search thing to the worker form (Closes: 15279)
+  * show the capabilities of cdrom drives (Closes: 15082)
+  * if somebody donates more money than they have to, set the
+    contributor contact type (Closes: 15202)
+  * give workers a discount, and move the 4 and 90 numbers from being
+    hard coded to be an editable record in the database (Closes: 15266)
+  * use real duration, not effective duration, for figuring out if they
+    get the discount
+  * remove the staff contact type (Closes: 15280)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 14:09:28 -0700
+ -- Ryan Niebur <ryan@debian.org>  Fri, 02 Oct 2009 22:31:36 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 

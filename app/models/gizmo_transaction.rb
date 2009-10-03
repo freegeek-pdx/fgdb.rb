@@ -1,6 +1,16 @@
 module GizmoTransaction
   def usable_gizmo_types
-    self.gizmo_context.gizmo_types
+    if self.gizmo_context == GizmoContext.gizmo_return
+      if self.sale
+        return GizmoContext.sale.gizmo_types.effective_on(self.sale.occurred_at)
+      elsif self.disbursement
+        return GizmoContext.disbursement.gizmo_types.effective_on(self.disbursement.occurred_at)
+      else
+        return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
+      end
+    else
+      return self.gizmo_context.gizmo_types.effective_on(self.occurred_at || Date.today)
+    end
   end
 
   def showable_gizmo_types
@@ -167,7 +177,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at}
   end
 
   #########
@@ -189,10 +199,12 @@ module GizmoTransaction
   def add_contact_types
     if(contact and
        (contact_type == 'named' and
-        required_contact_type != nil and
-        (! contact.contact_types.include?(required_contact_type)))
-       )
-      contact.contact_types << required_contact_type
+        required_contact_type != nil))
+      for x in [required_contact_type].flatten
+        if (! contact.contact_types.include?(x))
+          contact.contact_types << x
+        end
+      end
     end
   end
 end

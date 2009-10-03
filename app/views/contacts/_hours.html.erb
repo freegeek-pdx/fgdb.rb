@@ -1,7 +1,7 @@
 <% last_ninety = @contact.last_ninety_days_of_actual_hours %>
 <% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
-last 90 days [<%= link_to('edit',
+last <%= Default['days_for_discount'].to_f %> days [<%= link_to('edit',
                           :action=>"list",
                           :controller=>'volunteer_tasks',
                           :contact_id=>@contact.id

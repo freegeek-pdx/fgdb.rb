@@ -18,6 +18,20 @@
   <!--[form:worker]-->
   <p><label for="worker_name">Name</label><br/>
   <%= text_field 'worker', 'name'  %></p>
+
+
+      <%= contact_field('@worker', 'contact_id',
+                    :locals => {:options =>
+                      {
+                        :object_name => 'worker',
+                        :field_name => 'contact_id',
+                        :element_prefix => 'filter_contact',
+                        :display_edit => false,
+                        :display_create => false,
+                        :show_label => true,
+                      },
+                      :contact => @worker.contact
+                    } ) %></p>
   
   <p><label for="worker_worker_type_id">Type</label><br/>
   <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %></p>

@@ -10,12 +10,12 @@ cd $TMP
 scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
 gunzip database.sql.gz
-sed -i "s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
+sed -i "1,100 s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
 psql < database.sql
 if hostname -f | grep -q fglan; then
     git clone http://dev.freegeek.org/~ryan52/git/fgdb.rb trunk
 else
-    git clone git://git.ryan52.info/git/fgdb.rb trunk
+    git clone git://git.freegeek.org/git/fgdb.rb trunk
 fi
 cd trunk
 cp config/database.yml-example config/database.yml

@@ -3,6 +3,7 @@ class GizmoEvent < ActiveRecord::Base
 
   belongs_to :donation
   belongs_to :sale
+  belongs_to :gizmo_return
   belongs_to :disbursement
   belongs_to :recycling
   belongs_to :gizmo_type
@@ -46,6 +47,10 @@ class GizmoEvent < ActiveRecord::Base
       return true if i.spent?
     end
     return false
+  end
+
+  def my_transaction
+    return sale || donation || gizmo_return || disbursement || recycling
   end
 
   def validate
@@ -111,7 +116,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def store_credit_ids
-    self.store_credits.map{|x| "#" + x.id.to_s}.ryan52s_join
+    self.store_credits.map{|x| "#" + x.id.to_s}.to_sentence
   end
 
   def attry_description(options = {})
@@ -133,7 +138,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def percent_discount(schedule)
     return 0 unless schedule && gizmo_type
-    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule) ) * 100 ).ceil
+    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) ) * 100 ).ceil
   end
 
   def total_price_cents
@@ -143,7 +148,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def discounted_price(schedule)
     return total_price_cents unless schedule && gizmo_type
-    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule) * 100).to_i)/100
+    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) * 100).to_i)/100
   end
 
   def mostly_empty?

@@ -1,7 +1,7 @@
 <div class="hours_report">
   <% if contact %>
     <%= contact.display_name %> (<%= contact.id %>) has worked:<br />
-    <span class="hours"><%= contact.last_ninety_days_of_actual_hours %></span> hours in the last 90 days<br />
+    <span class="hours"><%= contact.last_ninety_days_of_actual_hours %></span> hours in the last <%= Default['days_for_discount'].to_f %> days<br />
     <span class="hours"><%= contact.hours_actual %></span> hours ever<br />
     <span class="hours"><%= contact.adoption_hours %></span> points effective toward adopting a computer<br />
   <% end %>

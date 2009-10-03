@@ -1,5 +1,6 @@
 class ContactType < ActiveRecord::Base
   validates_uniqueness_of :name, :message => "already exists"
+  has_and_belongs_to_many :contacts
 
   def self.find_instantiable
     find(:all, :conditions => ["instantiable = ?", true], :order => "description")

@@ -193,7 +193,9 @@ class Donation < ActiveRecord::Base
   end
 
   def required_contact_type
-    ContactType.find(7)
+    a = [ContactType.find_by_name('donor')]
+    a << ContactType.find_by_name('contributor') if cash_donation_paid_cents > 0
+    return a
   end
 
   def reported_total_cents
@@ -234,7 +236,7 @@ class Donation < ActiveRecord::Base
   end
 
   def required_fee_paid_cents
-    [reported_required_fee_cents, money_tendered_cents].min
+    [reported_required_fee_cents || calculated_required_fee_cents, money_tendered_cents].min
   end
 
   def required_paid?

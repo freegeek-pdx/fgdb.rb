@@ -1,5 +1,8 @@
 class Default < ActiveRecord::Base
   class << self
+    def is_pdx
+      Default["is-pdx"] == "true"
+    end
     def [](name)
       return find_by_name(name).value
     rescue

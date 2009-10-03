@@ -16,6 +16,10 @@ class VolunteerTask < ActiveRecord::Base
     connection.execute("SELECT volunteer_tasks.duration AS duration, community_service_types.description AS community_service_type, volunteer_task_types.description AS volunteer_task_types FROM volunteer_tasks LEFT OUTER JOIN volunteer_task_types ON volunteer_task_types.id = volunteer_tasks.volunteer_task_type_id LEFT OUTER JOIN community_service_types ON community_service_types.id = volunteer_tasks.community_service_type_id WHERE #{sanitize_sql_for_conditions(conditions)}")
   end
 
+  def show_for_me
+    VolunteerTaskType.instantiables.effective_on(self.date_performed || Date.today).sort_by{|x| x.description.downcase}
+  end
+
   def validate
     if contact.nil?
       errors.add(:contact_id, "must be choosen")

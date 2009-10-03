@@ -14,6 +14,7 @@ class Contact < ActiveRecord::Base
   belongs_to :contract
   has_many :library_events
   has_many :gizmo_returns
+  has_one :worker
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by
@@ -199,7 +200,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_ninety_days_of_volunteer_tasks
-    find_volunteer_tasks(Date.today - 90)
+    find_volunteer_tasks(Date.today - Default['days_for_discount'].to_f)
   end
 
   def last_ninety_days_of_actual_hours
@@ -208,7 +209,7 @@ class Contact < ActiveRecord::Base
 
   def last_ninety_days_of_effective_hours
     last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task|
-      tot + task.effective_duration
+      tot + task.duration
     }
   end
 
@@ -282,10 +283,14 @@ class Contact < ActiveRecord::Base
     contact_types.join(' ')
   end
 
+  def has_worker?
+    ! self.worker.nil? && worker.effective_now?
+  end
+
   def default_discount_schedule
     if contact_types.include?(ContactType.find_by_name("bulk_buyer"))
       DiscountSchedule.find_by_name("bulk")
-    elsif effective_discount_hours >= 4.0
+    elsif effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
       DiscountSchedule.find_by_name("volunteer")
     else
       DiscountSchedule.find_by_name("no_discount")

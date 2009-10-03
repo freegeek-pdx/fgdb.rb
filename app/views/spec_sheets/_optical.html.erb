@@ -18,6 +18,19 @@
       </tr>
       <tr>
         <td>
+          Capabilities:
+        </td>
+        <td>
+          <% a = [] %>
+          <% @parser.xml_foreach("capabilities/capability") do %>
+            <% a << [@parser.xml_value_of("."), @parser.xml_value_of("@id")] %>
+          <% end %>
+          <% a = a.select{|a| a[1].match(/(cd|dvd)/)} %>
+          <%= a.map{|x| x[0]}.to_sentence %>
+        </td>
+      </tr>
+      <tr>
+        <td>
           Type:
         </td>
         <td>

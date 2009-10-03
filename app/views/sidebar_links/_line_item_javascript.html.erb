@@ -79,7 +79,7 @@
      for discount_schedule in DiscountSchedule.find(:all)
        js += "discount_schedules[#{discount_schedule.id}] = new Array;"
        for gizmo_type in gizmo_types
-         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};"
+         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule, @transaction ? @transaction.occurred_at : DateTime.now)};"
        end
      end
      javascript_tag js

@@ -246,13 +246,3 @@ end
 class DB < ActiveRecord::Base
 end
 
-class Array
-  def ryan52s_join
-    return "" if self.length == 0
-    return self.first if self.length == 1
-    return "#{self.first} and #{self.last}" if self.length == 2
-    list = self.dup
-    last = list.pop
-    return list.join(", ") + " and " + last
-  end
-end

@@ -93,12 +93,13 @@ class Sale < ActiveRecord::Base
   end
 
   def required_contact_type
-    ContactType.find(14)
+    ContactType.find_by_name('buyer')
   end
 
   def calculated_total_cents
     if discount_schedule
       gizmo_events.inject(0) {|tot,gizmo|
+        gizmo.sale = self
         tot + gizmo.discounted_price(discount_schedule)
       }
     else

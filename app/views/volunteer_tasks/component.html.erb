@@ -1,3 +1,4 @@
+<%= javascript_tag "function foobarbaz() {" + remote_function(:update => "task_type", :with => "'day=' + $('volunteer_task_date_performed').value + '&current=' + $('volunteer_task_volunteer_task_type').value", :url => { :action => :update_task_types }) + "}" %>
 <% if @show_wrapper %>
   <div>
     <div id="<%= component_id(params) %>">

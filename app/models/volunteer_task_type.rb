@@ -9,11 +9,11 @@ class VolunteerTaskType < ActiveRecord::Base
     find_all_by_parent_id(0)
   end
 
-  def self.instantiable_nodes
-    find(:all,
-         :conditions => {'instantiable' => true},
-         :order => ['description ASC'])
-  end
+  named_scope :instantiables, { :conditions => {'instantiable' => true} }
+
+  named_scope :effective_on, lambda { |date|
+    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  }
 
   def self.find_actual(*ids)
     ids.delete_if {|id| id == 0 }

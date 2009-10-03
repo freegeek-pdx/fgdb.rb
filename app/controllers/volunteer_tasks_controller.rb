@@ -7,6 +7,10 @@ class VolunteerTasksController < ApplicationController
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
 
+  def update_task_types
+    render :partial => 'task_type'
+  end
+
   #########
   protected
 

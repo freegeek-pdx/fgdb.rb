@@ -1,5 +1,5 @@
 class GizmoType < ActiveRecord::Base
-  acts_as_tree
+#  acts_as_tree # no, lets not
   has_many  :discount_schedules_gizmo_types,
   :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
@@ -12,6 +12,10 @@ class GizmoType < ActiveRecord::Base
 
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
+
+  named_scope :effective_on, lambda { |date|
+    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  }
 
   def GizmoType.fee?(type)
     return type == service_fee || type == fee_discount
@@ -43,40 +47,22 @@ class GizmoType < ActiveRecord::Base
     discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
   end
 
-  def relevant_attrs(context)
-    relevant_typeattrs(context).map {|typeattr|
-      typeattr.gizmo_attr
-    }
+  def parent(date)
+    return if self.parent_name.nil?
+    p = GizmoType.find_all_by_name(parent_name).select{|x| x.effective_on?(date)}.sort.last
+    raise ActiveRecord::RecordNotFound if p.nil? and self.effective_on?(date)
+    return p
   end
 
-  def relevant_typeattrs(context)
-    typeattrs = gizmo_typeattrs.select {|typeattr|
-      (typeattr.gizmo_contexts.include? context) and
-      (typeattr.is_required)
-    }
-    typeattrs += self.parent.relevant_typeattrs(context) if self.parent
-    typeattrs
+  def effective_on?(date)
+    (effective_on.nil? || effective_on <= date) && (ineffective_on.nil? || ineffective_on > date)
   end
 
-  def possible_attrs
-    possible_typeattrs.map {|typeattr|
-      typeattr.gizmo_attr
-    }
-  end
-
-  def possible_typeattrs
-    if parent
-      gizmo_typeattrs + parent.possible_typeattrs
-    else
-      gizmo_typeattrs
-    end
-  end
-
-  def multiplier_to_apply(schedule)
+  def multiplier_to_apply(schedule, date)
     mult = schedule.multiplier_for(self)
     if ! mult
-      if parent
-        mult = parent.multiplier_to_apply(schedule)
+      if parent(date)
+        mult = parent(date).multiplier_to_apply(schedule, date)
       else
         mult = 1.0
       end

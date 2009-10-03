@@ -382,7 +382,7 @@ module ActionView::Helpers
         help_button_options = {}
         field = text_field(object, method,
            	          field_options.merge(
-           	            :onChange => "magicDate('#{input_field_id}', '#{date_format}');", 
+           	            :onChange => "magicDate('#{input_field_id}', '#{date_format}');" + (html_options[:onchange] ? html_options[:onchange] : ""),
            	            :onKeyPress => "magicDateOnlyOnSubmit('#{input_field_id}', '#{date_format}', event); return dateBocksKeyListener(event);", 
            	            :onClick => "this.select();")
            	        )
