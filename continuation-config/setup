@@ -1,2 +1,0 @@
-ln -s /usr/share/rails vendor/rails
-ln -s config/database.yml-example config/database.yml

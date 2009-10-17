@@ -1,0 +1,8 @@
+base: http://area.freegeek.org/logs
+command: rake cruise
+mail: fgdb-commits@lists.freegeek.org
+repo: http://dev.freegeek.org/~ryan52/git/fgdb.rb
+setup: 
+ - ln -s /usr/share/rails vendor/rails
+ - ln -s config/database.yml-example config/database.yml
+timeout: 1800

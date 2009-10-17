@@ -16,6 +16,7 @@ close FOO;
 my $pkg = @{[split(/ /, $list[0])]}[1];
 my $version = @{[split(/ /, $list[1])]}[1];
 chomp $pkg;
+chomp $version;
 
 if($ARGV[0] eq "--pending") {
   $status = "pending";

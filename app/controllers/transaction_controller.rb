@@ -183,7 +183,7 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    if request.env["HTTP_REFERER"]
+    if request.env["HTTP_REFERER"] && !request.env["HTTP_REFERER"].match(/edit/)
       redirect_to :back
     else
       redirect_to :action => "index"

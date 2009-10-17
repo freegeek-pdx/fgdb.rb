@@ -5,7 +5,7 @@ fgdb.rb (1.0.42) UNRELEASED; urgency=low
 
 fgdb.rb (1.0.41) released; urgency=low
 
-  * reword the contracts question (Closes: 15011)
+  * reword the contracts question (Closes: 15011) 
   * add search conditions for role and can login (Closes: 15013)
   * allow to disable users (Closes: 15026)
   * show actual hours, not effective hours (aka points) on last 90 days
@@ -40,6 +40,7 @@ fgdb.rb (1.0.41) released; urgency=low
   * use real duration, not effective duration, for figuring out if they
     get the discount
   * remove the staff contact type (Closes: 15280)
+  * use lock files for the back up cron jobs (Closes: 15360)
 
  -- Ryan Niebur <ryan@debian.org>  Fri, 02 Oct 2009 22:31:36 -0700
 

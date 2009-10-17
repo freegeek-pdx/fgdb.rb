@@ -1,6 +1,7 @@
 #!/bin/bash
 backup_dir=/usr/local/backup/
 sql_dump=$backup_dir/database.sql
+export GZIP="--rsyncable"
 
 /usr/sbin/logrotate -f $backup_dir/database_logrotate.conf
 
