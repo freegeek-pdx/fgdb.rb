@@ -21,6 +21,7 @@
     <% if params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements" %>
       <% if coveredness_enabled %>
         <th>covered</th>
+    <th>total price</th>
       <% end %>
     <% end %>
     <% if params[:controller] == "sales" or params[:controller] == "donations" or params[:controller] == "gizmo_returns" %>

@@ -4,6 +4,7 @@
   var counters = new Array();
   counters['gizmo_event_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
+  counters['shift_line_id'] = <%= defined?(@shifts) ? @shifts.length : 0 %>;
   counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
   gizmo_context_name = '<%= @gizmo_context.name %>';
   coveredness_enabled = <%= coveredness_enabled.to_json %>;
@@ -40,6 +41,13 @@
       javascript_tag js %>
 <% end -%>
 
+<% if ["worked_shifts"].include?(params[:controller]) %>
+  <%= js = "var all_jobs = new Array;"
+      for job in Job.find(:all).sort_by(&:name)
+        js += "all_jobs[#{job.id}] = '#{job.name}';"
+      end
+      javascript_tag js %>
+<% end %>
 <% if ["sales", "donations"].include?(params[:controller]) -%>
   <%= js = "var payment_methods = new Array;"
       for payment_method in PaymentMethod.find(:all).sort_by(&:description)

@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  worker_id: 1
+  job_id: 1
+  date_performed: 2009-10-17
+
+two:
+  worker_id: 1
+  job_id: 1
+  date_performed: 2009-10-17

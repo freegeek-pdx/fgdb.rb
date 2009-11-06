@@ -6,6 +6,10 @@ function handle_gizmo_events(){
   return _add_gizmo_event_from_form();
 }
 
+function handle_shifts() {
+  return add_shift_from_form();
+}
+
 function handle_payments(){
   return add_payment_from_form();
 }
@@ -104,6 +108,8 @@ function prefix_to_container(prefix) {
     return "payments";
   } else if (prefix == "gizmo_event") {
     return "line";
+  } else if (prefix == "shift") {
+    return "shifts";
   } else {
     alert("BROKEN");
   }
@@ -187,6 +193,14 @@ function edit_gizmo_event(id) {
   $('gizmo_type_id').focus();
 }
 
+function edit_shift(id) {
+  thing = $(id);
+  $('job_id').value = getValueBySelector(thing, ".job_id");
+  $('duration').value = getValueBySelector(thing, ".duration");
+  $('job_id').focus();
+}
+
+
 function edit_payment(id) {
   thing = $(id);
   $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
@@ -226,6 +240,14 @@ function donation_hooks(args, tr) {
   systems_stuff(args, tr);
   unit_price_stuff(args, tr);
 }
+function shift_hook(args, tr) {
+  var job_id = args['job_id'];
+  var duration = args['duration'];
+  var job = all_jobs[job_id];
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "job_id", job, job_id, line_id));
+  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "duration", duration, duration, line_id));
+}
 
 /////////////////////////
 // ADD JUNK FROM FORMS //
@@ -247,6 +269,20 @@ function update_amount_for_storecredit() {
     a = "";
   }
   $('payment_amount').value = a;
+}
+
+function add_shift_from_form() {
+  if($('job_id').selectedIndex == 0 || $('duration').value == '') {
+    return true;
+  }
+  var args = new Object();
+  args['duration'] = $('duration').value;
+  args['job_id'] = $('job_id').value;
+  add_shift(args);
+  $('job_id').selectedIndex = 0;
+  $('duration').value = $('duration').defaultValue;
+  $('job_id').focus();
+  return false;
 }
 
 function _add_gizmo_event_from_form()
@@ -482,6 +518,10 @@ function update_contract_notes(){
   }
 }
 
+function shift_compute_totals () {
+
+}
+
 function donation_compute_totals() {
   update_gizmo_events_totals();
 
@@ -714,6 +754,14 @@ function handle_p(event) {
   }
 }
 
+function handle_s(event) {
+  if(is_tab(event)) {
+    if(event.target.onchange)
+      event.target.onchange();
+    return handle_shifts();
+  }
+}
+
 ///////////////////
 // ADD LINE ITEM //
 ///////////////////
@@ -770,6 +818,11 @@ function add_sale_gizmo_event(args) {
     args['system_id'] = '';
   }
   add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
+}
+
+function add_shift(args) {
+  args['prefix'] = 'shift';
+  add_line_item(args, shift_hook, shift_compute_totals, edit_shift);
 }
 
 function add_gizmo_return_gizmo_event(args) {

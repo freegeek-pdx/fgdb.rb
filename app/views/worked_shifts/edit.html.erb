@@ -1,0 +1,39 @@
+<h1>Logging staff hours for <%= @worker.name %> on <%= @date %></h1>
+<% if @logged_already %>
+<pre style="background: yellow">
+Editing already saved hours.
+</pre>
+<% else %>
+<pre style="background: yellow">
+Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
+</pre>
+<% end %>
+<% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
+<%= hidden_field "worked_shift", "date_performed", :value => @date %>
+<%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<table id="shift_lines">
+  <tr>
+    <th>job</th>
+    <th>duration</th>
+    <th></th>
+  </tr>
+  <% @shift_js = ""
+     for i in @shifts
+       hash = {:job_id => i.job_id, :duration => i.duration.to_f}
+       hash[:id] = i.id if i.id
+       @shift_js += "add_shift(#{hash.to_json});"
+     end %>
+  <tr id="form">
+    <td><select id="job_id">
+        <%= options_from_collection_for_select(Job.find(:all), "id", "name") %>
+      </select>
+    </td>
+    <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
+  </tr>
+</table>
+<%= submit_tag("Save",
+               :id => "commit",
+               :onclick => "handle_shifts();") %>
+<% end %>
+<%= javascript_tag @shift_js %>
+

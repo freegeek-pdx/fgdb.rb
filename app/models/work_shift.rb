@@ -12,6 +12,18 @@ class WorkShift < ActiveRecord::Base
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 
+  def to_worked_shift
+    ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
+    if self.kind == "Meeting"
+      ws.job_id = 0 # TODO: need a better way
+    elsif self.kind == "StandardShift"
+      ws.job_id = self.job_id
+    else # Unavailability
+      return nil
+    end
+    return ws
+  end
+
   def WorkShift::create_from_shift( shift = Shift.new, date = Date.new )
 
     #logger.info 'xxx: in create_from_shift'

@@ -329,6 +329,10 @@ module ApplicationHelper
     @current_user and @current_user.has_role?(*roles)
   end
 
+  def is_staff?
+    @current_user and @current_user.contact and @current_user.contact.worker
+  end
+
   def has_role_or_is_me?(contact_id, *roles)
     has_role?(*roles) or is_me?(contact_id)
   end

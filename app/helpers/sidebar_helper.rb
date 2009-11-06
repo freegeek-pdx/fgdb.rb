@@ -50,8 +50,9 @@ module SidebarHelper
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"} if has_role?('BEAN_COUNTER')
     # staffsched
-    sidebar_hash["staff schedule"]["staffsched"] = "/staffsched" if should_show_schedule
-    sidebar_hash["staff schedule"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_role?('SKEDJULNATOR')
+    sidebar_hash["staff"]["schedule"] = "/staffsched" if should_show_schedule
+    sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_role?('SKEDJULNATOR')
+    sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"} if is_staff?
     # library
     requires_librarian = ['overdue', 'labels']
     for i in ['lookup', 'overdue', 'cataloging', 'search', 'labels', 'borrowers'] do
