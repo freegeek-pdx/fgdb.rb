@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('payment_methods_id_seq', 6, true);
+SELECT pg_catalog.setval('payment_methods_id_seq', 7, true);
 
 
 --
@@ -29,6 +29,7 @@ COPY payment_methods (id, description, lock_version, updated_at, created_at, nam
 3	credit	0	2006-11-21 13:41:18	2006-11-21 13:41:18	credit
 1	cash	0	2006-09-25 13:12:18	2006-09-25 13:12:18	cash
 2	check	0	2006-09-25 13:12:23	2006-09-25 13:12:23	check
+7	store credit	0	2009-08-12 01:46:01.155962	2009-08-12 01:46:01.155962	store_credit
 \.
 
 

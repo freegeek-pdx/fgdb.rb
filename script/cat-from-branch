@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+my $branch = shift;
+my $file = shift;
+
+sub splitfields {
+    my @list = split /\s+/, shift;
+    return @list;
+}
+
+sub ls_tree_looking_for {
+    my $treeish = shift;
+    my $looking_for = shift;
+    my @lines = `git ls-tree $treeish`;
+    my @result = grep {my $tmp = @{[splitfields($_)]}[3]; $tmp eq $looking_for} @lines;
+    return @{[splitfields($result[0])]}[2];
+}
+
+sub splitfilename {
+    my @list = split("/", shift);
+    if($list[0] eq ".") {
+        shift @list;
+    }
+    return @list;
+}
+
+my $current = $branch;
+
+foreach(splitfilename($file)) {
+    $current = ls_tree_looking_for($current, $_);
+}
+
+system("git", "show", $current);
+

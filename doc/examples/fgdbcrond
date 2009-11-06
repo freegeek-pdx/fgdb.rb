@@ -10,3 +10,6 @@
 # backups
 25 6    * * *   root    flock -w 1000000000000000000000000000 /var/www/fgdb.rb/tmp/pids/backup.lock -c "timeout 79200 /var/www/fgdb.rb/doc/examples/db-backup-daily"
 17 *    * * *   root    flock -n /var/www/fgdb.rb/tmp/pids/backup.lock -c "timeout 10800 /var/www/fgdb.rb/doc/examples/db-backup-hourly"
+
+# TODO: move the mailing to sql_runner and grab from database
+0 7 * * 3,4,5,6,7 root /var/www/fgdb.rb/script/cashier_report.sql | mail -s "Cashiers Report" beancounters@lists.freegeek.org

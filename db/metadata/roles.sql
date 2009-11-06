@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('roles_id_seq', 10, true);
+SELECT pg_catalog.setval('roles_id_seq', 11, true);
 
 
 --
@@ -34,6 +34,7 @@ COPY roles (id, name, created_at, updated_at) FROM stdin;
 8	STORE_ADMIN	2008-04-15 09:59:35.107392	\N
 9	RECYCLINGS	2008-12-22 09:00:53.862156	2008-12-22 09:00:53.862156
 10	SKEDJULNATOR	2009-02-06 23:48:33.442751	2009-02-06 23:48:33.442751
+11	TECH_SUPPORT	2009-08-12 01:45:57.971818	2009-08-12 01:45:57.971818
 \.
 
 

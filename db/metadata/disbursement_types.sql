@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: disbursement_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('disbursement_types_id_seq', 5, true);
+SELECT pg_catalog.setval('disbursement_types_id_seq', 6, true);
 
 
 --
@@ -29,6 +29,7 @@ COPY disbursement_types (id, description, lock_version, updated_at, created_at, 
 1	Adoption	0	2007-04-04 17:26:09	2007-04-04 17:25:00	adoption
 3	Hardware Grants	0	2007-04-04 17:26:28	2007-04-04 17:26:00	hardware_grants
 2	Build	0	2007-04-04 17:26:16	2007-04-04 17:26:00	build
+6	Replacement	0	2009-08-12 01:46:01.099959	2009-08-12 01:46:01.099959	replacement
 \.
 
 

@@ -143,6 +143,7 @@ run "Checking to see if PDF::API2 is installed..." "perl_use_test PDF::API2" "in
 run "Checking to see if Proc::Daemon is installed..." "perl_use_test Proc::Daemon" "install libproc-daemon-perl" "fail"
 run "Checking to see if Paper::Specs is installed..." "perl_use_test Paper::Specs" "install libpaper-specs-perl" "fail"
 run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
+run "Checking to see if timeout is installed..." "which timeout" "install timeout" "fail"
 
 exit $STATUS
 

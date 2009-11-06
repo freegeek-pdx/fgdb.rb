@@ -8,7 +8,7 @@ if @successful
   end
   page << "Form.enable('#{element_form_id(@create_options)}');"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
-  page << "window.location.href='#{url_for( params.merge( { :action => 'new'} ) )}';"
+  page << "window.location.href='#{url_for( ( { :action => 'new'} ) )}';"
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
   show_errors_for(@transaction_type, @transaction, page)

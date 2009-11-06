@@ -12,7 +12,7 @@ if @successful
   else
     page << "Form.enable('#{element_form_id(@update_options)}');"
     page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
-    page << "window.location.href='#{url_for(params.merge({:action => 'new'}))}';"
+    page << "window.location.href='#{url_for(({:action => 'new'}))}';"
   end
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'

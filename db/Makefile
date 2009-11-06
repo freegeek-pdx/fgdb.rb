@@ -45,7 +45,7 @@ fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
 committed: clean_devel_data download
 
 commit:
-	cd ..; git commit -a -m "updated devel data"; cd fgdb-devel-data; under-myagent svn ci -m "updated devel data"; cd ..; under-myagent git push fg
+	cd ..; git add db/metadata/ db/schema.rb; git commit -m "updated devel data"; cd fgdb-devel-data; under-myagent svn ci -m "updated devel data"; cd ..; under-myagent git pull fg master; under-myagent git push fg
 	@make committed
 
 ohaither:

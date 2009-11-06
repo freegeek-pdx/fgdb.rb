@@ -19,3 +19,4 @@ pg_dump fgdb_production > ~/post-sprint-$NEW.sql
 
 sudo invoke-rc.d thin start
 sudo mv public/release.html public/_release.html
+sudo invoke-rc.d nginx restart

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV']||="production"
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+db = Default.configurations[RAILS_ENV]["database"]
+cmd = "cat " + ARGV[0] + " | sed '1,2 d' | psql " + db
+puts "Executing: #{cmd}" if ARGV[1] == "--debug"
+system(cmd)

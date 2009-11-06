@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090207052819) do
+ActiveRecord::Schema.define(:version => 20091031184948) do
 
   create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
     <<-contact_trigger_sql
@@ -365,6 +365,7 @@ END
     t.integer  "recycling_contract_id"
     t.integer  "system_id"
     t.boolean  "covered"
+    t.integer  "gizmo_return_id"
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
@@ -375,21 +376,35 @@ END
   add_index "gizmo_events", ["sale_id"], :name => "gizmo_events_sale_id_index"
   add_index "gizmo_events", ["system_id"], :name => "gizmo_events_system_id"
 
-  create_table "gizmo_types", :force => true do |t|
-    t.string   "description",         :limit => 100
-    t.integer  "parent_id"
-    t.integer  "lock_version",                       :default => 0, :null => false
-    t.datetime "updated_at"
+  create_table "gizmo_returns", :force => true do |t|
+    t.integer  "contact_id"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.integer  "storecredit_difference_cents"
+    t.text     "comments"
+    t.integer  "cashier_created_by"
+    t.integer  "cashier_updated_by"
+    t.integer  "disbursement_id"
+    t.integer  "sale_id"
     t.datetime "created_at"
-    t.integer  "required_fee_cents",                                :null => false
-    t.integer  "suggested_fee_cents",                               :null => false
-    t.integer  "gizmo_category_id"
-    t.string   "name",                :limit => 40,                 :null => false
-    t.boolean  "covered"
-    t.integer  "rank"
+    t.datetime "updated_at"
   end
 
-  add_index "gizmo_types", ["name"], :name => "gizmo_types_name_uk", :unique => true
+  create_table "gizmo_types", :force => true do |t|
+    t.string   "description",         :limit => 100
+    t.integer  "lock_version",                       :default => 0,                     :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "required_fee_cents",                                                    :null => false
+    t.integer  "suggested_fee_cents",                                                   :null => false
+    t.integer  "gizmo_category_id"
+    t.string   "name",                :limit => 40,                                     :null => false
+    t.boolean  "covered"
+    t.integer  "rank"
+    t.datetime "effective_on",                       :default => '2009-10-02 22:40:21'
+    t.datetime "ineffective_on"
+    t.string   "parent_name"
+  end
 
   create_table "holidays", :force => true do |t|
     t.string  "name"
@@ -406,10 +421,20 @@ END
   add_index "holidays", ["schedule_id"], :name => "index_holidays_on_schedule_id"
   add_index "holidays", ["weekday_id"], :name => "index_holidays_on_weekday_id"
 
+  create_table "income_streams", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "jobs", :force => true do |t|
     t.string  "name"
     t.string  "description"
     t.integer "coverage_type_id"
+    t.integer "income_stream_id"
+    t.integer "wc_category_id"
+    t.integer "program_id"
   end
 
   add_index "jobs", ["coverage_type_id"], :name => "index_jobs_on_coverage_type_id"
@@ -498,6 +523,13 @@ END
   create_table "plugin_schema_info", :id => false, :force => true do |t|
     t.string  "plugin_name"
     t.integer "version"
+  end
+
+  create_table "programs", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "recyclings", :force => true do |t|
@@ -672,6 +704,15 @@ END
     t.date    "shift_date"
   end
 
+  create_table "store_credits", :force => true do |t|
+    t.integer  "gizmo_return_id"
+    t.integer  "gizmo_event_id"
+    t.integer  "payment_id"
+    t.integer  "amount_cents"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "systems", :force => true do |t|
     t.string   "system_vendor"
     t.string   "system_model"
@@ -692,6 +733,23 @@ END
   add_index "systems", ["system_model"], :name => "systems_model_index"
   add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
+
+  create_table "till_adjustments", :force => true do |t|
+    t.integer  "till_type_id"
+    t.date     "till_date"
+    t.integer  "adjustment_cents"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "till_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "description"
+  end
+
+  add_index "till_types", ["name"], :name => "index_till_types_on_name", :unique => true
 
   create_table "types", :force => true do |t|
     t.string   "description"
@@ -728,9 +786,10 @@ END
     t.string   "remember_token"
     t.datetime "remember_token_expires_at"
     t.integer  "contact_id"
-    t.integer  "created_by",                              :null => false
+    t.integer  "created_by",                                                :null => false
     t.integer  "updated_by"
     t.integer  "cashier_code"
+    t.boolean  "can_login",                               :default => true, :null => false
   end
 
   create_table "vacations", :force => true do |t|
@@ -747,15 +806,15 @@ END
   create_table "volunteer_task_types", :force => true do |t|
     t.string   "description",      :limit => 100
     t.integer  "parent_id"
-    t.decimal  "hours_multiplier",                :precision => 10, :scale => 3, :default => 1.0,  :null => false
-    t.boolean  "instantiable",                                                   :default => true, :null => false
-    t.integer  "lock_version",                                                   :default => 0,    :null => false
+    t.decimal  "hours_multiplier",                :precision => 10, :scale => 3, :default => 1.0,                   :null => false
+    t.boolean  "instantiable",                                                   :default => true,                  :null => false
+    t.integer  "lock_version",                                                   :default => 0,                     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.string   "name",             :limit => 40,                                                   :null => false
+    t.string   "name",             :limit => 40,                                                                    :null => false
+    t.datetime "effective_on",                                                   :default => '2009-10-02 22:40:21'
+    t.datetime "ineffective_on"
   end
-
-  add_index "volunteer_task_types", ["name"], :name => "volunteer_task_types_name_uk", :unique => true
 
   create_table "volunteer_tasks", :force => true do |t|
     t.integer  "contact_id"
@@ -777,6 +836,14 @@ END
   add_index "volunteer_tasks", ["duration"], :name => "index_volunteer_tasks_on_duration"
   add_index "volunteer_tasks", ["volunteer_task_type_id"], :name => "index_volunteer_tasks_on_volunteer_task_type_id"
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
+
+  create_table "wc_categories", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "rate_cents"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "weekdays", :force => true do |t|
     t.string  "name"
@@ -824,6 +891,17 @@ END
     t.integer "contact_id"
     t.date    "effective_date",     :default => '1901-12-22'
     t.date    "ineffective_date",   :default => '2100-12-31'
+    t.float   "sunday"
+    t.float   "monday"
+    t.float   "tuesday"
+    t.float   "wednesday"
+    t.float   "thursday"
+    t.float   "friday"
+    t.float   "saturday"
+    t.boolean "salaried"
+    t.float   "pto_rate"
+    t.float   "floor_hours"
+    t.float   "ceiling_hours"
   end
 
   add_index "workers", ["contact_id"], :name => "index_workers_on_contact_id"
@@ -866,14 +944,17 @@ END
   add_foreign_key "gizmo_events", ["disbursement_id"], "disbursements", ["id"], :name => "gizmo_events_disbursements_fk"
   add_foreign_key "gizmo_events", ["donation_id"], "donations", ["id"], :on_delete => :set_null, :name => "gizmo_events_donations_fk"
   add_foreign_key "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_contexts_fk"
+  add_foreign_key "gizmo_events", ["gizmo_return_id"], "gizmo_returns", ["id"], :on_delete => :cascade, :name => "gizmo_events_gizmo_return_id_fkey"
   add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
   add_foreign_key "gizmo_events", ["recycling_contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "gizmo_events_recycling_contract_id_fkey"
   add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
   add_foreign_key "gizmo_events", ["sale_id"], "sales", ["id"], :on_delete => :set_null, :name => "gizmo_events_sales_fk"
   add_foreign_key "gizmo_events", ["system_id"], "systems", ["id"], :on_delete => :restrict, :name => "gizmo_events_system_id_fkey"
 
+  add_foreign_key "gizmo_returns", ["disbursement_id"], "disbursements", ["id"], :on_delete => :restrict, :name => "gizmo_returns_disbursement_id_fkey"
+  add_foreign_key "gizmo_returns", ["sale_id"], "sales", ["id"], :on_delete => :restrict, :name => "gizmo_returns_sale_id_fkey"
+
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
-  add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
 
   add_foreign_key "holidays", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "holidays_frequency_types"
   add_foreign_key "holidays", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "holidays_schedules"
@@ -902,8 +983,8 @@ END
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
 
-  add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :name => "roles_users_role_id_fkey"
-  add_foreign_key "roles_users", ["user_id"], "users", ["id"], :name => "roles_users_user_id_fkey"
+  add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "roles_users_role_id_fkey"
+  add_foreign_key "roles_users", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "roles_users_user_id_fkey"
 
   add_foreign_key "rr_items", ["rr_set_id"], "rr_sets", ["id"], :on_delete => :cascade, :name => "rr_items_rr_sets"
 
@@ -932,6 +1013,10 @@ END
   add_foreign_key "standard_shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :cascade, :name => "standard_shifts_schedules"
   add_foreign_key "standard_shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "standard_shifts_weekdays"
   add_foreign_key "standard_shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "standard_shifts_workers"
+
+  add_foreign_key "store_credits", ["gizmo_event_id"], "gizmo_events", ["id"], :on_delete => :cascade, :name => "store_credits_gizmo_event_id_fkey"
+  add_foreign_key "store_credits", ["gizmo_return_id"], "gizmo_returns", ["id"], :on_delete => :cascade, :name => "store_credits_gizmo_return_id_fkey"
+  add_foreign_key "store_credits", ["payment_id"], "payments", ["id"], :on_delete => :set_null, :name => "store_credits_payment_id_fkey"
 
   add_foreign_key "systems", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "systems_contract_id_fkey"
 
