@@ -133,7 +133,7 @@ class ShiftsController < ApplicationController
       end
       (start..stop).each do |day|
         # check to see if it's a holiday, if so then skip
-        holly = Holiday.find(:first, :conditions => ["holiday_date = ?", day])
+        holly = Holiday.is_holiday?(day)
         if holly
           # insert a holiday shift:
         else

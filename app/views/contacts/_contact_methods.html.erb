@@ -16,7 +16,7 @@
   <% end %>
   <%= javascript_tag js %>
 
-  <tr id="form">
+  <tr id="contact_method_form">
     <td><select id="contact_method_type_id" onchange="contact_contact_method_selected()">
         <%= options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") %>
       </select></td>

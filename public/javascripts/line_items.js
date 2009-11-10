@@ -148,7 +148,7 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
     tr.appendChild(td);
   }
   tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
-  $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_lines').lastChild.lastChild.previousSibling);
+  $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_form'));
   counters[args['prefix'] + '_line_id']++;
   update_hook();
 }
@@ -518,8 +518,25 @@ function update_contract_notes(){
   }
 }
 
-function shift_compute_totals () {
+function format_float(float) {
+  var str = (parseInt(float * 100) / 100).toString();
+  if(str.split(".").length == 1) {
+    str += ".00";
+  }
+  if(str.split(".")[1].length == 1) {
+    str += "0";
+  }
+  return str;
+}
 
+function shift_compute_totals () {
+  var today = get_hours_today();
+  var myhash = new Hash();
+  myhash.set('worked_shift[hours_today]', today);
+  myhash.set('worked_shift[date_performed]', shifts_date);
+  myhash.set('worked_shift[worker_id]', shifts_worker);
+  var str = myhash.toQueryString();
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
 }
 
 function donation_compute_totals() {
@@ -650,6 +667,15 @@ function update_gizmo_events_totals() {
     var mystring = "$" + dollar_value(amount);
     thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
   }
+}
+
+function get_hours_today () {
+  var total = 0.0;
+  var arr = find_these_lines('shift_lines');
+  for (var x = 0; x < arr.length; x++) {
+    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
+ }
+  return total;
 }
 
 function get_donation_totals() {

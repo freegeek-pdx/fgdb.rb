@@ -1,0 +1,11 @@
+<h1>Individual Pay Period Report</h1>
+
+<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@current_user.contact.worker.id, Date.today) %>
+
+<% form_for :worked_shift, nil, :url => { :action => "individual_report" } do |f| %>
+<% label :worked_shifts, :worker_id %>
+<%= select("worked_shift", "worker_id", Worker.all.collect {|p| [ p.name, p.id ] }, {:include_blank => 'None'}) %>
+<%# label :worked_shifts, :date_performed %>
+<%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<%= submit_tag "Go" %>
+<% end %>

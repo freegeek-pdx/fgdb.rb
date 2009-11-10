@@ -53,6 +53,9 @@ module SidebarHelper
     sidebar_hash["staff"]["schedule"] = "/staffsched" if should_show_schedule
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_role?('SKEDJULNATOR')
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"} if is_staff?
+    sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"} if is_staff?
+    sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
+    sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     # library
     requires_librarian = ['overdue', 'labels']
     for i in ['lookup', 'overdue', 'cataloging', 'search', 'labels', 'borrowers'] do

@@ -86,8 +86,24 @@ class ApplicationController < ActionController::Base
     logged_in? and current_user.has_role?(*roles)
   end
 
+  def is_staff?
+    logged_in? and current_user.contact and current_user.contact.worker
+  end
+
   def requires_role(*roles)
     if has_role?(*roles)
+      return true
+    else
+      session[:unauthorized_error] = true
+      session[:unauthorized_controller] = controller_name()
+      session[:unauthorized_action] = action_name()
+      redirect_to :controller => 'sidebar_links'
+      return false
+    end
+  end
+
+  def requires_staff
+    if is_staff?
       return true
     else
       session[:unauthorized_error] = true

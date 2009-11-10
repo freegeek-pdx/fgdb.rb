@@ -1,4 +1,6 @@
-<h1>Logging staff hours for <%= @worker.name %> on <%= @date %></h1>
+<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
+<% PayPeriod.find_for_date(@date) or raise "FIXME" %>
+<h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 <% if @logged_already %>
 <pre style="background: yellow">
 Editing already saved hours.
@@ -23,17 +25,34 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
        hash[:id] = i.id if i.id
        @shift_js += "add_shift(#{hash.to_json});"
      end %>
-  <tr id="form">
+  <tr id="shift_form">
     <td><select id="job_id">
         <%= options_from_collection_for_select(Job.find(:all), "id", "name") %>
       </select>
     </td>
     <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
   </tr>
+<tr><td colspan="2">
+<div id="totals_div" class="totals line_item">
+  <table>
+    <tr><td>Total for this day:</td><td id="total_today" class="amount">BROKEN</td></tr>
+    <tr><td>Total for this week:</td><td id="total_week" class="amount">BROKEN</td></tr>
+    <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">BROKEN</td></tr>
+    <tr><td>Overtime:</td><td id="overtime" class="amount">BROKEN</td></tr>
+    <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">BROKEN</td></tr>
+    <tr><td>Minimum so far in pay period:</td><td id="expected_minimum" class="amount">BROKEN</td></tr>
+    <tr><td>Maximum so far in pay period:</td><td id="expected_maximum" class="amount">BROKEN</td></tr>
+    <tr><td>PTO at this rate:</td><td id="pto" class="amount">BROKEN</td></tr>
+  </table>
+</div>
+</td></tr>
 </table>
 <%= submit_tag("Save",
                :id => "commit",
                :onclick => "handle_shifts();") %>
+<%= loading_indicator_tag "shifts_totals" %>
+<%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
+<% @shift_js += "shift_compute_totals();" %>
 <%= javascript_tag @shift_js %>
 

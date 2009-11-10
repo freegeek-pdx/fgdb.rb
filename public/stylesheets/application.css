@@ -180,14 +180,15 @@ float: right;
   clear: right;
   display: inline;
   text-align: right;
-  width: 250px;
   font-weight: bold;
   font-size: larger;
 }
+
 .totals td {
   background-color: yellow;
 }
 .totals td.amount{
+  width: 50px;
   font-weight: normal;
 }
 .totals td.below_req {

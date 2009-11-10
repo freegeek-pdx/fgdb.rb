@@ -69,7 +69,7 @@ class MeetingsController < ApplicationController
       WorkShift.delete_all "id IN (#{in_clause.join(',')})"
     end
     # check to see if it's a holiday, if so then skip
-    holly = Holiday.find(:first, :conditions => ["holiday_date = ?", day])
+    holly = Holiday.is_holiday?(day)
     if not holly
       # check to see if the schedule displays on that
       #   weekday, if not then skip

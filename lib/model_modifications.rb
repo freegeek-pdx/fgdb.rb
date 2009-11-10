@@ -241,6 +241,16 @@ class ActiveRecord::Base
   acts_as_logged
 end
 
+class Array
+    def map_with_index
+      result = []
+      self.each_with_index do |elt, idx|
+        result << yield(elt, idx)
+      end
+      result
+    end
+end
+
 # lets call this a hack
 # DB.execute("SELECT * FROM defaults;")
 class DB < ActiveRecord::Base
