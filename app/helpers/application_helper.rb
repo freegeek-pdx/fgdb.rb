@@ -330,7 +330,8 @@ module ApplicationHelper
   end
 
   def is_staff?
-    @current_user and @current_user.contact and @current_user.contact.worker
+    has_worker = @current_user and @current_user.contact and @current_user.contact.has_worker?
+    has_worker || has_role?("ADMIN")
   end
 
   def has_role_or_is_me?(contact_id, *roles)
@@ -380,7 +381,7 @@ module ApplicationHelper
         #{image_tag}
       </a>
     ]
-    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    ify = form_id ? "$('#{form_id}') == null || form_has_not_been_edited('#{form_id}') ||" : ""
     html += custom_observer(link_id,
                             "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{remote_function(options)}

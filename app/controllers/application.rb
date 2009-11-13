@@ -87,7 +87,8 @@ class ApplicationController < ActionController::Base
   end
 
   def is_staff?
-    logged_in? and current_user.contact and current_user.contact.worker
+    has_worker = logged_in? and current_user.contact and current_user.contact.has_worker?
+    has_worker || has_role?("ADMIN")
   end
 
   def requires_role(*roles)

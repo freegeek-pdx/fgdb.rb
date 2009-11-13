@@ -3,6 +3,12 @@
     <div id="<%= component_id(params) %>">
 <% end %>
 
+<div id="<%= h element_messages_id(params) %>" class="messages-container">
+  <div id="<%= messages_id(params) %>">
+    <%= render :partial => "messages" %>
+  </div>
+</div>
+
 <div class="footer">
   <table class="list">
     <tbody>

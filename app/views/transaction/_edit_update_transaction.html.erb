@@ -8,12 +8,14 @@
                       :url => @options.merge(:action => 'edit'),
                     },
                     "#{@transaction_type}_form_tbody") %>
-  <%= new_delete_link("#{t_id}_delete_link",
+  <%= delete_link("#{t_id}_delete_link",
                       {
                         :url => @options.merge(:action => 'destroy'),
+                    :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
                         :confirm => 'Are you sure?',
                       },
                       "#{@transaction_type}_form_tbody") %>
+<%= loading_indicator_tag("#{t_id}_loading") %>
 <% else %>
   <span id="<%= t_id %>_needs_attention_div" class="needs_attention">
     <% if (transaction.needs_attention) %>

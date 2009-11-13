@@ -181,13 +181,11 @@ class TransactionController < ApplicationController
     begin
       @successful = model.find(params[:id]).destroy
     rescue
+      @error = $!.to_s
+      @successful = false
       flash[:error], @successful  = $!.to_s, false
     end
-    if request.env["HTTP_REFERER"] && !request.env["HTTP_REFERER"].match(/edit/)
-      redirect_to :back
-    else
-      redirect_to :action => "index"
-    end
+    render :action => "destroy.rjs"
   end
 
   def needs_attention

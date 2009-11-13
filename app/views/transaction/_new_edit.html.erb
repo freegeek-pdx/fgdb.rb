@@ -10,7 +10,7 @@
     <%= render :partial => 'form_messages' %>
   </div>
 </div>
-<div id="<%= form_tbody_id(params) %>"></div>
+<div id="<%= form_tbody_id(params) %>">
 
 <% if @receipt %>
   <script>
@@ -82,8 +82,8 @@
 <%= cashiers_javascript %>
 </div>
 </div>
+</div>
 <hr />
-
 <table class="list">
   <tbody>
     <%= render :partial => 'column_headings' %>
