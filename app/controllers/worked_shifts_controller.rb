@@ -30,7 +30,7 @@ class WorkedShiftsController < ApplicationController
     @end = @date.dup
     @start -= 1 while @start.wday != 1 # Monday
     @end += 1 while @end.wday != 0 # Sunday
-    @result = Worker.effective_in_range(@start, @end).sort_by(&:sort_by).map{|x| a = (@start..@end).to_a.map{|y| x.hours_worked_on_day(y)}; [x.sort_by, a, a.inject(0.0){|t,x| t+=x}.to_s].flatten}
+    @result = Worker.effective_in_range(@start, @end).real_people.sort_by(&:sort_by).map{|x| a = (@start..@end).to_a.map{|y| x.hours_worked_on_day(y)}; [x.sort_by, a, a.inject(0.0){|t,x| t+=x}.to_s].flatten}
     header_array = ["Worker", (@start..@end).to_a.map{|x| x.strftime("%A")}, "Total"].flatten
     a = (1..7).to_a.map{|i|
       @result.inject(0.0){|t,x|
@@ -45,7 +45,7 @@ class WorkedShiftsController < ApplicationController
 
   def payroll_report
     pay_period = PayPeriod.find_for_date(@date) || raise
-    @workers = Worker.effective_in_range(pay_period)
+    @workers = Worker.effective_in_range(pay_period).real_people.sort_by(&:sort_by)
 #    @workers = [Worker.find(6144)].flatten
     @workers = @workers.map{|x| x.to_payroll_hash(pay_period)}
     # array of hashes with keys: name type hours pto overtime holiday

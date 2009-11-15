@@ -242,6 +242,14 @@ class ActiveRecord::Base
 end
 
 class Array
+  def each_with_siblings
+    self.each_with_index{|b, i|
+      a = self[i - 1] if i > 0 # -1 does not mean what we want it to
+      c = self[i + 1]
+      yield(a, b, c)
+    }
+  end
+
     def map_with_index
       result = []
       self.each_with_index do |elt, idx|

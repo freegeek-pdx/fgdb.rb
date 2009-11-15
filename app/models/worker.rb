@@ -7,6 +7,9 @@ class Worker < ActiveRecord::Base
   has_many :vacations
   belongs_to :contact
   validates_existence_of :contact, :allow_nil => false
+  has_many :workers_worker_types
+#  validates_associated :workers_worker_types
+  has_and_belongs_to_many :worker_types
 
   def is_available?( shift = Workshift.new )
     true
@@ -17,7 +20,7 @@ class Worker < ActiveRecord::Base
     (effective_date.nil? || effective_date <= date) && (ineffective_date.nil? || ineffective_date > date)
   end
 
-  def Worker.effective_in_range(*args)
+  named_scope :effective_in_range, lambda { |*args|
     my_start = my_end = nil
     if args.length == 1 && args[0].is_a?(PayPeriod)
       my_start = args[0].start_date
@@ -31,8 +34,10 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.find(:all, :conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]).sort_by(&:sort_by)
-  end
+    {:conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]}
+  }
+
+  named_scope :real_people, :conditions => {:virtual => false}
 
   def sort_by
     self.contact ? (self.contact.surname + ", " + self.contact.first_name) : self.id.to_s
@@ -42,12 +47,31 @@ class Worker < ActiveRecord::Base
     cache[x] ||= hours_worked_on_day(x)
   end
 
+  def worker_type_on_day(date)
+    self.workers_worker_types.effective_on(date).first.worker_type
+  end
+
+  def worker_type_today
+    self.worker_type_on_day(Date.today)
+  end
+
+  def primary_worker_type_in_range(start_d, end_d)
+    h = {}
+    (start_d..end_d).to_a.each{|x|
+      t = worker_type_on_day(x)
+      h[t] = (h[t] || 0) + 1
+    }
+    h = h.to_a
+    h = h.sort_by{|x| x[1]}.delete_if{|x| x[0].name == "inactive"}
+    h.first ? h.first.first : WorkerType.find_by_name("inactive")
+  end
+
   def to_payroll_hash(pay_period)
     # further optimization: determine the weeks and holidays outside of the workers loop
     cache = {}
     h = {}
     h[:name] = self.sort_by
-    h[:type] = self.worker_type.name
+    h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
     h[:hours] = (pay_period.start_date..pay_period.end_date).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
     h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
     days = {}

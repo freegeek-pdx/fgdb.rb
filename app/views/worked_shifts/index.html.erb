@@ -4,7 +4,7 @@
 
 <% form_for :worked_shift, nil, :url => { :action => "edit" } do |f| %>
 <% label :worked_shifts, :worker_id %>
-<%= select("worked_shift", "worker_id", Worker.all.collect {|p| [ p.name, p.id ] }, {:include_blank => 'None'}) %>
+<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
 <%= submit_tag "Go" %>

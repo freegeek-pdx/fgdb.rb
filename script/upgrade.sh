@@ -12,8 +12,9 @@ CUR=$(cat /var/www/fgdb.rb/.git/HEAD  | sed 's,ref: refs/heads/release_1.0.,,')
 NEW=$(( $CUR + 1 ))
 
 cd /var/www/fgdb.rb/
-git fetch origin
-git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
+sudo git fetch origin
+sudo git checkout db/schema.rb
+sudo git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
 sudo env RAILS_ENV=production rake db:migrate
 pg_dump fgdb_production > ~/post-sprint-$NEW.sql
 

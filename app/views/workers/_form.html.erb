@@ -34,7 +34,12 @@
                     } ) %></p>
   
   <p><label for="worker_worker_type_id">Type</label><br/>
-  <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+    <% if params[:action] == "new" %>
+  <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %>
+  <% else %>
+    <%= @worker.worker_type_today.name %><br />
+    *worker type must be edited by hand
+  <% end %></p>
   
   <p><label for="worker_weekly_work_hours">Weekly work hours</label><br/>
   <%= text_field 'worker', 'weekly_work_hours'  %></p>

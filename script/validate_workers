@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./script/runner 'def die(str); puts str; exit 1; end; Worker.find(:all).each{|x| die("Worker ##{x.id} is not valid: #{x.errors.full_messages}") if ! x.valid?}; WorkersWorkerType.find(:all).each{|x| die("Worker ##{x.worker.id} is not valid: #{x.errors.full_messages}") if ! x.valid?}; puts "Looks good.";'
