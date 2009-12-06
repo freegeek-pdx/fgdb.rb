@@ -131,6 +131,20 @@ module ActiveRecord
   end
 end
 
+class Float
+  def two_places
+    v = sprintf "%.2f", self
+    if v[-1] == "0"[0]
+      v = v.chop
+    end
+    v
+  end
+
+  def tp
+    two_places
+  end
+end
+
 class String
   def to_cents
     temp = self.split('.')

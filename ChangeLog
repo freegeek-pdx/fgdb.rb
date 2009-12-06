@@ -1,7 +1,29 @@
-fgdb.rb (1.0.43) UNRELEASED; urgency=low
+fgdb.rb (1.0.45) UNRELEASED; urgency=low
 
+  * new form_has_not_been_edited, which works by serializing the form
+    and comparing it to the initial serialization. this now works
+    correctly with line items. (Closes: #15920)
+  * If the contact fails to save, do not save the user (Closes: #16231)
+  * round numbers to two decimal places in payroll report (Closes:
+    #16236)
+  * round to two places in the volunteering report (closes: #16239)
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 14 Nov 2009 03:17:07 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Dec 2009 14:24:24 -0800
+
+fgdb.rb (1.0.44) released; urgency=low
+
+  * alphabetize jobs in staff hours drop down (Closes: #16143)
+  * display normally scheduled hours for the day when worker records
+    hours (Closes: #16144)
+  * add meeting job type (Closes: #16166)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 30 Nov 2009 22:46:21 -0800
+
+fgdb.rb (1.0.43) released; urgency=low
+
+  * staff hours tracking
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Nov 2009 23:20:31 -0800
 
 fgdb.rb (1.0.42) released; urgency=low
 
@@ -11,7 +33,7 @@ fgdb.rb (1.0.42) released; urgency=low
   * add cashier report (Closes: 15819)
   * fix the destroy link (Closes: 15518, 15345, 15493, 15661)
 
- -- Ryan Niebur <ryan@debian.org>  Sat, 14 Nov 2009 03:16:30 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Nov 2009 03:16:30 -0800
 
 fgdb.rb (1.0.41) released; urgency=low
 
@@ -52,7 +74,7 @@ fgdb.rb (1.0.41) released; urgency=low
   * remove the staff contact type (Closes: 15280)
   * use lock files for the back up cron jobs (Closes: 15360)
 
- -- Ryan Niebur <ryan@debian.org>  Fri, 02 Oct 2009 22:31:36 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 02 Oct 2009 22:31:36 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 

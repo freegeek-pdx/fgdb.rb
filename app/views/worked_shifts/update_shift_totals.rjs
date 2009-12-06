@@ -1,4 +1,4 @@
-hashkeys = %w[total_today total_week max_week overtime expected_minimum total_pay_period pto]
+hashkeys = %w[total_today total_week max_week overtime expected_minimum total_pay_period pto normally_worked]
 hash = {}
 hashkeys.each{|x| hash[x.to_sym] = 0.0}
 
@@ -26,6 +26,7 @@ pay_period.load_from_calendar(this_far)
 pay_period.add_in_holidays(@worker)
 hash[:total_pay_period] = pay_period.total
 hash[:pto] = [0, minimum - pay_period.total].max
+hash[:normally_worked] = @worker.send(@date.strftime("%A").downcase.to_sym)
 
 hash.each{|k,v| page << "$(#{k.to_s.to_json}).innerHTML = #{sprintf("%.2f", v).to_s.to_json};" }
 page.hide loading_indicator_id("shifts_totals")

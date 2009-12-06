@@ -3,7 +3,7 @@
 <% {"Workers" => @workers, "Summary" => @types}.each do |t,x| %>
     <tr><th colspan="5"><%= t %></th></tr>
     <% x.each do |y| %>
-      <tr><td><%= y[:name] %></td><td><%= y[:hours] %></td><td><%= y[:pto] %></td><td><%= y[:overtime] %></td><td><%= y[:holiday]%></td></tr>
+      <tr><td><%= y[:name] %></td><td><%= y[:hours].tp %></td><td><%= y[:pto].tp %></td><td><%= y[:overtime].tp %></td><td><%= y[:holiday].tp %></td></tr>
     <% end %>
 <% end %>
   </table>

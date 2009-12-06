@@ -27,7 +27,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
      end %>
   <tr id="shift_form">
     <td><select id="job_id">
-        <%= options_from_collection_for_select(Job.find(:all), "id", "name") %>
+        <%= options_from_collection_for_select(Job.find(:all).sort_by(&:name), "id", "name") %>
       </select>
     </td>
     <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
@@ -35,14 +35,15 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <tr><td colspan="2">
 <div id="totals_div" class="totals line_item">
   <table>
-    <tr><td>Total for this day:</td><td id="total_today" class="amount">BROKEN</td></tr>
-    <tr><td>Total for this week:</td><td id="total_week" class="amount">BROKEN</td></tr>
-    <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">BROKEN</td></tr>
-    <tr><td>Overtime:</td><td id="overtime" class="amount">BROKEN</td></tr>
-    <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">BROKEN</td></tr>
-    <tr><td>Minimum so far in pay period:</td><td id="expected_minimum" class="amount">BROKEN</td></tr>
-    <tr><td>Maximum so far in pay period:</td><td id="expected_maximum" class="amount">BROKEN</td></tr>
-    <tr><td>PTO at this rate:</td><td id="pto" class="amount">BROKEN</td></tr>
+    <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
+    <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
+    <tr><td>Total for this week:</td><td id="total_week" class="amount">loading..</td></tr>
+    <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">loading..</td></tr>
+    <tr><td>Overtime:</td><td id="overtime" class="amount">loading..</td></tr>
+    <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">loading..</td></tr>
+    <tr><td>Minimum so far in pay period:</td><td id="expected_minimum" class="amount">loading..</td></tr>
+    <tr><td>Maximum so far in pay period:</td><td id="expected_maximum" class="amount">loading..</td></tr>
+    <tr><td>PTO at this rate:</td><td id="pto" class="amount">loading..</td></tr>
   </table>
 </div>
 </td></tr>

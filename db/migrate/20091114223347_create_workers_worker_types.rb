@@ -8,7 +8,7 @@ class CreateWorkersWorkerTypes < ActiveRecord::Migration
       t.timestamps
     end
     Worker.find(:all).each{|x|
-      WorkersWorkerTypes.new({:worker_id => x.id, :worker_type_id => x.worker_type.id}).save!
+      WorkersWorkerType.new({:worker_id => x.id, :worker_type_id => x.worker_type.id}).save!
     }
      remove_column :workers, :worker_type_id
   end

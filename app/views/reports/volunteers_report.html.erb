@@ -18,7 +18,7 @@
              a.downcase <=> b.downcase
            end } %>
       <% if @data[section][type].nonzero? || section != :volunteer_task_type %>
-        <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type] %></span></div>
+        <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type].tp %></span></div>
       <% end %>
     <% end %>
   </div>

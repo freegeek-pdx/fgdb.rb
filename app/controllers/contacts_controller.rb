@@ -218,7 +218,7 @@ class ContactsController < ApplicationController
     success = @contact.save
     _apply_line_item_data(@contact)
     if @contact.user
-      success = @contact.user.save and success
+      success = success and @contact.user.save
     end
     return success
   end

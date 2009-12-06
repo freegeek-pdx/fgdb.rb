@@ -15,7 +15,7 @@ class WorkShift < ActiveRecord::Base
   def to_worked_shift
     ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
     if self.kind == "Meeting"
-      ws.job_id = 0 # TODO: need a better way
+      ws.job_id = Job.find_by_name("Meeting").id
     elsif self.kind == "StandardShift"
       ws.job_id = self.job_id
     else # Unavailability
