@@ -13,6 +13,10 @@ module ConditionsHelper
 
   private
 
+  def html_for_worker_condition(params_key)
+    select(params_key, "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
   def html_for_can_login_condition(params_key)
     ""
   end
@@ -49,6 +53,7 @@ module ConditionsHelper
     render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,
               :field_name_prefix => params_key,
+              :hide_empty => true,
               :show_label => false,
               :paid_object => eval("@" + params_key)} )
   end

@@ -1,7 +1,5 @@
 <div class="form-element">
-  <% filters = ['date_performed'] %>
-  <% if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in %>
-    <% filters << 'contact' %>
-  <% end %>
-  <%= conditions_html('defaults', filters) %>
+  <% @filters ||= [] %>
+  <% @filters = ['date_performed', *@filters] %>
+  <%= conditions_html('defaults', @filters) %>
 </div>

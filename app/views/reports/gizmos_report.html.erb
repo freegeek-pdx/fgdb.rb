@@ -34,10 +34,7 @@
         <%end%>
         <th class="row_header"><%= (type.respond_to?("description") ? type.description : type).to_s.titleize %></th>
         <% for col in @columns %>
-          <% if col == [GizmoContext, GizmoContext.sale.id]; amt = @gizmo_income_data[type.id.to_s].to_f()/100 %>
-            <td <%= " title='$#{number_with_delimiter(amt)}'" %>>
-              <span class="print_only">$<%= number_with_delimiter(amt) %>,</span>
-            <% elsif col[0] == DisbursementType %>
+            <% if col[0] == DisbursementType %>
             <td class="disbursement-breakout-column">
               <%else%>
             <td>

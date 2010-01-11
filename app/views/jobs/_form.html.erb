@@ -5,7 +5,7 @@
 <%= text_field 'job', 'name'  %></p>
 
 <p><label for="job_description">Description</label><br/>
-<%= text_area 'job', 'description', :cols => 50, :rows => 10 %></p>
+<%= text_area 'job', 'full_description', :cols => 50, :rows => 10 %></p>
 
 <p><label for="job_coverage_type_id">Coverage Type</label><br/>
 <%= select("job", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>

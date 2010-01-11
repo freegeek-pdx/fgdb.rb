@@ -1,5 +1,5 @@
   <table style="border-collapse: collapse;" border="1">
-    <tr><th>name</th><th>hours</th><th>pto</th><th>overtime</th><th>holiday</th></tr>
+    <tr><th>name</th><th>regular</th><th>pto</th><th>overtime</th><th>holiday</th></tr>
 <% {"Workers" => @workers, "Summary" => @types}.each do |t,x| %>
     <tr><th colspan="5"><%= t %></th></tr>
     <% x.each do |y| %>

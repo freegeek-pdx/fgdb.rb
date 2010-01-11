@@ -546,9 +546,9 @@ class GraphicReportsController < ApplicationController
     SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
-        ?::date - #{Default['days_for_discount'].to_f} AND ?::date
+        ?::date AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", args[:start_date], args[:start_date])
+      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", Date.strptime(args[:start_date]) - Default['days_for_discount'].to_f, args[:start_date])
     final = 0
     if res.first
       final = res.first['vol_count']

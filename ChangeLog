@@ -1,4 +1,23 @@
-fgdb.rb (1.0.45) UNRELEASED; urgency=low
+fgdb.rb (1.0.46) UNRELEASED; urgency=low
+
+  * add L2 cache to printme report (Closes: 16335)
+  * hide empty payment method on search (Closes: 16292)
+  * enforce sizes of fields using user-friendly validations, rather than
+    erroring (Closes: 16291)
+  * show contact info on hours report (Closes: 16297)
+  * fix all trend reports to round to two places for any type of object
+  * printme now asks for covered, bumped compat
+  * fix the set_occurred_at_on_gizmo_events hook again, has_many
+    relationships suck (Closes: #16202)
+  * make gizmo_types.gizmo_category_id NOT NULL (Closes: #15983)
+  * make coverage_type_id NOT NULL (Closes: #16247)
+  * don't show 'unavailable' job in drop down (Closes: #16240)
+  * add a total hours worked to the individual report (Closes: #16473)
+  * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 15:51:21 -0800
+
+fgdb.rb (1.0.45) released; urgency=low
 
   * new form_has_not_been_edited, which works by serializing the form
     and comparing it to the initial serialization. this now works
@@ -7,8 +26,23 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * round numbers to two decimal places in payroll report (Closes:
     #16236)
   * round to two places in the volunteering report (closes: #16239)
+  * add a staff hours report by job type (Closes: 16246)
+  * round numbers on the trend reports (Closes: 16254) 
+  * fix workers listing with a hack (closes: 16277)
+  * fix Active Volunteers report (Closes: 16282)
+  * fix saving when no hours are entered (Closes: #16226)
+  * correctly handle when no file is attached in fgss (closes: 16293)
+  * subtract the overtime hours from the hours in the payroll report
+    (Closes: 16257)
+  * remove incorrect/annoying/useless sales amount info from the gizmos
+    report (closes: 16253)
+  * use workers condition for staff hours report (Closes: #16331)
+  * update the return policy on the sale receipts (Closes: #16553)
+  * remove bargain bag type and add misc item as is type (Closes:
+    #15328)
+  * make the receipt text larger and make more fit on a page (Closes: #16643)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Dec 2009 14:24:24 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:59:31 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 

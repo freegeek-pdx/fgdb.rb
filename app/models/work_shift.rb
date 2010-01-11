@@ -12,6 +12,14 @@ class WorkShift < ActiveRecord::Base
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 
+  def weekday
+    Weekday.find_by_id(self.weekday_id)
+  end
+
+  def weekday_id
+    self.shift_date.wday
+  end
+
   def to_worked_shift
     ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
     if self.kind == "Meeting"

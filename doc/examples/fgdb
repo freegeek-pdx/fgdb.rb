@@ -21,3 +21,13 @@
                 fi
         endscript
 }
+
+/var/log/db-backup-hourly.log {
+        daily
+        missingok
+        notifempty
+        nocreate
+        rotate 5
+        compress
+        delaycompress
+}

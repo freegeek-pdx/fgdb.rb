@@ -1,3 +1,10 @@
 #!/bin/sh
 
-DEBFULLNAME="$(git config --global user.name)" DEBEMAIL="$(git config --global user.email)" /usr/bin/debchange -c ChangeLog "$@"
+OPTS=""
+if grep -q release .git/HEAD; then
+    OPTS="--mainttrail --release-heuristic=log"
+else
+    OPTS="--no-mainttrail --release-heuristic=changelog"
+fi
+
+DEBFULLNAME="$(git config --global user.name)" DEBEMAIL="$(git config --global user.email)" /usr/bin/debchange -c ChangeLog $OPTS "$@"

@@ -41,9 +41,9 @@ class ReportsController < ApplicationController
     GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_category_to_data(summation, @gizmo_data)
     end
-    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
-      @gizmo_income_data[x['gt'].to_s] = x['sum']
-    }
+#    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
+#      @gizmo_income_data[x['gt'].to_s] = x['sum']
+#    }
   end
 
   protected
@@ -66,7 +66,7 @@ class ReportsController < ApplicationController
     @rows << :total
     @gizmo_data = {}
     @rows.each {|type| @gizmo_data[type] = Hash.new(0)}
-    @gizmo_income_data = {}
+#    @gizmo_income_data = {}
 
     @row_types = GizmoType.find(:all).sort_by{|type| type.description}
     @row_types << "total flow"
@@ -279,12 +279,13 @@ class ReportsController < ApplicationController
 
   public
 
-  def volunteers
+  def common_hours
     @defaults = Conditions.new
     @defaults.contact_enabled = "true"
+    render :action => "volunteers"
   end
 
-  def volunteers_report
+  def common_hours_report
     @defaults = Conditions.new
     if params[:contact]
       params[:defaults][:contact_id] = params[:contact][:id]
@@ -295,9 +296,37 @@ class ReportsController < ApplicationController
 
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
-    @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
-    @sections = [:community_service_type, :volunteer_task_types]
+    @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
     @data = volunteer_report_for(@tasks, @sections)
+    render :action => "volunteers_report"
+  end
+
+  def staff_hours
+    if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') or is_staff?
+      @filters = ['worker']
+    end
+    common_hours
+  end
+
+  def volunteers
+    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+      @filters = ['contact']
+    end
+    common_hours
+  end
+
+  def staff_hours_report
+    @sections = [:job, :income_stream, :wc_category, :program]
+    @hours_type = "staff"
+    @klass = WorkedShift
+    common_hours_report
+  end
+
+  def volunteers_report
+    @sections = [:community_service_type, :volunteer_task_types]
+    @hours_type = "volunteer"
+    @klass = VolunteerTask
+    common_hours_report
   end
 
   protected
@@ -322,7 +351,7 @@ class ReportsController < ApplicationController
     sections.each do |section|
       data[section][(task[section.to_s] || '(none)')] += task['duration'].to_f
       data[section]["Total"] ||= 0.0
-      data[section]["Total"] += task[0].to_f
+      data[section]["Total"] += task['duration'].to_f
     end
   end
 
@@ -339,11 +368,9 @@ class ReportsController < ApplicationController
       contact_id = (params[:contact_id] || params[:contact][:id])
       params[:defaults] ||= {:contact_enabled=>"true"}
       params[:defaults][:contact_id] = contact_id
-      @contact = Contact.find_by_id(contact_id)
-    else
-      @contact = nil
     end
     @defaults.apply_conditions(params[:defaults])
+    @contact = @defaults.contact
     @date_range_string = @defaults.to_s
     # if this is too slow, replace it with straight sql
     @tasks = VolunteerTask.find(:all,

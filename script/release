@@ -34,6 +34,11 @@ git fetch fg
 for i in .git/refs/remotes/fg/master .git/refs/remotes/origin/master; do
     diff .git/refs/heads/master $i > /dev/null || { echo "$(echo $i | cut -d '/' -f 4)'s master is different from ours"; exit 1; } ;
 done
+PREV_TAG="$(./script/sorted-tags | tail -1)"
+if [ -n "$(git log origin/master..origin/release_$PREV_TAG)" ]; then
+    echo "release_$PREV_TAG has not been merged into master (or was not pushed)"
+    exit 1
+fi
 dch -r -c ChangeLog ""
 git add ChangeLog
 VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
@@ -54,7 +59,6 @@ git merge release_$VERSION
 git rm db/branch_devel_data_version
 git commit -m "remove devel data version for master"
 ./dpkg-parsechangelog | ssh xyzzy.ryan52.info ./sendannouncement $VERSION
-./script/RT-close.pl --close
 dch -c ChangeLog -i --dist UNRELEASED ""
 sed -i '/^  \* $/ d' ChangeLog
 git add ChangeLog

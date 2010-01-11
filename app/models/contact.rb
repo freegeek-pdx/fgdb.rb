@@ -22,6 +22,17 @@ class Contact < ActiveRecord::Base
   before_save :ensure_consistent_contact_types
   before_save :strip_some_fields
 
+  validates_length_of :first_name, :maximum => 25
+  validates_length_of :middle_name, :maximum => 25
+  validates_length_of :surname, :maximum => 50
+  validates_length_of :organization, :maximum => 100
+  validates_length_of :extra_address, :maximum => 52
+  validates_length_of :address, :maximum => 52
+  validates_length_of :city, :maximum => 30
+  validates_length_of :state_or_province, :maximum => 15
+  validates_length_of :postal_code, :maximum => 25
+  validates_length_of :country, :maximum => 100
+
   def cleanup_string(str)
     return nil if str.nil?
     str = str.strip

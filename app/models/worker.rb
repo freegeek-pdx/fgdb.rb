@@ -51,6 +51,10 @@ class Worker < ActiveRecord::Base
     self.workers_worker_types.effective_on(date).first.worker_type
   end
 
+  def worker_type # FIXME: remove this
+    worker_type_today
+  end
+
   def worker_type_today
     self.worker_type_on_day(Date.today)
   end
@@ -91,6 +95,7 @@ class Worker < ActiveRecord::Base
       total = holidays + logged
       h[:overtime] += [0.0, total - self.ceiling_hours].max
     }
+    h[:hours] -= h[:overtime]
     return h
   end
 

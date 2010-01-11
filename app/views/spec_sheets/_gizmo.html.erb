@@ -65,6 +65,16 @@
         <%= h @report.system.contract.description %>
       </td>
     </tr>
+    <% if coveredness_enabled %>
+    <tr>
+      <td>
+        Covered:
+      </td>
+      <td>
+        <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Old ID:

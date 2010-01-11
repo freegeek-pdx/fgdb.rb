@@ -18,6 +18,10 @@ class HoursCalendar
     html_calendar(self.range, self.values)
   end
 
+  def total
+    @dates.values.inject(0.0) {|t,v| t+=v}
+  end
+
   def start_date
     @start_date
   end

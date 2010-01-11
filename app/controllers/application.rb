@@ -82,6 +82,10 @@ class ApplicationController < ActionController::Base
     (contact_id and is_me?(contact_id)) or has_role?(*roles)
   end
 
+  def is_logged_in
+    !! @current_user
+  end
+
   def has_role?(*roles)
     logged_in? and current_user.has_role?(*roles)
   end

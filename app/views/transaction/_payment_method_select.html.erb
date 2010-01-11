@@ -4,7 +4,9 @@
   <% end %>
   <select id="<%= field_id_prefix %>_payment_method_id"
           name="<%= field_name_prefix %>[payment_method_id]">
-    <option />
+    <% if ! defined?(hide_empty) %>
+      <option />
+    <% end %>
     <%= options_from_collection_for_select PaymentMethod.find(:all), "id", "description", paid_object.payment_method_id %>
   </select>
 </div>

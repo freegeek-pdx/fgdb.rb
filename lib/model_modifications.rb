@@ -131,17 +131,25 @@ module ActiveRecord
   end
 end
 
-class Float
+class Object
   def two_places
     v = sprintf "%.2f", self
-    if v[-1] == "0"[0]
-      v = v.chop
-    end
+#    if v[-1] == "0"[0]
+#      v = v.chop
+#    end
     v
   end
 
   def tp
     two_places
+  end
+end
+
+class Struct
+  def to_hash
+    h = {}
+    self.members.each{|x| x = x.to_sym; h[x] = self.send(x)}
+    return h
   end
 end
 

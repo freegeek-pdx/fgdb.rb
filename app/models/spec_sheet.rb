@@ -20,7 +20,7 @@ class SpecSheet < ActiveRecord::Base
   named_scope :originally_bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, false]
   named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, true]
 
-  before_save :set_contract_id
+  before_save :set_contract_id_and_covered
   def contract_id
     @contract_id ||= (system ? system.contract_id : nil)
   end
@@ -29,10 +29,22 @@ class SpecSheet < ActiveRecord::Base
     @contract_id = val
   end
 
-  def set_contract_id
+  def covered
+    @covered ||= (system ? system.covered : nil)
+  end
+
+  def covered=(val)
+    @covered = val
+  end
+
+  def set_contract_id_and_covered
     if system
       if !(@contract_id.nil? || !(c = Contract.find(@contract_id)))
         system.contract = c
+        system.save!
+      end
+      if !(@covered.nil?)
+        system.covered = @covered
         system.save!
       end
     end

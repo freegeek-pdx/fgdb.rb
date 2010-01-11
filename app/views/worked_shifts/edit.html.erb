@@ -27,7 +27,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
      end %>
   <tr id="shift_form">
     <td><select id="job_id">
-        <%= options_from_collection_for_select(Job.find(:all).sort_by(&:name), "id", "name") %>
+        <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>
       </select>
     </td>
     <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>

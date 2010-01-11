@@ -1,35 +1,48 @@
 class PrintmeAPI < SoapsBase
   include PrintmeHelper
+  include ApplicationHelper
 
   def add_methods
+    for i in soap_methods
+      add_method(*i)
+    end
+  end
+
+  def soap_methods
+    [
+    # soap_methods access
+    ["soap_methods"],
     # Connection Testing
-    add_method("ping")
+    ["ping"],
     # Version Checking
-    add_method("version_compat", "client_version")
-    add_method("version")
-    add_method("bad_client_error")
-    add_method("bad_server_error")
+    ["version_compat", "client_version"],
+    ["version"],
+    ["bad_client_error"],
+    ["bad_server_error"],
     # Lists
-    add_method("actions")
-    add_method("types")
-    add_method("contracts")
-    add_method("default_action_description")
-    add_method("default_type_description")
-    add_method("default_contract_label")
+    ["actions"],
+    ["types"],
+    ["contracts"],
+    ["coveredness_enabled"],
+    ["default_action_description"],
+    ["default_type_description"],
+    ["default_contract_label"],
     # Printme
-    add_method("empty_struct")
-    add_method("submit", "printme_struct")
+    ["empty_struct"],
+    ["submit", "printme_struct"],
     # Notes
-    add_method("empty_notes_struct")
-    add_method("submit_notes", "notes_struct")
-    add_method("get_system_for_note", "note_id")
+    ["empty_notes_struct"],
+    ["submit_notes", "notes_struct"],
+    ["get_system_for_note", "note_id"],
     # Random Crap
-    add_method("get_system_for_report", "report_id")
-    add_method("contract_label_for_system", "system_id")
-    add_method("type_description_for_system", "system_id")
-    add_method("spec_sheet_url", "report_id")
-    add_method("system_url", "system_id")
-    add_method("get_system_id", "xml")
+    ["get_system_for_report", "report_id"],
+    ["contract_label_for_system", "system_id"],
+    ["type_description_for_system", "system_id"],
+    ["covered_for_system", "system_id"],
+    ["spec_sheet_url", "report_id"],
+    ["system_url", "system_id"],
+    ["get_system_id", "xml"]
+    ]
   end
 
   ######################
@@ -50,7 +63,7 @@ class PrintmeAPI < SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    11
+    12
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
@@ -73,6 +86,7 @@ class PrintmeAPI < SoapsBase
     server_versions[9] = [9]      # rewrite with soap...FORCED!!! :)
     server_versions[10] = [9,10]  # all good
     server_versions[11] = [11]    # string change on both ends, that needs to go together (reworded contracts question)
+    server_versions[12] = [12]    # new info collected, forced upgrade.
     server_versions
   end
 
@@ -103,19 +117,24 @@ class PrintmeAPI < SoapsBase
   def default_contract_label
     Contract.find_by_name('default').label
   end
+  def coveredness_enabled
+    Default["coveredness_enabled"] == "1"
+  end
 
   ###########
   # Printme #
   ###########
 
-  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os)  if !defined?(PrintmeStruct)
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered)  if !defined?(PrintmeStruct)
 
   def empty_struct
     PrintmeStruct.new
   end
 
   def submit(printme_struct)
-    report = SpecSheet.new(:contract_id => printme_struct.contract_id, :action_id => printme_struct.action_id, :type_id => printme_struct.type_id, :contact_id => printme_struct.contact_id, :old_id => printme_struct.old_id, :notes => printme_struct.notes, :lshw_output => printme_struct.lshw_output, :os => printme_struct.os)
+    struct = PrintmeStruct.new
+    struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
+    report = SpecSheet.new(struct.to_hash)
     begin
       report.save!
       if report.xml_is_good
@@ -166,6 +185,10 @@ class PrintmeAPI < SoapsBase
 
   def type_description_for_system(system_id)
     System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
+  end
+
+  def covered_for_system(system_id)
+    System.find_by_id(system_id).covered
   end
 
   def spec_sheet_url(report_id)

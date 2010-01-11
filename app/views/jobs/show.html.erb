@@ -1,6 +1,6 @@
 <% for column in Job.content_columns %>
 <p>
-  <b><%= column.human_name %>:</b> <%=h @job.send(column.name) %>
+  <b><%= column.human_name %>:</b> <%=h @job.read_attribute(column.name.to_sym) %>
 </p>
 <% end %>
 

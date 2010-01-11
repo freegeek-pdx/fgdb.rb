@@ -3,7 +3,7 @@
       :locals => {:contact_information => @contact.nil? ? nil : @contact.display_name_address} %>
 </span>
 <span class="no_print">
-  <h1>Report of hours worked <%= @date_range_string %></h1>
+  <h1>Report of <%= @hours_type %> hours worked <%= @date_range_string %></h1>
 </span>
 
 <% table_width = 2 %>

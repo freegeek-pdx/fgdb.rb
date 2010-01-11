@@ -95,6 +95,10 @@ class SpecSheetsController < ApplicationController
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
     if !file.nil?
+      if file == ""
+        redirect_to(:action => redirect_where_on_error, :error => "lshw output needs to be attached")
+        return
+      end
       output = file.read
     end
     params[:report].delete(:my_file)

@@ -26,6 +26,9 @@
         <% if Contract.usable.length > 1 %>
           <tr><td><label for="report_contract_id">Keeper label type:</label></td><td><%= select("report", "contract_id", Contract.usable.collect {|p| [p.label, p.id] }) %></td></tr>
         <% end %>
+        <% if coveredness_enabled %>
+          <tr><td><label for="report_covered">Covered:</label></td><td><%= radio_button "report", "covered", "true" %><label for="report_covered_true" style="display: inline">Yes</label><%= radio_button "report", "covered", "false" %><label for="report_covered_false" style="display: inline">No</label></td></tr>
+        <% end %>
         <tr><td><label for="report_notes">Notes:</label></td><td><%= text_area("report", :notes) %></td></tr>
         <% if action_name == "new" %>
           <tr><td><label for="report_my_file">File:</label></td><td><%= file_field("report", :my_file) %></td></tr>

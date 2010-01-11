@@ -10,7 +10,7 @@ class Conditions
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role action
+      can_login role action worker
     ] + DATES).uniq
 
   for i in CONDS
@@ -31,6 +31,8 @@ class Conditions
 
     @payment_method_id = PaymentMethod.cash.id
   end
+
+  attr_accessor :worker_id
 
   attr_accessor :created_by, :cashier_created_by
 
@@ -87,6 +89,17 @@ class Conditions
     return @contact
   end
 
+  def worker
+    if worker_id && !worker_id.to_s.empty?
+      if( (! @worker) || (worker_id != @worker.id) )
+        @worker = Worker.find(worker_id)
+      end
+    else
+      @worker = nil
+    end
+    return @worker
+  end
+
   def apply_conditions(options)
     options.each do |name,val|
       val = val.to_i if( val.to_i.to_s == val )
@@ -109,6 +122,10 @@ class Conditions
       conds[0]="#{klass.table_name}.id = -1"
     end
     return conds
+  end
+
+  def worker_conditions(klass)
+    return ["worker_id = ?", @worker_id]
   end
 
   def empty_conditions(klass)
@@ -385,11 +402,12 @@ class Conditions
 
   def to_s
     string = ""
-    if (which_date = some_date_enabled) && @contact_enabled=="true"
+    contact_or_worker = @contact_enabled=="true" || @worker_enabled == "true"
+    if (which_date = some_date_enabled) && contact_or_worker
       string = " by " + contact_to_s + ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ") + date_range_to_s(which_date)
     elsif (which_date = some_date_enabled)
       string = ( eval("@#{which_date}_date_type") == "daily" ? " for " : " during ") + date_range_to_s(which_date)
-    elsif(@contact_enabled=="true")
+    elsif(contact_or_worker)
       string = " by " + contact_to_s
     else
       string = ""
@@ -424,6 +442,12 @@ class Conditions
   end
 
   def contact_to_s # "Report of hours worked for ..."
-    return contact.display_name
+    if @contact_enabled=="true"
+      return contact.display_name
+    elsif  @worker_enabled == "true"
+      return worker.name # HERE
+    else
+      return "ERROR"
+    end
   end
 end

@@ -12,7 +12,7 @@
 <% for job in @jobs %>
   <tr>
   <% for column in Job.content_columns %>
-    <td><%=h job.send(column.name) %></td>
+    <td><%=h job.read_attribute(column.name.to_sym) %></td>
   <% end %>
     <td><%=h job.coverage_type.name %></td>
     <td><%= link_to 'Show', :action => 'show', :id => job %></td>
