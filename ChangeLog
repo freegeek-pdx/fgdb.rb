@@ -14,8 +14,18 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * don't show 'unavailable' job in drop down (Closes: #16240)
   * add a total hours worked to the individual report (Closes: #16473)
   * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
+  * add holiday credits into the weekly report (Closes: #16684)
+  * add barcodes to printme reports (Closes: #16829)
+  * show the percentage of the sum of hours and overtime for each worker
+    type on the payroll report (Closes: #16237)
+  * add worker type to weekly report (closes: #16692)
+  * change intern worker type into apprentice (closes: #16841)
+  * add heading to payroll report with the start and end date (Closes:
+    #16681)
+  * fix titles on jobs report form and payroll report form (Closes:
+    16683)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 15:51:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:44:52 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
@@ -41,6 +51,11 @@ fgdb.rb (1.0.45) released; urgency=low
   * remove bargain bag type and add misc item as is type (Closes:
     #15328)
   * make the receipt text larger and make more fit on a page (Closes: #16643)
+  * fix editing a worker (Closes: 16819)
+  * fix misc as is to have a discount (and parent) (Closes: #16704)
+  * fix long load times by using ajax to figure out system and store
+    credit info rather than loading up all of the systems on load
+    (Closes: #16904, #16666)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:59:31 -0800
 

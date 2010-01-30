@@ -28,6 +28,24 @@ class TransactionController < ApplicationController
 
   public
 
+  def get_system_contract
+    s = System.find_by_id(params[:system_id])
+    v = (s ? s.contract_id : -1)
+    render :update do |page|
+      page << "internal_system_contract_id = #{v.to_s.to_json}";
+      page.hide loading_indicator_id("line_item")
+    end
+  end
+
+  def get_storecredit_amount
+    s = StoreCredit.find_by_id(params[:id])
+    v = (s ? s.amount_cents : -1)
+    render :update do |page|
+      page << "internal_storecredit_amount = #{v.to_s.to_json}";
+      page.hide loading_indicator_id("payment_line_item")
+    end
+  end
+
   def update_stuff
     @show_wrapper = false
     params[:continue] = false

@@ -204,7 +204,8 @@ function edit_shift(id) {
 function edit_payment(id) {
   thing = $(id);
   $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
-  eval(gizmo_context_name + "_payment_method_selected();");
+  sale_payment_method_selected();
+//  eval(gizmo_context_name + "_payment_method_selected();");
   $('payment_amount').value = getValueBySelector(thing, ".amount");
   if($('store_credit_id')) {
     $('store_credit_id').value = getValueBySelector(thing, ".store_credit_id");
@@ -264,8 +265,8 @@ function is_priced() {
 }
 
 function update_amount_for_storecredit() {
-  var a = dollar_value(all_store_credits[$('store_credit_id').value]);
-  if(a == "NaN") {
+  var a = dollar_value(get_storecredit_amount($('store_credit_id').value));
+  if(a == "0.00") {
     a = "";
   }
   $('payment_amount').value = a;
@@ -394,10 +395,10 @@ function systems_stuff(args, tr){
   if($('system_id') == null)
     return;
   if(args['system_id'] != "") {
-    if(!all_systems[args['system_id']]) {
+    if(get_system_contract(args['system_id']) == -1) {
       alert("system does not exist! ignoring...");
     }
-    if(all_systems[args['system_id']]) {
+    if(get_system_contract(args['system_id'])) {
       if(all_contracts_names.length > 2) {
         hidden = document.createElement("input");
         hidden.name = "line" + '[-' + line_id + '][system_id]';
@@ -409,7 +410,7 @@ function systems_stuff(args, tr){
         td.appendChild(document.createTextNode(args['system_id'] + "["));
         a = document.createElement("a");
         a.href = "/spec_sheets/fix_contract_edit?system_id=" + args['system_id'];
-        a.appendChild(document.createTextNode(all_contracts_names[all_systems[args['system_id']]]));
+        a.appendChild(document.createTextNode(all_contracts_names[get_system_contract(args['system_id'])]));
         td.appendChild(a);
         td.appendChild(document.createTextNode("]"));
         tr.appendChild(td);
@@ -497,7 +498,7 @@ function update_contract_notes(){
     line = lines[i];
     system_id = getValueBySelector(line, ".system_id");
     if(system_id != null && system_id != "") {
-      contract_id = all_systems[system_id];
+      contract_id = get_system_contract(system_id);
       if(!found[contract_id]) {
         notes = contracts_notes[contract_id];
         if(notes.length > 0) {
@@ -527,6 +528,52 @@ function format_float(float) {
     str += "0";
   }
   return str;
+}
+
+function get_system_contract(system_id){
+  var val;
+  if(system_contract_cache[system_id]) {
+    val = system_contract_cache[system_id];
+  } else {
+    var myhash = new Hash();
+    internal_system_contract_id = -2;
+    myhash.set('system_id', system_id);
+    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
+    Element.show(line_item_loading_id);
+    new Ajax.Request(get_system_contract_url + '?' + str, {asynchronous:false, evalScripts:true});
+    system_contract_cache[system_id] = internal_system_contract_id;
+    val = internal_system_contract_id;
+  }
+  if(val == -2) {
+    alert("internal error");
+  }
+  return val;
+}
+
+function get_storecredit_amount(id) {
+  if(id == null || id == "") {
+    return null;
+  }
+  var val;
+  if(storecredit_amount_cache[id]) {
+    val = storecredit_amount_cache[id];
+  } else {
+    var myhash = new Hash();
+    internal_storecredit_amount = -2;
+    myhash.set('id', id);
+    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
+    Element.show(payment_line_item_loading_id);
+    new Ajax.Request(get_storecredit_amount_url + '?' + str, {asynchronous:false, evalScripts:true});
+    storecredit_amount_cache[id] = internal_storecredit_amount;
+    val = internal_storecredit_amount;
+  }
+  if(val == -2) {
+    alert("internal error");
+  }
+  if(val == -1) {
+    val = null;
+  }
+  return val;
 }
 
 function shift_compute_totals () {
@@ -918,16 +965,20 @@ function get_name_of_selected(name) {
   return $(name).options[$(name).selectedIndex].innerHTML;
 }
 function sale_payment_method_selected(){
-  if(get_name_of_selected('payment_method_id') == "store credit" && (typeof(old_selected_payment_method) == "undefined" || old_selected_payment_method != "store credit")) {
+  if(get_name_of_selected('payment_method_id') == "store credit") {
     $('store_credit_id').enable();
     $('payment_amount').disable();
-    $('payment_amount').value = "";
-    $('store_credit_id').value = "";
-  } else if (get_name_of_selected('payment_method_id') != "store credit" && (typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "store credit"){
+    if((typeof(old_selected_payment_method) == "undefined" || old_selected_payment_method != "store credit")) {
+      $('payment_amount').value = "";
+      $('store_credit_id').value = "";
+    }
+  } else if (get_name_of_selected('payment_method_id') != "store credit"){
     $('store_credit_id').disable();
     $('payment_amount').enable();
-    $('payment_amount').value = "";
-    $('store_credit_id').value = "";
+    if((typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "store credit") {
+      $('payment_amount').value = "";
+      $('store_credit_id').value = "";
+    }
   }
   old_selected_payment_method = get_name_of_selected('payment_method_id');
 }

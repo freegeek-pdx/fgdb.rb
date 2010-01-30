@@ -13,19 +13,11 @@
 <%= javascript_include_tag 'line_items' %>
 
 <% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
-  <% js = "all_systems = new Array;" %>
-  <% System.find(:all).each do |x| %>
-    <% js += "all_systems[#{x.id}] = #{x.contract_id};" %>
-  <% end %>
-  <%= javascript_tag js %>
+  <%= javascript_tag "get_system_contract_url = #{url_for(:action => "get_system_contract").to_json}; system_contract_cache = new Array;" %>
 <% end %>
 
 <% if ["sales"].include?(params[:controller]) %>
-  <% js = "all_store_credits = new Array;" %>
-  <% StoreCredit.find(:all).each do |x| %>
-    <% js += "all_store_credits[#{x.id}] = #{x.amount_cents};" %>
-  <% end %>
-  <%= javascript_tag js %>
+  <%= javascript_tag "get_storecredit_amount_url = #{url_for(:action => "get_storecredit_amount").to_json}; storecredit_amount_cache = new Array;" %>
 <% end %>
 
 <% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(params[:controller]) -%>

@@ -34,7 +34,7 @@
                     } ) %></p>
   
   <p><label for="worker_worker_type_id">Type</label><br/>
-    <% if params[:action] == "new" %>
+    <% if params[:action] == "new" or params[:action] == "create" %>
   <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %>
   <% else %>
     <%= @worker.worker_type_today.name %><br />

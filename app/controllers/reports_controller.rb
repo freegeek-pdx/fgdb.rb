@@ -302,6 +302,7 @@ class ReportsController < ApplicationController
   end
 
   def staff_hours
+    @title = "Jobs report"
     if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') or is_staff?
       @filters = ['worker']
     end
@@ -309,6 +310,7 @@ class ReportsController < ApplicationController
   end
 
   def volunteers
+    @title = "Volunteers task types report"
     if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
       @filters = ['contact']
     end

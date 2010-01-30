@@ -48,4 +48,5 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
   map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
+  map.connect 'barcode/:id.:format', :controller => "barcode", :action => "barcode"
 end

@@ -21,6 +21,10 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def barcode(info, opts = {})
+    tag("img", {:height => 30, :width => 100}.merge(opts).merge({:src => url_for(:controller => "barcode", :action => "barcode", :id => info, :format => "gif")}))
+  end
+
   def gizmo_events_options_for_transaction
     options_from_collection_for_select(gt_for_txn(@transaction), "id", "description")
   end

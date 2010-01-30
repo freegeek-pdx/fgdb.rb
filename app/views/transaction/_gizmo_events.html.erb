@@ -83,7 +83,9 @@
     <% end %>
     <% if params[:controller] == "sales" or params[:controller] == "donations" or params[:controller] == "gizmo_returns" %>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(is_tab(event)) {return handle_gizmo_events();}"></td>
-    <td></td>
     <% end %>
+    <td><%= loading_indicator_tag "line_item" %>
+      <%= javascript_tag "line_item_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
+    </td>
   </tr>
 </table>

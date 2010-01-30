@@ -4,7 +4,7 @@ class WorkersWorkerType < ActiveRecord::Base
   }
   belongs_to :worker
   belongs_to :worker_type
-  validates_existence_of :worker
+#  validates_existence_of :worker
   validates_existence_of :worker_type
   validate :siblings_dont_overlap
 
