@@ -100,7 +100,7 @@
         _________________________
       </td>
     </tr>
-    <% if @report.type == Type.find_by_name("laptop") %>
+    <% if @report.type && @report.type.name.match(/laptop/) %>
       <tr>
         <td class="line_label">
           Battery Life:

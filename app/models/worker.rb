@@ -11,6 +11,10 @@ class Worker < ActiveRecord::Base
   validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
 
+  def user
+    contact ? contact.user : nil
+  end
+
   validate :worker_types_validated
   def worker_types_validated
     set_temp_worker_association
@@ -18,6 +22,11 @@ class Worker < ActiveRecord::Base
     self.workers_worker_types.each{|x|
       raise x.errors.full_messages.to_s if ! x.valid?
     }
+  end
+
+  def validate
+    errors.add_on_blank %w(sunday monday tuesday wednesday thursday friday saturday pto_rate floor_hours ceiling_hours)
+    errors.add("salaried", "can't be blank") if salaried.nil?
   end
 
   def set_temp_worker_association

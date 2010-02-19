@@ -74,6 +74,8 @@ class ApplicationController < ActionController::Base
     Thread.current['user'] = @current_user
   end
 
+  # start auth junk
+
   def is_me?(contact_id)
     current_user and current_user.contact_id == contact_id.to_i
   end
@@ -96,19 +98,19 @@ class ApplicationController < ActionController::Base
   end
 
   def requires_role(*roles)
-    if has_role?(*roles)
-      return true
-    else
-      session[:unauthorized_error] = true
-      session[:unauthorized_controller] = controller_name()
-      session[:unauthorized_action] = action_name()
-      redirect_to :controller => 'sidebar_links'
-      return false
-    end
+    requires(has_role?(*roles))
   end
 
   def requires_staff
-    if is_staff?
+    requires(is_staff?)
+  end
+
+  def requires_role_or_me(contact_id, *roles)
+    requires(has_role_or_is_me?(contact_id.to_i, *roles))
+  end
+
+  def requires(val)
+    if val
       return true
     else
       session[:unauthorized_error] = true
@@ -119,17 +121,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def requires_role_or_me(contact_id, *roles)
-    if has_role_or_is_me?(contact_id.to_i, *roles)
-      return true
-    else
-      session[:unauthorized_error] = true
-      session[:unauthorized_controller] = controller_name()
-      session[:unauthorized_action] = action_name()
-      redirect_to :controller => 'sidebar_links'
-      return false
-    end
-  end
+  # end auth junk
 
   before_filter :fix_null_date
 

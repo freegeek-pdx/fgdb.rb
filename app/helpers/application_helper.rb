@@ -321,6 +321,8 @@ module ApplicationHelper
     "Element.show('#{loading_indicator_id(prefix)}');"
   end
 
+  # start auth junk
+
   def is_logged_in()
     @current_user
   end
@@ -341,6 +343,8 @@ module ApplicationHelper
   def has_role_or_is_me?(contact_id, *roles)
     has_role?(*roles) or is_me?(contact_id)
   end
+
+  # end auth junk
 
   def custom_change_observer(element, handler)
     custom_observer(element, handler, 'change')

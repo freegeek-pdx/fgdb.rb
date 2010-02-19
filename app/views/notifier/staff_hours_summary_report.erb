@@ -1,0 +1,13 @@
+Hello Scheduler(s),
+
+Here's a list of all of the people who were scheduled to work on a
+certain day within the current pay period but didn't log their hours:
+<% @myworkers.each do |w| -%>
+ <%= w.name %> (<%= w.email %>)
+<% w.dates.each do |x| -%>
+  <%= x %>
+<% end -%>
+<% end -%>
+
+Sincerely,
+The database

@@ -104,9 +104,13 @@ class User < ActiveRecord::Base
     save(false)
   end
 
+  # start auth junk
+
   def has_role?(*roles)
     not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ADMIN'])).empty?
   end
+
+  # end auth junk
 
   protected
   # before filter

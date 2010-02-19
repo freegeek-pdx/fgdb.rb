@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV']="production"
+
+class MyWorker
+  attr_reader :name, :dates, :worker_id
+
+  def initialize(worker, dates)
+    @worker_id = worker.id
+    @name = worker.name
+    @email = worker.user ? worker.user.email : nil
+    @dates = dates.sort.map{|x| x.to_s}
+  end
+
+  def email
+    @email ? @email : "UNKNOWN"
+  end
+
+  def can_send?
+    ! @email.nil?
+  end
+end
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+@target = Date.yesterday # TODO: make sure this is ran after midnight
+if ARGV[0] == "--date"
+  @target = Date.parse(ARGV[1])
+  ARGV.shift
+  ARGV.shift
+end
+
+@myworkers = []
+
+def dostuff
+  pp = PayPeriod.find_for_date(@target)
+  temp = {}
+  (pp.start_date..@target).each{|x|
+    temp[x] = Worker.find_by_sql(DB.prepare_sql("SELECT * FROM workers WHERE virtual = 'f' AND id IN (SELECT worker_id FROM work_shifts WHERE shift_date = ? AND work_shifts.worker_id NOT IN (SELECT worker_id FROM worked_shifts WHERE date_performed = ?))", x, x))
+  }
+  res = {}
+  temp.each{|d,a|
+    a.each{|w|
+      res[w] ||= []
+      res[w] << d
+    }
+  }
+  res.keys.sort_by(&:name).each do |i|
+    v = res[i]
+    @myworkers << MyWorker.new(i, v)
+  end
+end
+
+testing = false
+if ARGV[0] == "--testemail"
+  testing = true
+  ActionMailer::Base.delivery_method = :test
+  ARGV[0] = "--email"
+end
+
+if ARGV[0] == "--print"
+  dostuff
+  @myworkers.each{|x|
+    puts "#{x.name} (#{x.email})"
+    x.dates.each do |x|
+      puts " #{x}"
+    end
+  }
+elsif ARGV[0] == "--email"
+  dostuff
+  exit if @myworkers.length == 0
+  Notifier.deliver_staff_hours_summary_report(@myworkers)
+  @myworkers.select{|x| x.can_send?}.each{|x|
+    Notifier.deliver_staff_hours_poke(x)
+  }
+else
+  puts "Usage: hours_poker [--date #{@target.to_s}] --print|--email|--testemail"
+  exit
+end
+
+if testing
+  puts ActionMailer::Base.deliveries.map{|x| x.to_s}.join("\n\n\n-------\n\n\n")
+end

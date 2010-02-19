@@ -13,7 +13,7 @@ module PrintmeHelper
       @mobo_model ||= @parser._xml_value_of("//*[contains(@id, 'core')]/product")
       @mobo_serial_number ||= @parser._xml_value_of("//*[contains(@id, 'core')]/serial")
       @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")
-      @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network')]/serial")
+      @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network') or contains(description, 'Ethernet')]/serial")
     }
 
     get_vendor
@@ -69,8 +69,8 @@ module PrintmeHelper
     return @serial_number
   end
 
-  def is_usable(value, list_of_generics = [])
-    return (value != nil && value != "" && !list_of_generics.include?(value))
+  def is_usable(value, list_of_generics = [], check_size = false)
+    return (value != nil && value != "" && !list_of_generics.include?(value) && (check_size == false || value.strip.length > 5))
   end
 
   def mac_is_usable(value)
@@ -79,7 +79,7 @@ module PrintmeHelper
 
   def serial_is_usable(value)
     list_of_generics = Generic.find(:all).collect(&:value)
-    return is_usable(value, list_of_generics)
+    return is_usable(value, list_of_generics, true)
   end
 
   def vendor_is_usable(value)

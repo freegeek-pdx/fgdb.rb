@@ -35,13 +35,13 @@
             <%= @parser.xml_value_of("product") %>
           </td>
         </tr>
-        <% if @parser.xml_if("size") %>
+        <% if @parser.xml_if("capacity") || @parser.xml_if("size") %>
           <tr>
             <td>
               Speed:
             </td>
             <td>
-              <%= @parser.xml_value_of("size").to_hertz %>
+              <%= (@parser.xml_if("capacity") && false ? @parser.xml_value_of("capacity") : @parser.xml_value_of("size")).to_hertz %>
             </td>
           </tr>
         <% end %>

@@ -24,8 +24,31 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     #16681)
   * fix titles on jobs report form and payroll report form (Closes:
     16683)
+  * add AV and library volunteer task types (Closes: #16838)
+  * make schwags have the same discount as everything else. classify
+    distro cds as schwags. add an ubuntu book category. (Closes: #13659)
+  * add apple laptop type to printme (Closes: #15864)
+  * add scraptop gizmo type (Closes: #16647)
+  * add mult_printer to sale and recycling (Closes: 16837)
+  * show capacity instead of speed on the processor, capacity should be
+    more accurate
+  * send out a email to people who need to log their hours (Closes:
+    #17032)
+  * fix the hours report to show a contact chooser condition
+  * add a bunch of pay periods (Closes: #16668)
+  * add a hardware grants volunteer task type (Closes: #17120)
+  * fix the effective_duration to take into account the
+    community_service_type's multiplier as well (Closes: #17041)
+  * fix up some generics detection
+    - don't allow serial numbers with a length of less than 5
+    - add a script to find generics
+    - add a few generics
+    - (Closes: #15924, #17098)
+  * fix detection of mac addresses with very odd systems (Closes:
+    #17099)
+  * add worker fields and validations (Closes: #16238)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:44:52 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 16:45:21 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

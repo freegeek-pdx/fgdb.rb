@@ -285,17 +285,24 @@ class ReportsController < ApplicationController
     render :action => "volunteers"
   end
 
-  def common_hours_report
+  def pre_common_hours_report
     @defaults = Conditions.new
-    if params[:contact]
-      params[:defaults][:contact_id] = params[:contact][:id]
-      @contact = Contact.find_by_id(params[:contact][:id])
+    if params[:contact] || params[:contact_id]
+      contact_id = (params[:contact_id] || params[:contact][:id])
+      params[:defaults][:contact_id] = contact_id
+      params[:defaults] ||= {:contact_enabled=>"true"}
+      @contact = @defaults.contact
     else
       @contact = nil
     end
 
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
+  end
+
+  def common_hours_report
+    pre_common_hours_report
+
     @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
     @data = volunteer_report_for(@tasks, @sections)
     render :action => "volunteers_report"
@@ -360,20 +367,14 @@ class ReportsController < ApplicationController
   public
 
   def hours
-    @defaults = Conditions.new
-    @defaults.contact_enabled = "true"
+    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+      @filters = ['contact']
+    end
+    common_hours
   end
 
   def hours_report
-    @defaults = Conditions.new
-    if params[:contact] || params[:contact_id]
-      contact_id = (params[:contact_id] || params[:contact][:id])
-      params[:defaults] ||= {:contact_enabled=>"true"}
-      params[:defaults][:contact_id] = contact_id
-    end
-    @defaults.apply_conditions(params[:defaults])
-    @contact = @defaults.contact
-    @date_range_string = @defaults.to_s
+    pre_common_hours_report
     # if this is too slow, replace it with straight sql
     @tasks = VolunteerTask.find(:all,
                                 :conditions => @defaults.conditions(VolunteerTask),

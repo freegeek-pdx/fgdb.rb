@@ -1,0 +1,25 @@
+Hello <%= @myworker.name %>,
+
+According to the database, you were scheduled to work on the following
+days but didn't log any hours:
+<% @myworker.dates.each do |x| -%>
+ <%= x %>
+<% end -%>
+
+If you are at Free Geek, you can use the following links to log your
+hours for these days:
+<% @myworker.dates.each do |x| -%>
+ <%= url_for(:host => "data", :controller => "worked_shifts", :action => "edit", :worked_shift => {:worker_id => @myworker.worker_id, :date_performed => x}).sub("&amp;", "&") %>
+<% end -%>
+
+Please go to the above links and log your hours.
+
+If you didn't really work on that day, send an email
+to <%= Default["scheduler_reports_to"] %>.
+
+If you can't make it in to log your hours, send an email to
+<%= Default["scheduler_reports_to"] %> with how many hours you
+worked in each place on each day.
+
+Sincerely,
+The database
