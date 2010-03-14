@@ -2,11 +2,17 @@ Hello Scheduler(s),
 
 Here's a list of all of the people who were scheduled to work on a
 certain day within the current pay period but didn't log their hours:
+<% a = [] -%>
 <% @myworkers.each do |w| -%>
  <%= w.name %> (<%= w.email %>)
 <% w.dates.each do |x| -%>
-  <%= x %>
+  <%= a << x; x %><%# ": " + url_for(:host => "data", :controller => "work_shifts", :action => "list", :filter_criteria => {:limit_to_worker => 1, :worker_id => w.worker_id, :end_date => x, :start_date => x, :presentation_mode => "Edit"}, :escape => false) %>
 <% end -%>
+<% end -%>
+
+To see the schedule for whole days:
+<% a.sort.uniq.each do |x| -%>
+ <%= x %>: <%= url_for(:host => "data", :controller => "work_shifts", :action => "list", :filter_criteria => {:end_date => x, :start_date => x, :presentation_mode => "Edit"}, :escape => false) %>
 <% end -%>
 
 Sincerely,

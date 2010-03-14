@@ -284,5 +284,11 @@ end
 # lets call this a hack
 # DB.execute("SELECT * FROM defaults;")
 class DB < ActiveRecord::Base
+  def self.exec(*args)
+    DB.execute(*args)
+  end
+  def self.run(*args)
+    DB.execute(*args)
+  end
 end
 

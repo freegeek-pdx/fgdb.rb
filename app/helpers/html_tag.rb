@@ -14,5 +14,6 @@ class HtmlTag
     str << children.map{|x| x.to_s}.join("\n")
     str << content.to_s
     str << "</#{tag}>"
+    str
   end
 end

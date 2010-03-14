@@ -103,7 +103,7 @@
 
 <%=
    if params[:controller] == 'sales' || params[:controller] == 'disbursements' || params[:controller] == 'gizmo_returns'
-     system_types = GizmoType.find(:all, :conditions => ['gizmo_category_id = ?', GizmoCategory.find_by_name('system').id]).collect(&:id)
+     system_types = GizmoType.find_all_by_needs_id(true).collect(&:id)
      javascript_tag "var system_types = new Array(#{system_types.join(', ')});"
    end
 %>

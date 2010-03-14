@@ -1,4 +1,38 @@
-fgdb.rb (1.0.46) UNRELEASED; urgency=low
+fgdb.rb (1.0.48) UNRELEASED; urgency=low
+
+  * add another section to the donations on the income report so that
+    donations without gizmos can happen (Closes: #15351)
+  * link volunteer_tasks to programs, and show a drop down on the
+    interface that defaults to the task_type's program. got rid of the
+    tree in volunteer_task_types in the process. (Closes: #16839)
+  * set scraptops to be systems (Closes: #17328)
+  * make the staff hours reports link to edit the hours (Closes: #17033)
+  * change around the coloring of transactions to differ between paid
+    and unpaid invoices (among other things) (Closes: #17187)
+  * link to edit the schedule on hours summary report (Closes: #17396)
+  * don't enable the system box for cases and scraptops (Closes: #17335)
+  * add min, max and pto to the individual pay period report (Closes:
+    #16946)
+  * fix editing payments on donations
+  * fix the Volunteer Hours by Program trend report to use
+    date_performed instead of created_at
+  * clean up the gizmos report, and fix showing the categories broken
+    down by disbursement type
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 16:29:12 -0800
+
+fgdb.rb (1.0.47) released; urgency=low
+
+  * strip usernames (Closes: #17161)
+  * support KBs in String.to_bytes and majorly clean up this code
+    (Closes: #17254)
+  * fix the order so that the letter head works (Closes: #17280)
+  * use occurred_at instead of created_at for gizmo events in the trends
+    reports (Closes: #17345)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Feb 2010 00:19:02 -0800
+
+fgdb.rb (1.0.46) released; urgency=low
 
   * add L2 cache to printme report (Closes: 16335)
   * hide empty payment method on search (Closes: 16292)
@@ -48,7 +82,7 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     #17099)
   * add worker fields and validations (Closes: #16238)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 16:45:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 19 Feb 2010 23:33:59 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

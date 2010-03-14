@@ -13,9 +13,13 @@ class HoursCalendar
   end
 
   include CalendarHelper
-
-  def to_html
-    html_calendar(self.range, self.values)
+  include WorkedShiftsHelper
+  def to_html(worker = nil, controller = nil)
+    if worker
+      html_calendar(self.range, self.values) {|x| url_for_log(worker, x, controller)}
+    else
+      html_calendar(self.range, self.values)
+    end
   end
 
   def total

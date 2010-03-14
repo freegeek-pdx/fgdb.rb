@@ -3,6 +3,10 @@
 
 cashierable_enabled = true;
 
+function trigger_volunteer_task_type() {
+  $('volunteer_task_program').value = volunteer_task_programs[$('volunteer_task_volunteer_task_type').value];
+}
+
 function update_cashier_code() {
   cashier_id_field = $('cashier_code');
   if(cashier_id_field == null)

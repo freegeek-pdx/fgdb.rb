@@ -4,11 +4,13 @@ class VolunteerTask < ActiveRecord::Base
   belongs_to :volunteer_task_type
   belongs_to :contact
   belongs_to :community_service_type
+  belongs_to :program
 
   validates_presence_of :contact
   validates_presence_of :volunteer_task_type
   validates_presence_of :date_performed
   validates_presence_of :duration
+  validates_presence_of :program
 
   before_save :add_contact_types
 
@@ -41,7 +43,7 @@ class VolunteerTask < ActiveRecord::Base
   end
 
   def type_of_task?(type)
-    volunteer_task_type.type_of_task? type
+    program.name == type
   end
 
   def add_contact_types

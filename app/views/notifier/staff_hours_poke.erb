@@ -9,7 +9,7 @@ days but didn't log any hours:
 If you are at Free Geek, you can use the following links to log your
 hours for these days:
 <% @myworker.dates.each do |x| -%>
- <%= url_for(:host => "data", :controller => "worked_shifts", :action => "edit", :worked_shift => {:worker_id => @myworker.worker_id, :date_performed => x}).sub("&amp;", "&") %>
+ <%= url_for(:host => "data", :controller => "worked_shifts", :action => "edit", :worked_shift => {:worker_id => @myworker.worker_id, :date_performed => x}, :escape => false) %>
 <% end -%>
 
 Please go to the above links and log your hours.

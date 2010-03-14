@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    self.current_user = User.authenticate(params[:login], params[:password])
+    self.current_user = User.authenticate(params[:login].strip, params[:password])
     flash[:error] = "invalid username/password" unless logged_in?
     rerender()
   end

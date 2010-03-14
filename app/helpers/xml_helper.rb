@@ -1,36 +1,103 @@
 #!/usr/bin/ruby
 
 class String
-  def to_bytes(precision = 0, exact = true, truncate = true)
-    if self.to_f/(exact ? 1048576 : 1000000) >= (exact ? 1024 : 1000)
-      sprintf("%.#{precision}f", truncate ? yikes((exact ? 1073741824 : 1000000000), precision) : self.to_f/(exact ? 1073741824 : 1000000000)) + "GB"
-    else
-      sprintf("%.0f", self.to_f/(exact ? 1048576 : 1000000)) + "MB"
+  def to_bytes(precision = 0, exact = true, truncate = true, yikes_until = "G")
+    name, div = find_unit(exact)
+    val = nil
+    if !gte(name, yikes_until)
+      precision = 0
+      truncate = false
     end
+    val = yikes(div, precision, truncate)
+    ret = val + name + "B"
   end
 
   def to_bitspersecond
-    if self.to_i >= 1000
-      (self.to_i/1000).to_s + "Gbps"
-    else
-      self + "Mbps"
-    end
+    name, div = find_unit(false, "M")
+    val = yikes(div, 0, false)
+    ret = val + name + "bps"
   end
 
   def to_hertz
-    if self.to_f/1000000 >= 1000
-      sprintf("%.2f", yikes(1000000000, 2)) + "GHz" #truncate...
+    name, div = find_unit
+    val = nil
+    if gte(name, "G")
+      val = yikes(div, 2)
     else
-      sprintf("%.0f", self.to_f/1000000) + "MHz"
+      val = yikes(div, 0, false)
     end
+    ret = val + name + "Hz"
   end
 
   #######
-  private
+#  private
   #######
 
-  def yikes(divide_by, precision) #divides and then truncates.
-    return ((((self.to_f/divide_by)*(10**precision)).to_i).to_f)/(10**precision)
+  def my_float
+    @my_float ||= self.to_f
+  end
+
+  def unit_arr
+    a = ["", "K", "M", "G", "T"]
+  end
+
+  def gte(v, l)
+    a = unit_arr
+    hit_g = false
+    for x in a
+      if x == l
+        hit_g = true
+      end
+      if x == v
+        return hit_g
+      end
+    end
+    raise ArgumentError
+  end
+
+  def find_unit(exact = false, base = "")
+    number = my_float
+    a = unit_arr
+    base_div = exact ? 1024 : 1000
+    start_i = -1
+    i = 0
+    for x in a
+      if x == base
+        start_i = i
+        break
+      end
+      i += 1
+    end
+    if start_i == -1
+      raise ArgumentError
+    end
+    number = number * (base_div ** start_i)
+    i = 0
+    final_i = -1
+    for x in a
+      n = number / (base_div ** i)
+      if n < 1.0
+        final_i = i - 1
+        break
+      end
+      i += 1
+    end
+    if final_i == -1
+      final_i = 0
+    end
+    found_name = a[final_i]
+    found_divisor = base_div ** (final_i - start_i)
+    return [found_name, found_divisor]
+  end
+
+  def yikes(divide_by, precision = 0, truncate = true)
+    f = nil
+    if truncate
+      f = ((((my_float/divide_by)*(10**precision)).to_i).to_f)/(10**precision)
+    else
+      f = my_float / divide_by
+    end
+    return sprintf("%.#{precision}f", f)
   end
 end
 

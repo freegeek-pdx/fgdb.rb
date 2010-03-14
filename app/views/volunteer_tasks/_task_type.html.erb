@@ -1,4 +1,4 @@
-      <div class="form-element" id="task_type">
+      <div class="form-element" id="task_type" onChange="trigger_volunteer_task_type()">
         <label for="volunteer_task_volunteer_task_type">Task type</label>
         <% if @volunteer_task %>
           <% dropdown_list = @volunteer_task.show_for_me %>
@@ -6,6 +6,7 @@
           <% dropdown_list = VolunteerTaskType.instantiables.effective_on(params[:day]).sort_by{|x| x.description.downcase} %>
         <% end %>
         <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
+          <option value="">---</option>
           <% if @volunteer_task %>
             <% current = @volunteer_task.volunteer_task_type_id %>
           <% else %>

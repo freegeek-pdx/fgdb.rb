@@ -965,6 +965,8 @@ function get_name_of_selected(name) {
   return $(name).options[$(name).selectedIndex].innerHTML;
 }
 function sale_payment_method_selected(){
+  if($('store_credit_id') == null)
+    return;
   if(get_name_of_selected('payment_method_id') == "store credit") {
     $('store_credit_id').enable();
     $('payment_amount').disable();

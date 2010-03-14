@@ -1,11 +1,50 @@
 #!/bin/bash
 
 set -e
-set -x
+
+SCRIPT_DIR=$(dirname $(readlink -f $0))
+DEVEL_CHECKOUT=$(dirname $SCRIPT_DIR)
+MY_FULL_PATH=$(readlink -f $0)
+
+MD5=$(md5sum $MY_FULL_PATH)
+cd $DEVEL_CHECKOUT
+git checkout master
+git pull origin master
+
+if [ "$MD5" != "$(md5sum $MY_FULL_PATH)" ]; then
+    echo "Script updated, please restart it. Aborting."
+    exit 1
+fi
+
+if [ -n "$1" ]; then
+    ARG="$1"
+    ARG=$(echo "$ARG" | sed 's/--//g')
+    case "$ARG" in
+        release|production|live|latest)
+            BRANCH=release_$($SCRIPT_DIR/sorted-tags | tail -1)
+            ;;
+        release_*)
+            BRANCH=$ARG
+            ;;
+        1.0.*)
+            BRANCH=release_$ARG
+            ;;
+        master|devel|development|dev)
+            BRANCH=master
+            ;;
+        *)
+            echo "Unknown branch to test-migrate: $1"
+            exit 1
+            ;;
+    esac
+else
+    BRANCH=master
+fi
 
 export RAILS_ENV=development
 
 TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
+set -x
 cd $TMP
 scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
@@ -18,9 +57,12 @@ else
     git clone git://git.freegeek.org/git/fgdb.rb trunk
 fi
 cd trunk
+if [ "$BRANCH" != "master" ]; then
+    git checkout -b $BRANCH origin/$BRANCH
+fi
 cp config/database.yml-example config/database.yml
 ln -s /usr/share/rails vendor/rails
-rake db:migrate
+rake db:migrate --trace
 cd ../
 rm -f database.sql
 if [ "$1" != "--no-drop" ]; then

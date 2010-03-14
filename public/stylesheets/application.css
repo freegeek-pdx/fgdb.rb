@@ -482,17 +482,31 @@ background-color: #F0EFEF;
 fieldset.payment {
 background-color: #BCA;
 }
-.check td {
+.free_transaction td {
 color: black;
 }
-.cash td {
+.check_transaction td {
+color: orange;
+}
+/* green */
+.cash_transaction td {
 color: #2A2;
 }
-.credit td {
+.coupon_transaction .store_credit_transaction td {
+color: brown;
+}
+/* purple */
+.credit_transaction td {
 color: #828;
 }
-.invoice td {
+.unresolved_invoice_transaction td {
 color: red;
+}
+.resolved_invoice_transaction td {
+color: blue;
+}
+.mixed_transaction td {
+color: #F660AB;
 }
 
 /* ====================================

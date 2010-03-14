@@ -12,6 +12,18 @@ class Payment < ActiveRecord::Base
   define_amount_methods_on("amount")
   validate :sc_ok
 
+  def transaction
+    self.sale || self.donation
+  end
+
+  def type_description
+    d = self.payment_method.name
+    if d == "invoice"
+      d = (self.transaction.invoice_resolved_at.nil? ? "unresolved" : "resolved") + "_" + d
+    end
+    return d
+  end
+
   def editable
     return true
   end
@@ -43,6 +55,6 @@ class Payment < ActiveRecord::Base
   end
 
   def to_s
-    "$%d.%02d %s" % [amount_cents/100, amount_cents%100, payment_method.description]
+    "$%d.%02d %s" % [amount_cents/100, amount_cents%100, self.type_description.sub(/_/, " ")]
   end
 end

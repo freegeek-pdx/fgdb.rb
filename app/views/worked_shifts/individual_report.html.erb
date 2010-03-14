@@ -1,5 +1,15 @@
-<% week = HoursCalendar.for_pay_period_of(@date) %>
-<% week.fill_in_workers_hours(@worker) %>
-<h1>Staff hours for <%= @worker.name %> in pay period between <%= week.range.min %> and <%= week.range.max %></h1>
-<%= week.to_html %>
-Total hours worked: <%= week.total.to_f %>
+<% hash = get_hash(@date, @worker) %>
+<% pay_period = hash[:pay_period] %>
+<h1>Staff hours for <%= @worker.name %> in pay period between <%= pay_period.range.min %> and <%= pay_period.range.max %></h1>
+<%= pay_period.to_html(@worker, @controller) %>
+<br />
+<table style="border-collapse: collapse;" border="1">
+<% [
+     [:total_pay_period, "Total hours worked"],
+     [:expected_minimum, "Minimum so far in pay period"],
+     [:expected_maximum, "Maximum so far in pay period"],
+     [:pto, "PTO at this rate"],
+].each do |k,v| -%>
+<tr><td><%= v %>:</td><td style="text-align: right;"><%= sprintf("%.2f", hash[k]) %></td></tr>
+<% end %>
+</table>

@@ -20,7 +20,11 @@ module CalendarHelper
         month_str = ""
         month_str = "[#{cal_current_date.strftime("%b")}] " if show_month
         tr.children << HtmlTag.new("td", {:align => "center", :width => "4%"}, [HtmlTag.new("small", {}, [], month_str + cal_current_date.day.to_s)])
-        tr.children << HtmlTag.new("td", {:align => "right", :width => "10%"}, [HtmlTag.new("b", {}, [], values[cal_current_date])])
+        v = values[cal_current_date]
+        if block_given?
+          v = HtmlTag.new("a", {:href => yield(cal_current_date)}, [], v)
+        end
+        tr.children << HtmlTag.new("td", {:align => "right", :width => "10%"}, [HtmlTag.new("b", {}, [], v)])
         cal_current_date += 1
       }
       table.children << tr

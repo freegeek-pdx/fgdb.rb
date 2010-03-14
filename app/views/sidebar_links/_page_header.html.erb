@@ -21,6 +21,12 @@
                           :with => "{cashier_code: code}") + "
 }" %>
 
+<% if ["volunteer_tasks"].include?(params[:controller]) %>
+<%= h = {}; VolunteerTaskType.find(:all).each{|x| h[x.id] = x.program_id};
+javascript_tag "volunteer_task_programs = #{h.to_json};" %>
+<% end %>
+
+
     <%= dhtml_calendar_includes %>
     <% if defined?(@gizmo_context) %>
       <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>

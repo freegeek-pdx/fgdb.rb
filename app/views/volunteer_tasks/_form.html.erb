@@ -18,11 +18,25 @@
 
     <div class="task_info">
       <div class="form-element">
+        <label for="volunteer_task_date_performed">what day?</label>
+        <%= calendar_box 'volunteer_task', 'date_performed',{:onchange => "foobarbaz();"},{:showOthers => true} %>
+      </div>
+
+      <div class="form-element">
         <label for="volunteer_task_duration">duration</label>
         <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
       </div>
 
       <%= render :partial => 'task_type' %>
+
+      <div class="form-element">
+        <label for="volunteer_task_program">Program</label>
+        <% dropdown_list = Program.find(:all, :conditions => {:volunteer => true}).sort_by {|p| p.description.downcase} %>
+        <select id="volunteer_task_program" name="volunteer_task[program_id]">
+          <option value="">---</option>
+          <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.program_id) %>
+        </select>
+      </div>
 
       <div class="form-element">
         <label for="volunteer_task_community_service_type">Community service type</label>
@@ -33,10 +47,6 @@
         </select>
       </div>
 
-      <div class="form-element">
-        <label for="volunteer_task_date_performed">what day?</label>
-        <%= calendar_box 'volunteer_task', 'date_performed',{:onchange => "foobarbaz();"},{:showOthers => true} %>
-  </div>
 </div>
 
 <!--[eoform:volunteer_task]-->

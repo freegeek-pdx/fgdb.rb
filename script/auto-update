@@ -1,0 +1,79 @@
+#!/bin/sh
+
+set -e
+
+run_pull () {
+    $SCRIPT_BASE/do_i_have_everything_installed_right
+    sudo git pull $UPSTREAM $BRANCH
+    ./script/do_i_have_everything_installed_right
+    sudo rake db:migrate
+    $SCRIPT_BASE/nice-restart
+}
+
+run_full () {
+    $SCRIPT_BASE/do_i_have_everything_installed_right
+    $SCRIPT_BASE/pre_release.sh
+    $SCRIPT_BASE/upgrade.sh
+}
+
+run_fail () {
+    echo "Looks like update is not needed"
+    exit 1
+}
+
+needs_fail () {
+    true
+}
+
+needs_full () {
+    [ "$BRANCH" != "release_$($SCRIPT_BASE/sorted-tags | tail -1)" ]
+}
+
+needs_pull () {
+    [ "$BRANCH" = "release_$($SCRIPT_BASE/sorted-tags | tail -1)" -a "$(cat .git/refs/remotes/$UPSTREAM/$BRANCH)" != "$(cat .git/refs/heads/$BRANCH)" ]
+}
+
+PRODUCTION=/var/www/fgdb.rb
+DEVEL=/home/ryan52/fgdb.rb
+SCRIPT_BASE=$DEVEL/script
+UPSTREAM=origin
+CHECK_THESE="$@"
+FAKE=false
+VERBOSE=false
+if [ -n "$CHECK_THESE" ]; then
+    CHECK_THESE=$(echo "$CHECK_THESE" | sed 's/--//g')
+else
+    CHECK_THESE="full pull"
+fi
+if echo "$CHECK_THESE" | grep -q "fake"; then
+    CHECK_THESE=$(echo "$CHECK_THESE" | sed 's/fake//g')
+    FAKE=true
+fi
+if echo "$CHECK_THESE" | grep -q "verbose"; then
+    CHECK_THESE=$(echo "$CHECK_THESE" | sed 's/verbose//g')
+    VERBOSE=true
+fi
+
+cd $DEVEL
+git checkout master
+git pull $UPSTREAM master
+
+cd $PRODUCTION
+git fetch $UPSTREAM
+BRANCH="$(cat .git/HEAD | cut -d / -f 3)"
+
+MODE=""
+for i in $CHECK_THESE fail; do
+    if needs_$i; then
+        MODE=$i
+        break
+    fi
+done
+if [ "$FAKE" = "false" ]; then
+    if [ "$VERBOSE" = "true" ]; then
+        set -x
+    fi
+    run_$MODE
+else
+    echo "Would run run_$MODE in $(pwd)"
+fi

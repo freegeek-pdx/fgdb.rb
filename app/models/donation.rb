@@ -110,9 +110,13 @@ class Donation < ActiveRecord::Base
 
     def totals(conditions)
       total_data = {}
+      gizmoless_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
         total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+      }
+      methods.each {|method|
+        gizmoless_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
@@ -132,22 +136,41 @@ class Donation < ActiveRecord::Base
         summation.each{|k,v|d[k] = v.to_i}
         total_data[summation['payment_method_id'].to_i] = d
       }
+       self.connection.execute("SELECT payments.payment_method_id,
+                sum(payments.amount_cents) as amount
+         FROM donations
+         JOIN payments ON payments.donation_id = donations.id
+         WHERE #{sanitize_sql_for_conditions(conditions)}
+         AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
+         AND (SELECT count(*) FROM gizmo_events WHERE gizmo_events.donation_id = donations.id) = 0
+         GROUP BY payments.payment_method_id").each {|summation|
+        d = {}
+        summation.each{|k,v|d[k] = v.to_i}
+        gizmoless_data[summation['payment_method_id'].to_i] = d
+      }
+      total_data.each{|k,v|
+        total_data[k]['gizmoless_cents'] = gizmoless_data[k]['amount']
+      }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
           total_data[payment.payment_method_id]['count'] += 1
           total_data[payment.payment_method_id]['amount'] += payment.amount_cents
-          if required_to_be_paid > 0
-            if required_to_be_paid > payment.amount_cents
-              total_data[payment.payment_method_id]['required'] += payment.amount_cents
+          if donation.gizmo_events.length > 0
+            if required_to_be_paid > 0
+              if required_to_be_paid > payment.amount_cents
+                total_data[payment.payment_method_id]['required'] += payment.amount_cents
+              else
+                total_data[payment.payment_method_id]['required'] += required_to_be_paid
+                total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+              end
+              required_to_be_paid -= payment.amount_cents
             else
-              total_data[payment.payment_method_id]['required'] += required_to_be_paid
-              total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+              total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
             end
-            required_to_be_paid -= payment.amount_cents
           else
-            total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
+            total_data[payment.payment_method_id]['gizmoless_cents'] += payment.amount_cents
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],

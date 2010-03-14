@@ -40,7 +40,16 @@ module GizmoTransaction
   end
 
   def displayed_payment_method
-    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
+    found = payments.map {|payment| payment.type_description}.uniq
+    t = ""
+    if found.length > 1
+      t = "mixed"
+    elsif found.length == 1
+      t = found.first # will be one of: unresolved_invoice, resolved_invoice, cash, check, coupon, credit, store_credit
+    else # length < 1
+      t = "free"
+    end
+    return t + "_transaction"
   end
 
   def invoices

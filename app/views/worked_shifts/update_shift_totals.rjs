@@ -1,32 +1,7 @@
-hashkeys = %w[total_today total_week max_week overtime expected_minimum total_pay_period pto normally_worked]
-hash = {}
-hashkeys.each{|x| hash[x.to_sym] = 0.0}
-
-# @hours, @date, @worker
-hash[:total_today] = @hours
-week = HoursCalendar.for_week_of(@date)
-week.set_date(@date, @hours)
-week.freeze_date(@date)
-week.fill_in_workers_hours(@worker)
-week.add_in_holidays(@worker)
-hash[:total_week] = week.total
-hash[:max_week] = @worker.ceiling_hours
-hash[:overtime] = [0, week.total - @worker.ceiling_hours].max
-pay_period = HoursCalendar.for_pay_period_of(@date)
-expected_this_far = HoursCalendar.new(pay_period.start_date, [Date.today, @date].max)
-expected_this_far.fill_in_workers_maximums(@worker)
-minimum = expected_this_far.total * @worker.floor_ratio
-hash[:expected_minimum] = minimum
-hash[:expected_maximum] = expected_this_far.total
-this_far = HoursCalendar.new(pay_period.start_date, [Date.today, @date].max)
-this_far.set_date(@date, @hours)
-this_far.freeze_date(@date)
-this_far.fill_in_workers_hours(@worker)
-pay_period.load_from_calendar(this_far)
-pay_period.add_in_holidays(@worker)
-hash[:total_pay_period] = pay_period.total
-hash[:pto] = [0, minimum - pay_period.total].max
-hash[:normally_worked] = @worker.send(@date.strftime("%A").downcase.to_sym)
-
-hash.each{|k,v| page << "$(#{k.to_s.to_json}).innerHTML = #{sprintf("%.2f", v).to_s.to_json};" }
+hash = get_hash(@date, @worker, @hours)
+hash.each{|k,v|
+  if v.class == Float
+    page << "$(#{k.to_s.to_json}).innerHTML = #{sprintf("%.2f", v).to_s.to_json};"
+  end
+}
 page.hide loading_indicator_id("shifts_totals")
