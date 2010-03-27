@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
   def rerender
     render :update do |page|
       if params[:goto]
-        page.redirect_to(:controller => params[:goto][:controller], :action => params[:goto][:action])
+        page.redirect_to(eval(params[:goto][:params]))
       else
         page.redirect_to("")
       end

@@ -3,7 +3,7 @@
 <h1>Staff hours for <%= @worker.name %> in pay period between <%= pay_period.range.min %> and <%= pay_period.range.max %></h1>
 <%= pay_period.to_html(@worker, @controller) %>
 <br />
-<table style="border-collapse: collapse;" border="1">
+<table class="awesome">
 <% [
      [:total_pay_period, "Total hours worked"],
      [:expected_minimum, "Minimum so far in pay period"],

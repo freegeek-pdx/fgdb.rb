@@ -26,7 +26,7 @@
                                     :after_update_element => update_display_function,
                                     :after_input => "function(e) {Element.update($('#{searchbox_display_id(options)}'), '')}",
                                     :skip_style => true,
-                                    :indicator => loading_indicator_id("contact_autocomplete_loading"),
+                                    :indicator => loading_indicator_id("#{contact_query_id(options)}_contact_autocomplete_loading"),
                                     :auto_select => false,
                                     :method => 'GET',
                                     :frequency => 0.5,
@@ -35,7 +35,7 @@
                                   :controller => 'contacts',
                                   :field_name => contact_field_name(options)
                                   ) %>
-<%= loading_indicator_tag("contact_autocomplete_loading") %>
+<%= loading_indicator_tag("#{contact_query_id(options)}_contact_autocomplete_loading") %>
 
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(

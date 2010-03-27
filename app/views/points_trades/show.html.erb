@@ -1,0 +1,38 @@
+<p>
+  <b>From contact:</b>
+  <%=h @points_trade.from_contact_id %>
+</p>
+
+<p>
+  <b>To contact:</b>
+  <%=h @points_trade.to_contact_id %>
+</p>
+
+<p>
+  <b>Points:</b>
+  <%=h @points_trade.points %>
+</p>
+
+<p>
+  <b>Created by:</b>
+  <%=h @points_trade.created_by %>
+</p>
+
+<p>
+  <b>Updated by:</b>
+  <%=h @points_trade.updated_by %>
+</p>
+
+<p>
+  <b>Cashier created by:</b>
+  <%=h @points_trade.cashier_created_by %>
+</p>
+
+<p>
+  <b>Cashier updated by:</b>
+  <%=h @points_trade.cashier_updated_by %>
+</p>
+
+
+<%= link_to 'Edit', edit_points_trade_path(@points_trade) %> |
+<%= link_to 'Back', points_trades_path %>

@@ -26,6 +26,7 @@ module SidebarHelper
     # hours
     if has_role?("VOLUNTEER_MANAGER")
       sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
+      sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
     elsif current_user and current_user.contact_id
       sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks", :contact_id => current_user.contact_id}
     end

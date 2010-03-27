@@ -194,7 +194,7 @@ class ReportsController < ApplicationController
     required_cents = min(amount_cents - gizmoless_cents, required_cents)
     suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
 
-    if payment_method_id != PaymentMethod.invoice.id
+    if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:donations]['total real']
 
       update_totals(total_real['fees'], required_cents, count)

@@ -1,4 +1,4 @@
-class Conditions
+class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
@@ -19,17 +19,6 @@ class Conditions
 
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
-  end
-
-  def initialize
-    for i in DATES
-      eval("@#{i}_date = Date.today")
-      eval("@#{i}_date_type = 'daily'")
-      eval("@#{i}_month = Date.today")
-      eval("@#{i}_year = Date.today")
-    end
-
-    @payment_method_id = PaymentMethod.cash.id
   end
 
   attr_accessor :worker_id
@@ -100,29 +89,6 @@ class Conditions
     return @worker
   end
 
-  def apply_conditions(options)
-    options.each do |name,val|
-      val = val.to_i if( val.to_i.to_s == val )
-      self.send(name+"=", val)
-    end
-    return options
-  end
-
-  def conditions(klass)
-    conds = CONDS.inject([""]) {|condition_array,this_condition|
-      if instance_variable_get("@#{this_condition}_enabled") == "true"
-        join_conditions(condition_array,
-                        self.send("#{this_condition}_conditions",
-                                  klass))
-      else
-        condition_array
-      end
-    }
-    if conds[0].empty?
-      conds[0]="#{klass.table_name}.id = -1"
-    end
-    return conds
-  end
 
   def worker_conditions(klass)
     return ["worker_id = ?", @worker_id]

@@ -1,0 +1,23 @@
+<h1>Listing points_trades</h1>
+
+<table>
+  <tr>
+    <th>From contact</th>
+    <th>To contact</th>
+    <th>Points</th>
+  </tr>
+
+<% for points_trade in @points_trades %>
+  <tr>
+    <td><%=h points_trade.from_contact.display_name %> (<%=h points_trade.from_contact_id %>)</td>
+    <td><%=h points_trade.to_contact.display_name %> (<%=h points_trade.to_contact_id %>)</td>
+    <td><%=h points_trade.points %></td>
+    <td><%= link_to 'Edit', :action => "edit", :id => points_trade.id %></td>
+    <td><%= link_to 'Destroy', :action => "destroy", :id => points_trade.id, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New points_trade', :action => "new" %>

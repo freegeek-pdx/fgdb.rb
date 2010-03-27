@@ -18,8 +18,18 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
     date_performed instead of created_at
   * clean up the gizmos report, and fix showing the categories broken
     down by disbursement type
+  * add some evil hackery to work around a strange SERVER_PORT bug
+    between nginx/rack/thin/rails (Closes: #16669)
+  * allow trading points (Closes: #17123)
+  * store the whole params in session rather than just action and
+    controller when doing the login stuff, so that redirects to edit
+    pages and such actually work
+  * fix validating lengths to work correctly with NULL values (Closes:
+    #17638)
+  * fix the logic for determining if something is real money or not in
+    the income report (Closes: #17608)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 16:29:12 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 00:47:22 -0700
 
 fgdb.rb (1.0.47) released; urgency=low
 

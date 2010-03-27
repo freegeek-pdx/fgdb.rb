@@ -1,15 +1,5 @@
 module ConditionsHelper
-  def conditions_html(params_key = "conditions", these_things = nil)
-    hash = {}
-    Conditions::CONDS.select{|x| these_things.include?(x)}.each{|x|
-      if Conditions::DATES.include?(x)
-        hash[x] = date_or_date_range_picker(params_key, x)
-      else
-        hash[x] = eval("html_for_" + x + "_condition(params_key)")
-      end
-    }
-    multiselect_of_form_elements(params_key, hash)
-  end
+  include ConditionsBaseHelper
 
   private
 
@@ -121,7 +111,7 @@ module ConditionsHelper
                       :contact => eval("@" + params_key).contact
                     } )
     elsif is_logged_in() && @current_user.contact_id
-      "Me" + hidden_field('defaults', 'contact_id', :value => @current_user.contact_id)
+      "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
     else
       raise
     end

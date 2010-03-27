@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  from_contact_id: 1
+  to_contact_id: 1
+  points: 9.99
+  created_by: 
+  updated_by: 
+  cashier_created_by: 
+  cashier_updated_by: 
+
+two:
+  from_contact_id: 1
+  to_contact_id: 1
+  points: 9.99
+  created_by: 
+  updated_by: 
+  cashier_created_by: 
+  cashier_updated_by: 

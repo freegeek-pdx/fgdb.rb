@@ -1,5 +1,4 @@
 <% last_ninety = @contact.last_ninety_days_of_actual_hours %>
-<% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
 last <%= Default['days_for_discount'].to_f %> days [<%= link_to('edit',
                           :action=>"list",
@@ -10,7 +9,13 @@ last <%= Default['days_for_discount'].to_f %> days [<%= link_to('edit',
                                              :controller=>"reports",
                                              :contact_id=>@contact.id
                                              ) %>]
-<br /><span class="hours"><%= adoption %></span> points for adoption
+<br /><span class="hours"><%= @contact.points %></span> points for adoption
 <% if @contact.date_of_last_adoption %>
   <br /><span class="hours"><%= Date.today - @contact.date_of_last_adoption %></span> days since last adoption
+<% end %>
+<% if (@contact.date_of_last_trade && @contact.date_of_last_adoption && @contact.date_of_last_trade > @contact.date_of_last_adoption) || (@contact.date_of_last_trade && @contact.date_of_last_adoption.nil?) %>
+  <br /><span class="hours"><%= @contact.hours_since_last_adoption %></span> hours worked <%= @contact.date_of_last_adoption ? "since adopt" : "" %>
+  <br /><span class="hours"><%= @contact.points_traded_since_last_adoption("to") %></span> points received <%= @contact.date_of_last_adoption ? "since adopt" : "" %>
+  <br /><span class="hours"><%= @contact.points_traded_since_last_adoption("from") %></span> points given <%= @contact.date_of_last_adoption ? "since adopt" : "" %>
+  <br /><span class="hours"><%= Date.today - @contact.date_of_last_trade %></span> days since last trade
 <% end %>

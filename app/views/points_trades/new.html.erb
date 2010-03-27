@@ -1,0 +1,45 @@
+<h1>New points_trade</h1>
+
+<% form_for(:points_trade, @points_trade, :url => {:action => ({:new => :create, :edit => :update}[params[:action].to_sym] || params[:action]).to_s, :id => @points_trade.id}) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :from_contact_id %><br />
+    <%= contact_field('@points_trade', 'from_contact_id',
+                    :locals => {:options =>
+                      { 
+                        :object_name => 'points_trade',
+                        :field_name => 'from_contact_id',
+                        :element_prefix => 'from_contact',
+                        :display_edit => false,
+                        :display_create => false,
+                        :show_label => false,
+                      },
+                      :contact => @points_trade.from_contact
+                    } ) %></p>
+  </p>
+  <p>
+    <%= f.label :to_contact_id %><br />
+<%= contact_field('@points_trade', 'to_contact_id',
+                    :locals => {:options =>
+                      { 
+                        :object_name => 'points_trade',
+                        :field_name => 'to_contact_id',
+                        :element_prefix => 'to_contact',
+                        :display_edit => false,
+                        :display_create => false,
+                        :show_label => false,
+                      },
+                      :contact => @points_trade.to_contact
+                    } ) %>
+  </p>
+  <p>
+    <%= f.label :points %><br />
+    <%= f.text_field :points %>
+  </p>
+  <p>
+    <%= f.submit "Save" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', :action => "index" %>

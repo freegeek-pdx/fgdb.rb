@@ -10,8 +10,7 @@
     <br/>
   <% else %>
     <% session[:unauthorized_error] = false %>
-    <% session[:unauthorized_controller] = nil %>
-    <% session[:unauthorized_action] = nil %>
+    <% session[:unauthorized_params] = nil %>
   <% end %>
 <% end %>
 

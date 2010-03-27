@@ -15,11 +15,14 @@ class HoursCalendar
   include CalendarHelper
   include WorkedShiftsHelper
   def to_html(worker = nil, controller = nil)
+    hash = self.values.dup
     if worker
-      html_calendar(self.range, self.values) {|x| url_for_log(worker, x, controller)}
-    else
-      html_calendar(self.range, self.values)
+      hash.each{|k,v|
+        v = HtmlTag.new("a", {:href => url_for_log(worker, k, controller)}, [], v)
+        hash[k] = v
+      }
     end
+    html_calendar(self.range, hash)
   end
 
   def total

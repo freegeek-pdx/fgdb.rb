@@ -7,7 +7,7 @@
       <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
       <%= (controller.action_name).titleize %>
     </title>
-    <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', :media => 'all' %>
+    <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', 'common', :media => 'all' %>
     <%= stylesheet_link_tag 'no_print', :media => 'print' %>
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag 'lightwindow' %>
@@ -42,8 +42,7 @@ javascript_tag "volunteer_task_programs = #{h.to_json};" %>
       <%= render :partial => "sessions/you_are_here" %>
     <% else %>
       <% session[:unauthorized_error] = false %> <%# rails renders the layouts last %>
-      <% session[:unauthorized_controller] = nil %>
-      <% session[:unauthorized_action] = nil %>
+       <% session[:unauthorized_params] = nil %>
       <%= javascript_tag "var pixelsize='0px';" %>
     <% end %>
 

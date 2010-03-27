@@ -1,7 +1,6 @@
 <% form_remote_tag :url => "/sessions/create" do -%>
-<% if session[:unauthorized_controller] && session[:unauthorized_action] %>
-  <input type="hidden" name="goto[controller]" value="<%= session[:unauthorized_controller] %>" />
-  <input type="hidden" name="goto[action]" value="<%= session[:unauthorized_action] %>" />
+<% if session[:unauthorized_params] %>
+  <input type="hidden" name="goto[params]" value="<%= session[:unauthorized_params].gsub('"', "'") %>" />
 <% end %>
 
 <div class="form-element">

@@ -1,11 +1,39 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
+
+module ActionController
+  class AbstractRequest
+    def my_port
+      return @fgdb_internal_port || @env["SERVER_PORT"].to_i
+    end
+
+    def port_string
+      (my_port == standard_port) ? '' : ":#{my_port}"
+    end
+
+    def set_port(port_part)
+      @host_with_port = nil
+      @fgdb_internal_port = port_part.to_i
+    end
+  end
+end
+
 class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   layout "application"
   helper :cashiers
   helper :conditions
   helper :sidebar
+
+  before_filter :set_correct_server_port
+  def set_correct_server_port
+    orig_host = request.env["HTTP_FGDB_PROXY_HTTP_HOST"]
+    return if orig_host.nil?
+    host_part, port_part = orig_host.split(":")
+    return if port_part.nil?
+    request.set_port(port_part)
+    return true
+  end
 
 =begin
     protect_from_forgery
@@ -114,8 +142,7 @@ class ApplicationController < ActionController::Base
       return true
     else
       session[:unauthorized_error] = true
-      session[:unauthorized_controller] = controller_name()
-      session[:unauthorized_action] = action_name()
+      session[:unauthorized_params] = params.inspect
       redirect_to :controller => 'sidebar_links'
       return false
     end

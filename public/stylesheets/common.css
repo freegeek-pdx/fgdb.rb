@@ -1,0 +1,15 @@
+table.awesome {
+border-collapse: collapse;
+border-width: 0 0 1px 1px;
+border-style: solid;
+}
+
+table.awesome td {
+border-width: 1px 1px 0 0;
+border-style: solid;
+}
+
+table.awesome th {
+border-width: 1px 1px 0 0;
+border-style: solid;
+}
