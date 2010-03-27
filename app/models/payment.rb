@@ -12,14 +12,14 @@ class Payment < ActiveRecord::Base
   define_amount_methods_on("amount")
   validate :sc_ok
 
-  def transaction
+  def my_transaction
     self.sale || self.donation
   end
 
   def type_description
     d = self.payment_method.name
     if d == "invoice"
-      d = (self.transaction.invoice_resolved_at.nil? ? "unresolved" : "resolved") + "_" + d
+      d = (self.my_transaction.invoice_resolved_at.nil? ? "unresolved" : "resolved") + "_" + d
     end
     return d
   end

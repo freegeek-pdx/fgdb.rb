@@ -235,7 +235,7 @@ class Contact < ActiveRecord::Base
   end
 
   def date_of_last_trade
-    last_trade.created_at.to_date
+    last_trade.nil? ? nil : last_trade.created_at.to_date
   end
 
   def effective_discount_hours

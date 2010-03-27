@@ -11,10 +11,6 @@ class VolunteerTaskType < ActiveRecord::Base
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
   }
 
-  def parent
-    self.parent_id.nil? ? nil : self.class.find_by_id(self.parent_id)
-  end
-
   def self.find_actual(*ids)
     ids.delete_if {|id| id == 0 }
     find(*ids)

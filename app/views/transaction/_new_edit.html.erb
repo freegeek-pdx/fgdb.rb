@@ -96,5 +96,5 @@
   </tbody>
 </table>
 <% if @transactions.length == 15 %>
-  <%= link_to "See more", {:controller => "donations", :action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
+  <%= link_to "See more", {:action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
 <% end %>
