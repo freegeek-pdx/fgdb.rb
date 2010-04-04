@@ -1,9 +1,11 @@
 <h1>New points_trade</h1>
 
-<% form_for(:points_trade, @points_trade, :url => {:action => ({:new => :create, :edit => :update}[params[:action].to_sym] || params[:action]).to_s, :id => @points_trade.id}) do |f| %>
-  <%= f.error_messages %>
+<%= render :partial => "messages" %>
 
-  <p>
+<% newaction = ({:index => :create, :new => :create, :edit => :update}[params[:action].to_sym] || params[:action]).to_s %>
+<div>
+<% remote_form_for(:points_trade, @points_trade, :url => {:action => newaction, :id => @points_trade.id}, :html => {:id => "points-trade"}, :loading => "Element.show('#{loading_indicator_id("form_for_points_trade_loading")}'); Form.disable('points-trade');") do |f| %>
+  <div style="float:left;padding:5px;">
     <%= f.label :from_contact_id %><br />
     <%= contact_field('@points_trade', 'from_contact_id',
                     :locals => {:options =>
@@ -17,8 +19,8 @@
                       },
                       :contact => @points_trade.from_contact
                     } ) %></p>
-  </p>
-  <p>
+  </div>
+  <div style="float:left;padding:5px;">
     <%= f.label :to_contact_id %><br />
 <%= contact_field('@points_trade', 'to_contact_id',
                     :locals => {:options =>
@@ -32,14 +34,32 @@
                       },
                       :contact => @points_trade.to_contact
                     } ) %>
-  </p>
-  <p>
+  </div>
+  <div style="float:left;padding:5px;">
     <%= f.label :points %><br />
-    <%= f.text_field :points %>
-  </p>
-  <p>
-    <%= f.submit "Save" %>
-  </p>
+    <%= f.text_field :points %><br />
+    <%= f.submit "Save" %><%= loading_indicator_tag("form_for_points_trade_loading") %>
+  </div>
 <% end %>
+</div>
+<div style="clear:both">
+<h1>Listing points_trades</h1>
 
-<%= link_to 'Back', :action => "index" %>
+<table>
+  <tr>
+    <th>From contact</th>
+    <th>To contact</th>
+    <th>Points</th>
+  </tr>
+
+<% for points_trade in @points_trades %>
+  <tr id="points_trade_<%= points_trade.id %>">
+    <td><%=h points_trade.from_contact.display_name %> (<%=h points_trade.from_contact_id %>)</td>
+    <td><%=h points_trade.to_contact.display_name %> (<%=h points_trade.to_contact_id %>)</td>
+    <td><%=h points_trade.points %></td>
+    <td><%= link_to 'Edit', :action => "edit", :id => points_trade.id %></td>
+    <td><%= link_to_remote 'Destroy', :url => {:action => "destroy", :id => points_trade.id}, :loading => "Element.show('#{loading_indicator_id("points_trade_#{points_trade.id}_loading")}');", :confirm => 'Are you sure?' %><%= loading_indicator_tag("points_trade_#{points_trade.id}_loading") %></td>
+  </tr>
+<% end %>
+</table>
+</div>

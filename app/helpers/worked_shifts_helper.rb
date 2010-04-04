@@ -51,7 +51,7 @@ module WorkedShiftsHelper
     pay_period.add_in_holidays(worker)
     hash[:pay_period] = pay_period
     hash[:total_pay_period] = pay_period.total
-    hash[:pto] = [0, minimum - pay_period.total].max
+    hash[:pto] = [0.0, minimum - pay_period.total].max
     hash[:normally_worked] = worker.send(date.strftime("%A").downcase.to_sym)
     return hash
   end

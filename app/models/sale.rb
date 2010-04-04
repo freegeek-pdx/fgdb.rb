@@ -19,6 +19,7 @@ class Sale < ActiveRecord::Base
   before_save :add_change_line_item
   before_save :set_occurred_at_on_gizmo_events
   before_save :combine_cash_payments
+  before_save :set_occurred_at_on_transaction
 
   def initialize(*args)
     @contact_type = 'named'

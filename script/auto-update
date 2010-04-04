@@ -34,12 +34,23 @@ needs_pull () {
 }
 
 PRODUCTION=/var/www/fgdb.rb
+LOGFILE="${PRODUCTION}/log/auto-update.log"
 DEVEL=/home/ryan52/fgdb.rb
 SCRIPT_BASE=$DEVEL/script
 UPSTREAM=origin
 CHECK_THESE="$@"
 FAKE=false
 VERBOSE=false
+if [ ! -d "$PRODUCTION" ]; then
+    echo "This seems to be the wrong system."
+    exit 1
+fi
+main() {
+echo
+echo "========================================================================================================="
+echo "auto-update starting at $(date -R) with these options: $@"
+echo "========================================================================================================="
+echo
 if [ -n "$CHECK_THESE" ]; then
     CHECK_THESE=$(echo "$CHECK_THESE" | sed 's/--//g')
 else
@@ -77,3 +88,5 @@ if [ "$FAKE" = "false" ]; then
 else
     echo "Would run run_$MODE in $(pwd)"
 fi
+}
+main 2>&1 | tee -a "$LOGFILE"

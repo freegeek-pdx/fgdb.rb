@@ -54,6 +54,7 @@ namespace :crash do
 task :prevent do
   if system("grep -qR \"^require 'test_helper'$\" #{RAILS_ROOT}/test")
     puts "GENERATORS are NOT perfect! ***TEST*** and ***TWEAK*** the code they generate BEFORE committing. and please, stop crashing my server. kthxbye."
+    puts "To fix the tests, run this and commit: ./script/fix-tests"
     raise
   end
 end

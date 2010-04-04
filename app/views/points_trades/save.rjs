@@ -1,0 +1,11 @@
+if @successful
+  page << "Form.enable('points-trade');"
+  page.hide loading_indicator_id("form_for_points_trade_loading")
+  page << "window.location.href='#{url_for( ( { :action => 'new'} ) )}';"
+else
+  page.replace_html "points_trade_messages", :partial => 'messages'
+  show_errors_for("points_trade", @points_trade, page)
+  page << "Form.enable('points-trade');"
+  page << "$('points_trade_messages').scrollTo();"
+  page.hide loading_indicator_id("form_for_points_trade_loading")
+end

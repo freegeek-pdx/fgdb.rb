@@ -8,6 +8,7 @@ class PointsTrade < ActiveRecord::Base
   validates_presence_of :points
 
   def points_okay
+    return if !(self.from_contact && self.to_contact)
     errors.add("from_contact", "has negative points") if (self.from_contact.points(self.id) - self.points) < 0
     errors.add("to_contact", "has negative points") if (self.to_contact.points(self.id) + self.points) < 0
   end

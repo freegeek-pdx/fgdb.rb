@@ -167,14 +167,22 @@ module GizmoTransaction
     return ""
   end
 
+  def real_occurred_at
+    self.read_attribute(:occurred_at)
+  end
+
+  def set_occurred_at_on_transaction
+    self.occurred_at = DateTime.now if self.occurred_at.nil?
+  end
+
   def occurred_at
     value = case self
            when Sale
-             self.created_at
+             self.real_occurred_at
            when Donation
-             self.created_at
+             self.real_occurred_at
            when GizmoReturn
-             self.created_at
+             self.real_occurred_at
            when Disbursement
              self.disbursed_at
            when Recycling

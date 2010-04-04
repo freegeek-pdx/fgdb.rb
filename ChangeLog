@@ -1,8 +1,15 @@
 fgdb.rb (1.0.49) UNRELEASED; urgency=low
 
   * add a bunch of missing foreign keys
+  * add a new admin set of fields for adjustments, showable by
+    shift-ctrl-q (Closes: #16932)
+  * fix displaying terabytes (Closes: #17673)
+  * add an interface for editing workers worker types and remove
+    Worker.{in,}effective_date (all done in the worker types now)
+    (Closes: #16835)
+  * make the points interface a bit more awesome (Closes: #17660)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 14:36:11 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Apr 2010 17:02:41 -0700
 
 fgdb.rb (1.0.48) released; urgency=low
 
@@ -34,6 +41,9 @@ fgdb.rb (1.0.48) released; urgency=low
     #17638)
   * fix the logic for determining if something is real money or not in
     the income report (Closes: #17608)
+  * don't trigger an hours poker email if the only shift was an
+    unavailable one (Closes: #17734)
+  * fix calculations on hours editing interface
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 01:43:46 -0700
 

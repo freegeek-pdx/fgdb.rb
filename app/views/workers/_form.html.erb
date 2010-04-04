@@ -35,10 +35,17 @@
   
   <p><label for="worker_worker_type_id">Type</label><br/>
     <% if params[:action] == "new" or params[:action] == "create" %>
-  <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %>
+      <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %>
   <% else %>
-    <%= @worker.worker_type_today.name %><br />
-    *worker type must be edited by hand
+    <table>
+      <tr><th>From</th><th>To</th><th>Type</th></tr>
+    <% @worker.workers_worker_types.sort_by(&:smart_effective_on).each do |x| %>
+      <tr><td><%= x.effective_on || "Beginning of time" %></td><td><%= x.ineffective_on || "End of time" %></td><td><%= x.worker_type.name %></td></tr>
+    <% end %>
+    </table>
+    So the type today is: <%= @worker.worker_type_today.name %><br/>
+    Change to: <%= select("worker", "change_worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }, {:include_blank => true}) %><br />
+    Effective: <%= calendar_box 'worker', "change_worker_type_date",{},{:showOthers => true} %>
   <% end %></p>
   
   <p><label for="worker_weekly_work_hours">Weekly work hours</label><br/>
@@ -47,12 +54,6 @@
   <p><label for="worker_weekly_admin_hours">Weekly admin hours</label><br/>
   <%= text_field 'worker', 'weekly_admin_hours'  %></p>
   
-  <p><label for="worker_effective_date">Effective date</label><br/>
-  <%= calendar_box 'worker', 'effective_date' %></p>
-  
-  <p><label for="worker_ineffective_date">Ineffective date</label><br/>
-  <%= calendar_box 'worker', 'ineffective_date' %></p>
-
   <p><label for="worker_sunday">Sunday</label><br/>
   <%= text_field 'worker', 'sunday' %></p>
 

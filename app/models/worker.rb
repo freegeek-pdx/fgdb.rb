@@ -15,14 +15,7 @@ class Worker < ActiveRecord::Base
     contact ? contact.user : nil
   end
 
-  validate :worker_types_validated
-  def worker_types_validated
-    set_temp_worker_association
-    raise if self.workers_worker_types.length == 0
-    self.workers_worker_types.each{|x|
-      raise x.errors.full_messages.to_s if ! x.valid?
-    }
-  end
+  before_save :save_worker_types
 
   def validate
     errors.add_on_blank %w(sunday monday tuesday wednesday thursday friday saturday pto_rate floor_hours ceiling_hours)
@@ -30,13 +23,20 @@ class Worker < ActiveRecord::Base
   end
 
   def set_temp_worker_association
+    if @already_set_it
+      return
+    end
     if ! @temp_worker_association.nil? and self.workers_worker_types.length == 0
       self.workers_worker_types = [@temp_worker_association]
       self.workers_worker_types.first.worker_id = self.id if self.id
     end
+    if @my_worker_types
+      self.workers_worker_types = @my_worker_types
+    end
+    @already_set_it = true
   end
 
-  after_save :save_worker_types
+#  after_save :save_worker_types
   def save_worker_types
     set_temp_worker_association
     self.workers_worker_types.each{|x|
@@ -50,10 +50,24 @@ class Worker < ActiveRecord::Base
 
   def effective_now?
     date = DateTime.now
-    (effective_date.nil? || effective_date <= date) && (ineffective_date.nil? || ineffective_date > date)
+    self.effective_in_range?(date, nil)
   end
 
-  named_scope :effective_in_range, lambda { |*args|
+  def effective_in_range?(start_d, end_d)
+    start_t = self.worker_type_on_day(start_d)
+    end_t = nil
+    if end_d && start_d != end_d
+      end_t = self.worker_type_on_day(end_d)
+    end
+    a = [start_t, end_t]
+    a = a.delete_if{|x| x.nil?}
+    a = a.map{|x| x.name}
+    a = a.uniq
+    a = a.delete_if{|x| x == "inactive"}
+    return (a.length > 0)
+  end
+
+  def self.effective_in_range(*args)
     my_start = my_end = nil
     if args.length == 1 && args[0].is_a?(PayPeriod)
       my_start = args[0].start_date
@@ -67,8 +81,8 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    {:conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]}
-  }
+    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}
+  end
 
   named_scope :real_people, :conditions => {:virtual => false}
 
@@ -82,7 +96,7 @@ class Worker < ActiveRecord::Base
 
   def worker_type_on_day(date)
     c = self.workers_worker_types.effective_on(date).first
-    c.nil? ? nil : c.worker_type
+    c.nil? ? WorkerType.find_by_name("inactive") : c.worker_type
   end
 
   def worker_type_id
@@ -97,6 +111,56 @@ class Worker < ActiveRecord::Base
     self.workers_worker_types = [WorkersWorkerType.new(:worker => self, :worker_type => t)]
     @temp_worker = t
     @temp_worker_association = self.workers_worker_types.first
+  end
+
+  def process_change_worker_type
+    if !(@temp_change_worker_type_id.nil? || @temp_change_worker_type_date.nil? || @temp_change_worker_type_id.empty?)
+      @my_worker_types = self.workers_worker_types.sort_by(&:smart_effective_on)
+      if (wt = WorkersWorkerType.find(:first, :conditions => ["worker_id = ? AND effective_on = ?", self.id, @temp_change_worker_type_date]))
+        wt = @my_worker_types.select{|x| x.id == wt.id}.first
+        wt.worker_type_id = @temp_change_worker_type_id
+        wt.save!
+      elsif (wt = WorkersWorkerType.find(:all, :conditions => ["worker_id = ? AND (effective_on < ? OR effective_on IS NULL)", self.id, @temp_change_worker_type_date]).sort_by(&:smart_effective_on).last)
+        wt = @my_worker_types.select{|x| x.id == wt.id}.first
+        my_ineffective = wt.ineffective_on
+        wt.ineffective_on = @temp_change_worker_type_date #- 1
+        wt.save!
+        my = WorkersWorkerType.new(:worker_id => self.id, :worker_type_id => @temp_change_worker_type_id, :ineffective_on => my_ineffective, :effective_on => @temp_change_worker_type_date)
+        my.save!
+        @my_worker_types << my
+      else
+        my_ineffective = @my_worker_types.first.effective_on #- 1
+        my = WorkersWorkerType.new(:worker_id => self.id, :worker_type_id => @temp_change_worker_type_id, :ineffective_on => my_ineffective, :effective_on => @temp_change_worker_type_date)
+        my.save!
+      end
+      @my_worker_types = @my_worker_types.sort_by(&:smart_effective_on)
+      @my_worker_types.each_with_siblings{|a, b, c|
+        if a and b and a.worker_type_id == b.worker_type_id
+          b.killit = true
+          a.ineffective_on = b.ineffective_on
+        end
+      }
+      @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+      @my_worker_types.delete_if{|x| x.killit}
+    end
+  end
+
+  def change_worker_type_id=(val)
+    @temp_change_worker_type_id = val
+    process_change_worker_type()
+  end
+
+  def change_worker_type_date=(val)
+    @temp_change_worker_type_date = Date.parse(val.to_s)
+    process_change_worker_type()
+  end
+
+  def change_worker_type_id
+    @temp_change_worker_type_id || nil
+  end
+
+  def change_worker_type_date
+    @temp_change_worker_type_date || Date.today
   end
 
   def worker_type # FIXME: remove this

@@ -38,7 +38,7 @@ class String
   end
 
   def unit_arr
-    a = ["", "K", "M", "G", "T"]
+    a = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"]
   end
 
   def gte(v, l)

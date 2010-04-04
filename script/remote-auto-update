@@ -1,0 +1,9 @@
+#!/bin/sh
+
+SOCK=/tmp/ozone.sock
+PORT=2222
+[ -e $SOCK ] || ssh -f -L $PORT:data:22 -M -N -S $SOCK ozone.freegeek.org
+ssh -p $PORT localhost ./auto-update
+RES=$?
+ssh -N -S $SOCK -O exit ozone.freegeek.org
+exit $RES

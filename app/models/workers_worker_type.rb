@@ -6,7 +6,6 @@ class WorkersWorkerType < ActiveRecord::Base
   belongs_to :worker_type
 #  validates_existence_of :worker
   validates_existence_of :worker_type
-  validate :siblings_dont_overlap
 
   def smart_effective_on
     effective_on || Date.parse("1901-12-22")
@@ -16,10 +15,6 @@ class WorkersWorkerType < ActiveRecord::Base
     ineffective_on || Date.parse("2100-12-31")
   end
 
-  def siblings_dont_overlap
-    arr = (worker.workers_worker_types.delete_if{|x| x.id == self.id} + [self]).sort_by(&:smart_effective_on)
-    arr.each_with_siblings{|a,b,c| errors.add("effective_on", "worker_types effective dates overlap")  if (a && (a.ineffective_on.nil? or a.smart_ineffective_on > b.smart_effective_on)) || (c && (c.effective_on.nil? or c.smart_effective_on < b.smart_ineffective_on)); break}
-    arr.each_with_siblings{|a,b,c| errors.add("effective_on", "worker_types effective dates leave holes")  if (a && (a.ineffective_on != b.effective_on)) || (c && (c.effective_on != b.ineffective_on)); break}
-  end
+  attr_accessor :killit, :my_super_worker
 end
 

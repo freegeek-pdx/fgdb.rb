@@ -57,6 +57,18 @@
       }
      javascript_tag js %>
 
+  <% if has_role?("ADMIN") %>
+    <%= javascript_tag "bind_key('shift-ctrl-q', toggle_the_admin);" %>
+    <div id="hidden_admin" class="<%= @transaction.adjustment ? "" : "hidden" %>">
+      <label for="<%= @gizmo_context %>_adjustment">Is adjustment?</label>
+      <%= check_box @gizmo_context, 'adjustment' %>
+      <% if ["gizmo_return", "sale", "donation"].include?(@gizmo_context.to_s) %>
+        <label for="<%= @gizmo_context %>_occurred_at">When did this occur?</label>
+        <%= calendar_box @gizmo_context, "occurred_at",{},{:showOthers => true} %>
+      <% end %>
+    </div>
+  <% end %>
+
     <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
 
     <% if params[:controller] == "donations" %>

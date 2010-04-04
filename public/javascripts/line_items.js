@@ -577,6 +577,9 @@ function get_storecredit_amount(id) {
 }
 
 function shift_compute_totals () {
+    if(shift_do_ajax == 0) {
+       return;
+    }
   var today = get_hours_today();
   var myhash = new Hash();
   myhash.set('worked_shift[hours_today]', today);

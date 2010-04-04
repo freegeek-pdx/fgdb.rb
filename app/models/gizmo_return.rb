@@ -11,6 +11,7 @@ class GizmoReturn < ActiveRecord::Base
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
   acts_as_userstamp
+  before_save :set_occurred_at_on_transaction
 
   def self.default_sort_sql
     "gizmo_returns.created_at DESC"

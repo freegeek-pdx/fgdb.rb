@@ -35,7 +35,7 @@
       <td colspan="3">Created by #<%=h User.find_by_id(@transaction.cashier_created_by).contact_id %></td>
     </tr>
     <tr>
-      <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
+      <td>Date: <%= @txn.occurred_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
         <% is_store_credit = (@gizmo_context == GizmoContext.gizmo_return && @txn.store_credit) %>
         <%= is_store_credit ? "Store Credit" : @context.titleize %> <strong># <%= is_store_credit ? @txn.store_credit.id : @txn.id %></strong><%= is_store_credit ? "(Gizmo Return # #{@txn.id})" : "" %>

@@ -19,12 +19,13 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
     <th>duration</th>
     <th></th>
   </tr>
-  <% @shift_js = ""
+  <% @shift_js = "shift_do_ajax = 0;"
      for i in @shifts
        hash = {:job_id => i.job_id, :duration => i.duration.to_f}
        hash[:id] = i.id if i.id
        @shift_js += "add_shift(#{hash.to_json});"
-     end %>
+     end 
+     @shift_js += "shift_do_ajax = 1;"%>
   <tr id="shift_form">
     <td><select id="job_id">
         <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>

@@ -205,7 +205,7 @@ WHERE
                         #   this shift, if so then set worker_id to 0
                         workshift.worker = zero 
                       end
-                      if workshift.worker and  workshift.worker.effective_date and ( workshift.worker.effective_date > day or workshift.worker.ineffective_date < day )
+                      if workshift.worker and  [nil, WorkerType.find_by_name("inactive")].include?(workshift.worker.worker_type_on_day(day))
                         # check to see if worker is no longer working 
                         #   (or hasn't started yet)
                         #   if so then set worker_id to 0
