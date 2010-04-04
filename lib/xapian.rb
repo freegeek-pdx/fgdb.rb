@@ -205,6 +205,7 @@ class RunXapianDaemon
 
   def self.go
     return if ENV['I_AM_TEH_XAPIAN_DAEMON']
+    return if !XapianJob.table_exists?
     if !RunXapianDaemon.is_ready?
       RunXapianDaemon.run
       RunXapianDaemon.wait_for_daemon_process
