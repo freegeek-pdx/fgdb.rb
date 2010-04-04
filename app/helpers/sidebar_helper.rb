@@ -18,6 +18,25 @@ module SidebarHelper
     true
   end
 
+  def controller_to_section
+    {"recyclings" => "recyclings",
+    "volunteer_tasks" => "hours",
+    "sales" => "sales",
+    "donations" => "donations",
+    "disbursements" => "disbursements",
+    "reports" => "reports",
+    "graphic_reports" => "reports",
+    "work_shifts" => "staff schedule",
+    "contacts" => "contacts",
+    "contact_duplicates" => "contacts",
+    "library" => "library",
+    "spec_sheets" => "fgss",
+    "gizmo_returns" => "returns",
+    "till_adjustments" => "bean counters",
+    "worked_shifts" => "staff",
+    "points_trades" => "hours"}
+  end
+
   def sidebar_stuff
     # base
     aliases = {:a => :action, :c => :controller}

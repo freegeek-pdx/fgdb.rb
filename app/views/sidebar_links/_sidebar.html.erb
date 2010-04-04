@@ -45,23 +45,7 @@ hideall();
 <% else %>
 f_hideall();
 <% end %>
-<%= thing = case params[:controller]
-            when "recyclings": "recyclings"
-            when "volunteer_tasks": "hours"
-            when "sales": "sales"
-            when "donations": "donations"
-            when "disbursements": "disbursements"
-            when "reports": "reports"
-            when "graphic_reports": "reports"
-            when "work_shifts": "staff schedule"
-            when "contacts": "contacts"
-            when "contact_duplicates": "contacts"
-            when "library": "library"
-            when "spec_sheets": "fgss"
-            when "gizmo_returns": "returns"
-            when "till_adjustments": "bean counters"
-            else ""
-            end
+<%= thing = controller_to_section[params[:controller]]
    thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()"
  %>
 </script>
