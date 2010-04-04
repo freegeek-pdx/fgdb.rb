@@ -138,7 +138,7 @@ run "Checking to see if zoom is installed..." "require_test zoom" "install libzo
 run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
 run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"
-run "Checking to see if xapian is installed..." "require_test xapian" "install libxapian-ruby" "fail"
+run "Checking to see if xapian is installed..." "require_test xapian" "install libxapian-ruby1.8" "fail"
 run "Checking to see if posixlock is installed..." "require_test posixlock" "install libposixlock-ruby" "fail"
 run "Checking to see if XML::XPath is installed..." "perl_use_test XML::XPath" "install libxml-xpath-perl" "fail"
 run "Checking to see if PDF::API2 is installed..." "perl_use_test PDF::API2" "install libpdf-api2-perl" "fail"
