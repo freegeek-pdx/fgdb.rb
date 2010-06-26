@@ -24,7 +24,12 @@ class GizmoEvent < ActiveRecord::Base
     self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
   end
 
+  attr_accessor :expire_date
+
   def set_storecredit_difference_cents
+    my_expire_date = self.store_credits.map{|x| x.expire_date}.uniq.select{|x| !x.nil?}.sort.last
+    my_expire_date ||= @expire_date
+    my_expire_date ||= (Date.today + 1.year)
     while self.store_credits.length < self.gizmo_count
       self.store_credits << StoreCredit.new
     end
@@ -35,6 +40,7 @@ class GizmoEvent < ActiveRecord::Base
     self.store_credits.each{|x|
       raise if x.spent? and x.amount_cents != self.unit_price_cents
       x.amount_cents = self.unit_price_cents
+      x.expire_date = my_expire_date
     }
   end
 
@@ -95,8 +101,12 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
     self.store_credits.map{|x| "#" + x.id.to_s}.to_sentence
   end
 
+  def original_sale_id
+    return_sale_id
+  end
+
   def attry_description(options = {})
-    junk = [:store_credit_ids, :as_is, :size, :system_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:store_credit_ids, :as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 

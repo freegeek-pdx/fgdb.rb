@@ -21,6 +21,88 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def save_exception_data(e)
+    exception_data = process_exception_data(e)
+    tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
+    crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
+    exception_data["tempfile"] = tempfile
+    exception_data["crash_id"] = crash_id
+    f = File.open(tempfile, "w")
+    f.write(exception_data.to_json)
+    f.close
+    exception_data
+  end
+
+  def process_exception_data(e)
+    rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
+    rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
+    new_params = params.dup
+    new_params.delete("action")
+    new_params.delete("controller")
+    h = {:exception_class => e.class.name,
+      :message => e.to_s,
+    :template => rescue_template,
+    :status => ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[rescue_status],
+    :response => rescue_status,
+    :controller => params[:controller],
+    :action => params[:action],
+    :params => new_params,
+    :clean_message => e.clean_message,
+    :rails_env => RAILS_ENV,
+    }
+    if Thread.current['user']
+      h[:user] = Thread.current['user'].login
+    end
+    if Thread.current['cashier']
+      h[:cashier] = Thread.current['cashier'].login
+    end
+    if request.env["HTTP_REFERER"]
+      h[:referer] = request.env["HTTP_REFERER"]
+    end
+    h[:client_ip] = request.remote_ip
+    h[:date] = DateTime.now.to_s
+    eval("h = process_exception_data_#{rescue_template}(e, h)")
+    h = JSON.parse(h.to_json)
+    return h
+  end
+
+  def process_exception_data_simple(e, h)
+    return h
+  end
+
+  alias :process_exception_data_unknown_action :process_exception_data_simple
+  alias :process_exception_data_missing_template :process_exception_data_simple
+
+  def process_exception_data_backtrace(e, h)
+    h[:application_backtrace] = e.application_backtrace
+    h[:framework_backtrace] = e.framework_backtrace
+    h[:full_backtrace] = e.clean_backtrace
+    h[:response_headers] = {}
+    h[:blame_trace] = e.describe_blame
+    if response
+      h[:response_headers] = response.headers.dup
+    end
+    h[:session] = request.session.instance_variable_get("@data")
+    return h
+  end
+
+  alias :process_exception_data_diagnostics :process_exception_data_backtrace
+  alias :process_exception_data_template_error :process_exception_data_backtrace
+
+  def process_exception_data_routing_error(e, h)
+    unless e.failures.empty?
+      h[:failures] = []
+      e.failures.each do |route, reason|
+        h[:failures] << [route.inspect.gsub('\\', ''), reason.downcase]
+      end
+    end
+    return h
+  end
+
+  def contract_enabled
+    Contract.usable.length > 1
+  end
+
   def barcode(info, opts = {})
     tag("img", {:height => 30, :width => 100}.merge(opts).merge({:src => url_for(:controller => "barcode", :action => "barcode", :id => info, :format => "gif")}))
   end

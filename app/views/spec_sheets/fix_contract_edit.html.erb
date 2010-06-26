@@ -2,7 +2,8 @@
 <% form_for(:system, @system, :url => {:action => "fix_contract_save"}) do |f| %>
   <%= hidden_field :system, :id %>
   System: <%= @system.id %><br />
-  <%= f.select(:contract_id, Contract.usable.collect {|p| [p.description, p.id] }) %><br />
+  <label for="system_contract_id">Contract:</label><%= f.select(:contract_id, Contract.usable.collect {|p| [p.description, p.id] }) %><br />
+  <label for="system_covered_s">Covered:</label><%= f.select(:covered_s, [["", "nil"], ["Yes", "true"], ["No", "false"]] ) %><br />
   <%= submit_tag "save" %>
 <% end %>
 <% else %>

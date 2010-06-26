@@ -20,6 +20,5 @@
     <%= render :partial=> "edit_update_transaction",
         :locals => {:transaction => sale,
           :allowed_roles => ["STORE_ADMIN", "BEAN_COUNTER"]} %>
-    <%= link_to("Returns", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {("sale_id").to_sym => sale.id}}}) %>
   </td>
 </tr>

@@ -482,6 +482,9 @@ background-color: #F0EFEF;
 fieldset.payment {
 background-color: #BCA;
 }
+.red td {
+color: red;
+}
 .free_transaction td {
 color: black;
 }

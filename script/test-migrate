@@ -16,30 +16,38 @@ if [ "$MD5" != "$(md5sum $MY_FULL_PATH)" ]; then
     exit 1
 fi
 
-if [ -n "$1" ]; then
+NO_DROP=0
+BRANCH=master
+
+while [ -n "$1" ]; do
     ARG="$1"
+    shift
     ARG=$(echo "$ARG" | sed 's/--//g')
     case "$ARG" in
         release|production|live|latest)
             BRANCH=release_$($SCRIPT_DIR/sorted-tags | tail -1)
             ;;
-        release_*)
+        release_*|library)
             BRANCH=$ARG
             ;;
         1.0.*)
             BRANCH=release_$ARG
             ;;
-        master|devel|development|dev)
+        master|next)
             BRANCH=master
             ;;
+        devel|development|dev)
+            BRANCH=devel
+            ;;
+        no-drop)
+            NO_DROP=1
+            ;;
         *)
-            echo "Unknown branch to test-migrate: $1"
+            echo "Unknown option to test-migrate: $ARG"
             exit 1
             ;;
     esac
-else
-    BRANCH=master
-fi
+done
 
 export RAILS_ENV=development
 
@@ -62,10 +70,11 @@ if [ "$BRANCH" != "master" ]; then
 fi
 cp config/database.yml-example config/database.yml
 ln -s /usr/share/rails vendor/rails
+./script/do_i_have_everything_installed_right
 rake db:migrate --trace
 cd ../
 rm -f database.sql
-if [ "$1" != "--no-drop" ]; then
+if [ "1" != "$NO_DROP" ]; then
     dropdb fgdb_$RAILS_ENV
 fi
 rm -fr trunk

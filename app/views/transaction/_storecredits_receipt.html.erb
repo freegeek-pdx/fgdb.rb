@@ -1,0 +1,11 @@
+<% if @transaction.methods.include?('storecredits') %>
+  <% for credit in @transaction.storecredits.select{|x| !x.spent?} %>
+    <fieldset style="border: 1px solid;">
+      <h3>Store Credit #<%= credit.id %></h3>
+      This Store Credit is redeemable for $<%= credit.amount %> at the Free Geek Thrift Store through <%= credit.valid_until.strftime("%B %d, %Y") %>.<br/><br/>
+      This credit is valid as payment at the Free Geek Thrift Store for a period of one year from the original date of return.<br/><br/>
+      This is a bearer document; it may be redeemed by whomever posesses the original, phyisical document.<br/><br/>
+      Please treat this document as if it were cash. If you lose this piece of paper, you are out of luck.
+    </fieldset>
+  <% end %>
+<% end %>

@@ -121,6 +121,10 @@ test_my_rails_version(){
     check_a_version 2.1.2 || check_a_version 2.1.0
 }
 
+test_find_thin(){
+    which thin || which thin1.8
+}
+
 echo "Testing to see if you have everything required for fgdb to run..."
 echo
 run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
@@ -132,9 +136,12 @@ run "Checking to see if rails is correct version..." "test_my_rails_version" "us
 run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"
 run "Checking to see if barby is installed..." "require_test barby" "install libbarby-ruby" "fail"
 run "Checking to see if rmagick is installed..." "require_test RMagick" "install librmagick-ruby" "fail"
+run "Checking to see if bytes is installed..." "require_test bytes" "install libbytes-ruby1.8" "fail"
+run "Checking to see if json is installed..." "require_test json" "install libjson-ruby1.8" "fail"
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
 run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
 run "Checking to see if zoom is installed..." "require_test zoom" "install libzoom-ruby" "fail"
+run "Checking to see if thin is installed..." "test_find_thin" "install thin" "fail"
 run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
 run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"

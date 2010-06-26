@@ -75,16 +75,14 @@ class MeetingsController < ApplicationController
       #   weekday, if not then skip
       weekday_id = day.strftime( '%w' )
       weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
-      if weekday.is_open
-        # get a list of all workers attending this
-        # meeting and loop through it
-        @meeting.workers.each do |w|
-          # if worker is on vacation, don't save shift
-          v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
-          if not v
-            workshift = WorkShift.create_from_meeting( @meeting, w, day )
-            workshift.save
-          end
+      # get a list of all workers attending this
+      # meeting and loop through it
+      @meeting.workers.each do |w|
+        # if worker is on vacation, don't save shift
+        v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
+        if not v
+          workshift = WorkShift.create_from_meeting( @meeting, w, day )
+          workshift.save
         end
       end
       redirect_to :action => 'list', :controller => 'work_shifts'

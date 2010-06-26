@@ -1,0 +1,5 @@
+if @successful
+  page.remove "points_trade_#{params[:id]}"
+else
+  page.hide loading_indicator_id("points_trade_#{params[:id]}_loading")
+end

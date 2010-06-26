@@ -18,7 +18,7 @@
       </div>
 
       <div class="form-extras">
-        <% if Contract.usable.length > 1 %>
+        <% if contract_enabled %>
         <div class="form-element">
           <label for="donation_contract_id">Contract</label>
           <select id="donation_contract_id" name="donation[contract_id]" onChange="show_contract_notes();">

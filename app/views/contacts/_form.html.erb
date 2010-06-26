@@ -83,7 +83,7 @@
     <label for="contact_fully_covered__nil">Unknown</label>
   </div>
 
-  <% if Contract.usable.length > 1 %>
+  <% if contract_enabled %>
     <div class="contract form-element">
       <label for="contact_contract">Default Donation Contract</label>
       <%= collection_select("contact", "contract_id", Contract.usable, "id", "description") %>

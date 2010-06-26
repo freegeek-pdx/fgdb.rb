@@ -23,7 +23,7 @@
         <tr><td><label for="report_action_id">Job:</label></td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
         <tr><td><label for="report_system_id">System ID:</label></td><td><%= text_field("report", :system_id) %></td></tr>
         <tr><td><label for="report_type_id">Type:</label></td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
-        <% if Contract.usable.length > 1 %>
+        <% if contract_enabled %>
           <tr><td><label for="report_contract_id">Keeper label type:</label></td><td><%= select("report", "contract_id", Contract.usable.collect {|p| [p.label, p.id] }) %></td></tr>
         <% end %>
         <% if coveredness_enabled %>

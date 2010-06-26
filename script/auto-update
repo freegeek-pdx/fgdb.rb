@@ -89,4 +89,6 @@ else
     echo "Would run run_$MODE in $(pwd)"
 fi
 }
+sudo touch "$LOGFILE"
+sudo chown "$USER" "$LOGFILE"
 main 2>&1 | tee -a "$LOGFILE"

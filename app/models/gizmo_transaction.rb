@@ -1,13 +1,7 @@
 module GizmoTransaction
   def usable_gizmo_types
     if self.gizmo_context == GizmoContext.gizmo_return
-      if self.sale
-        return GizmoContext.sale.gizmo_types.effective_on(self.sale.occurred_at)
-      elsif self.disbursement
-        return GizmoContext.disbursement.gizmo_types.effective_on(self.disbursement.occurred_at)
-      else
-        return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
-      end
+      return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
     else
       return self.gizmo_context.gizmo_types.effective_on(self.occurred_at || Date.today)
     end
@@ -114,9 +108,9 @@ module GizmoTransaction
   end
 
   def should_i_hide_it?
-    if gizmo_context == GizmoContext.donation
+    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return
       return true
-    elsif gizmo_context == GizmoContext.sale or gizmo_context == GizmoContext.gizmo_return
+    elsif gizmo_context == GizmoContext.sale
       return false
     else
       raise NoMethodError
@@ -172,7 +166,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_transaction
-    self.occurred_at = DateTime.now if self.occurred_at.nil?
+    self.occurred_at = DateTime.now if self.real_occurred_at.nil?
   end
 
   def occurred_at

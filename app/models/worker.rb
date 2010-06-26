@@ -39,9 +39,9 @@ class Worker < ActiveRecord::Base
 #  after_save :save_worker_types
   def save_worker_types
     set_temp_worker_association
-    self.workers_worker_types.each{|x|
-      x.save!
-    }
+#    self.workers_worker_types.each{|x|
+#      x.save!
+#    }
   end
 
   def is_available?( shift = Workshift.new )
@@ -67,7 +67,11 @@ class Worker < ActiveRecord::Base
     return (a.length > 0)
   end
 
-  def self.effective_in_range(*args)
+  named_scope :effective_in_range, lambda { |*args|
+    {:conditions => ['id IN (?)', Worker._effective_in_range(args)]}
+  }
+
+  def self._effective_in_range(args)
     my_start = my_end = nil
     if args.length == 1 && args[0].is_a?(PayPeriod)
       my_start = args[0].start_date
@@ -81,7 +85,7 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}
+    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}.map{|x| x.id}
   end
 
   named_scope :real_people, :conditions => {:virtual => false}
@@ -104,7 +108,8 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_id=(value)
-    if ! worker_type_id.nil? && worker_type_id != value
+    value = value.to_i
+    if ! worker_type_id.nil? && worker_type_id != value && worker_type_id != 50
       raise
     end
     t = WorkerType.find_by_id(value)
@@ -133,15 +138,33 @@ class Worker < ActiveRecord::Base
         my = WorkersWorkerType.new(:worker_id => self.id, :worker_type_id => @temp_change_worker_type_id, :ineffective_on => my_ineffective, :effective_on => @temp_change_worker_type_date)
         my.save!
       end
-      @my_worker_types = @my_worker_types.sort_by(&:smart_effective_on)
+      self.purify_worker_types
+    end
+  end
+
+  def purify_worker_types
+    @my_worker_types = self.workers_worker_types.sort_by(&:smart_effective_on)
+    prev_length = 0
+    while prev_length != @my_worker_types.length
+      prev_length = @my_worker_types.length
       @my_worker_types.each_with_siblings{|a, b, c|
         if a and b and a.worker_type_id == b.worker_type_id
           b.killit = true
           a.ineffective_on = b.ineffective_on
+          a.save!
+          @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+          @my_worker_types.delete_if{|x| x.killit}
+          next
+        end
+        if b and c and b.worker_type_id == c.worker_type_id
+          b.killit = true
+          c.effective_on = b.effective_on
+          c.save!
+          @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+          @my_worker_types.delete_if{|x| x.killit}
+          next
         end
       }
-      @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
-      @my_worker_types.delete_if{|x| x.killit}
     end
   end
 

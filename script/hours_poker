@@ -37,7 +37,7 @@ def dostuff
   pp = PayPeriod.find_for_date(@target)
   temp = {}
   (pp.start_date..@target).each{|x|
-    temp[x] = Worker.find_by_sql(DB.prepare_sql("SELECT * FROM workers WHERE virtual = 'f' AND id IN (SELECT worker_id FROM work_shifts JOIN jobs ON jobs.id = work_shifts.job_id WHERE jobs.virtual = 'f' AND shift_date = ? AND work_shifts.worker_id NOT IN (SELECT worker_id FROM worked_shifts WHERE date_performed = ?))", x, x))
+    temp[x] = Worker.find_by_sql(DB.prepare_sql("SELECT * FROM workers WHERE virtual = 'f' AND id IN (SELECT worker_id FROM work_shifts JOIN jobs ON jobs.id = work_shifts.job_id WHERE (job_id = 0 OR jobs.virtual = 'f') AND shift_date = ? AND work_shifts.worker_id NOT IN (SELECT worker_id FROM worked_shifts WHERE date_performed = ?))", x, x))
   }
   res = {}
   temp.each{|d,a|

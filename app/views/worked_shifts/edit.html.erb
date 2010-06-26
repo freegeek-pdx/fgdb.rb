@@ -13,7 +13,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
-<table id="shift_lines">
+<table id="shifts_lines">
   <tr>
     <th>job</th>
     <th>duration</th>
@@ -26,7 +26,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
        @shift_js += "add_shift(#{hash.to_json});"
      end 
      @shift_js += "shift_do_ajax = 1;"%>
-  <tr id="shift_form">
+  <tr id="shifts_form">
     <td><select id="job_id">
         <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>
       </select>

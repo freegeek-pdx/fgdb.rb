@@ -137,7 +137,6 @@ SQL
           #   weekday, if not then skip
           weekday_id = day.strftime( '%w' )
           weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
-          if weekday.is_open
             # get standard shifts that match the day of week
             #   order by workers.name, start_time
             @root_sched = Schedule.find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date ", day] )
@@ -215,7 +214,6 @@ SQL
                   #     standard_shift
                   workshift.save
                 end
-              end
             end
           end
         end

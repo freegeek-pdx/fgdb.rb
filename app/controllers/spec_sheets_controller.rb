@@ -38,7 +38,7 @@ class SpecSheetsController < ApplicationController
 
   def fix_contract_save
     @system = System.find_by_id(params[:system][:id])
-    @system.contract_id = params[:system][:contract_id].to_i
+    @system.attributes = params[:system]
     @good = @system.save
   end
 

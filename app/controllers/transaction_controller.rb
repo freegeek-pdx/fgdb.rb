@@ -29,20 +29,47 @@ class TransactionController < ApplicationController
   public
 
   def get_system_contract
-    s = System.find_by_id(params[:system_id])
+    s = nil
+    if params[:system_id].to_s == params[:system_id].to_i.to_s
+      s = System.find_by_id(params[:system_id])
+    end
     v = (s ? s.contract_id : -1)
+    v2 = (s ? s.covered : nil)
+
     render :update do |page|
       page << "internal_system_contract_id = #{v.to_s.to_json}";
-      page.hide loading_indicator_id("line_item")
+      page << "system_covered_cache[#{params[:system_id].to_json}] = #{v2.inspect.to_json}";
+      page << "ge_done();"
     end
   end
 
   def get_storecredit_amount
     s = StoreCredit.find_by_id(params[:id])
-    v = (s ? s.amount_cents : -1)
+    msg = nil
+    v = -1
+    if s
+      if s.spent?
+        msg = "This store credit has already been spent"
+      else
+        v = s.amount_cents
+      end
+    else
+      msg = "A store credit with that ID does not exist"
+    end
+    v = (s && !s.spent? ? s.amount_cents : -1)
     render :update do |page|
-      page << "internal_storecredit_amount = #{v.to_s.to_json}";
+      page << "internal_storecredit_amount = #{v.to_s.to_json};";
+      page << "storecredit_errors_cache[#{params[:id]}] = #{msg.to_json};"
       page.hide loading_indicator_id("payment_line_item")
+    end
+  end
+
+  def get_sale_exists
+    s = Sale.find_by_id(params[:id])
+    s = !! s
+    render :update do |page|
+      page << "internal_sale_exists = #{s.to_json};";
+      page.hide loading_indicator_id("line_item")
     end
   end
 
@@ -270,18 +297,19 @@ class TransactionController < ApplicationController
   end
 
   def _apply_line_item_data(transaction)
-    if transaction.respond_to?(:payments) && params[:payments]
+    if transaction.respond_to?(:payments)
       @payments = []
-      for payment in params[:payments].values
+      payments = params[:payments] || {}
+      for payment in payments.values
         p = Payment.new(payment)
         @payments << p
       end
       @transaction.payments = @payments
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
-
-    if params[:line]
-      lines = params[:line]
+    params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return
+    if transaction.respond_to?(:gizmo_events)
+      lines = params[:gizmo_events] || {}
       @lines = []
       for line in lines.values
         @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))

@@ -8,6 +8,14 @@ class System < ActiveRecord::Base
   has_many :notes
   has_many :gizmo_events
 
+  def covered_s
+    self.covered.to_s
+  end
+
+  def covered_s=(val)
+    self.covered = eval(val)
+  end
+
   def validate
     if self.contract.nil?
       errors.add("contract_id", "contract is not valid")

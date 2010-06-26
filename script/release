@@ -59,8 +59,12 @@ git merge release_$VERSION
 git rm db/branch_devel_data_version
 git commit -m "remove devel data version for master"
 ./dpkg-parsechangelog | ssh xyzzy.ryan52.info ./sendannouncement $VERSION
-dch -c ChangeLog -i --dist UNRELEASED ""
-sed -i '/^  \* $/ d' ChangeLog
-git add ChangeLog
-git commit -m "add new, empty changelog entry"
+if [ -n "$(git log origin/master..origin/devel)" ]; then
+    git merge devel
+else
+    dch -c ChangeLog -i --dist UNRELEASED ""
+    sed -i '/^  \* $/ d' ChangeLog
+    git add ChangeLog
+    git commit -m "add new, empty changelog entry"
+fi
 git push fg master:master

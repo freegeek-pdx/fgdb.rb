@@ -1,6 +1,8 @@
 class StoreCredit < ActiveRecord::Base
   belongs_to :payment
 
+  define_amount_methods_on :amount
+
   def spent?
     @spent ||= _is_spent
   end
@@ -13,6 +15,14 @@ class StoreCredit < ActiveRecord::Base
     spent_on
     spent?
     nil
+  end
+
+  def still_valid?(date = Date.today)
+    date <= self.valid_until
+  end
+
+  def valid_until
+    expire_date
   end
 
   private

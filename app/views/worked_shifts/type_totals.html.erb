@@ -1,0 +1,8 @@
+<% @defaults = OpenStruct.new %>
+<% form_for :worked_shift, nil, :url => { :action => "type_totals_report" } do |f| %>
+<% select_stuff = @types_of_types.map{|x| [x.titleize, x]} %>
+<p><%= f.label "row_name", "Row Name" %><%= select("worked_shift", "row_name", select_stuff) %></p>
+<p><%= f.label "col_name", "Column Name" %><%= select("worked_shift", "col_name", select_stuff) %></p>
+<p><%= f.label "date_performed", "Date Performed" %><%= conditions_html('defaults', ["date_performed"]) %></p><br />
+<p><%= submit_tag "Go" %></p>
+<% end %>

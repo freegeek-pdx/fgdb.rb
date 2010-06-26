@@ -352,6 +352,8 @@ class Conditions < ConditionsBase
   def store_credit_id_conditions(klass)
     if klass == GizmoReturn
       return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", store_credit_id]
+    elsif klass == Sale
+      return ["payments.id = (SELECT payment_id FROM store_credits WHERE id = ?)", store_credit_id]
     else
       raise NoMethodError
     end

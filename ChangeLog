@@ -1,4 +1,49 @@
-fgdb.rb (1.0.49) UNRELEASED; urgency=low
+fgdb.rb (1.0.51) UNRELEASED; urgency=low
+
+  * turn covered on sales back on
+  * allow anything to be scheduled on a closed day, not just meetings
+  * fix the new error handling stuff
+  * add a new flexible staff hours report for workers comp and taxes
+    (Closes: #18538)
+  * add some newly found generics
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 15:06:17 -0700
+
+fgdb.rb (1.0.50) released; urgency=low
+
+  * move out the bytes calculations to libbytes-ruby1.8
+  * mutate the returns as well (Closes: 15738)
+  * make it obvious when a receipt has store credit associated (Closes:
+    14857)
+  * don't associate disbursements or sales with returns themselves
+    (Closes: #16659)
+  * mess around with the fields for the gizmo returns (Closes: #16660)
+  * add a valid until to the store credit printout
+  * alert when the store credit id is already spent or nonexistant
+  * prompt the user if they don't enter a system id
+  * Store should be happy with returns (Closes: #16656)
+  * change the covered widget to be a dropdown instead of a checkbox
+    (Closes: #15884)
+  * add an expire_date field to store credits, and make partial store
+    credits retain the expire date from the original store credit
+  * add a list of gizmo types at http://data/sales/gizmo_types
+  * Show covered widget on sales screen (Closes: #15883)
+  * FG-PDX is automatically uncovered everywhere now (Closes: #15846)
+  * coveredness tracking is complete (Closes: #15885)
+  * Split off cell phone to its own gizmo type (Closes: #18486)
+  * rename enterprise build to server build (Closes: #18742)
+  * fix removing the last thing of a line item (Closes: #18775)
+  * create a more sane 500/404 error page (with the sidebar) for
+    production mode (Closes: #18774)
+  * fix hours poker to email when there is only a meeting too (Closes:
+    #18776)
+  * fgdb now saves crash reports that I can look at later
+  * when trying to generate a meeting, remove the check for whether FG
+    is open that day (Closes: #18777)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 01:02:15 -0700
+
+fgdb.rb (1.0.49) released; urgency=low
 
   * add a bunch of missing foreign keys
   * add a new admin set of fields for adjustments, showable by
@@ -9,7 +54,7 @@ fgdb.rb (1.0.49) UNRELEASED; urgency=low
     (Closes: #16835)
   * make the points interface a bit more awesome (Closes: #17660)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Apr 2010 17:02:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Apr 2010 00:20:33 -0700
 
 fgdb.rb (1.0.48) released; urgency=low
 

@@ -59,6 +59,9 @@ fix_tx(Donation.find(:all, :conditions=>"comments is not null and comments <> ''
 puts "fixing up sales"
 fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
+puts "fixing up returns"
+fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
+
 puts "fixing up disbursements"
 fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 

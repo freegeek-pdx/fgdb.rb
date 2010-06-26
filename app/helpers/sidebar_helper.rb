@@ -75,6 +75,7 @@ module SidebarHelper
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"} if is_staff?
     sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"} if is_staff?
     sidebar_hash["staff"]["jobs report"] = {:c => "reports", :a => "staff_hours"} if is_staff?
+    sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     # library
@@ -86,7 +87,7 @@ module SidebarHelper
     end
     # fgss
     sidebar_hash["fgss"]["printme"] = {:c => 'spec_sheets'}
-    sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if Contract.find(:all).length > 1 && has_role?("ADMIN") # TODO: fix this
+    sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled && has_role?("ADMIN")
     # done
     return aliases, sidebar_hash
   end

@@ -9,11 +9,122 @@ class WorkedShiftsController < ApplicationController
   def needs_beancounter_or_me
 #    contact_id = @worker ? (@worker.contact ? @worker.contact.id : nil) : nil
     roles = ['BEAN_COUNTER', 'SKEDJULNATOR']
-    if params[:action].match(/^(weekly_worker|payroll)/)
+    if params[:action].match(/^(weekly_worker|payroll|type_totals)/)
       return requires_role(*roles)
     else
       return requires_staff
     end
+  end
+
+  NH = {"jobs" => "name",
+    "wc_categories" => "description",
+    "programs" => "name",
+    "income_streams" => "description",
+    "worker_types" => "name",
+    "workers" => "name"}
+
+  def type_totals
+    @types_of_types = NH.keys
+  end
+
+  def type_totals_report
+    @defaults = Conditions.new
+    @defaults.apply_conditions(params[:defaults])
+    @date_range_string = @defaults.to_s
+
+    @row_table = params[:worked_shift][:row_name]
+    @col_table = params[:worked_shift][:col_name]
+    @start_date = @end_date = "2010-06-24"
+
+    def get_table_labels(table)
+      res = DB.exec("SELECT id, #{NH[table]} AS label FROM #{table}")
+      h = {}
+      res.each{|x|
+        h[x["id"]] = x["label"].downcase
+      }
+      return h
+    end
+
+    row_labels = get_table_labels(@row_table)
+    col_labels = get_table_labels(@col_table)
+
+    res = DB.exec("SELECT #{@row_table}.id AS row_id, #{@col_table}.id AS col_id, SUM(duration) AS duration
+FROM worked_shifts
+LEFT OUTER JOIN jobs on jobs.id = job_id
+LEFT OUTER JOIN wc_categories ON jobs.wc_category_id = wc_categories.id
+LEFT OUTER JOIN programs ON programs.id = jobs.program_id
+LEFT OUTER JOIN income_streams ON income_streams.id = jobs.income_stream_id
+LEFT OUTER JOIN workers ON worker_id = workers.id
+LEFT OUTER JOIN workers_worker_types ON workers_worker_types.worker_id = workers.id AND (workers_worker_types.effective_on <= worked_shifts.date_performed OR workers_worker_types.effective_on IS NULL) AND (workers_worker_types.ineffective_on > worked_shifts.date_performed OR workers_worker_types.ineffective_on IS NULL)
+LEFT OUTER JOIN worker_types ON worker_types.id = workers_worker_types.worker_type_id
+WHERE #{ActiveRecord::Base.send(:sanitize_sql_for_conditions, @defaults.conditions(WorkedShift))}
+GROUP BY 1,2;")
+
+    template_row_hash = {}
+    table_hash = {}
+    row_subtotal = {}
+
+    col_labels.each{|k,v|
+      template_row_hash[k] = 0.0
+    }
+
+    def sort_hash(h)
+      h.to_a.sort_by{|x| t = x.last.downcase; t == "unset" ? "zzzzz-last-unset" : t}.map(&:first)
+    end
+
+    row_labels.each{|k,v|
+      table_hash[k] = template_row_hash.dup
+      row_subtotal[k] = 0.0
+    }
+
+    col_subtotal = template_row_hash.dup
+
+    total = 0.0
+
+    res.to_a.each {|x|
+      d = x["duration"].to_f
+      ri = x["row_id"] || "NULL"
+      ci = x["col_id"] || "NULL"
+      if ri == "NULL"
+        table_hash[ri] ||= template_row_hash.dup
+	row_subtotal[ri] ||= 0.0
+      end
+      if ci == "NULL"
+      	table_hash[ri][ci] ||= 0.0
+	col_subtotal[ci] ||= 0.0
+      end
+      table_hash[ri][ci] += d
+      row_subtotal[ri] += d
+      col_subtotal[ci] += d
+      total += d
+    }
+
+    row_labels["NULL"] = "unset" if table_hash.keys.include?("NULL")
+    col_labels["NULL"] = "unset" if table_hash.values.map(&:keys).flatten.uniq.include?("NULL")
+
+    sorted_row_ids = sort_hash(row_labels)
+    sorted_col_ids = sort_hash(col_labels)
+
+    table = []
+    table << ["", sorted_col_ids.map{|x| col_labels[x]}, "total"].flatten
+    sorted_row_ids.each{|x|
+      a = [row_labels[x]]
+      h = table_hash[x]
+      sorted_col_ids.each{|y|
+        a << (h[y] || 0.0)
+      }
+      a << row_subtotal[x]
+      table << a
+    }
+
+    a = ["total"]
+    sorted_col_ids.each{|y|
+      a << col_subtotal[y]
+    }
+    a << total
+    table << a
+
+    @result = table
   end
 
   def be_stupid

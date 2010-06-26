@@ -4,14 +4,16 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
-  belongs_to :sale
-  belongs_to :disbursement
   has_one :store_credit
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
   acts_as_userstamp
   before_save :set_occurred_at_on_transaction
+
+  def storecredits
+    [self.store_credit]
+  end
 
   def self.default_sort_sql
     "gizmo_returns.created_at DESC"
@@ -23,7 +25,6 @@ class GizmoReturn < ActiveRecord::Base
       errors.add("contact_id", "does not refer to any single, unique contact")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
-    errors.add("transaction_links", "should link to either a sale or a disbursement") if [self.sale, self.disbursement].select{|x| !x.nil?}.length != 1
   end
 
   def gizmo_context
@@ -43,6 +44,7 @@ class GizmoReturn < ActiveRecord::Base
     if self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
+      self.store_credit.expire_date ||= (Date.today + 1.year)
     else
       self.store_credit.destroy if self.store_credit
       self.store_credit = nil

@@ -1,0 +1,68 @@
+<p>Error message:
+<pre>
+<%= @exception_data["clean_message"] %>
+</pre>
+</p>
+
+<% if false && ["routing_error"].include?(@exception_data["template"]) %>
+<p>
+Routing Failures:
+<pre>
+<% @exception_data["failures"].each do |a| %>
+<% route, reason = a %>
+<%= route %> failed because <%= reason %>
+<% end %>
+</pre>
+</p>
+<% end %>
+
+<% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
+<p>
+Simple Traceback:
+<pre>
+<%= @exception_data["application_backtrace"].join("\n") %>
+</pre>
+</p>
+<% end %>
+
+<p>Information:
+<pre>
+Exception: <%= @exception_data["exception_class"] %>
+Status: <%= @exception_data["status"] %>
+User: <%= @exception_data["user"] || "None" %>
+Cashier: <%= @exception_data["cashier"] || "None" %>
+Controller: <%=  @exception_data["controller"] %>
+Action: <%=  @exception_data["action"] %>
+Date: <%= @exception_data["date"] %>
+Referer: <%= @exception_data["referer"] || "None" %>
+Client IP: <%= @exception_data["client_ip"] %>
+Rails Env: <%= @exception_data["rails_env"] %>
+</pre>
+</p>
+
+<% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
+<p>
+Params:
+<pre>
+<%= @exception_data["params"].inspect.gsub(", ", ",\n ") %>
+</pre>
+</p>
+<% end %>
+
+<% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
+<p>
+Session:
+<pre>
+<%= @exception_data["session"].inspect.gsub(", ", ",\n ") %>
+</pre>
+</p>
+<% end %>
+
+<% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
+<p>
+Full Traceback:
+<pre>
+<%= @exception_data["full_backtrace"].join("\n") %>
+</pre>
+</p>
+<% end %>

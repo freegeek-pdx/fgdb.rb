@@ -1,0 +1,16 @@
+<% @fgdb_local_request = ActionController::Base.consider_all_requests_local %>
+
+<% if @fgdb_local_request %>
+  <% @exception_data = process_exception_data(@exception) %>
+<% else %>
+  <% @exception_data = save_exception_data(@exception) %>
+<% end %>
+
+<h1 style="color: red; font-size: 60px;"><%= @exception_data["status"] %> Error!</h1>
+<p>An error occurred that prevented fgdb.rb from completing the request.</p>
+
+<% if @fgdb_local_request %>
+  <%= render :partial => "sidebar_links/exception_data", :locals => {:@exception_data => @exception_data} %>
+<% else %>
+  <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. Save this and include it in any bug reports that you create about this issue.</p>
+<% end %>

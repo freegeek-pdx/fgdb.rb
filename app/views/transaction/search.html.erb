@@ -55,7 +55,7 @@
       <% if @model.new.respond_to?( :disbursement_type ) %>
         <% filters << 'disbursement_type_id' %>
       <% end %>
-      <% if @model.new.respond_to?( :store_credit ) %>
+      <% if @model == Sale or @model == GizmoReturn %>
         <% filters << 'store_credit_id' %>
       <% end %>
       <% if @model.new.respond_to?( :payments ) %>

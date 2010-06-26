@@ -1,0 +1,4 @@
+<% @title = ["Hours broken down by", @col_table.titleize, "and", @row_table.titleize, @date_range_string].join(" ") %>
+<h1><%= @title %></h1>
+<%= make_table(@result) %>
+

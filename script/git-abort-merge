@@ -1,0 +1,8 @@
+#!/bin/sh
+
+git reset HEAD .
+git checkout .
+git reset HEAD .
+git checkout .
+rm -rf $(git status | grep -v "^# " | grep "^#" | awk '{print $2}')
+rm -f .git/MERGE_*

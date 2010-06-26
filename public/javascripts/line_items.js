@@ -44,7 +44,11 @@ function set_visibility(node, visibility) {
 
 // this one gets the visible part
 function get_node_value(node, id) {
-  return node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
+  var elms = node.getElementsBySelector(id);
+  if(elms.length == 0) {
+    return null;
+  }
+  return elms.first().lastChild.data.replace(/\$/, '')
 }
 
 // this one gets the hidden part
@@ -53,7 +57,7 @@ function getValueBySelector(thing, selector) {
 }
 
 function find_these_lines(name){
-  return $(name).getElementsBySelector("tr.line");
+  return $(name + "_lines").getElementsBySelector("tr.line");
 }
 
 function dollar_cent_value(amt) {
@@ -99,23 +103,6 @@ function cent_value(value) {
 // LINE ITEM JUNK //
 ////////////////////
 
-
-function prefix_to_container(prefix) {
-  // why is this not the sames as args['prefix']? FIX THIS!!!
-  if(prefix == "contact_method") {
-    return "contact_methods";
-  } else if (prefix == "payment") {
-    return "payments";
-  } else if (prefix == "gizmo_event") {
-    return "line";
-  } else if (prefix == "shift") {
-    return "shifts";
-  } else {
-    alert("BROKEN");
-  }
-}
-
-
 function add_line_item(args, stupid_hook, update_hook, edit_hook){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
@@ -147,15 +134,15 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
   if(!args['uneditable']) {
     tr.appendChild(td);
   }
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
+  tr.appendChild(make_hidden(args['prefix'], "id", "", args['id'], counters[prefix + '_line_id']));
   $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_form'));
   counters[args['prefix'] + '_line_id']++;
   update_hook();
 }
 
-function make_hidden(container, name, display_value, value, line_id){
+function make_hidden(prefix, name, display_value, value, line_id){
   hidden = document.createElement("input");
-  hidden.name = container + '[-' + line_id + '][' + name + ']';
+  hidden.name = prefix + '[-' + line_id + '][' + name + ']';
   hidden.value = value;
   hidden.type = 'hidden';
   td = document.createElement("td");
@@ -173,21 +160,31 @@ function edit_gizmo_event(id) {
   thing = $(id);
   $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
   $('gizmo_type_id').onchange();
-  $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
+  if($('gizmo_count') != null) {
+    $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
+  }
   if($('system_id') != null) {
     $('system_id').value = getValueBySelector(thing, ".system_id");
   }
   if($('contract_id') != null) {
     $('contract_id').value = getValueBySelector(thing, ".recycling_contract_id");
+    $('contract_id').onchange();
   }
   if($('covered') != null) {
-    $('covered').checked = getValueBySelector(thing, ".covered") == "true";
+    $('covered').value = getValueBySelector(thing, ".covered");
+    $('covered').enable();
     if($('covered').onchange) {
       $('covered').onchange();
     }
   }
+  coveredness_type_selected();
   if($('unit_price') != null) {
     $('unit_price').value = getValueBySelector(thing, ".unit_price");
+  }
+  if($('reason') != null) {
+    $('reason').value = getValueBySelector(thing, ".reason");
+    $('tester').value = getValueBySelector(thing, ".tester");
+    $('sale_id').value = getValueBySelector(thing, ".return_sale_id");
   }
   $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
@@ -213,56 +210,9 @@ function edit_payment(id) {
   $('payment_method_id').focus();
 }
 
-//////////////////
-// STUPID HOOKS //
-//////////////////
-
-function sales_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  coveredness_stuff(args, tr);
-  systems_stuff(args, tr);
-  unit_price_stuff(args, tr);
-}
-
-function disbursements_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  systems_stuff(args, tr);
-  coveredness_stuff(args, tr);
-}
-
-function recycling_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  contracts_stuff(args, tr);
-  coveredness_stuff(args, tr);
-}
-function donation_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  coveredness_stuff(args, tr);
-  systems_stuff(args, tr);
-  unit_price_stuff(args, tr);
-}
-function shift_hook(args, tr) {
-  var job_id = args['job_id'];
-  var duration = args['duration'];
-  var job = all_jobs[job_id];
-  var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "job_id", job, job_id, line_id));
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "duration", duration, duration, line_id));
-}
-
 /////////////////////////
 // ADD JUNK FROM FORMS //
 /////////////////////////
-
-function is_priced() {
-  if(gizmo_context_name == "donation" || gizmo_context_name == "sale")
-    return true;
-  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement" || gizmo_context_name == "gizmo_return")
-    return false;
-  else
-    alert("BUG. go yell at Ryan.");
-  return false;
-}
 
 function update_amount_for_storecredit() {
   var a = dollar_value(get_storecredit_amount($('store_credit_id').value));
@@ -270,6 +220,7 @@ function update_amount_for_storecredit() {
     a = "";
   }
   $('payment_amount').value = a;
+  alert_for_storecredit($('store_credit_id').value);
 }
 
 function add_shift_from_form() {
@@ -288,10 +239,10 @@ function add_shift_from_form() {
 
 function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || $('gizmo_count').value == '') {
+  if($('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
-  if($('system_id') != null) {
+  if($('system_id') != null && $('gizmo_count') != null) {
     var list = strlist_to_arr($('system_id').value);
     if(parseInt($('gizmo_count').value) < list.length) {
       alert("you gave more system ids than the number of gizmos, which can't work...please fix this and try again.");
@@ -301,7 +252,9 @@ function _add_gizmo_event_from_form()
   }
   var args = new Object();
   args['gizmo_type_id'] = $('gizmo_type_id').value;
-  args['gizmo_count'] = $('gizmo_count').value;
+  if($('gizmo_count') != null) {
+    args['gizmo_count'] = $('gizmo_count').value;
+  }
   args['description'] = $('description').value;
   if($('unit_price') != null) {
     args['unit_price'] = $('unit_price').value;
@@ -309,8 +262,19 @@ function _add_gizmo_event_from_form()
   if($('system_id') != null) {
     args['system_id'] = $('system_id').value;
   }
+  if($('reason') != null) {
+    args['reason'] = $('reason').value;
+    args['tester'] = $('tester').value;
+    if($('sale_id').value == "") {
+      $('sale_id').value = prompt("You didn't enter a sale id. Please enter one now, or continue if you are sure you don't want to enter one.");
+    }
+    while($('sale_id').value != "" && !sale_exists($('sale_id').value)) {
+      $('sale_id').value = prompt("You entered a nonexistant sale id. Please enter a correct one now, or continue without entering one if you want to leave it blank.");
+    }
+    args['sale_id'] = $('sale_id').value;
+  }
   if($('covered') != null) {
-    args['covered'] = $('covered').checked;
+    args['covered'] = $('covered').value;
   }
   if($('contract_id') != null) {
     args['contract_id'] = $('contract_id').value;
@@ -324,17 +288,22 @@ function _add_gizmo_event_from_form()
   if($('unit_price') != null) {
     $('unit_price').value = $('unit_price').defaultValue;
   }
-  $('gizmo_count').value = $('gizmo_count').defaultValue;
+  if($('gizmo_count') != null) {
+    $('gizmo_count').value = $('gizmo_count').defaultValue;
+  }
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
   }
+  if($('reason') != null){
+    $('reason').value = $('reason').defaultValue;
+    $('tester').value = $('tester').defaultValue;
+    $('sale_id').value = $('sale_id').defaultValue;
+  }
   if($('covered') != null){
-    $('covered').checked = $('covered').defaultChecked;
+    $('covered').selectedIndex = 0;
     $('covered').disable();
-    if($('covered').disabled) {
-      $('covered').checked = false;
-    }
+    $('covered').value = "false";
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
@@ -344,7 +313,7 @@ function _add_gizmo_event_from_form()
 }
 
 function add_payment_from_form() {
-  if(!is_priced())
+  if(!has_a_price)
     return;
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
@@ -377,9 +346,9 @@ function add_contact_method_from_form() {
   return false;
 }
 
-///////////////////////////////
-// REAL PART OF STUPID HOOKS //
-///////////////////////////////
+//////////////////
+// STUPID HOOKS //
+//////////////////
 
 function coveredness_stuff(args, tr){
   if(!coveredness_enabled)
@@ -387,7 +356,7 @@ function coveredness_stuff(args, tr){
   if($('covered') == null)
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "covered", args['covered'], args['covered'], line_id));
+  tr.appendChild(make_hidden(args['prefix'], "covered", args['covered'], args['covered'], line_id));
 }
 
 function systems_stuff(args, tr){
@@ -415,15 +384,15 @@ function systems_stuff(args, tr){
         td.appendChild(document.createTextNode("]"));
         tr.appendChild(td);
       } else {
-        tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", args['system_id'], args['system_id'], line_id));
+        tr.appendChild(make_hidden(args['prefix'], "system_id", args['system_id'], args['system_id'], line_id));
       }
     }
     else {
-      tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
+      tr.appendChild(make_hidden(args['prefix'], "system_id", "", "", line_id));
     }
   }
   else {
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
+    tr.appendChild(make_hidden(args['prefix'], "system_id", "", "", line_id));
   }
 }
 
@@ -431,16 +400,33 @@ function contracts_stuff(args, tr){
   if($('contract_id') != null) {
     var line_id = counters[args['prefix'] + '_line_id'];
     var contract = all_contracts[args['contract_id']];
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "recycling_contract_id", contract, args['contract_id'], line_id));
+    tr.appendChild(make_hidden(args['prefix'], "recycling_contract_id", contract, args['contract_id'], line_id));
   }
 }
 
 function unit_price_stuff(args, tr){
+  if(!has_a_price)
+    return;
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "unit_price", args['unit_price'], args['unit_price'], line_id));
-  td = document.createElement("td");
-  td.appendChild(make_hidden(prefix_to_container(args['prefix']), "total_price", "$0.00", "$0.00", line_id));
-  tr.appendChild(td);
+  tr.appendChild(make_hidden(args['prefix'], "unit_price", args['unit_price'], args['unit_price'], line_id));
+  if($('gizmo_count') != null) {
+    td = document.createElement("td");
+    td.appendChild(make_hidden(args['prefix'], "total_price", "$0.00", "$0.00", line_id));
+    tr.appendChild(td);
+  }
+}
+
+function returns_stuff(args,tr) {
+  if($('reason') == null) {
+    return;
+  }
+  var line_id = counters[args['prefix'] + '_line_id'];
+  var reason = args['reason'];
+  var tester = args['tester'];
+  var sale_id = args['sale_id'];
+  tr.appendChild(make_hidden(args['prefix'], "return_sale_id", sale_id, sale_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "reason", reason.truncate(15), reason, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "tester", tester.truncate(15), tester, line_id));
 }
 
 function gizmo_events_stuff(args, tr){
@@ -449,23 +435,44 @@ function gizmo_events_stuff(args, tr){
   var description = args['description'];
   var gizmo_type = all_gizmo_types[gizmo_type_id];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
-  var desc = make_hidden(prefix_to_container(args['prefix']), "description", description, description, line_id)
-  set_visibility(desc, show_description);
+  tr.appendChild(make_hidden(args['prefix'], "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
+  var desc = make_hidden(args['prefix'], "description", description, description, line_id)
+  set_visibility(desc, show_description & 1);
   tr.appendChild(desc);
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_count", gizmo_count, gizmo_count, line_id));
+  if($('gizmo_count') != null) {
+    tr.appendChild(make_hidden(args['prefix'], "gizmo_count", gizmo_count, gizmo_count, line_id));
+  }
 }
+
+function transaction_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  returns_stuff(args, tr);
+  systems_stuff(args, tr);
+  contracts_stuff(args, tr);
+  coveredness_stuff(args, tr);
+  unit_price_stuff(args, tr);
+}
+
+function shift_hook(args, tr) {
+  var job_id = args['job_id'];
+  var duration = args['duration'];
+  var job = all_jobs[job_id];
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden(args['prefix'], "job_id", job, job_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "duration", duration, duration, line_id));
+}
+
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
   var payment_method_id = args['payment_method_id'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
-  amount_node = make_hidden(prefix_to_container(args['prefix']), "amount", payment_amount, payment_amount, line_id);
+  tr.appendChild(make_hidden(args['prefix'], "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
+  amount_node = make_hidden(args['prefix'], "amount", payment_amount, payment_amount, line_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
   if($('store_credit_id')) {
     var storecredit_id = args['store_credit_id'];
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "store_credit_id", storecredit_id, storecredit_id, line_id));
+    tr.appendChild(make_hidden(args['prefix'], "store_credit_id", storecredit_id, storecredit_id, line_id));
   }
 }
 
@@ -474,11 +481,11 @@ function contact_method_stuff(args, tr){
   var contact_method_type_id = args['contact_method_type_id'];
   var contact_method_usable = args['contact_method_usable'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-  usable_node = make_hidden(prefix_to_container(args['prefix']), "ok", contact_method_usable, contact_method_usable, line_id);
+  tr.appendChild(make_hidden(args['prefix'], "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+  usable_node = make_hidden(args['prefix'], "ok", contact_method_usable, contact_method_usable, line_id);
   usable_node.className = "ok";
   tr.appendChild(usable_node);
-  description_node = make_hidden(prefix_to_container(args['prefix']), "value", contact_method_value, contact_method_value, line_id);
+  description_node = make_hidden(args['prefix'], "value", contact_method_value, contact_method_value, line_id);
   description_node.className = "description";
   tr.appendChild(description_node);
 }
@@ -493,7 +500,7 @@ function update_contract_notes(){
   var mynotes;
   var found = new Array();
   mynotes = "";
-  lines = find_these_lines('gizmo_event_lines');
+  lines = find_these_lines('gizmo_events');
   for(var i = 0; i < lines.size(); i++) {
     line = lines[i];
     system_id = getValueBySelector(line, ".system_id");
@@ -530,6 +537,25 @@ function format_float(float) {
   return str;
 }
 
+// OLDTODO: just pass the hash in the parameters: option below
+
+function get_system_covered(system_id) {
+  if(!system_covered_cache[system_id]) {
+    get_system_contract(system_id);
+  }
+  return system_covered_cache[system_id];
+}
+
+function ge_thinking() {
+  Element.show(line_item_loading_id);
+  disable_ge_entry_line();
+}
+
+function ge_done() {
+  Element.hide(line_item_loading_id);
+  enable_ge_entry_line();
+}
+
 function get_system_contract(system_id){
   var val;
   if(system_contract_cache[system_id]) {
@@ -538,8 +564,8 @@ function get_system_contract(system_id){
     var myhash = new Hash();
     internal_system_contract_id = -2;
     myhash.set('system_id', system_id);
-    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
-    Element.show(line_item_loading_id);
+    var str = myhash.toQueryString();
+    ge_thinking();
     new Ajax.Request(get_system_contract_url + '?' + str, {asynchronous:false, evalScripts:true});
     system_contract_cache[system_id] = internal_system_contract_id;
     val = internal_system_contract_id;
@@ -561,7 +587,7 @@ function get_storecredit_amount(id) {
     var myhash = new Hash();
     internal_storecredit_amount = -2;
     myhash.set('id', id);
-    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
+    var str = myhash.toQueryString();
     Element.show(payment_line_item_loading_id);
     new Ajax.Request(get_storecredit_amount_url + '?' + str, {asynchronous:false, evalScripts:true});
     storecredit_amount_cache[id] = internal_storecredit_amount;
@@ -574,6 +600,32 @@ function get_storecredit_amount(id) {
     val = null;
   }
   return val;
+}
+
+function sale_exists(sale_id){
+  var val;
+  if(sale_id_cache[sale_id]) {
+    val = sale_id_cache[sale_id];
+  } else {
+    var myhash = new Hash();
+    internal_sale_exists = -2;
+    myhash.set('id', sale_id);
+    var str = myhash.toQueryString();
+    Element.show(line_item_loading_id);
+    new Ajax.Request(get_sale_exists_url + '?' + str, {asynchronous:false, evalScripts:true});
+    sale_id_cache[sale_id] = internal_sale_exists;
+    val = internal_sale_exists;
+  }
+  if(val == -2) {
+    alert("internal error");
+  }
+  return val;
+}
+
+function alert_for_storecredit(id) {
+  if(get_storecredit_amount(id) == null) {
+    alert(storecredit_errors_cache[id]);
+  }
 }
 
 function shift_compute_totals () {
@@ -646,14 +698,13 @@ function sale_compute_totals() {
 }
 
 function gizmo_return_compute_totals(){
-  update_gizmo_events_totals();
   var subtotal = get_subtotal();
   $('grand_total').innerHTML = dollar_value(subtotal);
 }
 
 function get_grand_total(){
   var total = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.total_price"));
   }
@@ -662,9 +713,13 @@ function get_grand_total(){
 
 function get_subtotal() {
   var total = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
-    total += (get_node_value(arr[x], "td.gizmo_count") * cent_value(get_node_value(arr[x], "td.unit_price")));
+    count = get_node_value(arr[x], "td.gizmo_count");
+    if(count == null) {
+      count = 1;
+    }
+    total += (count * cent_value(get_node_value(arr[x], "td.unit_price")));
 
   }
   return total;
@@ -672,7 +727,7 @@ function get_subtotal() {
 
 function get_total_payment() {
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.amount"));
   }
@@ -681,7 +736,7 @@ function get_total_payment() {
 
 function get_storecredit(){
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     if(get_node_value(arr[x], "td.payment_method_id") == "store credit") {
       total += cent_value(get_node_value(arr[x], "td.amount"));
@@ -692,7 +747,7 @@ function get_storecredit(){
 
 function get_not_storecredit(){
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     if(get_node_value(arr[x], "td.payment_method_id") != "store credit") {
       total += cent_value(get_node_value(arr[x], "td.amount"));
@@ -702,7 +757,7 @@ function get_not_storecredit(){
 }
 
 function update_gizmo_events_totals() {
-  gizmo_events = find_these_lines('gizmo_event_lines');
+  gizmo_events = find_these_lines('gizmo_events');
   for (var i = 0; i < gizmo_events.length; i++)
   {
     thing = gizmo_events[i];
@@ -721,7 +776,7 @@ function update_gizmo_events_totals() {
 
 function get_hours_today () {
   var total = 0.0;
-  var arr = find_these_lines('shift_lines');
+  var arr = find_these_lines('shifts');
   for (var x = 0; x < arr.length; x++) {
     total += parseFloat(getValueBySelector(arr[x], "td.duration"));
  }
@@ -732,7 +787,7 @@ function get_donation_totals() {
   var totals = new Object();
   totals['required'] = 0;
   totals['suggested'] = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
     var type;
     var type_id = getValueBySelector(arr[x], "td.gizmo_type_id");
@@ -804,8 +859,46 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
   }
 }
 
+function ge_linelist() {
+  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
+}
+
+function disable_ge_entry_line(){
+  if(typeof(ge_entry_enabled_arr) == "undefined") {
+    ge_entry_enabled_arr = new Array();
+  }
+  var ge_entry_enabled_hash = new Hash();
+  var list = ge_linelist();
+  for(var q = 0; q < list.size(); q++) {
+    var i = list[q];
+    var o = $(i);
+    if(o != null) {
+      ge_entry_enabled_hash.set(i, (!o.disabled).toString());
+      o.disable();
+    }
+  }
+  disable_all_links();
+  ge_entry_enabled_arr.push(ge_entry_enabled_hash);
+}
+
+function enable_ge_entry_line(){
+  var ge_entry_enabled_hash = ge_entry_enabled_arr.pop();
+  if(typeof(ge_entry_enabled_arr) == "undefined") {
+    return;
+  }
+  enable_all_links();
+  var list = ge_linelist();
+  for(var q = 0; q < list.size(); q++) {
+    var i = list[q];
+    var o = $(i);
+    if(o != null && ge_entry_enabled_hash.get(i) == "true") {
+      o.enable();
+    }
+  }
+}
+
 function last_and_tab(event) {
-  linelist = ['gizmo_count', 'system_id', 'contract_id','covered', 'unit_price'];
+  linelist = ge_linelist();
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
@@ -815,18 +908,28 @@ function last_and_tab_p(event) {
 }
 
 function handle_ge(event) {
-  if(last_and_tab(event)) {
-    if(event.target.onchange)
+  if(is_tab(event)) {
+    if(event.target.onchange) {
       event.target.onchange();
-    return handle_gizmo_events();
+    }
+    if(last_and_tab(event)) {
+      return handle_gizmo_events();
+    }
   }
 }
 
 function handle_p(event) {
-  if(last_and_tab_p(event)) {
-    if(event.target.onchange)
-      event.target.onchange();
-    return handle_payments();
+  if(is_tab(event)) {
+    if(event.target.id == 'store_credit_id') {
+      update_amount_for_storecredit();
+      if(get_storecredit_amount(event.target.value) == null) {
+        event.target.focus();
+        return false;
+      }
+    }
+    if(last_and_tab_p(event)) {
+      return handle_payments();
+    }
   }
 }
 
@@ -843,7 +946,7 @@ function handle_s(event) {
 ///////////////////
 
 function add_payment(args) {
-  args['prefix'] = 'payment';
+  args['prefix'] = 'payments';
   add_line_item(args, payment_stuff, eval(gizmo_context_name + "_compute_totals"), edit_payment);
 }
 
@@ -852,12 +955,12 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   args['contact_method_type_id'] = contact_method_type_id;
   args['contact_method_usable'] = contact_method_usable;
   args['contact_method_value'] = contact_method_value;
-  args['prefix'] = 'contact_method';
+  args['prefix'] = 'contact_methods';
   add_line_item(args, contact_method_stuff, function () {}, false);
 }
 
 function add_gizmo_event(args){
-  if(args['system_id'] != null && args['system_id'] != '') {
+  if(args['system_id'] != null && args['system_id'] != '' && args['gizmo_count'] != null) {
     if(is_a_list("" + args['system_id'])) {
       var list = strlist_to_arr("" + args['system_id']);
       var ni = 0;
@@ -888,80 +991,94 @@ function add_gizmo_event(args){
 }
 
 function add_sale_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   args['unit_price'] = dollar_cent_value(args['unit_price']);
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, sale_compute_totals, edit_gizmo_event);
 }
 
 function add_shift(args) {
-  args['prefix'] = 'shift';
+  args['prefix'] = 'shifts';
   add_line_item(args, shift_hook, shift_compute_totals, edit_shift);
 }
 
 function add_gizmo_return_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   args['unit_price'] = dollar_cent_value(args['unit_price']);
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, gizmo_return_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, gizmo_return_compute_totals, edit_gizmo_event);
 }
 
 function add_disbursement_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, disbursements_hooks, update_contract_notes, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, update_contract_notes, edit_gizmo_event);
 }
 
 function add_recycling_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
   }
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, recycling_hooks, function(){}, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, function(){}, edit_gizmo_event);
 }
 
 function add_donation_gizmo_event(args) {
   args['unit_price'] = dollar_cent_value(args['unit_price']);
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, donation_compute_totals, edit_gizmo_event);
 }
 
 ///////////////
 // ONCHANGES //
 ///////////////
 
+function contract_selected () {
+  coveredness_type_selected();
+}
+
+function system_selected() {
+  coveredness_type_selected();
+}
+
 function coveredness_type_selected() {
   if($('covered') == null)
     return;
+  contract_widget = $('contract_id') || $('donation_contract_id');
   if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
-    if($('covered').disabled) {
-      $('covered').enable();
-      $('covered').checked = true;
+    if(contract_widget && contract_widget.value != "1") {
+      $('covered').disable();
+      $('covered').value = "false";
+    } else if($('system_id') && $('system_id').value && !is_a_list($('system_id').value) && get_system_covered($('system_id').value) != "nil") {
+      $('covered').value = get_system_covered($('system_id').value);
+      $('covered').disable();
+    } else {
+      if($('covered').disabled) {
+        $('covered').enable();
+        $('covered').value = "nil";
+      }
     }
   }
   else {
     if(!$('covered').disabled) {
       $('covered').disable();
-      $('covered').checked = false;
+      $('covered').value = "false";
     }
-  }
-  if($('covered').disabled) {
-    $('covered').checked = false;
   }
 }
 function get_name_of_selected(name) {
@@ -989,16 +1106,17 @@ function sale_payment_method_selected(){
 }
 function donation_payment_method_selected(){
 }
-function sale_gizmo_type_selected() {
+function gizmo_type_selected() {
   coveredness_type_selected();
   systems_type_selected();
+  eval(gizmo_context_name + "_gizmo_type_selected();");
+}
+function sale_gizmo_type_selected() {
 }
 function gizmo_return_gizmo_type_selected() {
-  systems_type_selected();
 }
 function donation_gizmo_type_selected() {
-  coveredness_type_selected()
-  if($('covered') && $('covered').checked == true) {
+  if($('covered') && $('covered').value == "true") {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['suggested'], fees[$('gizmo_type_id').value]['required']));
   } else {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
@@ -1009,11 +1127,10 @@ function donation_gizmo_type_selected() {
   else {
     $('unit_price').disabled=true;
   }
-  if($('unit_price').disabled == false && $('covered') != null && $('covered').checked == true)
+  if($('unit_price').disabled == false && $('covered') != null && $('covered').value == "true")
     $('unit_price').disabled = true;
 }
 function recycling_gizmo_type_selected() {
-  coveredness_type_selected();
 }
 function disbursement_gizmo_type_selected() {
   coveredness_type_selected();

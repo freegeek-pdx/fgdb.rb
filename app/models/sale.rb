@@ -7,7 +7,6 @@ class Sale < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
   has_many :gizmo_types, :through => :gizmo_events
-  has_many :gizmo_returns
 
   def gizmo_context
     GizmoContext.sale
@@ -30,6 +29,10 @@ class Sale < ActiveRecord::Base
 
   define_amount_methods_on("reported_discount_amount")
   define_amount_methods_on("reported_amount_due")
+
+  def storecredits
+    self.gizmo_events.map{|x| x.store_credits}.flatten
+  end
 
   def validate
     if contact_type == 'named'
@@ -167,7 +170,8 @@ class Sale < ActiveRecord::Base
       gizmo_events << GizmoEvent.new({:unit_price_cents => storecredit_back,
                             :gizmo_count => 1,
                             :gizmo_type => GizmoType.find_by_name("store_credit"),
-                            :gizmo_context => self.gizmo_context}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
+                            :gizmo_context => self.gizmo_context,
+                            :expire_date => store_credits_spent.map{|x| x.store_credit.expire_date}.uniq.select{|x| !x.nil?}.sort.last}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
     end
     if cash_back > 0
       payments << Payment.new({:amount_cents => -cash_back,

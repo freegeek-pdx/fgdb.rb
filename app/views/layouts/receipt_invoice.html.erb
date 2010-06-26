@@ -38,7 +38,7 @@
       <td>Date: <%= @txn.occurred_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
         <% is_store_credit = (@gizmo_context == GizmoContext.gizmo_return && @txn.store_credit) %>
-        <%= is_store_credit ? "Store Credit" : @context.titleize %> <strong># <%= is_store_credit ? @txn.store_credit.id : @txn.id %></strong><%= is_store_credit ? "(Gizmo Return # #{@txn.id})" : "" %>
+        <%= is_store_credit ? "Store Credit" : @context.titleize %> <strong># <%= is_store_credit ? @txn.store_credit.id : @txn.id %></strong>
       </td>
       <td align="right">
         <% if @txn.invoiced? %>

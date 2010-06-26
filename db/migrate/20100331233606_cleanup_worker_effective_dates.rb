@@ -17,6 +17,7 @@ class CleanupWorkerEffectiveDates < ActiveRecord::Migration
         WorkersWorkerType.new(:worker_id => x.id, :worker_type_id => 50, :effective_on => last.ineffective_on, :ineffective_on => nil).save!
       end
     }
+    Worker.all.each{|x| x.purify_worker_types}
     remove_column(:workers, :effective_date)
     remove_column(:workers, :ineffective_date)
   end

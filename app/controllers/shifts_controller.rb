@@ -141,7 +141,6 @@ class ShiftsController < ApplicationController
           #   weekday, if not then skip
           weekday_id = day.strftime( '%w' )
           weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
-          if weekday.is_open
             # get standard shifts that match the day of week
             #   order by workers.name, start_time
             # ASSUMPTION: 
@@ -233,7 +232,6 @@ WHERE
                   end
               end
             end
-          end
         end
         # next
       end

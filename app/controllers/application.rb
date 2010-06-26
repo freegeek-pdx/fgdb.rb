@@ -25,6 +25,30 @@ class ApplicationController < ActionController::Base
   helper :conditions
   helper :sidebar
 
+  rescue_from 'Exception', :with => :process_exception
+
+  def rescue_as_normal
+    return false
+  end
+
+  def process_exception(exception)
+    if rescue_as_normal
+      return rescue_action(exception)
+    else
+      return rescue_action_locally(exception)
+    end
+  end
+
+  def rescues_path(thing)
+    if rescue_as_normal
+      return super(thing)
+    elsif thing == "layout"
+      return "app/views/layouts/with_sidebar.html.erb"
+    else
+      return "app/views/sidebar_links/error.html.erb"
+    end
+  end
+
   before_filter :set_correct_server_port
   def set_correct_server_port
     orig_host = request.env["HTTP_FGDB_PROXY_HTTP_HOST"]

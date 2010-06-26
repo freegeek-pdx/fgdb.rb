@@ -106,6 +106,7 @@ function show_contract_notes() {
   } else {
     $('contract_notes').hide();
   }
+  contract_selected();
 }
 
 function select_visibility(obj_name, method_name, choices, value) {

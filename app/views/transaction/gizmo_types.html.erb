@@ -1,0 +1,8 @@
+<h1><%= @gizmo_context.description.titleize %> Gizmo Types List</h1>
+as of <%= Date.today.to_s %>
+<ul>
+<% @gizmo_context.model.new.showable_gizmo_types.each do |x| %>
+<li><%= x.description %></li>
+<% end %>
+</ul>
+

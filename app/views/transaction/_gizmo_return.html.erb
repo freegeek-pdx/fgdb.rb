@@ -3,7 +3,7 @@
 <% @options = params.merge(:controller => base_controller, :action => "view",
                            :id => gizmo_return.send("#{Sale.primary_key}")) %>
 
-<tr class="<%= classAttr %>"
+<tr class="<%= gizmo_return.store_credit.spent? ? "red" : "" %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
     <% column_value = eval(column.eval) rescue nil %>
