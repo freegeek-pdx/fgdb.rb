@@ -4,12 +4,14 @@
     <th>Barcode</th>
     <th>Title</th>
     <th>Author</th>
+    <th>Call Number</th>
   </tr>
 <% @inventory.each do |c| %>
   <tr>
     <td><%= link_to c.barcode, :action => "show_copy", :id => c.id %></td>
     <td><%= c.book.title %></td>
     <td><%= c.book.author %></td>
+    <td><%= c.book.call_number %></td>
   </tr>
 <% end %>
 </table>
