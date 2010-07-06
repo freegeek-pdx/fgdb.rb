@@ -1,7 +1,7 @@
 class GenericsYetAgain < ActiveRecord::Migration
   def self.up
     only_serial = true
-    [".       .              .", "To be filled by O.E.M.", "System serial number"].each{|x|
+    [".       .              .", "To be filled by O.E.M.", "System serial number", "Serial#"].each{|x|
       g = Generic.find_by_value(x)
       if !g
         g = Generic.new
