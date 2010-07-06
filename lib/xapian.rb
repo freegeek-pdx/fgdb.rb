@@ -128,8 +128,7 @@ module ActsAsXapian
     def update_record_xapian
       id = 0
       if acts_like_xapian_opts[:parent]
-        # TODO: figure this out. it's wrong.
-#        id = self.send(acts_like_xapian_opts[:parent].to_sym)
+        id = self.send(acts_like_xapian_opts[:parent].to_sym).id
       else
         id = self.id
       end
