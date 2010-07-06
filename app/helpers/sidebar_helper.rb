@@ -79,8 +79,8 @@ module SidebarHelper
     sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"} if has_role?('SKEDJULNATOR', 'BEAN_COUNTER')
     # library
-    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers']
-    for i in ['lookup', 'overdue', 'cataloging', 'search', 'labels', 'borrowers'] do
+    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers', 'inventory']
+    for i in ['lookup', 'overdue', 'inventory', 'cataloging', 'search', 'labels', 'borrowers'] do
       if !requires_librarian.include?(i) or has_role?("LIBRARIAN")
         sidebar_hash["library"][i] = {:c => "library", :a => i}
       end

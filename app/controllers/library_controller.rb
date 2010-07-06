@@ -173,6 +173,10 @@ class LibraryController < ApplicationController
     @overdue = Copy.overdue.paginate :page => params[:page]
   end
 
+  def inventory
+    @inventory = Copy.in_library.paginate :page => params[:page]
+  end
+
   # shows information, list of copies, add new copy button
   def show_book
     @book = Book.find(params[:id])

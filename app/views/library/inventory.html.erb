@@ -1,0 +1,17 @@
+<h2>Inventory list</h2>
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th>Barcode</th>
+    <th>Title</th>
+    <th>Author</th>
+  </tr>
+<% @inventory.each do |c| %>
+  <tr>
+    <td><%= link_to c.barcode, :action => "show_copy", :id => c.id %></td>
+    <td><%= c.book.title %></td>
+    <td><%= c.book.author %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @inventory %>
