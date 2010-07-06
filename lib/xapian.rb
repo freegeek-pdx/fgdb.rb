@@ -19,7 +19,7 @@ class XapianReader < XapianBase
     @qp = Xapian::QueryParser.new()
     @qp.stemmer = stem
     @qp.database = db
-    @qp.stemming_strategy = Xapian::QueryParser::STEM_SOME
+    @qp.stemming_strategy = Xapian::QueryParser::STEM_ALL
   end
 
   def search(*args)
