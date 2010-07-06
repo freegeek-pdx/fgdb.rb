@@ -37,6 +37,26 @@ class LibraryController < ApplicationController
     redirect_to :action => "show_copy", :id => params[:copy_id]
   end
 
+  def lost
+    Copy.find_by_id(params[:copy_id]).lost
+    redirect_to :action => "show_copy", :id => params[:copy_id]
+  end
+
+  def recreate
+    Copy.find_by_id(params[:copy_id]).recreate
+    redirect_to :action => "show_copy", :id => params[:copy_id]
+  end
+
+  def found
+    Copy.find_by_id(params[:copy_id]).found
+    redirect_to :action => "show_copy", :id => params[:copy_id]
+  end
+
+  def remove
+    Copy.find_by_id(params[:copy_id]).remove
+    redirect_to :action => "show_copy", :id => params[:copy_id]
+  end
+
   # renew books
   def renew
     Copy.find_by_id(params[:copy_id]).renew

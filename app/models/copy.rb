@@ -38,10 +38,12 @@ class Copy < ActiveRecord::Base
   def status
     type = last_event.kind
     types = kinds
-    if type == types[:created] || type == types[:checked_in] || type == types[:found]
+    if type == types[:created] || type == types[:checked_in] || type == types[:found] || type == types[:recreated]
       return "checked in"
     elsif type == types[:lost]
       return "lost"
+    elsif type == types[:removed]
+      return "removed"
     elsif type == types[:renewed] || type == types[:checked_out]
       return "checked out"
     end
@@ -123,6 +125,22 @@ class Copy < ActiveRecord::Base
     library_events << LibraryEvent.new(:kind => kinds[:checked_in], :contact => last_event.contact)
   end
 
+  def lost
+    library_events << LibraryEvent.new(:kind => kinds[:lost], :contact => [kinds[:checked_out], kinds[:renewed]].include?(last_event.kind) ? last_event.contact : nil)
+  end
+
+  def found
+    library_events << LibraryEvent.new(:kind => kinds[:found], :contact => last_event.contact)
+  end
+
+  def remove
+    library_events << LibraryEvent.new(:kind => kinds[:removed])
+  end
+
+  def recreate
+    library_events << LibraryEvent.new(:kind => kinds[:recreated])
+  end
+
   def check_out(contact, due_back = nil)
     date = due_back || (Date.today + number_of_days)
     library_events << LibraryEvent.new(:kind => kinds[:checked_out], :contact => contact, :due_back => date)
@@ -142,15 +160,19 @@ class Copy < ActiveRecord::Base
   end
 
   def checked_out?
-    last_event.kind == kinds[:checked_out] || last_event.kind == kinds[:renewed]
+    self.status == "checked out"
   end
 
   def checked_in?
-    !checked_out? && !lost?
+    self.status == "checked in"
   end
 
   def lost?
-    last_event.kind == kinds[:lost]
+    self.status == "lost"
+  end
+
+  def removed?
+    self.status == "removed"
   end
 
   def lose(contact)

@@ -14,9 +14,19 @@
 <% end %>
 </div>
 <% end %>
-<% if @c.checked_out? %>
+<% if @c.removed? %>
+<%= button_to "Recreate", :action => "recreate", :copy_id => @c.id %>
+<% else %>
+<% if @c.checked_out? or @c.lost? %>
 <%= button_to "Renew", :action => "renew", :copy_id => @c.id %>
 <%= button_to "Check in", :action => "checkin", :copy_id => @c.id %>
+<% end %>
+<% if @c.lost? %>
+<%= button_to "Mark as found", :action => "found", :copy_id => @c.id %>
+<% else %>
+<%= button_to "Mark as lost", :action => "lost", :copy_id => @c.id %>
+<% end %>
+<%= button_to "Remove from library", :action => "remove", :copy_id => @c.id %>
 <% end %>
 <%= button_to "Label", :action => "add_to_labels", :id => @c.id %>
 <% @events = @c.library_events.to_a %>

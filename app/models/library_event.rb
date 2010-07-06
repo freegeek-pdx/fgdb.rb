@@ -21,6 +21,8 @@ class LibraryEvent < ActiveRecord::Base
       :checked_in => 4,
       :lost => 5,
       :found => 6,
+      :removed => 7,
+      :recreated => 8,
     }
   end
 
