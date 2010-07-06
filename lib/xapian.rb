@@ -19,6 +19,10 @@ class XapianReader < XapianBase
     @qp = Xapian::QueryParser.new()
     @qp.stemmer = stem
     @qp.database = db
+    @qp.add_prefix("author", "A")
+    @qp.add_prefix("title", "S")
+    @qp.add_prefix("isbn", "XI")
+    @qp.add_prefix("id", "Z")
     @qp.stemming_strategy = Xapian::QueryParser::STEM_ALL
   end
 
@@ -102,7 +106,12 @@ class XapianWriter < XapianBase
     doc.data = string
     doc.add_term("Z" + string)
     @indexer.increase_termpos
-    @indexer.index_text(@res.title.to_s, 1) # TODO: get from opts
+    @indexer.index_text(@res.title.to_s, 1, "S") # TODO: get from opts
+    @indexer.index_text(@res.author.to_s, 1, "A")
+    @indexer.index_text(@res.isbn.to_s, 1, "XI")
+    @indexer.index_text(@res.isbn.to_s.gsub(/-/, ""), 1, "XI")
+    @indexer.index_text(string, 1, "Z")
+    @indexer.index_text(@res.title.to_s, 1)
     doc
   end
 
