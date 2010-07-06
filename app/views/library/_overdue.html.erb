@@ -5,7 +5,9 @@
     <th>Barcode</th>
     <th>Title</th>
     <th>Author</th>
+    <% unless params[:action] == "member" %>
     <th>Checked out to</th>
+    <% end %>
     <th>Overdue for</th>
     <th>Checked out since</th>
     <th>Renewed</th>
@@ -15,7 +17,9 @@
     <td><%= link_to c.barcode, :action => "show_copy", :id => c.id %></td>
     <td><%= c.book.title %></td>
     <td><%= c.book.author %></td>
+    <% unless params[:action] == "member" %>
     <td><%= link_for_my_links(c.last_event.contact_display_with_link) %></td>
+    <% end %>
     <td><%= c.overdue_for %></td>
     <td><%= c.checked_out_at %></td>
     <td><%= c.times_renewed %></td>

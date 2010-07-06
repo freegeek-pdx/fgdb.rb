@@ -1,0 +1,21 @@
+<tr>
+    <th>Barcode</th>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Status</th>
+    <th>Due Back</th>    <th>Checked out since</th><th>Renewed</th></tr>
+<% @some_copies.each do |copy| %>
+  <tr>
+    <td><%= link_to copy.barcode, :action => "show_copy", :id => copy.id %></td>
+    <td><%= copy.book.title %></td>
+    <td><%= copy.book.author %></td>
+    <td>
+      <%= copy.status %>
+    </td>
+    <td>
+      <%= copy.due_back.to_date %>
+    </td>
+    <td><%= copy.checked_out_at %></td>
+    <td><%= copy.times_renewed %></td>
+  </tr>
+<% end %>
