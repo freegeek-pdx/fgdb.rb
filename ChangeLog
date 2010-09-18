@@ -2,8 +2,9 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
 
   * fix traceback on insufficient money on a sale (Closes: #19354)
   * add the date of transaction to system history (Closes: #19533)
+  * fancy sidebar
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Aug 2010 12:50:48 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Sep 2010 12:32:48 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 

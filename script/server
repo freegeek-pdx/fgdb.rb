@@ -21,7 +21,7 @@ end
 config = File.dirname(__FILE__) + "/../config/server.yml"
 pidfile = File.dirname(__FILE__) + "/../tmp/pids/thin.pid"
 
-action = "start"
+action = "restart"
 actions = ["restart", "stop", "start"]
 if actions.include?(ARGV[0])
   action = ARGV.shift
