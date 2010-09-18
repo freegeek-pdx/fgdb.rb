@@ -32,6 +32,7 @@ class Donation < ActiveRecord::Base
   end
 
   def validate
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -47,6 +48,8 @@ class Donation < ActiveRecord::Base
       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
 
+    end
+
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
 
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
@@ -58,7 +61,7 @@ class Donation < ActiveRecord::Base
   end
 
   def covered_error_checking
-    if Default["coveredness_enabled"] != "1"
+    if Default["coveredness_enabled"] != "1" or is_adjustment?
       return
     end
     covered = Default["fully_covered_contact_covered_gizmo"].to_i

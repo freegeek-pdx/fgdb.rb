@@ -94,6 +94,9 @@ function enable_cashierable(){
     thing.enable();
     disable_always_disabled();
     enable_all_links();
+  if($('covered')) {
+    $('covered').value = "nil";
+  }
 }
 
 function show_contract_notes() {

@@ -370,7 +370,7 @@ function systems_stuff(args, tr){
     if(get_system_contract(args['system_id']) != -1) {
       if(all_contracts_names.length > 2) {
         hidden = document.createElement("input");
-        hidden.name = "line" + '[-' + line_id + '][system_id]';
+        hidden.name = args['prefix'] + '[-' + line_id + '][system_id]';
         hidden.value = args['system_id'];
         hidden.type = 'hidden';
         td = document.createElement("td");

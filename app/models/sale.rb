@@ -35,6 +35,7 @@ class Sale < ActiveRecord::Base
   end
 
   def validate
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -43,11 +44,13 @@ class Sale < ActiveRecord::Base
     else
       errors.add_on_empty("postal_code")
     end
+    end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
     #errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
     errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
+    errors.add("payments", "are too much") if (payments.find_all{|x| x.payment_method.name == "cash"}.inject(0.0){|t,x| t+=x.amount_cents} - _figure_it_all_out[1]) < 0
     payments.each{|x|
       x.errors.each{|y, z|
         errors.add("payments", z)
@@ -159,7 +162,7 @@ class Sale < ActiveRecord::Base
     end
 
     # amount_i_owe > 0 ... still need to pay more.
-    raise NoMethodError # Ryan broke something..I guess.
+    return [0, 0]
   end
 
   def add_change_line_item()

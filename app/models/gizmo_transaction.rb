@@ -117,6 +117,10 @@ module GizmoTransaction
     end
   end
 
+  def is_adjustment?
+    self.adjustment
+  end
+
   def combine_cash_payments
     cashes = payments.find_all{|x| x.payment_method.name == "cash"}
     if cashes.length > 0

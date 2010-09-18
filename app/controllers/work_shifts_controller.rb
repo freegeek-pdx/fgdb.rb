@@ -119,7 +119,7 @@ class WorkShiftsController < ApplicationController
     if @work_shift.update_attributes(params[:work_shift])
       flash[:notice] = 'WorkShift was successfully updated.'
       if session["shift_return_to"] 
-        redirect_to :action => session["shift_return_action"], :id => session["shift_return_id"]
+        redirect_to :controller => session["shift_return_to"], :action => session["shift_return_action"], :id => session["shift_return_id"]
       else
         redirect_to :action => 'list', :id => @work_shift
       end
