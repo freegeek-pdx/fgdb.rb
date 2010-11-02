@@ -61,24 +61,11 @@ class WorkShiftsController < ApplicationController
     # use something like the stuff commented out below to avoid
     # massive numbers of extra queries
     @work_shifts = WorkShift.find( :all, {
-      :select => 'work_shifts.*', 
       :conditions => where_clause, 
       :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
-      :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' }
+      :include => [:job, :coverage_type, :worker, :weekday],
+     }
     )
-
-#    @work_shifts = WorkShift.find( :all, {
-#      :conditions => where_clause, 
-#      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time'}, 
-#      :include => [:weekday, :job, :worker, :job]
-#    )
-#
-#    another example (from another project):
-#
-#    @work_units = WorkUnit.find(:all, :order => 'parts.title', :include => [{:part => :job}, :operation])
-#
-#    (can you pull just one field as needed? :part => :job ) hmmmm....
-#    see http://snippets.dzone.com/posts/show/2089
   end
 
   def show

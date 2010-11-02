@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -20,6 +21,8 @@ SELECT pg_catalog.setval('wc_categories_id_seq', 8, true);
 --
 -- Data for Name: wc_categories; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE wc_categories DISABLE TRIGGER ALL;
 

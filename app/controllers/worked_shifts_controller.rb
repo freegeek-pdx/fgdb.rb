@@ -134,6 +134,7 @@ GROUP BY 1,2;")
   def edit
     @shifts = @worker.shifts_for_day(@date)
     @logged_already = @shifts.shift
+    @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
   end
 
   include WorkedShiftsHelper
@@ -204,7 +205,7 @@ GROUP BY 1,2;")
   private
 
   def process_shifts(shifts)
-    shifts = shifts.nil? ? [] : shifts.values
+    shifts = shifts.nil? ? [{"duration" => "0", "job_id" => nil}] : shifts.values
     to_delete = WorkedShift.find(:all, :conditions => ["date_performed = ? AND worker_id = ?", @date, @worker.id])
     found = []
     new = []

@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -20,6 +21,8 @@ SELECT pg_catalog.setval('roles_id_seq', 11, true);
 --
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE roles DISABLE TRIGGER ALL;
 

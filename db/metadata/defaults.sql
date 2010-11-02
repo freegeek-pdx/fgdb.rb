@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -14,12 +15,14 @@ SET search_path = public, pg_catalog;
 -- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('defaults_id_seq', 19, true);
+SELECT pg_catalog.setval('defaults_id_seq', 20, true);
 
 
 --
 -- Data for Name: defaults; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE defaults DISABLE TRIGGER ALL;
 
@@ -38,8 +41,9 @@ COPY defaults (id, name, value, lock_version, updated_at, created_at) FROM stdin
 16	max_effective_hours	24.0	1	2009-05-15 23:53:59.595633	2009-05-02 17:10:41.606476
 18	hours_for_discount	3.0	0	2009-10-02 22:40:22.47043	2009-10-02 22:40:22.47043
 19	days_for_discount	31	0	2009-10-02 22:40:22.49443	2009-10-02 22:40:22.49443
-12	coveredness_enabled	0	1	2009-11-03 17:28:19.922686	2008-12-22 09:00:53.614147
-15	is-pdx	false	1	2009-11-04 16:16:30.056703	2008-12-22 09:01:02.01784
+20	scheduler_reports_to	schedule@lists.freegeek.org	1	2010-02-06 15:43:58.191298	2010-02-06 15:43:58.191298
+12	coveredness_enabled	0	1	2010-10-23 09:31:20.770071	2008-12-22 09:00:53.614147
+15	is-pdx	false	1	2010-10-23 11:16:28.176557	2008-12-22 09:01:02.01784
 \.
 
 

@@ -118,7 +118,7 @@ check_for_postgres(){
 }
 
 test_my_rails_version(){
-    check_a_version 2.1.2 || check_a_version 2.1.0
+    check_a_version 2.2.3 || check_a_version 2.1.2 || check_a_version 2.1.0
 }
 
 test_find_thin(){
@@ -133,6 +133,7 @@ setup_stuff # only runable if ruby is installed
 run "Checking to see if make is installed..." "which make" "install make" "fail"
 run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
 run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.1.x" "fail"
+run "Checking to see if the ruby postgres bindings are installed..." "require_test pg" "install libpgsql-ruby" "fail"
 run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"
 run "Checking to see if barby is installed..." "require_test barby" "install libbarby-ruby" "fail"
 run "Checking to see if rmagick is installed..." "require_test RMagick" "install librmagick-ruby" "fail"

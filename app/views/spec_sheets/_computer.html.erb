@@ -45,6 +45,14 @@
             </td>
           </tr>
         <% end %>
+	<% find_these = ["lm", "svm", "vmx", "x86-64"] %>
+        <% @parser.xml_foreach("capabilities/capability") do %>
+	  <% if find_these.include?(@parser.xml_value_of("@id")) %>
+    <tr><td>Supports:</td><td>
+        <%= @parser.xml_value_of(".") %>
+    </td></tr>
+	  <% end %>
+        <% end %>
       <% end %>
     <% end %>
     <% @parser.xml_foreach("//*[@class='memory']") do %>

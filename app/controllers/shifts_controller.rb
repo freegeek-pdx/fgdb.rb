@@ -105,9 +105,8 @@ class ShiftsController < ApplicationController
 
     @shifts = Shift.find(:all, {
       :conditions => where_clause, 
-      :select => 'shifts.*, workers.name', 
-      :joins => 'LEFT JOIN workers ON shifts.worker_id = workers.id', 
-      :order => 'weekday_id, workers.name, start_time'} 
+      :include => [:weekday, :job, :worker, :coverage_type],
+      :order => 'weekday_id, workers.name, shifts.start_time'} 
     )
     render @view_weekly_schedule
   end

@@ -60,7 +60,7 @@ puts "fixing up sales"
 fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up returns"
-fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
+fix_tx(GizmoReturn.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up disbursements"
 fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
@@ -183,7 +183,7 @@ admin.save!
 
 ContactDuplicate.destroy_all
 {:donations => :contract_id, :systems => :contract_id, :gizmo_events => :recycling_contract_id, :contacts => :contract_id}.each{|table,column|
-  Inflector.classify(table.to_s).constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} IS NOT NULL")
+  table.to_s.classify.constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} IS NOT NULL")
 }
 Contract.destroy_all "name != 'default'"
 

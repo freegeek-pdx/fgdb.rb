@@ -50,7 +50,7 @@ class Sale < ActiveRecord::Base
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
     errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
-    errors.add("payments", "are too much") if (payments.find_all{|x| x.payment_method.name == "cash"}.inject(0.0){|t,x| t+=x.amount_cents} - _figure_it_all_out[1]) < 0
+
     payments.each{|x|
       x.errors.each{|y, z|
         errors.add("payments", z)

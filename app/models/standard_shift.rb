@@ -1,14 +1,14 @@
 class StandardShift < Shift
   belongs_to :coverage_type
-  belongs_to :job
-  belongs_to :meeting
-  belongs_to :schedule
+  belongs_to :job, :include => [:coverage_type]
   belongs_to :weekday
   belongs_to :worker
+  belongs_to :meeting
+  belongs_to :schedule
   has_many :work_shifts
 
   def name
-    ret = Job.find(:first, :conditions => "id = #{job_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    ret = self.job.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 
@@ -19,8 +19,8 @@ class StandardShift < Shift
   end
 
   def job_name
-    weekday = Weekday.find(:first, :conditions => "id = #{weekday_id}").short_name + ', ' 
-    ret = weekday + Worker.find(:first, :conditions => "id = #{worker_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    weekday = self.weekday.short_name + ', ' 
+    ret = weekday + self.worker.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 

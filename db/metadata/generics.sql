@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -14,12 +15,14 @@ SET search_path = public, pg_catalog;
 -- Name: generics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('generics_id_seq', 32, true);
+SELECT pg_catalog.setval('generics_id_seq', 45, true);
 
 
 --
 -- Data for Name: generics; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE generics DISABLE TRIGGER ALL;
 
@@ -56,6 +59,19 @@ COPY generics (id, value, only_serial, usable, created_at, updated_at) FROM stdi
 30	0000000000000	t	t	2008-11-08 16:57:39.05906	2008-11-08 16:57:39.05906
 31	VH\\	t	t	2008-12-05 19:10:45.166659	2008-12-05 19:10:45.166659
 32	V        H 8\\	t	t	2008-12-06 09:27:48.864717	2008-12-06 09:27:48.864717
+33	System Serial Number	f	t	2010-02-19 23:43:55.266729	2010-02-19 23:43:55.266729
+34	System Product Name	f	t	2010-02-19 23:43:55.306728	2010-02-19 23:43:55.306728
+35	System manufacturer	f	t	2010-02-19 23:43:55.410728	2010-02-19 23:43:55.410728
+36	stem manufacturer	f	t	2010-02-19 23:43:55.474728	2010-02-19 23:43:55.474728
+37	Serial#	t	t	\N	\N
+38	.       .              .	t	t	2010-07-19 23:13:21.079775	2010-07-19 23:13:21.079775
+39	To be filled by O.E.M.	t	t	2010-07-19 23:13:21.303782	2010-07-19 23:13:21.303782
+40	System serial number	t	t	2010-07-19 23:13:21.315783	2010-07-19 23:13:21.315783
+41	NA60B7Y0S3Q	t	t	2010-07-19 23:13:21.327783	2010-07-19 23:13:21.327783
+42	Chassis Serial Number	f	t	2010-07-19 23:13:21.335783	2010-07-19 23:13:21.335783
+43	Chassis Manufacture	f	t	2010-07-19 23:13:21.347784	2010-07-19 23:13:21.347784
+44	System product name	f	t	2010-07-19 23:13:21.359784	2010-07-19 23:13:21.359784
+45	Ssystem manufacturer	f	t	2010-07-19 23:13:21.371785	2010-07-19 23:13:21.371785
 \.
 
 

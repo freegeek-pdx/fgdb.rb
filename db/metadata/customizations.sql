@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -20,6 +21,8 @@ SELECT pg_catalog.setval('customizations_id_seq', 10, true);
 --
 -- Data for Name: customizations; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE customizations DISABLE TRIGGER ALL;
 

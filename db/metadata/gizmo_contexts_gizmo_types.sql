@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -13,6 +14,8 @@ SET search_path = public, pg_catalog;
 --
 -- Data for Name: gizmo_contexts_gizmo_types; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE gizmo_contexts_gizmo_types DISABLE TRIGGER ALL;
 
@@ -126,6 +129,48 @@ COPY gizmo_contexts_gizmo_types (gizmo_context_id, gizmo_type_id, lock_version, 
 2	66	0	\N	\N
 2	67	0	\N	\N
 2	68	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	72	0	2009-11-06 13:20:51.901352	2009-11-06 13:20:51.901352
+1	39	0	\N	\N
+1	74	0	\N	\N
+1	75	0	\N	\N
+1	76	0	\N	\N
+2	74	0	\N	\N
+2	75	0	\N	\N
+2	76	0	\N	\N
+3	39	0	\N	\N
+3	74	0	\N	\N
+3	55	0	\N	\N
+3	54	0	\N	\N
+3	75	0	\N	\N
+3	76	0	\N	\N
+4	44	0	\N	\N
+4	74	0	\N	\N
+4	55	0	\N	\N
+4	75	0	\N	\N
+4	76	0	\N	\N
+5	39	0	\N	\N
+5	6	0	\N	\N
+5	4	0	\N	\N
+5	44	0	\N	\N
+5	49	0	\N	\N
+5	50	0	\N	\N
+5	74	0	\N	\N
+5	55	0	\N	\N
+5	2	0	\N	\N
+5	54	0	\N	\N
+5	75	0	\N	\N
+5	76	0	\N	\N
+2	45	0	\N	\N
+2	79	0	\N	\N
+2	80	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	81	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	82	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	83	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	84	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	59	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+3	59	0	2006-10-19 09:45:49	2006-10-19 09:45:49
+1	85	0	\N	\N
+2	85	0	\N	\N
 \.
 
 

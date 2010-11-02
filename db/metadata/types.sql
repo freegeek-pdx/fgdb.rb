@@ -2,6 +2,7 @@
 -- PostgreSQL database dump
 --
 
+SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -14,12 +15,14 @@ SET search_path = public, pg_catalog;
 -- Name: types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('types_id_seq', 9, true);
+SELECT pg_catalog.setval('types_id_seq', 10, true);
 
 
 --
 -- Data for Name: types; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE types DISABLE TRIGGER ALL;
 
@@ -33,6 +36,7 @@ COPY types (id, description, lock_version, updated_at, created_at, created_by, u
 3	grantbox	0	2007-12-22 13:07:03.263609	2007-12-22 13:07:03.263609	1	1	grantbox
 5	high end	0	2007-12-22 13:07:03.275499	2007-12-22 13:07:03.275499	1	1	high_end
 1	regular	0	2007-12-22 13:07:03.24582	2007-12-22 13:07:03.24582	1	1	regular
+10	apple laptop	0	2010-02-19 23:43:54.054731	2010-02-19 23:43:54.054731	1	1	apple_laptop
 \.
 
 

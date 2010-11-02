@@ -1,0 +1,39 @@
+Basic install:
+ryan52@chaos:~$ sudo apt-get install -y git-core postgresql-8.4 rails ruby1.8 libnokogiri-ruby libbarby-ruby librmagick-ruby  libjson-ruby1.8 xmlstarlet thin curl socat libgnuplot-ruby timeout
+ryan52@chaos:~$ wget http://apt.freegeek.org/pool/debian/f/fgdiag/libbytes-ruby1.8_0.2.38_all.deb
+ryan52@chaos:~$ sudo dpkg -i libbytes-ruby1.8_0.2.38_all.deb
+ryan52@chaos:~$ git clone git://git.freegeek.org/git/fgdb.rb
+ryan52@chaos:~$ cd fgdb.rb
+ryan52@chaos:~/fgdb.rb$ ln -sf /usr/share/rails/ vendor/rails
+ryan52@chaos:~/fgdb.rb$ ./script/do_i_have_everything_installed_right
+ryan52@chaos:~/fgdb.rb$ cp config/database.yml-example config/database.yml
+ryan52@chaos:~/fgdb.rb$ sudo su - postgres -c "createuser -a $USER"
+
+Developer setup (requires Basic Install):
+ryan52@chaos:~/fgdb.rb$ git config --global user.email email@domain.com
+ryan52@chaos:~/fgdb.rb$ git config --global user.name "John Doe"
+
+Committer setup (requires Developer):
+ryan52@chaos:~/fgdb.rb$ ssh-keygen -f ./script/update-devel-data/scp_key
+ryan52@chaos:~/fgdb.rb$ ./script/update-devel-data/under-myagent ssh-copy-id tulip
+ryan52@chaos:~/fgdb.rb$ ./script/update-devel-data/under-myagent ssh-copy-id devo
+ryan52@chaos:~/fgdb.rb$ git remote add fg dev.freegeek.org:/git/fgdb.rb
+ryan52@chaos:~/fgdb.rb$ git fetch fg
+ryan52@chaos:~/fgdb.rb$ sed -i "s/remote = origin/remote = fg/" .git/config
+
+Creating devel data (Requires Committer):
+ryan52@chaos:~/fgdb.rb$ sudo apt-get install -y subversion
+ryan52@chaos:~/fgdb.rb$ ./script/update-devel-data/update-devel-data
+ryan52@chaos:~/fgdb.rb$ make -C db commit
+
+Loading metadata and creating admin (Requires Basic install):
+ryan52@chaos:~/fgdb.rb$ rake db:schema:load
+ryan52@chaos:~/fgdb.rb$ rake db:metadata:load
+ryan52@chaos:~/fgdb.rb$ ./script/make_admin
+
+Migrating:
+ryan52@chaos:~/fgdb.rb$ rake db:migrate
+
+Development setup (requires basic install):
+ryan52@chaos:~/fgdb.rb$ ./script/load_devel_data
+

@@ -541,7 +541,6 @@ color: #F660AB;
 .task_name {}
 .task_data {
   float: right;
-  margin-top: -18px; /* GAH! */
 }
 
 div.auto_complete {

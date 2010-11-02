@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
+
 all: download
 
 download: update_devel_data_version devel_data.sql
@@ -9,6 +11,9 @@ devel_data.sql: devel_data.sql.lzma
 
 BASE_URL := http://develdata.freegeek.org/
 #BASE_URL := http://dev.freegeek.org/~ryan52/devel_data
+
+### HEY, USE THIS COOL FEATURE ###
+continue: fgdb-devel-data ohaither
 
 devel_data.sql.lzma: devel_data_version
 	wget $(BASE_URL)/$(shell cat devel_data_version)/devel_data.sql.lzma -O devel_data.sql.lzma

@@ -1,23 +1,21 @@
 class WorkShift < ActiveRecord::Base
   belongs_to :coverage_type
-  belongs_to :job
+  belongs_to :job, :include => [:coverage_type]
   belongs_to :meeting
   belongs_to :schedule
   belongs_to :standard_shift
   belongs_to :weekday
   belongs_to :worker
 
+  before_save :set_weekday_id
+
+  def set_weekday_id
+    self.weekday_id = self.shift_date.wday
+  end
+
   def name
-    ret = Job.find(:first, :conditions => "id = #{job_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    ret = self.job.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
-  end
-
-  def weekday
-    Weekday.find_by_id(self.weekday_id)
-  end
-
-  def weekday_id
-    self.shift_date.wday
   end
 
   def to_worked_shift

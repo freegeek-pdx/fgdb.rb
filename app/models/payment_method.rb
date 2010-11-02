@@ -27,12 +27,16 @@ class PaymentMethod < ActiveRecord::Base
     @@store_credit ||= find_by_name('store_credit')
   end
 
+  def PaymentMethod.online
+    @@online ||= find_by_name('online')
+  end
+
   def PaymentMethod.is_till_method?(id)
-    return [cash, check].map(&:id).include?(id)
+    return self.till_methods.map(&:id).include?(id)
   end
 
   def PaymentMethod.is_money_method?(id)
-    return [cash, check, credit].map(&:id).include?(id)
+    return (till_methods + real_non_till_methods).map(&:id).include?(id)
   end
 
   def PaymentMethod.is_fake_method?(id)
@@ -44,7 +48,7 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.real_non_till_methods()
-    return [credit]
+    return [credit, online]
   end
 
   def PaymentMethod.fake_money_methods()
