@@ -70,6 +70,6 @@ fi
 cd /var/www/fgdb.rb/
 sudo touch tmp/release.txt
 
-pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql.bz2
+pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql
 
 echo "Check $BACKUP_DIR/pre-sprint-$NEW.sql"
