@@ -62,7 +62,7 @@ module ConditionsHelper
         jobs = Job.effective_on(Date.today)
       end
     end
-    select(params_key, "job_id", jobs.sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
+    select(params_key, "job_id", jobs.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
   end
 
   def html_for_attendance_type_condition(params_key)
