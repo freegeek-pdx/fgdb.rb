@@ -167,7 +167,7 @@ class PrintmeAPI < SOAP::SoapsBase
       input = printme_struct
     else
       struct = PrintmeStruct.new
-      struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
+      struct.members.each{|x| struct.send(x.to_s + "=", printme_struct.send(x))}
       input = struct.to_hash
     end
     report = SpecSheet.new(input)
