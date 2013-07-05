@@ -1,3 +1,8 @@
+fgdb.rb (1.0.123) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Jul 2013 08:41:34 -0700
+
 fgdb.rb (1.0.122) released; urgency=low
 
   * Implement dateext with dateformat %s for hourly logrotated backups,
