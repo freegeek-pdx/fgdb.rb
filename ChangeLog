@@ -1,7 +1,8 @@
 fgdb.rb (1.0.123) UNRELEASED; urgency=low
 
+  * Esacpe subject and body in creating crash report tickets
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Jul 2013 08:41:34 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Jul 2013 01:32:50 -0700
 
 fgdb.rb (1.0.122) released; urgency=low
 
