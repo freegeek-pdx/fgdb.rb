@@ -5,6 +5,8 @@ fgdb.rb (1.0.123) released; urgency=low
     of entry (Closes: #36306)
   * Require a PIN from the intake person if they are logged in using a
     shared database account (Closes: #36314)
+  * Set requestor for TS work orders to the Email address of the
+    customer, if provided, otherwise leave it empty (Closes: #36484)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
 

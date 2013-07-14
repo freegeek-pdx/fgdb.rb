@@ -225,8 +225,7 @@ class WorkOrdersController < ApplicationController
 
     unless @error
 
-    requestor = User.current_user ? (User.current_user.email || "") : ""
-    @data["Requestor"] = requestor
+    @data["Requestor"] = @data["Email"].to_s
 
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp 
     f = File.open(tempfile, 'w+')
