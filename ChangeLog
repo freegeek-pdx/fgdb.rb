@@ -10,7 +10,7 @@ fgdb.rb (1.0.123) released; urgency=low
   * Display contact notes as a javascript alert in volunteer assigments
     and hours logging (Closes: #36307)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:18 -0700
 
 fgdb.rb (1.0.122) released; urgency=low
 
