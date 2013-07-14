@@ -12,18 +12,28 @@
 
 <div>
 <h3>By Schedule</h3>
+<% s = Sked.find(:all) %>
+
+<% top_cat = "Front Desk Checkin" %>
+<% main_l = s.select{|x| x.category_type.to_s.strip == top_cat} %>
+<% if main_l.length > 0 %>
+<h4>Schedules for Front Desk</h4>
+<% main_l.each do |x| %>
+<%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %> (Rosters included: <%= x.rosters_s %>)<br />
+<% end %>
+<% end %>
+<h4>Other Schedule Links</h4>
 <% c_last = "" %>
-<% if s = Sked.find_by_name("Sandbox") %>
-<% conds = {:sked_enabled => "true", :sked_id => s.id, :sked_excluded => "sked_excluded"} %>
+<% if sand = Sked.find_by_name("Sandbox") %>
+<% conds = {:sked_enabled => "true", :sked_id => sand.id, :sked_excluded => "sked_excluded"} %>
 <% else %>
 <% conds = {:empty_enabled => "true"} %>
 <% end %>
 <%= link_to "ALL", {:action => to_action, :conditions => conds} %><br />
-<% s = Sked.find(:all) %>
 <% s.select{|x| x.category_type.to_s.strip.length == 0 }.each do |x| %>
 <%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %> (Rosters included: <%= x.rosters_s %>)<br />
 <% end %>
-<% s.select{|x| x.category_type.to_s.strip.length >0}.sort{|x,y| q = (y.category_type || "") <=> (x.category_type || ""); q == 0 ? x.name <=> y.name: q}.each do |x| %>
+<% s.select{|x| x.category_type.to_s.strip.length >0 && x.category_type.to_s.strip != top_cat}.sort{|x,y| q = (y.category_type || "") <=> (x.category_type || ""); q == 0 ? x.name <=> y.name: q}.each do |x| %>
 <% c_this = x.category_type.to_s %>
 <% if c_this != c_last %>
 <h4>Schedules By <%= c_last = c_this%></h4>

@@ -1,6 +1,19 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function find_ts_customer_notes() {
+  if(typeof(timeoutID) != 'undefined') {
+    clearTimeout(timeoutID);
+  }
+  timeoutID = setTimeout("actually_find_ts_customer_notes();", 200);
+}
+
+function actually_find_ts_customer_notes() {
+  var str = encodeURIComponent($('open_struct_customer_name').value);
+  // FIXME : update_calc_url + '
+  new Ajax.Request('/tech_support_notes/find_notes/' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show("ts_customer_search_loading_indicator_id");}});
+}
+
 function prep_disabled_list(list, optional, hook_list, disable) {
   return;
   for(var i = 0; i < list.length; i++) {

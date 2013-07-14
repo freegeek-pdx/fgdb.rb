@@ -3,7 +3,7 @@
 
     <% form_remote_tag :url => @options.merge(:controller => '/volunteer_tasks'),
        :loading => "Element.show('#{loading_indicator_id("form_for_volunteer_task_loading")}'); Form.disable('#{element_form_id(@options)}');",
-       :before => "if(parseFloat($('volunteer_task_duration').value) >= 8){if(!confirm('You are logging more than 8 hours for this volunteer, are you sure you would like to log this many hours?')){return false;}}",
+       :before => "if(parseFloat($('volunteer_task_duration').value) > 8){if(!confirm('You are logging more than 8 hours for this volunteer, are you sure you would like to log this many hours?')){return false;}}",
        :html => { :class => "cashierable_form", :href => url_for(@options.merge(:controller => '/volunteer_tasks')),
          :id => element_form_id(@options) } do %>
 

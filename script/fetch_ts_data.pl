@@ -15,7 +15,7 @@ open $F, $config;
 my %conf = ();
 foreach(<$F>) {
     my @a = split /\s+/, $_;
-    $conf{$a[0]} = $a[1];
+    $conf{$a[0]} = $a[1] if ($a[0]);
 }
 
 my $rt = RT::Client::REST->new(server => $conf{server});
@@ -42,6 +42,7 @@ $data{"Type of Box"} = $ticket->cf('Type of Box');
 $data{"Box Source"} = $ticket->cf('Box source');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
+$data{"OS"} = $ticket->cf('OS');
 my $issue = $ticket->cf('Tech Support Issue');
 if(ref($issue) =~ /ARRAY/) {
     $data{"Issues"} = join ", ", @{$issue};

@@ -21,7 +21,7 @@ end
 class ApplicationController < ActionController::Base
   protected
   def _parse_metadata_wo
-    h = {}
+    h = Hash.new([])
     cur = nil
     File.readlines(File.join(RAILS_ROOT, "config/rt_metadata.txt")).each do |line|
       line.strip!
@@ -274,6 +274,10 @@ class ApplicationController < ActionController::Base
 
   def do_volskedj_generate(cname)
     gconditions = Conditions.new
+    unless params[:gconditions]
+      redirect_to :action => "index"
+      return
+    end
     gconditions.apply_conditions(params[:gconditions])
     params[:conditions] = params[:gconditions].dup
     begin

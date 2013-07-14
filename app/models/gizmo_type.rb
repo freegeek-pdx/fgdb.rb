@@ -21,11 +21,7 @@ class GizmoType < ActiveRecord::Base
   end
 
   def GizmoType.fee?(type)
-    return type == service_fee || type == fee_discount
-  end
-
-  def GizmoType.service_fee
-    @@service_fee ||= find_by_name('service_fee')
+    return type.name.match(/^service_fee/) || type == fee_discount
   end
 
   def GizmoType.fee_discount

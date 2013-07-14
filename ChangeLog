@@ -1,4 +1,73 @@
-fgdb.rb (1.0.118) UNRELEASED; urgency=low
+fgdb.rb (1.0.124) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:57:06 -0700
+
+fgdb.rb (1.0.123) released; urgency=low
+
+  * Esacpe subject and body in creating crash report tickets
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
+
+fgdb.rb (1.0.122) released; urgency=low
+
+  * Implement dateext with dateformat %s for hourly logrotated backups,
+    thanks Vagrant (Closes: #36026)
+  * Distinguish Required Service Fee on the receipt into 4 categories:
+    Pickup, Education, Tech Support and Other (Closes: #35808)
+    - Note: reference info for TS ticket # can be added with Ctrl-<e>
+      to the standard description field
+  * Add a link for adding repeating interns to the sked admin sidebar
+    section (Closes: #36012)
+    - TODO: still must cleanup data
+  * Add monthly volunteer milestone report in parallel to the biweekly
+    one (Closes: #35981)
+  * Add mode for disallowing walkin volunteers, which autocloses
+    available shifts (Closes: #36031)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Jul 2013 08:40:53 -0700
+
+fgdb.rb (1.0.121) released; urgency=low
+
+  * fix the discount field to update back to none when switching away
+    from a named contact
+  * Add rendering system type to printme options (Closes: #36141)
+  * Add Prebuild Volunteer Task Type (Closes: #36142)
+    - Also, when editing an available volunteer shift, alert the user:
+	NOTE: Laptop prebuild shifts should not be assigned by the front
+	desk, volunteers must have prerequisites checked and complete an
+	application approved by Lynnae.
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:37:52 -0700
+
+fgdb.rb (1.0.120) released; urgency=low
+
+  * Add widget to modify intern title and to add contacts by search to
+    the badge printout set (Closes: #35742)
+    - move widget for viewing/uploading staff image to badge page
+    - implement generating the back side of badges too
+  * Do not preseed the contacts email address and phone number, in case
+    it is of the incorrect format or outdated
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:14 -0700
+
+fgdb.rb (1.0.119) released; urgency=low
+
+  * Add a field for volunteer intern titles
+  * Implement volunteer ID badges within the staff badge interface as
+    PDFs (Closes: #35528)
+  * Properly escape '/' and such when searching for names in TS notes
+    (Crash ex: KNtIIS)
+  * Implement OS as a dropdown from the custom field in TS Intake
+    (Closes: #35859)
+  * Add gizmo limiting conditions to the gizmos report (Closes: #35976)
+  * Split out long phone number values in contact methods to an
+    additional details field for text explanation
+  * Fix parsing with new version of lshw in squeeze (Closes: #35847)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
+
+fgdb.rb (1.0.118) released; urgency=low
 
   * Update some installation details for new versions and also add a
     new doc/README.maintenance document which includes many different
@@ -10,8 +79,17 @@ fgdb.rb (1.0.118) UNRELEASED; urgency=low
     #35367)
   * Implement a fix for the count of # of times volunteer in sorting to
     include past receiving shifts as well
+    - Also add a fkey to this table, which was missing
+  * Add a few more generics: NoneNoneNoneNone, :[ and April197
+  * Implement flagging customers with notes on the TS intake form
+    (Closes: #35314)
+  * Fix merging contacts, oops (Crash ex: zE9z7Q)
+  * Implement a validation for the new External Type of Box, requiring
+    the issue to be Data Backup (Closes: #35446)
+  * Implement Darren's new links for FD to find volunteer assignments
+    (Closes: #35551)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 12 May 2013 06:50:58 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 14 May 2013 08:54:49 -0700
 
 fgdb.rb (1.0.117) released; urgency=low
 

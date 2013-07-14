@@ -5,7 +5,7 @@ as of <%= Date.today.to_s %>
     <th>description</th>
     <th>suggested</th>
 <% @gizmo_context.model.new.showable_gizmo_types.sort{|a,b| r = a.rank <=> b.rank; r == 0 ? a.description <=> b.description : r}.each do |x| %>
-  <% unless x.name == 'service_fee' %>
+  <% unless x.name.match(/^service_fee/) %>
   <tr>
     <td><%= x.description %></td>
     <td>$<%= x.fee_cents.to_dollars %></td>

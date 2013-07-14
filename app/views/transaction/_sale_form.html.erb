@@ -23,7 +23,19 @@
                                                           parseInt($('contact__default_discount_percentage').innerHTML));
                                             }",
                                                    }}
-                                                 )}, {:onchange => "if($('sale_contact_type').value == 'named') {$('sale_contact_id').focus();};"}
+                                                 )}, {:onchange => "if($('sale_contact_type').value == 'named') {$('sale_contact_id').focus();} else if($('sale_contact_type').value == 'anonymous' && $('sale_discount_percentage_id').value == #{Sale.default_volunteer_discount_percentage} && $('sale_discount_name_id').value == #{Sale.default_volunteer_discount}) {
+                                              set_new_val($('sale_discount_name_id'),
+                                                          #{Sale.default_discount});
+                                              set_new_val($('sale_discount_name_id_hidden'),
+                                                          #{Sale.default_discount});
+                                              set_new_val($('sale_discount_percentage_id'),
+                                                          #{Sale.default_discount_percentage});
+                                              set_new_val($('sale_discount_percentage_id_hidden'),
+                                                          #{Sale.default_discount_percentage});
+                                              set_new_val($('sale_contact_id'),
+                                                          '');
+                                              sale_contact_id_auto_completer.options.afterUpdateElement();
+}"}
                                ) %>
       </div>
 

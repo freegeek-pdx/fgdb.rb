@@ -23,6 +23,11 @@ if [ ! -f "$DEFAULT_FILE" ]; then
 fi
 . "$DEFAULT_FILE"
 
+if ! which inotifywait >/dev/null; then
+    echo "Error: please install the inotify-tools package"
+    exit 1
+fi
+
 DAEMON_OPTS="run $WORK_SCRIPT"
 
 case "$1" in

@@ -41,6 +41,7 @@ end
 <div style="float: left; clear: top; position: absolute; left: 62%; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; width: 37%; font-size: 16pt; height: 300px;">
 <table width="100%">
 <tr><td style="font-size: 16pt;">Type:</td><td style="font-size: 16pt;"><%= value_or_none(data, "Type of Box") %></td></tr>
+<tr><td style="font-size: 16pt;">OS info:</td><td style="font-size: 16pt;"><%= value_or_none(data, "OS") %></td></tr>
 <tr><td style="vertical-align: top; font-size: 16pt;" colspan="2">Issue(s):</td></tr>
 <tr><td style="font-size: 12pt;" colspan="2"><%= value_or_none(data, "Issues").gsub(", ", "<br />") %></td></tr>
 </table>

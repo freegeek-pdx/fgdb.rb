@@ -1,0 +1,18 @@
+<% if name %>
+<h3>Tech support notes matching name: <%= name %></h3>
+<div id="ts-notes-found">
+<% results = TechSupportNote.contacts_with_notes(name) %>
+<% if results.length == 0 %>
+None found.<br />
+<% end %>
+<% results.each do |result| %>
+<%= render :partial => 'tech_support_notes/note', :locals => {:contact => result} %>
+<% end %>
+</div>
+<% if TechSupportNotesController.sb_has_required_privileges("edit_note") %>
+<div id="ts-note-new">
+<%= link_to_remote "Add new notes", :url => {:controller => "tech_support_notes", :id => name, :action => "add_note"}, :loading => "$('#{loading_indicator_id("ts-new-note")}').show();" %>
+</div>
+<%= loading_indicator_tag("ts-new-note") %>
+<% end %>
+<% end %>

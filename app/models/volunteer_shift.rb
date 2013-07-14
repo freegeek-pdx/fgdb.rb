@@ -128,6 +128,7 @@ class VolunteerShift < ActiveRecord::Base
         a = Assignment.new
         a.volunteer_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
         a.volunteer_shift = self
+        a.closed = self.volunteer_event.nowalkins
         a.save!
       }
     ensure

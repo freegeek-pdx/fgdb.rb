@@ -225,7 +225,7 @@ function eexists(eid) {
 
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
-  linelist: ['contact_method_value'],
+  linelist: ['contact_method_value', 'contact_method_details'],
   add_on_save: true,
 
   edit_hook: function(id) {
@@ -233,11 +233,12 @@ var ContactMethodFrontend = Class.create(LineItem, {
     $('is_usable').checked = eval(getValueBySelector(thing, ".ok"));
     $('contact_method_type_id').value = getValueBySelector(thing, ".contact_method_type_id");
     $('contact_method_value').value = getValueBySelector(thing, ".description");
+    $('contact_method_details').value = getValueBySelector(thing, ".details");
     $('contact_method_type_id').focus();
   },
 
   add_from_form_hook: function() {
-    if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
+    if(($('contact_method_value').value == '' && $('contact_method_details').value == '') || $('contact_method_type_id').selectedIndex == 0) {
       return true;
     }
 
@@ -245,10 +246,12 @@ var ContactMethodFrontend = Class.create(LineItem, {
     args['contact_method_type_id'] = $('contact_method_type_id').value;
     args['contact_method_usable'] = $('is_usable').checked;
     args['contact_method_value'] = $('contact_method_value').value;
+    args['details'] = $('contact_method_details').value;
 
     this.add(args);
     $('contact_method_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('contact_method_value').value = $('contact_method_value').defaultValue;
+    $('contact_method_details').value = $('contact_method_details').defaultValue;
     $('is_usable').checked = false;
     $('contact_method_type_id').focus();
     return false;
@@ -256,6 +259,7 @@ var ContactMethodFrontend = Class.create(LineItem, {
 
   make_hidden_hook: function (args, tr) {
     var contact_method_value = args['contact_method_value'];
+    var contact_method_details = args['details'];
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
     tr.appendChild(this.make_hidden("contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id));
@@ -265,6 +269,8 @@ var ContactMethodFrontend = Class.create(LineItem, {
     description_node = this.make_hidden("value", contact_method_value, contact_method_value);
     description_node.className = "description";
     tr.appendChild(description_node);
+    detail_node = this.make_hidden("details", contact_method_details, contact_method_details);
+    tr.appendChild(detail_node);
   },
 });
 

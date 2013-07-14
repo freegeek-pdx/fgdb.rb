@@ -3,6 +3,17 @@ provided in doc/README_FOR_APP, but this document is supplemental
 information documenting the processes used in maintaining the database
 installation in FG PDX.
 
+To apply a fix to the code, see the instructions on this page:
+http://wiki.freegeek.org/index.php/Committing_to_FGdb
+
+== Checking service status ==
+
+/var/www/fgdb.rb/script/fgdb-status will give current usage
+information about the fgdb.rb application, web server and database at
+the time it is ran.
+
+It's output may be helpful in investigating and documenting an outage.
+
 == Restarting the service ==
 
 * Automatically updating from git:

@@ -5,6 +5,9 @@
   <%= f.label :next_cycle_date, "Week of next cycle (to generate every other week)" %>
   <%= calendar_box f.object_name, :next_cycle_date, :value => f.object.next_cycle_date %>
   <% end %>
+    <% if shift.volunteer_task_type && shift.volunteer_task_type.name == 'laptop_prebuild' && f.object.contact_id.nil? %>
+      <%= javascript_tag "alert('NOTE: Laptop prebuild shifts should not be assigned by the front desk, volunteers must have prerequisites checked and complete an application approved by Lynnae.');" %>
+    <% end %>
 <% if shift.stuck_to_assignment %>
   <% f.fields_for is_r ? :volunteer_shift : :volunteer_default_shift do |s| %>
     <p>

@@ -55,6 +55,8 @@ class DefaultAssignment < ActiveRecord::Base
     contact_id.nil? and !closed
   end
 
+  named_scope :assigned, :conditions => ['contact_id IS NOT NULL']
+
   named_scope :for_slot, lambda{|assignment|
     slot = assignment.slot_number
     shift_id = assignment.volunteer_default_shift_id || assignment.volunteer_default_shift.id

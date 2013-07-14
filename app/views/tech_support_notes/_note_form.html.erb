@@ -1,0 +1,22 @@
+<div id="note-form-<%= @contact.id %>">
+<b>
+<% if @note %>
+  Editing
+<% else %>
+  Adding
+<% end %>
+notes
+<% if @contact.id %>
+for: <%= @contact.display_name %> (#<%= @contact.id %>)
+<% else %>
+for new contact with name: <%= @contact.display_name %>
+<% end %>
+</b>
+<% form_remote_tag :url => {:action => "save_note", :id => @contact.id, :name => @contact.display_name}, :loading => show_loading_indicator("ts_form_#{@contact.id}_indicator") do  %>
+  <%= text_area_tag :notes, @note ? @note.notes : "" %><br />
+  <%= submit_tag "Save note" %>
+  <%= loading_indicator_tag("ts_form_#{@contact.id}_indicator") %>
+
+<% end %>
+</div>
+

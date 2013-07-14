@@ -1,0 +1,5 @@
+<fieldset id="ts-note-<%= contact.tech_support_note.contact_id %>">
+<b>Tech support notes for <%= contact.display_name %> (#<%= contact.id%>)<% if TechSupportNotesController.sb_has_required_privileges("edit_note") %>
+(<%= link_to_remote "edit", :url => {:controller => "tech_support_notes", :id => contact.tech_support_note.contact_id, :action => "edit_note"}, :loading => "$('#{loading_indicator_id("ts-#{contact.id}-note")}').show();" %><%= loading_indicator_tag("ts-#{contact.id}-note") %>):<% else %>:<% end %></b><br />
+<%= contact.tech_support_note.notes.gsub("\n", "<br />") %>
+</fieldset>

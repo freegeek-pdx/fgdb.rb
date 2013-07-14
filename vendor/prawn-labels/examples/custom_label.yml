@@ -1,0 +1,11 @@
+# quarter half sheet labels
+quartersheet:
+  paper_size: A4
+  top_margin: 36.57
+  bottom_margin: 0
+  left_margin: 20.551
+  right_margin: 20.551
+  columns: 2
+  rows: 2
+  column_gutter: 7.087
+  row_gutter: 0

@@ -1,12 +1,13 @@
 <% interface = OH.new %>
 <% interface[:type] = %Q!<select id="contact_method_type_id" onchange="contact_contact_method_selected()">! + options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") + '</select>' %>
 <% interface[:is_usable] = %Q!<input name="is_usable" id="is_usable" type="checkbox">! %>
-<% interface[:value] = %Q!<input name="contact_method_value" id="contact_method_value" onkeydown="#{line_item_on_keydown("contact_methods")}">! %>
+<% interface[:value] = %Q!<input size="15" name="contact_method_value" id="contact_method_value">! %>
+<% interface[:notes] = %Q!<input size="15" name="contact_method_details" id="contact_method_details" onkeydown="#{line_item_on_keydown("contact_methods")}">! %>
 
 <% values = [] %>
 <% if @contact.contact_methods
     values = @contact.contact_methods.map{|x|
-      x = x.to_hash(:id, :contact_method_type_id, :ok, :value)
+      x = x.to_hash(:id, :contact_method_type_id, :ok, :value, :details)
       x[:contact_method_usable] = x[:ok]
       x[:contact_method_value] = x[:value]
       x.delete(:value)

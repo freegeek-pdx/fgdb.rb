@@ -3,7 +3,7 @@ class Holiday < ActiveRecord::Base
   belongs_to :schedule
   validates_presence_of :start_time, :unless => :is_all_day
   validates_presence_of :end_time, :unless => :is_all_day
-  validates_presence_of :date
+  validates_presence_of :holiday_date
 
   def Holiday.is_holiday?(day)
     !! Holiday.find(:first, :conditions => ["holiday_date = ? AND is_all_day = 't'", day])

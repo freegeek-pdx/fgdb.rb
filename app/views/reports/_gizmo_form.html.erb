@@ -2,6 +2,9 @@
   <% filters = ["occurred_at", "contract" ] %>
   <% filters << "covered" if coveredness_enabled %>
   <% filters << "is_pickup" %>
+  <% filters << "gizmo_type_id" %>
+  <% filters << "gizmo_category_id" %>
+  <% filters << "gizmo_type_group_id" %>
   <% filters << "contact" if has_required_privileges('/contact_condition') %>
   <%= conditions_html('defaults', filters) %>
 </div>

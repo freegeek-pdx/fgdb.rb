@@ -5,10 +5,14 @@ class ContactMethod < ActiveRecord::Base
   validates_presence_of :contact, :contact_method_type
 
   def to_s
-    value
+    desc = value
+    desc += ", " + self.details if self.details && self.details.length > 0
+    return desc
   end
 
   def display
-    "%s (%s)" % [value, contact_method_type.description]
+    desc = contact_method_type.description
+    desc += ", " + self.details if self.details && self.details.length > 0
+    "%s (%s)" % [value, desc]
   end
 end

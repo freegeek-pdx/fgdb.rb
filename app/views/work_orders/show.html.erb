@@ -1,14 +1,16 @@
 <div class="noprint">
 <%= link_to 'Back', {:action => "index"} %>
 </div>
-<% if @data %>
 <div class="noprint">
-<% if @error %>
+<% if @error || @error = params[:error] %>
 <span class="error"><%= @error %><br /><br /></span>
 <% end %>
+<% if @data %>
 <INPUT type="button" id="print_button" value="Print"
        onclick="window.print();" >
+<%= render :partial => "tech_support_notes/ts_notes", :locals => {:name => @data["Name"]} %>
 </div>
+
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
 <% end %>
 

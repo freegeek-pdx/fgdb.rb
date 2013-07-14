@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sudo passenger-status
+echo "$(tput bold)$(tput setab 4)$(tput setaf 3)----------- Database connections -----------$(tput init)"
+echo 'SELECT * FROM pg_stat_activity;' | psql fgdb_production

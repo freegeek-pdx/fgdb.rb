@@ -403,6 +403,7 @@ class Conditions < ConditionsBase
   end
 
   def sale_type_conditions(klass)
+    klass = Sale if klass == GizmoEvent
     ["#{klass.table_name}.sale_type_id = ?", @sale_type_id.to_i]
   end
 

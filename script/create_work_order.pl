@@ -62,7 +62,7 @@ my $warranty = $data->{"Warranty"};
 my $ticket = RT::Client::REST::Ticket->new(
     rt  => $rt,
     priority => 50,
-    requestors => [$requestor],
+    requestor => [$requestor],
     queue => 'TechSupport',
     subject => $subject,
     cf => {
@@ -80,6 +80,7 @@ my $ticket = RT::Client::REST::Ticket->new(
         'SystemID' => $sys_id,
         'Contact ID' => $geek_id,
         'Warranty' => $warranty,
+        'OS' => $os,
     },
     )->store(text => $content);
 print $ticket->id . "\n";

@@ -17,7 +17,7 @@ class PointsTrade < ActiveRecord::Base
 
   def points_okay
     return if !(self.from_contact && self.to_contact)
-    errors.add("from_contact", "has negative points") if (self.from_contact.points(self.id) - self.points) < 0
-    errors.add("to_contact", "has negative points") if (self.to_contact.points(self.id) + self.points) < 0
+    errors.add("from_contact", "has negative points") if self.points && (self.from_contact.points(self.id) - self.points) < 0
+    errors.add("to_contact", "has negative points") if self.points && (self.to_contact.points(self.id) + self.points) < 0
   end
 end

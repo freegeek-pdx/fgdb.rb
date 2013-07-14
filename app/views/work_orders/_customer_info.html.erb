@@ -1,6 +1,7 @@
   <p>
     <%= f.label :customer_name %><br />
-    <%= f.text_field :customer_name %>
+    <%= f.text_field :customer_name, :onKeyDown => "find_ts_customer_notes();" %>
+    <%= loading_indicator_tag("ts_customer_search") %>
   </p>
   <p>
     <%= f.label :phone_number, f.object.mode == 'phone' ? 'Phone Number' : "Phone Number (optional when email provided)" %><br />

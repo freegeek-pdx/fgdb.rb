@@ -1,74 +1,57 @@
-<div class="noprint">
+<% if flash[:error] %>
+<span class="error">
+Error: <%= flash[:error] %><br /><br />
+</span>
+<% end %>
+
 <% form_tag(:action => "badge") do %>
 <div>
-Select workers:
+Find a contact to add to badge printout:
+<%= contact_field '@contacts', "contact_id" %>
+<%= hidden_field_tag "contacts", params[:contacts] %>
 </div>
-<% Worker.on_date.sort_by(&:name).each do |w| %>
-<div class="form-element">
-<%= check_box_tag "workers[#{w.id}]", w.id, @workers && @workers.include?(w) %><%= label_tag "workers[#{w.id}]", w.name %>
-</div>
-<% end %>
+
 <br />
 <div style="clear: left">
-<%= submit_tag "Generate Badges" %>
+<%= submit_tag "Add Contact" %>
 </div>
 
-<% if @workers %>
+<% end %>
+
+<% if @contacts %>
+<H2>Will generate badges for the following contacts:</H2>
+<% @contacts.each do |x| %>
+<% removeme = link_to "Remove", params.merge(:contact => nil, :contacts => @contacts.map(&:id).select{|y| y != x.id}.join(",")) %>
+#<%= x.id %>: <%= x.first_name %> <%= x.surname %>,
+<% if !@workers.include?(x) %>
+<%= x.intern_title %> (<%= removeme %>)
+
+<% form_remote_tag :url => {:action => "modify_intern_title", :returnopts => params, :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
+<%= text_field_tag "title", x.volunteer_intern_title.to_s %>
+<%= loading_indicator_tag "intern_contact_#{x.id}" %>
+<%= submit_tag "Update title!" %>
+<% end %>
+
+<% else %>
+Staff (<%= removeme %>)
+
+<br />Current image:
+<img style="max-height: 120px; max-width: 160px;" src="/images/workers/<%= x.worker ? x.worker.id : 0 %>.png" alt="none" /><br />
+Upload a .png image for <%= x.worker.name %>:
+<% form_tag({:action => "upload", :returnopts => params, :id => x.worker.id}, :multipart => true) do %>
+  <%= file_field_tag 'picture' %>
+  <%= submit_tag "Upload" %>
+<% end %>
+
+<% end %>
+<br />
+<% end %>
+<br />
 <% @workers.each do |x| %>
-<%= link_to "Upload image for #{x.name}", {:action => "upload", :id => x.id}, :target => "_blank" %>
 <% end %>
-<% end %>
-
-<% end %>
-</div>
-
-<% if @workers %>
-<% cols = 4 %>
-<% rows = 2 %>
-<% t = 0 %>
-
-<% while @workers.length > 0 %>
-<% r = 0 %>
-<% t = t + 1 %>
-<table class="awesome badge <%= t > 1 ? "badgepage2" : "badgepage1" %>">
-<% while @workers.length > 0 && r < rows %>
-<% r = r + 1 %>
-<% c = 0 %>
-<tr>
-<% while c < cols %>
-<% c = c + 1 %>
-<td>
-<% worker = @workers.shift %>
-<% if worker %>
-<h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px; margin-left: 5px;">S T A F F</h1>
-<img style="float: left; clear: left; margin-left: 5px; margin-top: 30px;" width="70px;" height="74px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
-
-<img style="margin-top: 15px;" width="135px;" height="180px" src="/images/workers/<%= worker ? worker.id : 0 %>.png" />
-
-<div style="float: left; text-align: center; width: 60%; margin-top: 10px; margin-left: 5px;">
-<div style="height: 2em; margin-bottom: 5px;">
-<span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.first_name + "<br />" + worker.contact.surname : worker.name.sub(" ", "<br />")) : "No Worker" %></span>
-</div>
 <br />
-<% if worker && worker.contact %>
-<% n = worker.contact_id.to_s %>
-<% while n.length < 6 %>
-<% n = "0" + n %>
-<% end %>
-<%= barcode(worker.contact_id) %><br />
-#<%= n %>
-<% end %>
-</div>
-<% end %>
-</td>
-<% end %>
-</tr>
-<% end %>
-</table>
-<div style="page-break-after: always;">
-&nbsp;
-</div>
+<%= button_to "Generate PDF", params.merge({:action => "generate_badges"}) %>
 <br />
-<% end %>
-<% end %>
 
+
+<% end %>

@@ -338,6 +338,10 @@ module ApplicationHelper
     "#{@transaction_type||'foo'}-tbody"
   end
 
+  def show_loading_indicator(name)
+    "$(\"#{loading_indicator_id(name)}\").show();"
+  end
+
   def loading_indicator_id(prefix)
     "#{prefix||'foo'}_loading_indicator_id"
   end

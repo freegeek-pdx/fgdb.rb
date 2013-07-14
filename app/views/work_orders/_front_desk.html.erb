@@ -26,8 +26,8 @@
     <%# render :partial => 'issues' %>
   </p>
   <p>
-    <%= f.label :os, "Operating System (optional)" %><br />
-    <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
+    <%= f.label :os,  "Operating System (optional)" %><br />
+    <%= f.select :os, @rt_metadata["OS"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
     <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />

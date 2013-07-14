@@ -1,0 +1,5 @@
+<% @contacts.each do |c| %>
+<%= link_to_remote "Add new note for #{ c.display_name } (##{ c.id })", :url => {:action => "new_note_form", :id => c.id}, :loading => "$(\"#{loading_indicator_id("ts-new-note")}\").show();" %><br />
+<% end %>
+<%= link_to_remote "Add new contact with name #{@name}", :url => {:action => "new_note_form", :name => @name}, :loading => show_loading_indicator("ts-new-note") %>
+

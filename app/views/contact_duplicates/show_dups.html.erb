@@ -28,7 +28,7 @@
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + h(x.contact_method_type.description) + ":</b> " + h(x.value)} %>
+          <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + h(x.contact_method_type.description) + ":</b> " + h(x.value)}.join("<br />") %>
         </td>
       <% end %>
     </tr>
@@ -43,6 +43,18 @@
         </td>
       <% end %>
     </tr>
+
+    <tr>
+      <th width="10%">
+        Tech Support Notes
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= h c.tech_support_notes %>
+        </td>
+      <% end %>
+    </tr>
+
 
     <tr>
       <th width="10%">

@@ -100,6 +100,7 @@ class WorkOrdersController < ApplicationController
       @data["OS"] = @work_order.os
       @data["Type of Box"] = @work_order.box_type
       @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
+      @errors.add("box_type", "is set to external, but external systems are only accepted for data backups prior to donation") if @data["Type of Box"] && @data["Issues"] && @data["Type of Box"] == "External" && @data["Issues"] != "Data Backup"
       @data["Box Source"] = @work_order.box_source
       @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
       @data["Warranty"] = @work_order.warranty
@@ -113,10 +114,6 @@ class WorkOrdersController < ApplicationController
     @errors.add("summary", "is mandatory") if @data["Summary"].to_s.length == 0
     @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
     ic = []
-    if !@work_order.os.to_s.empty?
-      ic << "Operating system info provided: " + @work_order.os
-      #+ "\n" + @data["Initial Content"]
-    end
     if !@work_order.additional_items.to_s.empty?
       ic << "Additional items left with tech support: " + @work_order.additional_items
     end
@@ -148,8 +145,8 @@ class WorkOrdersController < ApplicationController
           if trans.contact
             @work_order.adopter_name = trans.contact.display_name
             @work_order.adopter_id = trans.contact_id.to_s
-            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
-            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
+#            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
+#            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
 
           desc = ge.gizmo_type.description
           b_type = nil
@@ -235,10 +232,14 @@ class WorkOrdersController < ApplicationController
     f.write(json)
     f.close
 
-    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile}`
+    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile} 2>&1`
     File.delete(tempfile)
-    redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
-
+    t_id.gsub!(/Use of uninitialized value .+ line \d+./, "")
+    if t_id.to_i != 0
+      redirect_to :action => :show, :id => t_id.strip
+    else
+      redirect_to :action => :show, :error => t_id
+    end
     end
   end
 

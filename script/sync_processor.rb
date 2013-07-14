@@ -15,6 +15,58 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 $civicrm_mode = true
 
+STATES =  states = {
+"Alabama" => "AL",
+"Alaska" => "AK",
+"Arizona" => "AZ",
+"Arkansas" => "AR",
+"California" => "CA",
+"Colorado" => "CO",
+"Connecticut" => "CT",
+"Delaware" => "DE",
+"Florida" => "FL",
+"Georgia" => "GA",
+"Hawaii" => "HI",
+"Idaho" => "ID",
+"Illinois" => "IL",
+"Indiana" => "IN",
+"Iowa" => "IA",
+"Kansas" => "KS",
+"Kentucky" => "KY",
+"Louisiana" => "LA",
+"Maine" => "ME",
+"Maryland" => "MD",
+"Massachusetts" => "MA",
+"Michigan" => "MI",
+"Minnesota" => "MN",
+"Mississippi" => "MS",
+"Missouri" => "MO",
+"Montana" => "MT",
+"Nebraska" => "NE",
+"Nevada" => "NV",
+"New Hampshire" => "NH",
+"New Jersey" => "NJ",
+"New Mexico" => "NM",
+"New York" => "NY",
+"North Carolina" => "NC",
+"North Dakota" => "ND",
+"Ohio" => "OH",
+"Oklahoma" => "OK",
+"Oregon" => "OR",
+"Pennsylvania" => "PA",
+"Rhode Island" => "RI",
+"South Carolina" => "SC",
+"South Dakota" => "SD",
+"Tennessee" => "TN",
+"Texas" => "TX",
+"Utah" => "UT",
+"Vermont" => "VT",
+"Virginia" => "VA",
+"Washington" => "WA",
+"West Virginia" => "WV",
+"Wisconsin" => "WI",
+  "Wyoming" => "WY"}
+
 class Hash
   def r_to_params
     self.map{|k,v| "#{k.to_s}=#{CGI.escape(v.to_s)}"}.join("&")
@@ -121,10 +173,18 @@ class ContactObject
     c.postal_code = self.postal_code
     c.country = self.country
 
-    # TODO: push email/phone
+    cmeth = []
+    # TODO: could handle this better, no need to delete/recreate, find existing if match
+    self.emails.each do |x|
+      cmeth << ContactMethod.new(:contact_method_type => ContactMethodType.find_by_name(x.first), :value => x.last)
+    end
+    self.phone_numbers.each do |x|
+      cmeth << ContactMethod.new(:contact_method_type => ContactMethodType.find_by_name(x.first), :value => x.last)
+    end
+    puts cmeth.inspect
 
+    c.contact_methods = cmeth
     c.notes = notes
-
     c.birthday = self.birthday
   end
 
@@ -172,9 +232,6 @@ class ContactObject
         self.phone_numbers << [location, phone_type, cm.value]
       end
     end
-    puts self.emails.inspect
-    puts self.phones.inspect
-    raise "DONE"
 
     self.birthday = c.birthday
     self.notes = c.notes
@@ -213,8 +270,6 @@ class ContactObject
     self.middle_name = civicrm_contact["middle_name"]
     self.last_name = civicrm_contact["last_name"]
 
-    # FIXME: TODO: add support for only 1 address
-
     loc_map = {"Home" => "home", "Work" => "work"}
     loc_by_id = getoptions(my_client, "phone", "location_type_id")
     c_map = {"Mobile" => "cell phone", "IP" => "ip phone", "Emergency" => "emergency phone", "Fax" => "fax"}
@@ -249,12 +304,6 @@ class ContactObject
       end
     end
 
-    raise self.emails.inspect
-
-    # phone_numbers.each
-
-    self.phone_numbers = civicrm_contact["phone"]
-    self.emails = civicrm_contact["email"]
     self.birthday = civicrm_contact["birth_date"]
 
     self.address = civicrm_contact["street_address"]
@@ -274,28 +323,65 @@ class ContactObject
     hash[:middle_name] = middle_name
     hash[:last_name] = last_name
 
-    # TODO: birthday is the only that works, not even address..
-    hash["phone"] = phone_numbers
-    hash["email"] = emails
     hash["birth_date"] = birthday
-
-    hash["street_address"] = self.address
-    hash["supplemental_address_1"] = self.address_extra
-    hash["city"] = self.city
-    hash["state_province_name"] = self.state
-    hash["country"] = self.country
-    hash["postal_code"] = self.postal_code
     return hash
   end
 
   def to_civicrm_extras(my_client, civicrm_id)
     my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"] 
-    # FIXME: Date.today should be something else/
-    my_notes.each.map(&:last).first["id"].each do |n|
-      my_client.do_req("civicrm/note/delete", {:id => n})
+    my_notes.to_a.map(&:last).each do |n|
+      my_client.do_req("civicrm/note/delete", {:id => n["id"]})
     end
+
+    # TODO: Date.today should be something else/
     if self.notes && self.notes.length > 0
       my_client.do_req("civicrm/note/create", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB", 'modified_date' => Date.today, 'note' => self.notes})["values"]
+    end
+
+    location_types = by_name(getoptions(my_client, "phone", "location_type_id"))
+    phone_types = by_name(getoptions(my_client, "phone", "phone_type_id"))
+
+    my_phones = my_client.do_req("civicrm/phone/get", {"contact_id" => civicrm_id})["values"] 
+    my_phones.to_a.map(&:last).each do |n|
+      my_client.do_req("civicrm/phone/delete", {:id => n["id"]})
+    end
+
+    my_addresss = my_client.do_req("civicrm/address/get", {"contact_id" => civicrm_id})["values"] 
+    my_addresss.to_a.map(&:last).each do |n|
+      my_client.do_req("civicrm/address/delete", {:id => n["id"]})
+    end
+
+    my_emails = my_client.do_req("civicrm/email/get", {"contact_id" => civicrm_id})["values"] 
+    my_emails.to_a.map(&:last).each do |n|
+      my_client.do_req("civicrm/email/delete", {:id => n["id"]})
+    end
+
+    self.emails.each do |loc, email|
+      my_client.do_req("civicrm/email/create", {"contact_id" => civicrm_id, "email" => email, "location_type_id" => location_types[loc]})
+    end
+
+    self.phone_numbers.each do |loc, ptype, phone|
+      my_client.do_req("civicrm/phone/create", {"contact_id" => civicrm_id, "phone" => phone, "location_type_id" => location_types[loc], "phone_type_id" => phone_types[loc]})
+    end
+
+    if (self.address && self.address.length >= 0) or (self.city && self.city.length >= 0) or (self.postal_code && self.postal_code.length >= 0)
+      ahash = {"contact_id" => civicrm_id, "location_type_id" => location_types['Other']}
+      ahash["street_address"] = self.address
+      ahash["supplemental_address_1"] = self.address_extra
+      ahash["city"] = self.city
+
+      state_lookup = by_name(STATES)
+      civi_lookup = by_name(getoptions(my_client, 'address', 'state_province_id'))
+      state_lookup.keys.each do |k|
+        state_lookup[k] = civi_lookup[state_lookup[k]]
+      end
+      civi_lookup.each {|k, v|
+        state_lookup[k.upcase] = v
+      }
+      ahash["state_province_id"] = state_lookup[self.state.upcase].to_i
+      ahash["country"] = self.country
+      ahash["postal_code"] = self.postal_code.strip
+      my_client.do_req("civicrm/address/create", ahash)
     end
   end
 end
@@ -354,18 +440,7 @@ def sync_contact_from_civicrm(civicrm_id)
   return fgdb_id
 end
 
-def do_main
-  success = false
-  fgdb_id = nil
-  civicrm_id = nil
-  raise ArgumentError unless ARGV.length == 3
-  source, table, tid = ARGV
-  raise ArgumentError unless tid.to_i != 0
-  raise ArgumentError unless ["fgdb", "civicrm"].include?(source)
-  raise ArgumentError unless ["contacts"].include?(table)
-  @saved_civicrm = false
-
-
+def do_sync(source, table, tid)
   if source == "civicrm" && (ENV["SCRIPT"] && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid))
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid) or raise Exception
@@ -381,6 +456,20 @@ def do_main
     end
     puts "  Completed at #{Time.now}. Resulting id on #{source == "fgdb" ? "civicrm" : "fgdb"} was: #{oid.nil? ? "FAIL" : oid}"
   end
+end
+
+def do_main
+  success = false
+  fgdb_id = nil
+  civicrm_id = nil
+  raise ArgumentError unless ARGV.length == 3
+  source, table, tid = ARGV
+  raise ArgumentError unless tid.to_i != 0
+  raise ArgumentError unless ["fgdb", "civicrm"].include?(source)
+  raise ArgumentError unless ["contacts"].include?(table)
+  @saved_civicrm = false
+
+  do_sync(source, table, tid)
 
   if ENV["SCRIPT"]
   if success

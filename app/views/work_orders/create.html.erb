@@ -9,6 +9,8 @@
 <% end %>
 <%= button_to "Edit Information", {:mode => params[:mode], :action => "new", :open_struct => params[:open_struct]} %>
 <%= button_to "Submit Work Order", {:mode => params[:mode], :action => "submit", :open_struct => params[:open_struct]} %>
+
+<%= render :partial => "tech_support_notes/ts_notes", :locals => {:name => @data["Name"]} %>
 </div>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => nil} %>
 <% else %>

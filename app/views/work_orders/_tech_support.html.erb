@@ -55,8 +55,9 @@
   </div>
   <h2>Support Information</h2>
   <p>
+  <p>
     <%= f.label :os, "Operating System (optional)" %><br />
-    <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, {:include_blank => true}, :onchange => 'if($("open_struct_os").value == "Linux") {$("os_warning").hide();} else {$("os_warning").show();}' %>
+    <%= f.select :os, @rt_metadata["OS"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p id="os_warning" style="display: none">
     Remember that software support is offered *only* for Ubuntu; we can

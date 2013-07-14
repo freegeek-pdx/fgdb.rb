@@ -55,6 +55,19 @@ class Notifier < ActionMailer::Base
     body :volunteers => volunteers
   end
 
+  def monthly_volunteer_milestone_report( volunteers )
+    m = {}
+    volunteers.each do |v|
+      m[v.next_monthly_milestone] ||= []
+      m[v.next_monthly_milestone] << v.display_name
+    end
+    recipients Default['volunteer_reports_to']
+    from Default['my_email_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject "Monthly Volunteer Milestone Report"
+    body :milestones => m
+  end
+
   def staff_hours_summary_report(myworkers)
     recipients Default['management_mailing_list']
     from Default['my_email_address']

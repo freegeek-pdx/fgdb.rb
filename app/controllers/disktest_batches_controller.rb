@@ -33,7 +33,7 @@ class DisktestBatchesController < ApplicationController
   def search
     @error = params[:error]
     if !params[:conditions]
-      params[:conditions] = {:created_at_enabled => "true"}
+      params[:conditions] = {:finalized_enabled => "true", :finalized_excluded => "true"}
     end
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
@@ -51,6 +51,7 @@ class DisktestBatchesController < ApplicationController
 
   def new
     @disktest_batch = DisktestBatch.new
+    @disktest_batch.date = Date.today
   end
 
   def edit

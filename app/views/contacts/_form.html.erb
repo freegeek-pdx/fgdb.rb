@@ -111,6 +111,11 @@
     <%= render :partial => 'contact_methods' %>
   </div>
 
+  <div class="form-element">
+    <label for="contact_volunteer_intern_title">Volunteer Intern Title (used to generate ID badges, do NOT include the word intern)</label>
+    <%= text_field 'contact', 'volunteer_intern_title'  %> Intern
+  </div>
+
   <div class="form-element person">
     <%= render(:partial => "user_form") if has_required_privileges('/create_logins') or has_privileges("contact_#{@contact.id}") %>
   </div>

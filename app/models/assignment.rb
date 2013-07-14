@@ -160,7 +160,11 @@ class Assignment < ActiveRecord::Base
   }
 
   def first_time_in_area?
-    self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type and !self.contact.volunteer_task_types.include?(self.volunteer_shift.volunteer_task_type) #  and self.contact_id_changed? moved outside because we use update_attributes
+    if self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type
+      return !ContactVolunteerTaskTypeCount.has_volunteered?(self.contact_id, self.volunteer_shift.volunteer_task_type_id)
+    else
+      return false
+    end #  and self.contact_id_changed? moved outside because we use update_attributes
   end
 
   def my_call_status

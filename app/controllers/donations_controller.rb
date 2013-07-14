@@ -41,7 +41,7 @@ class DonationsController < TransactionController
   end
 
   def tally_sheet
-    @results = DB.exec("SELECT gizmo_types.description AS description, CASE WHEN required_fee_cents > 0 THEN required_fee_cents/100 ELSE suggested_fee_cents/100 END AS amount, covered AS covered, required_fee_cents > 0 AS required FROM gizmo_types LEFT JOIN gizmo_contexts_gizmo_types ON gizmo_types.id = gizmo_contexts_gizmo_types.gizmo_type_id WHERE gizmo_context_id = 1 AND (gizmo_types.ineffective_on IS NULL OR gizmo_types.ineffective_on > current_date) AND (gizmo_types.effective_on IS NULL OR gizmo_types.effective_on <= current_date) AND gizmo_types.name NOT IN ('invoice_resolved', 'service_fee') ORDER BY covered DESC, rank, gizmo_types.description;").to_a
+    @results = DB.exec("SELECT gizmo_types.description AS description, CASE WHEN required_fee_cents > 0 THEN required_fee_cents/100 ELSE suggested_fee_cents/100 END AS amount, covered AS covered, required_fee_cents > 0 AS required FROM gizmo_types LEFT JOIN gizmo_contexts_gizmo_types ON gizmo_types.id = gizmo_contexts_gizmo_types.gizmo_type_id WHERE gizmo_context_id = 1 AND (gizmo_types.ineffective_on IS NULL OR gizmo_types.ineffective_on > current_date) AND (gizmo_types.effective_on IS NULL OR gizmo_types.effective_on <= current_date) AND gizmo_types.name NOT IN ('invoice_resolved', 'service_fee_other', 'service_fee_education', 'service_fee_pickup', 'service_fee_tech_support') ORDER BY covered DESC, rank, gizmo_types.description;").to_a
   end
 
   def civicrm_sync

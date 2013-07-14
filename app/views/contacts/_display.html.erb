@@ -128,11 +128,11 @@ Attended Classes:<br />
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
 <% if @contact.default_discount_schedule == "volunteer" %>
-<div id="contact__default_discount_name" style="display: none"><%= DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id %></div>
-<div id="contact__default_discount_percentage" style="display: none"><%= DiscountPercentage.find(Default["discount_percentage_id_for_volunteer_discount"]).id %></div>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.default_volunteer_discount %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_volunteer_discount_percentage %></div>
 <% else %>
-<div id="contact__default_discount_name" style="display: none"><%= Sale.new.discount_name.id %></div>
-<div id="contact__default_discount_percentage" style="display: none"><%= Sale.new.discount_percentage.id %></div>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.default_discount %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_discount_percentage %></div>
 <% end %>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 <div id="contact__display_name" style="display: none"><%= @contact.display_name.to_s %></div>
