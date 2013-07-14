@@ -1,6 +1,8 @@
 fgdb.rb (1.0.123) released; urgency=low
 
   * Esacpe subject and body in creating crash report tickets
+  * Sort contact methods on display, in most logical (hopefully) order
+    of entry (Closes: #36306)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
 

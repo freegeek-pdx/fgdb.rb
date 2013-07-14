@@ -652,6 +652,10 @@ class Contact < ActiveRecord::Base
 
   alias :is_user :is_user?
 
+  def sorted_contact_methods
+    ContactMethodType.sort_methods(contact_methods)
+  end
+
   private
 
   # returns the last gizmos associated with the given table

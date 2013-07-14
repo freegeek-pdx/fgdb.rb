@@ -25,7 +25,7 @@
   <%= h @contact.city %>, <%= h @contact.state_or_province %> <%= h @contact.postal_code %>
 </div>
 <div class="contact_methods">
-  <% for method in @contact.contact_methods %>
+  <% for method in @contact.sorted_contact_methods %>
     <%= h method.display %><br />
   <% end %>
 </div>
