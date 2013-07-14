@@ -7,6 +7,8 @@ fgdb.rb (1.0.123) released; urgency=low
     shared database account (Closes: #36314)
   * Set requestor for TS work orders to the Email address of the
     customer, if provided, otherwise leave it empty (Closes: #36484)
+  * Display contact notes as a javascript alert in volunteer assigments
+    and hours logging (Closes: #36307)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
 

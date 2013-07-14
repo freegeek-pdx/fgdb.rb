@@ -138,6 +138,7 @@ Attended Classes:<br />
 <div id="contact__display_name" style="display: none"><%= @contact.display_name.to_s %></div>
 <div id="contact__phone_number" style="display: none"><%= @contact.phone_number.to_s %></div>
 <div id="contact__email" style="display: none"><%= @contact.mailing_list_email %></div>
+<div id="contact__notes" style="display: none"><%= @contact.notes %></div>
 <div id="contact__shift_count" style="display: none"><%= @contact.schedule_counts.to_json %></div>
 <div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
 <div id="contact__areas_disciplined_from" style="display: none"><%= @contact.areas_disciplined_from.map(&:name).to_json %></div>

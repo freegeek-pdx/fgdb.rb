@@ -143,6 +143,12 @@ function set_offsite_from_job(offsite, job) {
   $(offsite).checked = offsite_jobs[$(job).value] == "true";
 }
 
+function display_contact_notes() {
+  if($('contact__notes') && $('contact__notes').innerHTML.length > 0) {
+    alert($('contact__display_name').innerHTML + " has the following notes on their contact record:\n" + $('contact__notes').innerHTML);
+  }
+}
+
 function display_disciplinary_notes() {
   if($('contact__has_areas_disciplined_from') && $('contact__has_areas_disciplined_from').innerHTML == "true") {
     var str = "This volunteer may not work in the following areas:\n";
