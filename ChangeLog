@@ -9,6 +9,8 @@ fgdb.rb (1.0.123) released; urgency=low
     customer, if provided, otherwise leave it empty (Closes: #36484)
   * Display contact notes as a javascript alert in volunteer assigments
     and hours logging (Closes: #36307)
+  * Fix smart quotes in the WO description, replacing with standard
+    dummy quotes (Closes: #36582)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:18 -0700
 
