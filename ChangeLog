@@ -11,7 +11,7 @@ fgdb.rb (1.0.123) released; urgency=low
     and hours logging (Closes: #36307)
   * Fix smart quotes in the WO description, replacing with standard
     dummy quotes (Closes: #36582)
-  * Send bi-weekly volunteer report to paidworkers (Closes: #35981)
+  * Send bi-weekly volunteer report to paidworkers (Closes: #36548)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:18 -0700
 
