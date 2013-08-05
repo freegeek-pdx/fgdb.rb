@@ -1,5 +1,6 @@
 fgdb.rb (1.0.124) UNRELEASED; urgency=low
 
+  * update to jzebra 1.5.4, which works on wheezy (Closes: 31170)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:57:06 -0700
 

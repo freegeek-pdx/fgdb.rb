@@ -220,6 +220,22 @@ function cleanup_hour_select(hour_id, start_hour, end_hour) {
   }
 }
 
+function monitorLoadingThenCall(doneFunc) {
+   try { if (isActive()) { eval(doneFunc); return; }} 
+   catch (err) { alert("Unknown error occured: " + err); return; }
+   doneFunc =  "'" + doneFunc.replace(/\"/g,'\\"') + "'";
+   window.setTimeout("monitorLoadingThenCall(" + doneFunc + ")", 100);
+}
+
+function isActive() {
+   if (document && document.jzebra) {
+      try { return document.jzebra.isActive; }
+      // IE Fix, don't expect it to make sense
+      catch (err) { return true; }
+   }
+   return false;
+}
+
 function monitorInitFinding() {
   var applet = document.jzebra;
   if (applet != null) {
