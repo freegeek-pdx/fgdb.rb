@@ -119,7 +119,9 @@ class WorkOrdersController < ApplicationController
     end
     ic = ic.join("\n")
     @data["Initial Content"] = ic + "\n\n" + @data["Initial Content"] if ic.length > 0
-    @data["Technician ID"] = current_user.contact_id.to_s
+    tech_contact = current_user.shared ? User.find_by_cashier_code(@work_order.pin.to_i) : current_user
+    @data["Technician ID"] = tech_contact.contact_id.to_s if tech_contact
+    @errors.add("pin", "is required when logged in as a shared database user (#{current_user.login})") if tech_contact.nil?
 #    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
 #      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
 #    else
@@ -223,8 +225,7 @@ class WorkOrdersController < ApplicationController
 
     unless @error
 
-    requestor = User.current_user ? (User.current_user.email || "") : ""
-    @data["Requestor"] = requestor
+    @data["Requestor"] = @data["Email"].to_s
 
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp 
     f = File.open(tempfile, 'w+')

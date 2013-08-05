@@ -1,4 +1,5 @@
 MAILTO=database
+RAILS_ENV=production
 # cleans up sessions
 0 0 * * * root /var/www/fgdb.rb/script/delete-sessions
 

@@ -10,6 +10,7 @@
         <% else %>
           <%= contact_field('@volunteer_task', 'contact',
                             :locals => {:options => {
+                                :on_display => 'display_contact_notes();',
                                 :object_name => 'volunteer_task',
                                 :field_name => 'contact_id' }}) %>
         <% end %>

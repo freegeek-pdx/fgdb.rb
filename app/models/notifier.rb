@@ -60,6 +60,10 @@ class Notifier < ActionMailer::Base
     volunteers.each do |v|
       m[v.next_monthly_milestone] ||= []
       m[v.next_monthly_milestone] << v.display_name
+      if v.hours_actual >= (v.next_monthly_milestone + 100)
+        m[v.next_monthly_milestone + 100] ||= []
+        m[v.next_monthly_milestone + 100] << v.display_name
+      end
     end
     recipients Default['volunteer_reports_to']
     from Default['my_email_address']

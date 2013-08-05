@@ -89,7 +89,7 @@
                     :locals => {:options => {
                         :object_name => f.object_name.to_s,
                         :field_name => 'contact_id',
-                        :on_display => 'display_disciplinary_notes();'
+                        :on_display => 'display_disciplinary_notes(); display_contact_notes();'
                       }}) %>
       <%= f.label :closed, "Is this slot closed?" %>
       <%= f.check_box :closed %>

@@ -7,8 +7,18 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
 fgdb.rb (1.0.123) released; urgency=low
 
   * Esacpe subject and body in creating crash report tickets
+  * Sort contact methods on display, in most logical (hopefully) order
+    of entry (Closes: #36306)
+  * Require a PIN from the intake person if they are logged in using a
+    shared database account (Closes: #36314)
+  * Set requestor for TS work orders to the Email address of the
+    customer, if provided, otherwise leave it empty (Closes: #36484)
+  * Display contact notes as a javascript alert in volunteer assigments
+    and hours logging (Closes: #36307)
+  * Fix smart quotes in the WO description, replacing with standard
+    dummy quotes (Closes: #36582)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:18 -0700
 
 fgdb.rb (1.0.122) released; urgency=low
 

@@ -5,8 +5,9 @@
 <% interface[:notes] = %Q!<input size="15" name="contact_method_details" id="contact_method_details" onkeydown="#{line_item_on_keydown("contact_methods")}">! %>
 
 <% values = [] %>
+
 <% if @contact.contact_methods
-    values = @contact.contact_methods.map{|x|
+    values = @contact.sorted_contact_methods.map{|x|
       x = x.to_hash(:id, :contact_method_type_id, :ok, :value, :details)
       x[:contact_method_usable] = x[:ok]
       x[:contact_method_value] = x[:value]

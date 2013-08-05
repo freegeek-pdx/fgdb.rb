@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use utf8;
+
 use strict;
 use warnings;
 
@@ -59,12 +61,19 @@ my $sys_id = $data->{"System ID"};
 my $geek_id = $data->{"Adopter ID"};
 my $warranty = $data->{"Warranty"};
 
+sub cleanup {
+    my $s = shift;
+    $s =~ s/(’|‘|’)/'/g;
+    $s =~ s/(“|”)/"/g;
+    return $s;
+}
+
 my $ticket = RT::Client::REST::Ticket->new(
     rt  => $rt,
     priority => 50,
     requestor => [$requestor],
     queue => 'TechSupport',
-    subject => $subject,
+    subject => cleanup($subject),
     cf => {
         'Support Level' => 'Line 1',
         'Ticket Source' => $ts_source,
@@ -72,7 +81,7 @@ my $ticket = RT::Client::REST::Ticket->new(
 	'Type of Box' => $type,
 	'Email' => $email,
 	'phone' => $phone,
-        'Adopter Name' => $adopter_name,
+        'Adopter Name' => cleanup($adopter_name),
         'Intake Technician ID' => $tech,
 	'Tech Support Issue' => \@issues,
         'SaleDate' => $txn_date,
@@ -82,5 +91,5 @@ my $ticket = RT::Client::REST::Ticket->new(
         'Warranty' => $warranty,
         'OS' => $os,
     },
-    )->store(text => $content);
+    )->store(text => cleanup($content));
 print $ticket->id . "\n";
