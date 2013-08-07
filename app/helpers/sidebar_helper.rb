@@ -111,6 +111,7 @@ module SidebarHelper
     sidebar_hash["sked admin"]["repeat slots"] = {:c => "volunteer_default_shifts"}
     sidebar_hash["sked admin"]["actual slots"] = {:c => "volunteer_shifts"}
     sidebar_hash["sked admin"]["repeat volunteers"] = {:c => "default_assignments"}
+    sidebar_hash["vol sked"]["TURBO-beta"] = {:c => "assignments", :a => "turbo"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
     sidebar_hash["vol sked"]["view only"] = {:c => "assignments", :a => "view"}
     sidebar_hash["vol sked"]["no shows"] = {:c => "assignments", :a => "noshows"}

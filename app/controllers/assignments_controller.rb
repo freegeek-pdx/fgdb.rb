@@ -186,9 +186,8 @@ class AssignmentsController < ApplicationController
     redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
   end
 
-  def index
-    @multi_enabled = true
-    if params[:conditions]
+private
+def create_skedjul
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
       links = [[:arrived, :link, :contact_id_and_by_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:attendance, :remote, :contact_id, :t]]
     @skedj = Skedjul.new({
@@ -254,16 +253,33 @@ class AssignmentsController < ApplicationController
                            },
 
       }, params)
-
     @opts = @skedj.opts
     @conditions = @skedj.conditions
       @page_title = @conditions.skedj_to_s("after", false, ["cancelled"])
       @page_title = "All schedules" if @page_title.length == 0
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event, :roster], :contact => [], :contact_volunteer_task_type_count => []]})
-    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+end
+public
+
+  def index
+    @multi_enabled = true
+    if params[:conditions]
+
+      create_skedjul
+      render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar
+    end
+  end
+
+  def turbo
+    @multi_enabled = true
+    if params[:conditions]
+      create_skedjul
+      render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+    else
+      render :partial => "turbo",  :layout => :with_sidebar
     end
   end
 

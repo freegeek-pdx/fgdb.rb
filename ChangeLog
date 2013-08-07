@@ -5,8 +5,10 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
   * Add a tweak to the conditions table to make it more understable,
     which field/excluded checkbox goes with which condition, by
     vertically aligning it
+  * Implement 'turbo' mode, an optimized workflow for volskedj, with the
+    interface set up as a 'beta' pilot (Closes: #27159)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 22:08:50 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 22:36:28 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 

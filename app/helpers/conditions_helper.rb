@@ -40,7 +40,7 @@ module ConditionsHelper
   end
 
   def html_for_cancelled_condition(params_key)
-    "<div style=\"display: inline-block;\">Show cancelled: " + check_box(params_key, "cancelled") + "</div>"
+    "<div style=\"display: inline-block;\">Show cancelled shifts: " + check_box(params_key, "cancelled") + "</div>"
   end
 
   def html_for_schedule_condition(params_key)
@@ -87,6 +87,7 @@ module ConditionsHelper
   end
 
   def html_for_weekday_condition(params_key)
+    return Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}.map{|x| '<div style="padding: 10px; display: inline-block; float: left;' + (x.last == 0 ? " clear: left;" : "") + '">' + label(params_key, "weekday_id[#{x.last}]", x.first) + check_box(params_key, "weekday_id", {:id => params_key + "_weekday_id[#{x.last}]"}, x.last, "") + '</div>'}.join("")
     select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, {}, _multi_html_opts)
   end
 
