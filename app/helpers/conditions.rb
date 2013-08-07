@@ -441,7 +441,7 @@ class Conditions < ConditionsBase
   end
 
   def assigned_conditions(klass)
-    return ["(#{klass.table_name}.contact_id IS NOT NULL AND closed = 'f')"]
+    return ["(#{klass.table_name}.contact_id IS NOT NULL OR closed = 't')"]
   end
 
   def finalized_conditions(klass)
