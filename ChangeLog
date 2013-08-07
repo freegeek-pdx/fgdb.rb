@@ -2,8 +2,11 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
 
   * update to jzebra 1.5.4, which works on wheezy (Closes: 31170)
   * Add upcoming holidays for the next 3 years (Closes: #36896)
+  * Add a tweak to the conditions table to make it more understable,
+    which field/excluded checkbox goes with which condition, by
+    vertically aligning it
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 20:54:54 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 22:08:50 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 

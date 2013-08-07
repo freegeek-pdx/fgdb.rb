@@ -148,6 +148,7 @@ border: 1px solid #DDD;
 }
 table.conditions th {
 width: 100px;
+vertical-align: top;
 }
 table.conditions td:last-child {
 width 100px;
