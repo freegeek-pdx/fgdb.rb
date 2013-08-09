@@ -1,12 +1,6 @@
 class TillAdjustmentsController < ApplicationController
   layout :with_sidebar
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['till_adjustments']}
-    a << {:privileges => ['modify_inventory'], :only => ["inventory_settings", "save_inventory_settings"]}
-    a
-  end
   public
   def inventory_settings
     @date = _parse_date(Default["inventory_lock_end"])

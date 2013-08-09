@@ -3,11 +3,6 @@ class WarrantyLengthsController < ApplicationController
 
   protected
 
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['role_admin']}
-    a
-  end
   before_filter :ensure_metadata
   def ensure_metadata
     @@rt_metadata ||= _parse_metadata_wo

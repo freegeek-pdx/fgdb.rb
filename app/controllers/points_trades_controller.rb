@@ -1,11 +1,6 @@
 class PointsTradesController < ApplicationController
   layout :with_sidebar
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_volunteer_hours']}
-    a
-  end
   public
 
   def index

@@ -2,11 +2,6 @@ class SidebarLinksController < ApplicationController
   layout :with_sidebar
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['role_admin'], :only => ["crash", "recent_crash"]}
-    a
-  end
 
   public
   def homepage_index

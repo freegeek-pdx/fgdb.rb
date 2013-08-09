@@ -1,10 +1,5 @@
 class GizmoTypeGroupsController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_gizmo_type_groups']}
-    a
-  end
   public
 
   # GET /gizmo_type_groups

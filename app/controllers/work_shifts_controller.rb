@@ -58,11 +58,6 @@ class WorkShiftsController < ApplicationController
     do_find_problems_report(WorkShift, "shift_date", @weeks, [@start_date, @end_date])
   end
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish', 'staffsched_rolled_out', 'staffsched_month']}
-    a
-  end
 
   public
 

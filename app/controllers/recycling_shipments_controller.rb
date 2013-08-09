@@ -1,9 +1,4 @@
 class RecyclingShipmentsController < ApplicationController
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['staff']}
-    a
-  end
 
   layout :with_sidebar
 

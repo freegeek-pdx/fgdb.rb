@@ -1,10 +1,5 @@
 class SkedsController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['admin_skedjul']}
-    a
-  end
   public
 
   layout :with_sidebar

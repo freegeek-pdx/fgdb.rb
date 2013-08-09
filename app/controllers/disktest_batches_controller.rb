@@ -1,10 +1,5 @@
 class DisktestBatchesController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['data_security']}
-    a
-  end
   public
 
 #  def update_all_drives

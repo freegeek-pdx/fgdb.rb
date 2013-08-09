@@ -24,7 +24,7 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
    sidebar_hash.each do |main_name, my_hash|
      if my_hash.class == OH
      my_hash.each do |this_name, opts|
-       if ApplicationController.sb_has_required_privileges(opts[:controller].classify.pluralize, opts[:action] || "index")
+       if ApplicationController.sb_has_required_privileges(opts[:controller], opts[:action] || "index")
          view_hash[main_name] = OH.new unless view_hash.keys.include?(main_name)
          view_hash[main_name][this_name] = opts
        end

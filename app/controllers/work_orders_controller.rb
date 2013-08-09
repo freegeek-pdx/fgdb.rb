@@ -2,11 +2,6 @@ class WorkOrdersController < ApplicationController
   layout :with_sidebar
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['techsupport_workorders']}
-    return a
-  end
   before_filter :ensure_metadata
   def ensure_metadata
     @@rt_metadata ||= _parse_metadata_wo
