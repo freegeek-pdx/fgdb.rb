@@ -488,11 +488,13 @@ class ApplicationController < ActionController::Base
     return true
   end
 
-  def self.sb_has_required_privileges(action)
-    self.new.send(:_internal_sb_has_required_privileges, action)
+  def self.sb_has_required_privileges(c, action)
+    self.new.send(:_internal_sb_has_required_privileges, c, action)
   end
 
-  def _internal_sb_has_required_privileges(action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
+  def _internal_sb_has_required_privileges(controller, action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
+    # TODO: FIXME: MUST FIND THERSE LOCALLY NOT IN CONTROLLER, use new controller argument
+    return true
     required_privileges(action).each{|x|
       if !has_privileges(_privis_to_out_of_page(x))
         return false
