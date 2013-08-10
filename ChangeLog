@@ -7,8 +7,10 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
     vertically aligning it
   * Implement 'turbo' mode, an optimized workflow for volskedj, with the
     interface set up as a 'beta' pilot (Closes: #27159)
+  * Fix crash when no value for logged in within condition is provided
+    (Crash o566rP)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 22:36:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 10:51:41 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 

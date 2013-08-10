@@ -159,6 +159,7 @@ class Conditions < ConditionsBase
     validate_exists('gizmo_type_id') if parse_and_validate_list('gizmo_type_id')
     validate_exists('program_id') if parse_and_validate_list('program_id')
     validate_exists('gizmo_type_group_id') if parse_and_validate_list('gizmo_type_group_id')
+    validate_integer('logged_in_within', 'logged_in_within', true)
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
     validate_integer('id')
     validate_emptyness('email')
