@@ -6,13 +6,6 @@ class WorkedShiftsController < ApplicationController
 
   protected
 
-  def get_required_privileges
-    a = super
-    a << {:only => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['manage_workers']}
-    a << {:except => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['staff']}
-    a << {:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']}
-    a
-  end
   public
 
   NH = {"jobs" => "name",

@@ -1,11 +1,11 @@
 #!/bin/sh
 
-BACKUP_DIR=/usr/local/zhora-backup/incoming/
+BACKUP_DIR=/srv/backup-extras/
 
-#if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
-#    echo "ERROR: $BACKUP_DIR isn't the backup dir"
-#    exit 1
-#fi
+if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+    echo "ERROR: $BACKUP_DIR isn't the backup dir"
+    exit 1
+fi
 
 set -C
 set -e

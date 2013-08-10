@@ -5,13 +5,6 @@ class AssignmentsController < ApplicationController
     set_contact_context(ContactType.find_by_name('volunteer'))
   end
 
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['schedule_volunteers']}
-    a << {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}
-    a << {:only => ['noshows', 'noshows_report'], :privileges => ['admin_skedjul']}
-    a
-  end
   public
 
   def noshows

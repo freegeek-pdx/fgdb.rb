@@ -1,11 +1,5 @@
 class VolunteerEventsController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['admin_skedjul'], :except => ['display', 'toggle_walkins']}
-    a << {:privileges => ['schedule_volunteers'], :only => ['display', 'toggle_walkins']}
-    a
-  end
   public
   layout :with_sidebar
 

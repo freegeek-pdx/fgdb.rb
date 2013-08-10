@@ -1,8 +1,6 @@
 #!/bin/bash
 
-BACKUP_DIR=/usr/local/zhora-backup/incoming/
-#BACKUP_SERVER=peabody
-REMOTE_DIR=/srv/data-extras/data-backups/
+BACKUP_DIR=/srv/backup-extras/
 
 #if [ ! -d $BACKUP_DIR ]; then
 #    mkdir -p $BACKUP_DIR
@@ -10,10 +8,10 @@ REMOTE_DIR=/srv/data-extras/data-backups/
 
 #if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
 #    sshfs $BACKUP_SERVER:$REMOTE_DIR $BACKUP_DIR
-#    if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
-#	echo "ERROR: $BACKUP_DIR isn't the backup dir"
-#	exit 1
-#    fi
+    if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+	echo "ERROR: $BACKUP_DIR isn't the backup dir"
+	exit 1
+    fi
 #fi
 
 set -C

@@ -19,11 +19,6 @@ Prawn::Labels.types = {
 
 class WorkersController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_workers']}
-    a
-  end
   public
 
   def index

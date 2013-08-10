@@ -1,12 +1,6 @@
 class BuilderTasksController < ApplicationController
   layout :with_sidebar
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['sign_off_spec_sheets']}
-    a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
-    a
-  end
   public
 
   def sign_off

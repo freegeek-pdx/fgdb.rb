@@ -36,15 +36,6 @@ class TransactionController < ApplicationController
     set_transaction_type((controller_name()).singularize)
   end
 
-  def get_required_privileges
-    a = super
-    fn = self.class.to_s.tableize.gsub(/_controllers$/, "")
-    a << {:only => ["search", "component_update", "receipt"], :privileges => ["view_#{fn}"]}
-    a << {:only => ["edit", "destroy", "update"], :privileges => ["change_#{fn}"]}
-    a << {:only => ["invoices"], :privileges => ["pay_invoices"]}
-    a << {:except => ["civicrm_sync", "receipt", "edit", "destroy", "update", "search", "component_update", "invoices"], :privileges => ["create_#{fn}"]}
-    a
-  end
 
   def check_for_receipt
     case action_name

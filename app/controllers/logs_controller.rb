@@ -1,11 +1,6 @@
 class LogsController < ApplicationController
   layout :with_sidebar
 
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['view_logs']}
-    return a
-  end
 
   def find_deleted
     if params[:search]

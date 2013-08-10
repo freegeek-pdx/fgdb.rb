@@ -678,17 +678,6 @@ GROUP BY 1, 2, 3;").to_a
     render :action => "volunteers_report"
   end
 
-  def get_required_privileges
-    a = super
-    a << {:only => ["top_contributors", "top_contributors_report"], :privileges => ['manage_contacts']}
-    a << {:only => ["cashier_contributions", "cashier_contributions_report"], :privileges => ['staff']}
-    a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
-    a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
-    a << {:only => ["staff_hours_summary", "staff_hours_summary_report"], :privileges => ['staff_summary_report']}
-    a << {:only => ["volunteer_schedule", "volunteer_schedule_report"], :privileges => ['admin_skedjul']}
-    a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
-    return a
-  end
 
   public
 

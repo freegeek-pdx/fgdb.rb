@@ -81,7 +81,7 @@ with the scripts in the same directory being symlinked from /usr/local/bin/
 In addition to sudo, the logrotate and such (described in
 README_FOR_APP), and the database@ alias, there are a few cron jobs
 (and their ssh keys) that must be configured properly on zhora. In
-addition to the standard fgdbcrond, the script that copies backups to peabody:
+addition to the standard fgdbcrond, the script that compresses backups,
 /home/dbadmin/fgdb.rb/script/incoming_db_release_backups is in cron.daily.
 and the script that updates the staff schedule published to art:
 /home/staffsched/trigger-update is in cron.hourly.

@@ -11,6 +11,8 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
     (Crash o566rP)
   * Remove the "Uncovered LCD monitor" and "System" options from the
     Disbursement Info section of printme spec sheets (Closes: #36930)
+  * refactor the privileges system to be way more efficient
+  * update release scripts for local backups (Closes: #36521)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 11:12:27 -0700
 

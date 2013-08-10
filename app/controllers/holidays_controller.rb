@@ -1,11 +1,6 @@
 class HolidaysController < ApplicationController
   layout "skedjulnator"
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['skedjulnator'], :except => ["is_holiday", "display", 'show_display']}
-    a
-  end
   before_filter :update_skedjulnator_access_time, :except => [:is_holiday, :display, :show_display]
   public
 

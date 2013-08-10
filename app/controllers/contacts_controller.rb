@@ -64,14 +64,6 @@ class ContactsController < ApplicationController
   end
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
-    a << {:only => ['roles', '/admin_user_accounts'], :privileges => ['role_admin']}
-    a << {:only => ['email_list'], :privileges => ['staff']}
-    a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
-    a
-  end
   public
 
   before_filter :be_stupid

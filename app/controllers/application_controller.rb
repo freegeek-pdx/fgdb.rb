@@ -451,14 +451,15 @@ class ApplicationController < ActionController::Base
   end
   alias_method_chain :redirect_to, :back_magic
 
-  def required_privileges(action)
+  def self.required_privileges(controller, action)
+    my_required_privileges = Privilege.required_for_controller(controller) # TODO: implement options variable to replace things, somehow (in controller subclassed is only when it matters, otherwise nil?)
     requires = []
     base_action = action.split("/").first
-    if base_action == "" and params
-      base_action = params[:action]
+    if base_action == "" and action
+      base_action = action
     end
     all = []
-    get_required_privileges.each{|x|
+    my_required_privileges.each{|x|
       all << [x[:only], x[:except]]
       if (x[:only].nil? || x[:only].include?(action) || x[:only].include?(base_action)) && (x[:except].nil? || !(x[:except].include?(action) || x[:except].include?(base_action)))
         requires << x[:privileges]
@@ -480,20 +481,17 @@ class ApplicationController < ActionController::Base
   end
 
   def has_required_privileges(action)
-    required_privileges(action).each{|x|
-      if !has_privileges(x)
+    controller = self.class.to_s.tableize.gsub(/_controllers$/, "")
+    self.class.required_privileges(controller, action).each{|x|
+      if !self.class.has_privileges(x)
         return false
       end
     }
     return true
   end
 
-  def self.sb_has_required_privileges(action)
-    self.new.send(:_internal_sb_has_required_privileges, action)
-  end
-
-  def _internal_sb_has_required_privileges(action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
-    required_privileges(action).each{|x|
+  def self.sb_has_required_privileges(c, action)
+    required_privileges(c, action).each{|x|
       if !has_privileges(_privis_to_out_of_page(x))
         return false
       end
@@ -501,14 +499,7 @@ class ApplicationController < ActionController::Base
     return true
   end
 
-  def get_required_privileges
-    a = []
-    a << {:only => ["/contact_condition_everybody"], :privileges => ['manage_contacts']}
-    a << {:only => ["/admin_inventory_features"], :privileges => ['role_admin']}
-    return a
-  end
-
-  def _privis_to_out_of_page(privs)
+  def self._privis_to_out_of_page(privs)
     mappings = {"contact_nil" => "has_contact", "contact_" => "has_contact"}
     res = privs.map{|x|
       mappings[x] || x
@@ -532,7 +523,7 @@ class ApplicationController < ActionController::Base
 
   # start auth junk
 
-  def has_privileges(*privs)
+  def self.has_privileges(*privs)
     User.current_user.has_privileges(*privs)
   end
 
