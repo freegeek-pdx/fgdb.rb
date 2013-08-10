@@ -8,6 +8,7 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
   * Implement 'turbo' mode, an optimized workflow for volskedj, with the
     interface set up as a 'beta' pilot (Closes: #27159)
   * refactor the privileges system to be way more efficient
+  * update release scripts for local backups (Closes: #36521)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Aug 2013 22:36:28 -0700
 
