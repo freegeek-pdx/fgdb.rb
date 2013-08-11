@@ -26,6 +26,16 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 
   public
 
+  def monthly_reports
+    @target = OpenStruct.new
+    unless params[:target].nil?
+      @target.target_year = params[:target][:target_year]
+      @target.target_month = params[:target][:target_month]
+      @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
+      @results = "You will see results here."
+    end
+  end
+
   def cashier_contributions
     @conditions = Conditions.new
   end

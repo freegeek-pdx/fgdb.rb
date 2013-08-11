@@ -1,0 +1,36 @@
+<% if @results %>
+  <h1>Monthly Report Metrics for <%= @target.target.strftime("%B") %>, <%= @target.target.year%></h1>
+<% else %>
+  <h1>Monthly Report Metrics</h1>
+<% end %>
+
+<% field_name = "target" %>
+<% obj_name = "target" %>
+<% obj = @target %>
+
+<% form_tag  do  %>
+<%= select_month(@target.target, :field_name => field_name + '_month', :prefix => obj_name) +  select_year(@target.target, :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year) %>
+<%= submit_tag "Run Monthly Report Metrics" %>
+
+<% end %>
+
+<% if @results %>
+<h2>Public Services:</h2>
+<h3>Classes</h3>
+<h3>HWG</h3>
+<h3>TS</h3>
+<h3>Vol</h3>
+<h3>DD</h3>
+<h3>Sales</h3>
+<h3>Bulk Sales</h3>
+
+<h2>Production:</h2>
+<h3>Laptop</h3>
+<h3>Desktop</h3>
+<h3>Phone</h3>
+<h3>A/V</h3>
+<h3>Mac</h3>
+
+<h2>Operations:</h2>
+<h3>Receiving</h3>
+<% end %>
