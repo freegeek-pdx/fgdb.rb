@@ -17,8 +17,11 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
     email list page (RT#36491)
   * Fix contact_methods to validate and prevent when a <span is added
     (Closes: #24258)
+  * Replace the organization checkbox with radio buttons and allow the
+    user to enter into any of the name fields at any time (Closes:
+    #36903)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 17:41:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 23:02:36 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 

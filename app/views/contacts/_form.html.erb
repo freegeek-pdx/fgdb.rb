@@ -2,15 +2,17 @@
   <!--[form:contact]-->
 
   <div class="form-element">
-    <%= check_box "contact","is_organization"
-        %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
+    <%= radio_button "contact", "is_organization_s", "true" %>
+    <%= label_tag "contact_is_organization_s_true", "Organization" %>
+    <%= radio_button "contact", "is_organization_s", "false" %>
+    <%= label_tag "contact_is_organization_s_false", "Individual" %>
   </div>
 
   <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" + (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "") %>
   <%= javascript_tag "contact_form_org_toggle();" %>
 
   <% for contact_type in ContactType.find_instantiable %>
-    <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
+    <div class="form-element ">
       <input type="checkbox" id="<%= h contact_type.name %>"
              name="contact_types[]"
              value="<%= contact_type.id %>"
@@ -30,22 +32,22 @@
   </fieldset>
   <% end %>
 
-  <div style="clear: left;" class="organization form-element">
+  <div style="clear: left;" class="form-element">
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
   </div>
 
-  <div  style="clear: left;" class="person form-element">
+  <div  style="clear: left;" class="form-element">
     <label for="contact_first_name">First name</label>
     <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
   </div>
 
-  <div class="person form-element">
+  <div class="form-element">
     <label for="contact_middle_name">Middle name</label>
     <%= text_field 'contact', 'middle_name' , {:class=>"person text-input"} %>
   </div>
 
-  <div class="person form-element">
+  <div class="form-element">
     <label for="contact_surname">Surname</label>
     <%= text_field 'contact', 'surname' , {:class=>"person text-input"} %>
   </div>

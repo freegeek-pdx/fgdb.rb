@@ -23,6 +23,14 @@ class Contact < ActiveRecord::Base
   has_one :tech_support_note
   validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
 
+  def is_organization_s
+    (!! is_organization).to_s
+  end
+
+  def is_organization_s=(s)
+    self.is_organization = (s == "true")
+  end
+
   def intern_title
     [self.volunteer_intern_title.to_s, "Intern"].select{|x| x.length > 0}.join(" ")
   end
