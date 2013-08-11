@@ -150,7 +150,7 @@ module ConditionsHelper
   end
 
   def html_for_contact_type_condition(params_key)
-    collection_select(params_key, "contact_type", ContactType.find(:all), "id", "description")
+    collection_select(params_key, "contact_type", ContactType.find(:all), "id", "description", {}, _multi_html_opts) # TODO: does this work?
   end
 
   def html_for_needs_attention_condition(params_key)

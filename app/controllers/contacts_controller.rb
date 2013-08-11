@@ -39,6 +39,7 @@ class ContactsController < ApplicationController
   end
 
   def email_list
+    @multi_enabled = true
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
     @hide_full_name = (params[:hide_full_name] == "1")
@@ -313,8 +314,8 @@ class ContactsController < ApplicationController
 
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
-    success = @contact.save
     @contact_methods = apply_line_item_data(@contact, ContactMethod)
+    success = @contact.save
     if @contact.user
       success = success and @contact.user.save
     end

@@ -13,8 +13,10 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
     Disbursement Info section of printme spec sheets (Closes: #36930)
   * refactor the privileges system to be way more efficient
   * update release scripts for local backups (Closes: #36521)
+  * Add support for multiple contact types to be selected on the contact
+    email list page (RT#36491)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 11:12:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 17:40:20 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 

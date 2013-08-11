@@ -170,7 +170,7 @@ class Conditions < ConditionsBase
     validate_exists('role') if validate_integer('role', 'role')
     validate_exists('action') if validate_integer('action')
     validate_exists('type_id') if validate_integer('type', 'type_id')
-    validate_exists('contact_type') if validate_integer('contact_type')
+    validate_exists('contact_type') if parse_and_validate_list('contact_type')
     validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
@@ -621,7 +621,7 @@ class Conditions < ConditionsBase
     else
       i = "contact_id"
     end
-    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type.to_i]
+    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id IN (?))", @contact_type]
   end
 
   def organization_name_conditions(klass)
