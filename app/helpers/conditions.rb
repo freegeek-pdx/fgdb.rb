@@ -519,7 +519,9 @@ class Conditions < ConditionsBase
 
   def generated_shift_conditions(klass)
     klass = VolunteerShift if klass == Assignment
-    return ["#{klass.table_name}.volunteer_default_shift_id IS NOT NULL"]
+    c = "volunteer_default_shift_id"
+    c = "resources_volunteer_default_event_id" if klass == ResourcesVolunteerEvent
+    return ["#{klass.table_name}.#{c} IS NOT NULL"]
   end
 
   def volunteer_task_type_conditions(klass)

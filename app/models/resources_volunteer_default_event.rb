@@ -6,6 +6,10 @@ class ResourcesVolunteerDefaultEvent < ActiveRecord::Base
     overlap ? 'hardconflict' : 'shift'
   end
 
+  def display
+    time_range_s + ": " + self.volunteer_default_event.to_s
+  end
+
   def time_range_s
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end

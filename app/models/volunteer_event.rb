@@ -9,6 +9,10 @@ class VolunteerEvent < ActiveRecord::Base
     self.date.strftime('%Y%m%d')
   end
 
+  def to_s
+    description
+  end
+
   def time_range_s
     return '0-0' if self.volunteer_shifts.length == 0
     my_start_time = self.volunteer_shifts.sort_by(&:start_time).first.start_time
