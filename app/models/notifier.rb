@@ -48,7 +48,7 @@ class Notifier < ActionMailer::Base
   end
 
   def volunteer_milestone_report( volunteers )
-    recipients Default['volunteer_reports_to']
+    recipients Default['staff_mailing_list']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Volunteer Milestone Report"
