@@ -15,8 +15,10 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
   * update release scripts for local backups (Closes: #36521)
   * Add support for multiple contact types to be selected on the contact
     email list page (RT#36491)
+  * Fix contact_methods to validate and prevent when a <span is added
+    (Closes: #36813)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 17:40:20 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Aug 2013 17:41:41 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 
