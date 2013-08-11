@@ -6,6 +6,10 @@ class VolunteerDefaultEvent < ActiveRecord::Base
   has_many :resources_volunteer_default_events, :dependent => :destroy
   validates_associated :volunteer_default_shifts
 
+  def to_s
+    description
+  end
+
   def validate
     errors.add('next_cycle_date', 'cannot be set on a roster event') if self.week and self.week.length > 1 and self.description.match(/Roster #/)
   end

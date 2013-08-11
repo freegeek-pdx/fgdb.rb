@@ -32,8 +32,9 @@ class Roster < ActiveRecord::Base
     newc.roster_enabled = true
     newc.roster_id = self.id
     newc.generated_shift_enabled = true
-    d = VolunteerEvent.maximum(:date, :conditions => newc.conditions(Assignment), :joins => 'INNER JOIN "volunteer_shifts" ON volunteer_shifts.volunteer_event_id = volunteer_events.id INNER JOIN "assignments" ON assignments.volunteer_shift_id = volunteer_shifts.id LEFT OUTER JOIN "attendance_types" ON "attendance_types".id = "assignments".attendance_type_id')
-    return (d.nil? or d < Date.today) ? Date.today : d
+    d1 = VolunteerEvent.maximum(:date, :conditions => newc.conditions(Assignment), :joins => 'INNER JOIN "volunteer_shifts" ON volunteer_shifts.volunteer_event_id = volunteer_events.id INNER JOIN "assignments" ON assignments.volunteer_shift_id = volunteer_shifts.id LEFT OUTER JOIN "attendance_types" ON "attendance_types".id = "assignments".attendance_type_id')
+    d2 = VolunteerEvent.maximum(:date, :conditions => newc.conditions(ResourcesVolunteerEvent), :joins => 'INNER JOIN "resources_volunteer_events" ON resources_volunteer_events.volunteer_event_id = volunteer_events.id') 
+    return [d1, d2, Date.today].select{|x| !!x}.max
   end
 
   def auto_generate(from, to)
