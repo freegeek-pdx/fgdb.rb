@@ -28,7 +28,9 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 
   def monthly_reports
     @target = OpenStruct.new
-    unless params[:target].nil?
+    if params[:target].nil?
+      @target.target = Date.today
+    else
       @target.target_year = params[:target][:target_year]
       @target.target_month = params[:target][:target_month]
       @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
