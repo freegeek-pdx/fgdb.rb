@@ -11,6 +11,7 @@ fgdb.rb (1.0.123) released; urgency=low
     and hours logging (Closes: #36307)
   * Fix smart quotes in the WO description, replacing with standard
     dummy quotes (Closes: #36582)
+  * Send bi-weekly volunteer report to paidworkers (Closes: #36548)
   * Fix bug when generating resources on events that use a different
     roster for shifts (Closes: #36635)
     - improve the resources skedj pages, to name the event scheduled
