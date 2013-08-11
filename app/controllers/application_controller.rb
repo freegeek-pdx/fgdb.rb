@@ -480,9 +480,18 @@ class ApplicationController < ActionController::Base
     self.new.has_required_privileges(action)
   end
 
+  def _get_contact_id
+    ((params && params[:contact_id] && params[:contact_id].to_i) || (params && params[:volunteer_task] && params[:volunteer_task][:contact_id] && params[:volunteer_task][:contact_id].to_i) || (@current_user && @current_user.contact_id))
+  end
+
+
   def has_required_privileges(action)
     controller = self.class.to_s.tableize.gsub(/_controllers$/, "")
     self.class.required_privileges(controller, action).each{|x|
+      x = x.map{|x| 
+        x = "contact_" + _get_contact_id.to_s if x == "contact_nil"
+        x
+      }
       if !self.class.has_privileges(x)
         return false
       end

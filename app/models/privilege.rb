@@ -80,7 +80,7 @@ class Privilege < ActiveRecord::Base
      ["volunteer_events", {:privileges => ['admin_skedjul'], :except => ['display', 'toggle_walkins']}],
      ["volunteer_events", {:privileges => ['schedule_volunteers'], :only => ['display', 'toggle_walkins']}],
      ["volunteer_shifts", {:privileges => ['admin_skedjul']}],
-     ["volunteer_tasks", {:privileges => ["contact_#{_get_contact_id.to_s}", 'manage_volunteer_hours']}],
+     ["volunteer_tasks", {:privileges => ["contact_nil", 'manage_volunteer_hours']}],
      ["volunteer_tasks", {:only => ["/everybody"], :privileges => ['manage_volunteer_hours']}],
      ["warranty_lengths", {:privileges => ['role_admin']}],
      ["weekdays", {:privileges => ['skedjulnator']}],
@@ -111,10 +111,6 @@ class Privilege < ActiveRecord::Base
      ["recyclings", {:only => ["edit", "destroy", "update"], :privileges => ["change_recyclings"]}],
      ["recyclings", {:only => ["invoices"], :privileges => ["pay_invoices"]}],
      ["recyclings", {:except => ["civicrm_sync", "receipt", "edit", "destroy", "update", "search", "component_update", "invoices"], :privileges => ["create_recyclings"]}]]
-  end
-
-  def self._get_contact_id
-    nil # Thread.current ?
   end
 
   def self.rules

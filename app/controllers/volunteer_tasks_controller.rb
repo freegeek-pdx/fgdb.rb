@@ -18,10 +18,6 @@ class VolunteerTasksController < ApplicationController
   protected
 
 
-  def _get_contact_id
-    ((params && params[:contact_id] && params[:contact_id].to_i) || (params && params[:volunteer_task] && params[:volunteer_task][:contact_id] && params[:volunteer_task][:contact_id].to_i) || (@current_user && @current_user.contact_id))
-  end
-
   def get_contact_id
     ((params && params[:contact_id] && params[:contact_id].to_i) || (params && params[:volunteer_task] && params[:volunteer_task][:contact_id] && params[:volunteer_task][:contact_id].to_i) || (has_required_privileges("/everybody") ? nil : (@current_user && @current_user.contact_id)))
   end
