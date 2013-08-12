@@ -67,6 +67,41 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @past_year_labels.each_with_index {|x, i|
         @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
       }
+      
+      r = ReportsController.new
+      income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
+      @bulk = income[:sales]["real total"]["Bulk sales"][:total] / 100.0
+
+      last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
+      @ts = income[:sales]["real total"]["Thrift store"][:total] / 100.0
+      @ts_last_year = last_income[:sales]["real total"]["Thrift store"][:total] / 100.0
+
+      @dd_suggested = income[:donations]["register total"]["suggested"][:total] / 100.0
+      @dd_suggested_count = income[:donations]["register total"]["suggested"][:count]
+      @dd_last_suggested = last_income[:donations]["register total"]["suggested"][:total] / 100.0
+      @dd_last_suggested_count = last_income[:donations]["register total"]["fees"][:count]
+
+
+#arbitrary
+#start = "01/01/#{@target.target_year}"
+#fin = (@target.target + 1.month - 1).to_s
+#last_start = "01/01/#{(@target.target.year - 1)}"
+#last_fin = (@target.target - 1.year + 1.month - 1).to_s
+
+
+      @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+      FROM volunteer_tasks AS xxx
+      WHERE xxx.date_performed BETWEEN
+        ?::date AND ?::date
+      GROUP BY xxx.contact_id
+      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - Default['days_for_discount'].to_f, @target.target).first["vol_count"]
+
+      @last_active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+      FROM volunteer_tasks AS xxx
+      WHERE xxx.date_performed BETWEEN
+        ?::date AND ?::date
+      GROUP BY xxx.contact_id
+      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - 1.year - Default['days_for_discount'].to_f, @target.target - 1.year).first["vol_count"]
 
       @results = "You will see results here."
     end

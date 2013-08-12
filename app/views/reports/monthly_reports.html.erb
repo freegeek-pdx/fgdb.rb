@@ -36,12 +36,39 @@ time to include another student in that slot.  <br />
 <%= make_table(@disburse_table) %>
 
 <h3>TS</h3>
+
+TODO
+
 <h3>Vol</h3>
+
+Active Volunteers:
+<%= @target.target.strftime("%B") %> <%= @target.target.year - 1 %>: <%= @last_active %><br />
+<%= @target.target.strftime("%B") %> <%= @target.target.year %>: <%= @active %><br />
+<%= (100 * @active.to_f / @last_active.to_f).round %>% change<br /><br />
+
+TODO
+
 <h3>DD</h3>
+
+<%= @target.target.strftime("%B") %> <%= @target.target.year - 1 %> (and percentage change from prior year)<br />
+Total transactions: <%= @dd_last_suggested_count %><br />
+Suggested donations register total: $<%= @dd_last_suggested %><br />
+<%= @target.target.strftime("%B") %> <%= @target.target.year %><br />
+Total transactions: <%= @dd_suggested_count %> (<%= (100 * @dd_suggested_count/@dd_last_suggested_count).round %>%)<br />
+Suggested donations register total: $<%= @dd_suggested %> (<%= (100 * @dd_suggested/@dd_last_suggested).round %>%)<br />
+
+TODO
+
 <h3>Sales</h3>
+
+<%= make_table([["", @target.target_month.to_s + "/" + @target.target_year.to_s, @target.target_month.to_s + "/" + (@target.target.year-1).to_s, "% change"], ["total sales", "$" + @ts.to_s,"$" + @ts_last_year.to_s, (100*@ts/@ts_last_year).round.to_s + "%"]]) %>
+
 <h3>Bulk Sales</h3>
 
+Income total $<%= @bulk %>
+
 <h2>Production:</h2>
+TODO
 <h3>Laptop</h3>
 <h3>Desktop</h3>
 <h3>Phone</h3>
@@ -49,5 +76,6 @@ time to include another student in that slot.  <br />
 <h3>Mac</h3>
 
 <h2>Operations:</h2>
+TODO
 <h3>Receiving</h3>
 <% end %>
