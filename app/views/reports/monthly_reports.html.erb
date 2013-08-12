@@ -16,8 +16,25 @@
 
 <% if @results %>
 <h2>Public Services:</h2>
-<h3>Classes</h3>
+<h3>Education</h3>
+
+<% attendance_type_keys = AttendanceType.all.map(&:name).sort %>
+<%= (render :partial => "volskedj_sum", :locals => {:result => @volskedj, :attendance_type_keys => attendance_type_keys}).gsub("Roster Name", "Classtype").gsub("# arrived", "*A").gsub("# cancelled", "*C").gsub("# no call no show", "*NC/NS").gsub("# not checked in", "*NCI").gsub("# tardy", "*TA").gsub("# total", "*T").gsub("Total hours", "*TH").gsub("Command Line",  "CL").gsub("# wrong time", "*WT").gsub("Getting Started Classes", "GSC").gsub("Monthly Classes", "MC") %>
+CL= Command Line; GSC=Getting Started classes; MC=Monthly classes <br />
+*A (Arrived)=Checked in for class  <br />
+*C (Cancelled)=Called to cancel prior to the class.  This may or may not have happened with enough  <br />
+time to include another student in that slot.  <br />
+*NC/NS (No Call/No Show)=Did not call in to cancel the class, and did not show up.  <br />
+*NCI (Not checked in)=Did not check in for the class at the front desk (may still have taken the class).  <br />
+*TA (Tardy)=Late arrival  <br />
+*WT (Wrong Time)=Arrived at the wrong time <br />
+*T (Total)=Total  <br />
+*TH (Total hours)=Total # of hours students attended classes  <br />
+
 <h3>HWG</h3>
+
+<%= make_table(@disburse_table) %>
+
 <h3>TS</h3>
 <h3>Vol</h3>
 <h3>DD</h3>

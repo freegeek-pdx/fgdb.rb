@@ -1,3 +1,5 @@
+require_dependency RAILS_ROOT + '/app/controllers/graphic_reports_controller.rb'
+
 class ReportsController < ApplicationController
 
   layout :with_sidebar
@@ -34,6 +36,38 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @target.target_year = params[:target][:target_year]
       @target.target_month = params[:target][:target_month]
       @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
+
+      @conditions = Conditions.new
+      @conditions.apply_conditions({})
+      @conditions.sked_enabled = true
+      @conditions.sked_id = Sked.find_by_name_and_category_type("Classes", "Front Desk Checkin").id
+      @conditions.date_enabled = true
+      @conditions.date_date_type = "monthly"
+      @conditions.date_month = @target.target.month
+      @conditions.date_year = @target.target.year
+
+      _run_vol_sched_report(true)
+      @volskedj = @result["attending"]
+
+      report = DisbursementGizmoCountByTypesTrend.new
+      base_disburse = {:start_date => (@target.target - 1.year).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Disbursement Gizmo Count By Type", "gizmo_type_group_id_enabled" => "true"}
+      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Systems").id}))
+      report.generate_report_data
+      @disburse_systems = report.data[0]["Hardware Grants"]
+      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Laptops").id}))
+      report.generate_report_data
+      @disburse_laptops = report.data[0]["Hardware Grants"]
+      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("Peripherals").id}))
+      report.generate_report_data
+      @disburse_peripherals = report.data[0]["Hardware Grants"]
+
+      @past_year_labels = report.x_axis
+
+      @disburse_table = [["Month", "Laptops", "Systems", "Peripherals"]]
+      @past_year_labels.each_with_index {|x, i|
+        @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
+      }
+
       @results = "You will see results here."
     end
   end
@@ -69,6 +103,10 @@ GROUP BY 1, 2, 3;").to_a
   def volunteer_schedule_report
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
+    _run_vol_sched_report
+  end
+  private
+  def _run_vol_sched_report(skip = false)
     if @conditions.valid?
       @records =  DB.exec("SELECT
                COALESCE(
@@ -95,6 +133,7 @@ GROUP BY 1, 2, 3;").to_a
         unless @result[l["volunteer_type"]]
           @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "rosters_total" => {"total" => 0, "total_hours" => 0.0}, "attendance_types" => [], "name" => l["volunteer_type"]}
         end
+        # FIXME: somewhere we should return if skip, only need some things here
         result = @result[l["volunteer_type"]]
         class_name = "#{l["event_date"]}, #{l["event_name"]}"
         result["attendance_types"] << l["attendance_type"] unless result["attendance_types"].include?(l["attendance_type"])
@@ -119,7 +158,7 @@ GROUP BY 1, 2, 3;").to_a
       end
     end
   end
-
+  public
   def suggested_contributions
     @conditions = Conditions.new
   end
