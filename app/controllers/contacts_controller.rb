@@ -83,9 +83,9 @@ class ContactsController < ApplicationController
       ref = ref.split("/")
       c = ref[3]
       a = (ref[4] || "index") + append
-      c = c.classify.pluralize + "Controller"
+      c = c
       Thread.current['user'] = Thread.current['cashier']
-      t = false if ! c.constantize.sb_has_required_privileges(a)
+      t = false if ! c.constantize.sb_has_required_privileges(c, a)
     else
       t = false
     end
