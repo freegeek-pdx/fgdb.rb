@@ -111,7 +111,7 @@ module SidebarHelper
     sidebar_hash["sked admin"]["repeat slots"] = {:controller => "volunteer_default_shifts"}
     sidebar_hash["sked admin"]["actual slots"] = {:controller => "volunteer_shifts"}
     sidebar_hash["sked admin"]["repeat volunteers"] = {:controller => "default_assignments"}
-    sidebar_hash["vol sked"]["TURBO-beta"] = {:controller => "assignments", :action => "turbo"}
+    sidebar_hash["vol sked"]["TURBO-pilot"] = {:controller => "assignments", :action => "turbo"}
     sidebar_hash["vol sked"]["schedule"] = {:controller => "assignments"}
     sidebar_hash["vol sked"]["view only"] = {:controller => "assignments", :action => "view"}
     sidebar_hash["vol sked"]["no shows"] = {:controller => "assignments", :action => "noshows"}
