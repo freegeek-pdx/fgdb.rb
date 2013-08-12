@@ -85,7 +85,7 @@ class ContactsController < ApplicationController
       a = (ref[4] || "index") + append
       c = c
       Thread.current['user'] = Thread.current['cashier']
-      t = false if ! c.constantize.sb_has_required_privileges(c, a)
+      t = false if ! ApplicationController.sb_has_required_privileges(c, a)
     else
       t = false
     end
