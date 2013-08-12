@@ -1,4 +1,4 @@
-fgdb.rb (1.0.124) UNRELEASED; urgency=low
+fgdb.rb (1.0.124) released; urgency=low
 
   * update to jzebra 1.5.4, which works on wheezy (Closes: 31170)
   * Add upcoming holidays for the next 3 years (Closes: #36896)
@@ -23,7 +23,7 @@ fgdb.rb (1.0.124) UNRELEASED; urgency=low
   * Add structure for rendering monthly report metrics on a single page
     (Closes: #36435)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 11 Aug 2013 10:11:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:36:50 -0700
 
 fgdb.rb (1.0.123) released; urgency=low
 
