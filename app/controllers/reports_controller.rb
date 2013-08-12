@@ -81,12 +81,9 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @dd_last_suggested = last_income[:donations]["register total"]["suggested"][:total] / 100.0
       @dd_last_suggested_count = last_income[:donations]["register total"]["fees"][:count]
 
-
-#arbitrary
-#start = "01/01/#{@target.target_year}"
-#fin = (@target.target + 1.month - 1).to_s
-#last_start = "01/01/#{(@target.target.year - 1)}"
-#last_fin = (@target.target - 1.year + 1.month - 1).to_s
+      # TODO: YTD / donations
+      year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
+      last_year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{(@target.target.year - 1)}", "created_at_end_date" => (@target.target - 1.year + 1.month - 1).to_s})
 
       # FIXME: dates from last DOM
       @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
