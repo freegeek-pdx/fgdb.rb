@@ -37,11 +37,11 @@ time to include another student in that slot.  <br />
 
 <h3>TS</h3>
 
-TODO
+<%= make_table([@ts_head, @ts_vol, @ts_staff]) %>
 
 <h3>Vol</h3>
 
-Active Volunteers:
+Active Volunteers:<br />
 <%= @target.target.strftime("%B") %> <%= @target.target.year - 1 %>: <%= @last_active %><br />
 <%= @target.target.strftime("%B") %> <%= @target.target.year %>: <%= @active %><br />
 <%= (100 * @active.to_f / @last_active.to_f).round %>% change<br /><br />

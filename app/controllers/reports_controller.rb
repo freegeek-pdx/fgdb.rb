@@ -88,7 +88,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 #last_start = "01/01/#{(@target.target.year - 1)}"
 #last_fin = (@target.target - 1.year + 1.month - 1).to_s
 
-
+      # FIXME: dates from last DOM
       @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
@@ -102,6 +102,15 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
         ?::date AND ?::date
       GROUP BY xxx.contact_id
       HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - 1.year - Default['days_for_discount'].to_f, @target.target - 1.year).first["vol_count"]
+
+      @ts_head = [""]
+      @ts_vol = ["Volunteer Hours"]
+      @ts_staff = ["Staff Hours"]
+      (0..3).to_a.reverse.each do |x|
+        @ts_head << (@target.target - x.month).strftime("%b") + " " + @target.target.year.to_s
+        @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+        @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+      end
 
       @results = "You will see results here."
     end
