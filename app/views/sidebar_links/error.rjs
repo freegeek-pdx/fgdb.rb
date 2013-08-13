@@ -9,6 +9,6 @@ msg = "#{@exception_data["status"]} Error: An error occurred that prevented fgdb
 if @exception_data["crash_id"]
   msg += "\n\nSome information about this error has been saved with the crash ID #{@exception_data["crash_id"]}. Include this crash ID in any bug reports that you create about this issue."
 else
-  msg += "\n\n#{@exception_data["clean_message"]}"
+  msg += "\n\n#{@exception_data["clean_message"]}\n#{@exception_data['application_backtrace'].join("\n")}"
 end
 page << "alert(#{msg.to_json});"
