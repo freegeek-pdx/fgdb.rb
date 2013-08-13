@@ -8,9 +8,6 @@
     <%= label_tag "contact_is_organization_s_false", "Individual" %>
   </div>
 
-  <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" + (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "") %>
-  <%= javascript_tag "contact_form_org_toggle();" %>
-
   <% for contact_type in ContactType.find_instantiable %>
     <div class="form-element ">
       <input type="checkbox" id="<%= h contact_type.name %>"
