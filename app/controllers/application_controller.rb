@@ -536,6 +536,10 @@ class ApplicationController < ActionController::Base
     User.current_user.has_privileges(*privs)
   end
 
+  def has_privileges(*privs)
+    self.class.has_privileges(*privs)
+  end
+
   # end auth junk
 
   before_filter :fix_null_date
