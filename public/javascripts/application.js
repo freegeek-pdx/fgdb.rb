@@ -715,6 +715,7 @@ function set_display_mode(type, mode) {
 }
 
 function contact_form_org_toggle() {
+ return;
   if( $('contact_is_organization').checked ) {
     $$('.organization').each(function(elem) { elem.show(); });
   } else {
