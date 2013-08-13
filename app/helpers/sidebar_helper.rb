@@ -97,6 +97,7 @@ module SidebarHelper
     sidebar_hash["tech support"]["warranty config"] = {:controller => "warranty_lengths"}
     sidebar_hash["reports"]["trends"] = {:controller => 'graphic_reports'}
     sidebar_hash["reports"]["cashier contributions"] = {:controller => 'reports', :action => "cashier_contributions"}
+    sidebar_hash["reports"]["monthly reports"] = {:controller => 'reports', :action => "monthly_reports"}
     # contacts
     sidebar_hash["contacts"]["contacts"] = {:controller => "contacts"}
     sidebar_hash["contacts"]["dedup"] = {:controller => 'contact_duplicates'}
