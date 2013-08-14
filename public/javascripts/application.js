@@ -282,6 +282,85 @@ function monitorAppending() {
   }
 }
 
+function parse_name_words(words_s) {
+  var a = words_s.split(" ");
+  var f = [];
+  for(var i = 0; i < a.size(); i ++) {
+    if(a[i] != "") {
+      f.push(a[i]);
+    }
+  }
+  return f;
+}
+
+function apply_name_options(a) {
+  $('contact_first_name').value = a[1];
+  $('contact_middle_name').value = a[2];
+  $('contact_surname').value = a[3];
+  $('contact_organization').value = a[0];
+}
+
+function find_name_options(words_s) {
+  var words = parse_name_words(words_s);
+  var options = [];
+  if(words.length == 1) {
+    options = ["F"];
+  }
+
+  if(words.length == 2) {
+    options = ["FL"];
+  }
+
+  if(words.length == 3) {
+    options = ["FLL", "FFL", "FML"];
+  }
+  
+  if(words.length == 4) {
+    options = ["FLLL", "FMLL", "FFML", "FMML", "FFFL"];
+  }
+
+  if(words.length == 5) {
+    options = ["FFLLL", "FFFLL", "FFMLL", "FMMLL", "FFMML"];
+  }
+
+  // TODO: choose defaults based on statistics,, rather than eyeballing them -- esepcially placement of Org option is wrong
+
+  options.push("O");
+  options.push("Other");
+
+  return options;
+}
+
+function split_name_words(words_s, format) {
+  var firstname = [];
+  var middlename = [];
+  var surname = [];
+  var orgname = "";
+
+  if(format != "Other") {
+    if(format == "O") {
+      orgname = words_s;
+    } else {
+      var arr = format.split("");
+      var words = parse_name_words(words_s);
+      for(var i = 0; i < arr.size(); i ++) {
+        if(arr[i] == "F") {
+          firstname.push(words[i]);
+        } else if(arr[i] == "M") {
+          middlename.push(words[i]);
+        } else { // L
+          surname.push(words[i]);
+        }
+      }
+    }
+  }
+  firstname = firstname.join(" ");
+  middlename = middlename.join(" ");
+  surname = surname.join(" ");
+
+  return [orgname, firstname, middlename, surname];
+}
+
 function after_print_hook() {
         if(typeof(loading_indicator_after_print) != "undefined") {
           Element.hide(loading_indicator_after_print);
@@ -513,10 +592,44 @@ function form_to_json(){
 }
 
 function set_contact_name() {
-  list = document.getElementsByClassName('contact_search_textbox')[0].value.split(' ');
-  if(list.length == 2) {
-    $('contact_first_name').value = list[0];
-    $('contact_surname').value = list[1];
+  var name = document.getElementsByClassName('contact_search_textbox')[0].value;
+  if(parse_name_words(name).size() > 0 && parseInt(name).toString() != name) {
+    var options = find_name_options(name);
+    apply_name_options(split_name_words(name, options[0]));
+    var mydiv = $('searched_for_div');
+    mydiv.show();
+    $('contact_searched_for').value = name;
+    for(var i = 0; i < options.size(); i++) {
+      var opt = options[i];
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.name = "name_opt";
+      input.id = opt;
+      input.setAttribute("class", 'form-element');
+      if(i == 0) {
+        input.checked = true;
+      }
+      input.onchange = function(e) { apply_name_options(split_name_words($('contact_searched_for').value, e.target.id)); };
+      var label = document.createElement("label");
+      label.setAttribute("for", opt);
+      label.setAttribute("class", 'form-element');
+      var text = "";
+      if(opt == "Other") {
+        text = opt + " (enter manually)";
+      } else if(opt == "O") {
+        text = "Organization name: " + name;
+      } else {
+        var split = split_name_words(name, opt);
+        split.shift()
+        text = "Split as: " + split.toJSON();
+      }
+      var inside = document.createTextNode(text);
+      label.appendChild(inside);
+      mydiv.appendChild(input);
+      mydiv.appendChild(label);
+      mydiv.appendChild(document.createElement("br"));
+      // onclick: 
+    }
   }
 }
 
