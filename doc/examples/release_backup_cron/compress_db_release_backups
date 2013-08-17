@@ -1,8 +1,9 @@
 #!/bin/sh
 
-set -e
 INCOME=/srv/backup-extras/
 LIST=$(ls $INCOME | grep .sql$)
+
+set -e
 
 if [ ! -z "$LIST" ]; then
    cd $INCOME
