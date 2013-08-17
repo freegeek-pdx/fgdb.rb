@@ -7,16 +7,16 @@
     <th>Cashier Name</th>
     <th>Donation Count</th>
     <th>Total Suggested</th>
-    <th>Total Contributed</th>
+    <th>Total Contributions</th>
     <th>Percentage</th>
     <th>Difference</th>
   </tr>
   <% @results.sort_by{|x| x['name']}.each do |r| %>
   <tr>
     <td><%= r['name'] %></td>
-    <td><%= r['count'] %></td>
+    <td><%= r['donation_count'] %></td>
     <td><%= r['total_suggested'] %></td>
-    <td><%= r['total_contributed'] %></td>
+    <td><%= r['total_contributions'] %></td>
     <td><%= r['percentage'] %></td>
     <td><%= r['difference'] %></td>
   </tr>

@@ -122,7 +122,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
     @conditions.apply_conditions(params[:conditions])
     sql = DB.send(:sanitize_sql_for_conditions, @conditions.conditions(Donation))
     @results = DB.exec("SELECT
-contacts.first_name || ' ' || contacts.surname AS name,
+COALESCE(contacts.first_name || ' ' || contacts.surname, 'NO CASHIER') AS name,
 users.contact_id, users.login, COUNT(donations.id) AS donation_count,
 trim(to_char(SUM(reported_suggested_fee_cents)/100,'99999999999999999D99')) AS total_suggested,
 trim(to_char((SUM(payments.amount_cents) - SUM(reported_required_fee_cents))/100,'99999999999999999D99')) AS total_contributions,
