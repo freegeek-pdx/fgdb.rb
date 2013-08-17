@@ -29,6 +29,12 @@
   </fieldset>
   <% end %>
 
+  <div id="searched_for_div" style="float: right; clear: right; display: none;" class="form-element">
+    <label for="contact_searched_for">You searched for: </label><input style="background-color: grey;" readonly="readonly" id="contact_searched_for"/><br />
+    Automatically split words from<br />
+    search using (or choose Other):<br />
+  </div>
+
   <div style="clear: left;" class="form-element">
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
