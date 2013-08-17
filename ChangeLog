@@ -23,6 +23,9 @@ fgdb.rb (1.0.124) released; urgency=low
   * Add structure for rendering monthly report metrics on a single page
     (Closes: #36435)
   * Implement options for name splitting (Closes: #36877)
+  * Fix display of cashier contributions report when no cashier was
+    provided and fix display of some of the fields which were missing
+    previously (Crash 9UxCyQ)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:36:50 -0700
 
