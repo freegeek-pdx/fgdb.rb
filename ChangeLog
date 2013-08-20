@@ -26,6 +26,7 @@ fgdb.rb (1.0.124) released; urgency=low
   * Fix display of cashier contributions report when no cashier was
     provided and fix display of some of the fields which were missing
     previously (Crash 9UxCyQ)
+  * new logo (Closes: #37074)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:36:50 -0700
 
