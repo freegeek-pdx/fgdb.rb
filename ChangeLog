@@ -28,6 +28,8 @@ fgdb.rb (1.0.124) released; urgency=low
   * Add structure for rendering monthly report metrics on a single page
     (Closes: #36435)
   * Implement options for name splitting (Closes: #36877)
+  * fix db release backup compression script to not complain when it has
+    no work to do (Closes: #36983)
   * Fix display of cashier contributions report when no cashier was
     provided and fix display of some of the fields which were missing
     previously (Crash 9UxCyQ)
