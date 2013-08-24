@@ -592,7 +592,7 @@ class TrendReport
     end
 
     def usable_conditions
-      @conditions.dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
+      @conditions.dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k.to_s)}
     end
 
     def call_income_report(args)

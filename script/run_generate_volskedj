@@ -3,7 +3,7 @@
 set -e
 
 SCRIPT=`dirname $0`/generate_volskedj.rb
-OUTPUT=$($SCRIPT | tee -a /var/www/fgdb.rb/log/volskedj.log)
+OUTPUT=$(env RAILS_ENV=production $SCRIPT | tee -a /var/www/fgdb.rb/log/volskedj.log)
 MAILTO=$(/var/www/fgdb.rb/script/runner 'puts Default["management_mailing_list"]')
 CC_MAILTO=dbadmin
 

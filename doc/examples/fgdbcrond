@@ -1,9 +1,11 @@
 MAILTO=database
+RAILS_ENV=production
 # cleans up sessions
 0 0 * * * root /var/www/fgdb.rb/script/delete-sessions
 
 # milestone report
 0 21 * * 3 root /var/www/fgdb.rb/script/volunteer_milestones_report
+0 7 1 * * root /var/www/fgdb.rb/script/monthly_volunteer_milestones_report
 0 8 * * * root /var/www/fgdb.rb/script/announce_holidays.rb
 0 21 * * 2 root /var/www/fgdb.rb/script/overtime_report.rb
 

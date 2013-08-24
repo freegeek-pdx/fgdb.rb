@@ -159,6 +159,7 @@ class Conditions < ConditionsBase
     validate_exists('gizmo_type_id') if parse_and_validate_list('gizmo_type_id')
     validate_exists('program_id') if parse_and_validate_list('program_id')
     validate_exists('gizmo_type_group_id') if parse_and_validate_list('gizmo_type_group_id')
+    validate_integer('logged_in_within', 'logged_in_within', true)
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
     validate_integer('id')
     validate_emptyness('email')
@@ -169,7 +170,7 @@ class Conditions < ConditionsBase
     validate_exists('role') if validate_integer('role', 'role')
     validate_exists('action') if validate_integer('action')
     validate_exists('type_id') if validate_integer('type', 'type_id')
-    validate_exists('contact_type') if validate_integer('contact_type')
+    validate_exists('contact_type') if parse_and_validate_list('contact_type')
     validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
@@ -441,7 +442,7 @@ class Conditions < ConditionsBase
   end
 
   def assigned_conditions(klass)
-    return ["#{klass.table_name}.contact_id IS NOT NULL"]
+    return ["(#{klass.table_name}.contact_id IS NOT NULL OR closed = 't')"]
   end
 
   def finalized_conditions(klass)
@@ -518,7 +519,9 @@ class Conditions < ConditionsBase
 
   def generated_shift_conditions(klass)
     klass = VolunteerShift if klass == Assignment
-    return ["#{klass.table_name}.volunteer_default_shift_id IS NOT NULL"]
+    c = "volunteer_default_shift_id"
+    c = "resources_volunteer_default_event_id" if klass == ResourcesVolunteerEvent
+    return ["#{klass.table_name}.#{c} IS NOT NULL"]
   end
 
   def volunteer_task_type_conditions(klass)
@@ -620,7 +623,7 @@ class Conditions < ConditionsBase
     else
       i = "contact_id"
     end
-    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type.to_i]
+    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id IN (?))", @contact_type]
   end
 
   def organization_name_conditions(klass)

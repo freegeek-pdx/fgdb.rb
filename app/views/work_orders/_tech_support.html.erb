@@ -54,7 +54,12 @@
   </p>
   </div>
   <h2>Support Information</h2>
+  <% if current_user.shared %>
   <p>
+    <%= f.label :pin, "Intake Technician's PIN" %>
+    <%= f.password_field :pin %>
+  </p>
+  <% end %>
   <p>
     <%= f.label :os, "Operating System (optional)" %><br />
     <%= f.select :os, @rt_metadata["OS"].map{|x| [x, x]}, :include_blank => true %>

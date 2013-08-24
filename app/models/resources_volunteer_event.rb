@@ -47,4 +47,9 @@ class ResourcesVolunteerEvent < ActiveRecord::Base
   def my_end_time=(str)
     write_attribute(:end_time, VolunteerShift._parse_time(str))
   end
+
+  def display
+    time_range_s + ": " + self.volunteer_event.to_s
+  end
 end
+

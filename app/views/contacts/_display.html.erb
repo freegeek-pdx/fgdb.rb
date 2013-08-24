@@ -25,7 +25,7 @@
   <%= h @contact.city %>, <%= h @contact.state_or_province %> <%= h @contact.postal_code %>
 </div>
 <div class="contact_methods">
-  <% for method in @contact.contact_methods %>
+  <% for method in @contact.sorted_contact_methods %>
     <%= h method.display %><br />
   <% end %>
 </div>
@@ -128,16 +128,17 @@ Attended Classes:<br />
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
 <% if @contact.default_discount_schedule == "volunteer" %>
-<div id="contact__default_discount_name" style="display: none"><%= DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id %></div>
-<div id="contact__default_discount_percentage" style="display: none"><%= DiscountPercentage.find(Default["discount_percentage_id_for_volunteer_discount"]).id %></div>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.default_volunteer_discount %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_volunteer_discount_percentage %></div>
 <% else %>
-<div id="contact__default_discount_name" style="display: none"><%= Sale.new.discount_name.id %></div>
-<div id="contact__default_discount_percentage" style="display: none"><%= Sale.new.discount_percentage.id %></div>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.default_discount %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_discount_percentage %></div>
 <% end %>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 <div id="contact__display_name" style="display: none"><%= @contact.display_name.to_s %></div>
 <div id="contact__phone_number" style="display: none"><%= @contact.phone_number.to_s %></div>
 <div id="contact__email" style="display: none"><%= @contact.mailing_list_email %></div>
+<div id="contact__notes" style="display: none"><%= @contact.notes %></div>
 <div id="contact__shift_count" style="display: none"><%= @contact.schedule_counts.to_json %></div>
 <div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
 <div id="contact__areas_disciplined_from" style="display: none"><%= @contact.areas_disciplined_from.map(&:name).to_json %></div>

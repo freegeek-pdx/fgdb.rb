@@ -232,9 +232,9 @@ module SystemHelper
       # system data
 
       @parser.xml_foreach("//*[@class='system']") {
-        @system_model ||= @parser._xml_value_of("/node/product")
-        @system_serial_number ||= @parser._xml_value_of("/node/serial")
-        @system_vendor ||= @parser._xml_value_of("/node/vendor")
+        @system_model ||= @parser._xml_value_of("//node[@class='system']/product")
+        @system_serial_number ||= @parser._xml_value_of("//node[@class='system']/serial")
+        @system_vendor ||= @parser._xml_value_of("//node[@class='system']/vendor")
         @mobo_model ||= @parser._xml_value_of("//*[contains(@id, 'core')]/product")
         @mobo_serial_number ||= @parser._xml_value_of("//*[contains(@id, 'core')]/serial")
         @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")

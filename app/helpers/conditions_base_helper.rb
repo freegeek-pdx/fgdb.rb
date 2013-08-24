@@ -39,6 +39,6 @@ module ConditionsBaseHelper
   def conditions_radio_button(params_key, obj, these_things, mmode)
     return "" if mmode == 'force' or these_things.length <= 1
     mode = obj.send('mode')
-    "<div style=\"float: left; clear: left;\">Show results matching:<br />" + radio_button_tag("#{params_key}[mode]", "AND", mode != "OR") + label_tag("#{params_key}_mode_and", "all conditions") + radio_button_tag("#{params_key}[mode]", "OR", mode == "OR") + label_tag("#{params_key}_mode_or", "at least one condition") + "</div>"
+    "<div style=\"padding: 5px; float: left; clear: left;\">Show results matching: "+ label_tag("#f{params_key}_mode_and", "all conditions", {:style => "display: inline-block;"})  + radio_button_tag("#{params_key}[mode]", "AND", mode != "OR")  + label_tag("#{params_key}_mode_or", "at least one condition", {:style => "display: inline-block;"})+ radio_button_tag("#{params_key}[mode]", "OR", mode == "OR") + "</div>"
   end
 end

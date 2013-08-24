@@ -18,14 +18,14 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
 }
 }
 </script>
-<% aliases, sidebar_hash = sidebar_stuff %>
+<% sidebar_hash = sidebar_stuff %>
 <% view_hash = OH.new
+   view_hash.default_class = OH
    sidebar_hash.each do |main_name, my_hash|
-     if my_hash.class == OH 
+     if my_hash.class == OH
      my_hash.each do |this_name, opts|
-       klass = eval(opts[:c].classify.pluralize + "Controller")
-       if klass.sb_has_required_privileges(opts[:a] || "index")
-         view_hash[main_name] ||= OH.new
+       if ApplicationController.sb_has_required_privileges(opts[:controller], opts[:action] || "index")
+         view_hash[main_name] = OH.new unless view_hash.keys.include?(main_name)
          view_hash[main_name][this_name] = opts
        end
      end
@@ -46,14 +46,7 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
       <div class="sidebar_section" id="<%= main_name %>_sidebar_section">
         <% my_hash.each do |this_name, opts| %>
           <div>
-            <% my_opts = opts %>
-            <% aliases.each do |a, b| %>
-              <% if opts[a] and !opts[b] %>
-                <% my_opts[b] = opts[a] %>
-                <% my_opts.delete(a) %>
-              <% end %>
-            <% end %>
-            <%= link_to this_name, my_opts %>
+            <%= link_to this_name, opts %>
           </div>
         <% end %>
       </div>
@@ -67,6 +60,7 @@ hideall();
 <% else %>
 f_hideall();
 <% end %>
+
 <%= thing = controller_and_action_to_section[params[:controller]][params[:action]]
     thing = controller_to_section[params[:controller]] if thing.nil?
    thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()"

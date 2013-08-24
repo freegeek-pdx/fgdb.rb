@@ -1,11 +1,5 @@
 class TechSupportNotesController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['staff'], :except => ['find_footnotes']}
-    a << {:privileges => ['techsupport_workorders'], :only => ['find_footnotes']}
-    a
-  end
   public
 
   # TODO: dynamically too later

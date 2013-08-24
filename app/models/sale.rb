@@ -22,6 +22,22 @@ class Sale < ActiveRecord::Base
   before_save :set_occurred_at_on_transaction
   before_save :strip_postal_code
 
+  def self.default_discount
+    Sale.new.discount_name.id
+  end
+
+  def self.default_volunteer_discount
+    DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id
+  end
+
+  def self.default_discount_percentage
+    Sale.new.discount_percentage.id
+  end
+
+  def self.default_volunteer_discount_percentage
+    DiscountPercentage.find(Default["discount_percentage_id_for_volunteer_discount"]).id
+  end
+
   def self.number_by_conditions(c)
     Sale.connection.execute("SELECT count(*) FROM sales WHERE #{sanitize_sql_for_conditions(c.conditions(Sale))}").to_a[0]["count"].to_i
   end

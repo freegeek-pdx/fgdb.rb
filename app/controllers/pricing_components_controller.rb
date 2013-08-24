@@ -2,11 +2,6 @@ class PricingComponentsController < ApplicationController
   layout :with_sidebar
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_pricing']}
-    return a
-  end
 
   def prep_table_headers
     @pricing_values = @pricing_component.pricing_values

@@ -19,7 +19,7 @@
     </a>
     <%= render :partial => "edit_update_transaction",
         :locals => {:transaction => disbursement}%>
-    <% if GizmoReturnsController.sb_has_required_privileges("new") and !disbursement.is_fully_returned? %>
+    <% if ApplicationController.sb_has_required_privileges("gizmo_returns", "new") and !disbursement.is_fully_returned? %>
       <%= link_to("Return", {:action => "new", :controller => "gizmo_returns", :disbursement_id => disbursement.id}) %>
     <% end %>
  </td>

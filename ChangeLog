@@ -1,7 +1,92 @@
-fgdb.rb (1.0.121) UNRELEASED; urgency=low
+fgdb.rb (1.0.125) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:56 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:37:21 -0700
+
+fgdb.rb (1.0.124) released; urgency=low
+
+  * update to jzebra 1.5.4, which works on wheezy (Closes: 31170)
+  * Add upcoming holidays for the next 3 years (Closes: #36896)
+  * Add a tweak to the conditions table to make it more understable,
+    which field/excluded checkbox goes with which condition, by
+    vertically aligning it
+  * Implement 'turbo' mode, an optimized workflow for volskedj, with the
+    interface set up as a 'beta' pilot (Closes: #27159)
+  * Fix crash when no value for logged in within condition is provided
+    (Crash o566rP)
+  * Remove the "Uncovered LCD monitor" and "System" options from the
+    Disbursement Info section of printme spec sheets (Closes: #36930)
+  * refactor the privileges system to be way more efficient
+  * update release scripts for local backups (Closes: #36521)
+  * Add support for multiple contact types to be selected on the contact
+    email list page (RT#36491)
+  * Fix contact_methods to validate and prevent when a <span is added
+    (Closes: #24258)
+  * Replace the organization checkbox with radio buttons and allow the
+    user to enter into any of the name fields at any time (Closes:
+    #36903)
+  * Add structure for rendering monthly report metrics on a single page
+    (Closes: #36435)
+  * Implement options for name splitting (Closes: #36877)
+  * fix db release backup compression script to not complain when it has
+    no work to do (Closes: #36983)
+  * Fix display of cashier contributions report when no cashier was
+    provided and fix display of some of the fields which were missing
+    previously (Crash 9UxCyQ)
+  * new logo (Closes: #37074)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:36:50 -0700
+
+fgdb.rb (1.0.123) released; urgency=low
+
+  * Esacpe subject and body in creating crash report tickets
+  * Sort contact methods on display, in most logical (hopefully) order
+    of entry (Closes: #36306)
+  * Require a PIN from the intake person if they are logged in using a
+    shared database account (Closes: #36314)
+  * Set requestor for TS work orders to the Email address of the
+    customer, if provided, otherwise leave it empty (Closes: #36484)
+  * Display contact notes as a javascript alert in volunteer assigments
+    and hours logging (Closes: #36307)
+  * Fix smart quotes in the WO description, replacing with standard
+    dummy quotes (Closes: #36582)
+  * Send bi-weekly volunteer report to paidworkers (Closes: #36548)
+  * Fix bug when generating resources on events that use a different
+    roster for shifts (Closes: #36635)
+    - improve the resources skedj pages, to name the event scheduled
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Jul 2013 08:56:18 -0700
+
+fgdb.rb (1.0.122) released; urgency=low
+
+  * Implement dateext with dateformat %s for hourly logrotated backups,
+    thanks Vagrant (Closes: #36026)
+  * Distinguish Required Service Fee on the receipt into 4 categories:
+    Pickup, Education, Tech Support and Other (Closes: #35808)
+    - Note: reference info for TS ticket # can be added with Ctrl-<e>
+      to the standard description field
+  * Add a link for adding repeating interns to the sked admin sidebar
+    section (Closes: #36012)
+    - TODO: still must cleanup data
+  * Add monthly volunteer milestone report in parallel to the biweekly
+    one (Closes: #35981)
+  * Add mode for disallowing walkin volunteers, which autocloses
+    available shifts (Closes: #36031)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Jul 2013 08:40:53 -0700
+
+fgdb.rb (1.0.121) released; urgency=low
+
+  * fix the discount field to update back to none when switching away
+    from a named contact
+  * Add rendering system type to printme options (Closes: #36141)
+  * Add Prebuild Volunteer Task Type (Closes: #36142)
+    - Also, when editing an available volunteer shift, alert the user:
+	NOTE: Laptop prebuild shifts should not be assigned by the front
+	desk, volunteers must have prerequisites checked and complete an
+	application approved by Lynnae.
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:37:52 -0700
 
 fgdb.rb (1.0.120) released; urgency=low
 
@@ -9,6 +94,8 @@ fgdb.rb (1.0.120) released; urgency=low
     the badge printout set (Closes: #35742)
     - move widget for viewing/uploading staff image to badge page
     - implement generating the back side of badges too
+  * Do not preseed the contacts email address and phone number, in case
+    it is of the incorrect format or outdated
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:14 -0700
 
@@ -24,6 +111,7 @@ fgdb.rb (1.0.119) released; urgency=low
   * Add gizmo limiting conditions to the gizmos report (Closes: #35976)
   * Split out long phone number values in contact methods to an
     additional details field for text explanation
+  * Fix parsing with new version of lshw in squeeze (Closes: #35847)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
 

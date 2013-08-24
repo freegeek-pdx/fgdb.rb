@@ -9,7 +9,7 @@ None found.<br />
 <%= render :partial => 'tech_support_notes/note', :locals => {:contact => result} %>
 <% end %>
 </div>
-<% if TechSupportNotesController.sb_has_required_privileges("edit_note") %>
+<% if ApplicationController.sb_has_required_privileges("tech_support_notes", "edit_note") %>
 <div id="ts-note-new">
 <%= link_to_remote "Add new notes", :url => {:controller => "tech_support_notes", :id => name, :action => "add_note"}, :loading => "$('#{loading_indicator_id("ts-new-note")}').show();" %>
 </div>

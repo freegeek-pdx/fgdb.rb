@@ -1,10 +1,5 @@
 class ResourcesVolunteerEventsController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['admin_skedjul']}
-    a
-  end
   public
 
   layout :with_sidebar
@@ -33,7 +28,7 @@ class ResourcesVolunteerEventsController < ApplicationController
       :thing_start_time => "resources_volunteer_events.start_time",
       :thing_end_time => "resources_volunteer_events.end_time",
       :thing_table_name => "resources_volunteer_events",
-      :thing_description => "resources_volunteer_events.time_range_s",
+      :thing_description => "resources_volunteer_events.display",
       :thing_link_id => "resources_volunteer_events.id",
       :thing_links => [[:edit, :popup], [:destroy, :confirm]] # TODO: impliment [:copy, :popup], that works across multiple events
 

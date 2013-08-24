@@ -4,36 +4,7 @@
     <% result = @result[result_key] %>
     <h3>Counts of "<%= result["name"] %>" volunteers:</h3>
     <% attendance_type_keys = result["attendance_types"].sort %>
-    <table class="awesome">
-      <tr>
-        <th>Roster Name</th>
-        <% attendance_type_keys.each do |at| %>
-          <th># <%= at %></th>
-        <% end %>
-        <th># total</th>
-        <th>Total hours</th>
-      </tr>
-      <% result["rosters"].keys.sort.each do |roster_key| %>
-        <% roster = result["rosters"][roster_key] %>
-        <tr>
-          <td><%= roster_key %></td>
-          <% attendance_type_keys.each do |at| %>
-            <td><%= roster[at] || 0%></td>
-          <% end %>
-          <td><%= roster["total"] %></td>
-          <td><%= roster["total_hours"] %></td>
-        </tr>
-      <% end %>
-        <% roster = result["rosters_total"] %>
-        <tr>
-          <td>Total</td>
-          <% attendance_type_keys.each do |at| %>
-            <td><%= roster[at] || 0%></td>
-          <% end %>
-          <td><%= roster["total"] %></td>
-          <td><%= roster["total_hours"] %></td>
-        </tr>
-    </table>
+    <%= render :partial => "volskedj_sum", :locals => {:result => result, :attendance_type_keys => attendance_type_keys} %>
     <h3>Lists of "<%= result["name"] %>" volunteers (in <%= result["classes"].keys.count %> events):</h3>
     <table class="awesome">
       <% class_keys = result["classes"].keys.sort %>

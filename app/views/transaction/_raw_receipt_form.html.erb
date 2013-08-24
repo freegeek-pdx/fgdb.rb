@@ -5,4 +5,6 @@
   <%= f.select "printer", [["<Choose a Printer>", ""]] %>
   <%= f.hidden_field "mode", :value => 'print' %>
 <%      end %>
-<%= javascript_include_tag("/jzebra/jzebra.js") + "<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive='/jzebra/jzebra.jar' width=0 height=0 />" + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
+   <applet name="jzebra" code="jzebra.PrintApplet.class"  alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive="/jzebra/jzebra.jar" width="0" height="0" >
+   </applet>
+<%= javascript_tag("monitorLoadingThenCall('set_printers();');") %>

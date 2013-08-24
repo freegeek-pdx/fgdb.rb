@@ -20,11 +20,6 @@ Prawn::Labels.types = {
 
 class WorkersController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_workers']}
-    a
-  end
   public
 
   def index
@@ -109,7 +104,7 @@ class WorkersController < ApplicationController
           pdf.image RAILS_ROOT + "/public/images/freegeeklogo.png", :fit => [pdf.bounds.width - 10, low_h], :vposition => :center, :position => :center
         end
         pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
-          pdf.text name, :align => :center
+          pdf.text name, :align => :center, :size => 10
           pdf.image StringIO.new((Barby::Code39.new(contact.id.to_s)).to_png(:margin => 0)), :height => 20, :width => two_w - 40, :position => :center
           pdf.y -= 5
           n = contact.id.to_s
@@ -117,7 +112,7 @@ class WorkersController < ApplicationController
             n = "0" + n
           end
           n = "#" + n
-          pdf.text n, :align => :center
+          pdf.text n, :align => :center, :size => 10
         end
         end
       end

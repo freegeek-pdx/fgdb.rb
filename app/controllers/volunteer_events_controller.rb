@@ -1,13 +1,19 @@
 class VolunteerEventsController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['admin_skedjul'], :except => ['display']}
-    a << {:privileges => ['schedule_volunteers'], :only => ['display']}
-    a
-  end
   public
   layout :with_sidebar
+
+  def toggle_walkins
+    v = VolunteerEvent.find_by_id(params[:id])
+    v.nowalkins = !v.nowalkins
+    v.save!
+    if v.nowalkins
+      v.volunteer_shifts.each do |vs|
+        vs.fill_in_available
+      end
+    end
+    redirect_to :back
+  end
 
   def index
     redirect_to :controller => "assignments"

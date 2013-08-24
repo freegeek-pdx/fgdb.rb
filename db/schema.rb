@@ -206,6 +206,7 @@ END;
     t.integer  "lock_version",                          :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "details"
   end
 
   add_index "contact_methods", ["contact_id"], :name => "contact_methods_contact_id_index"
@@ -238,31 +239,32 @@ END;
   end
 
   create_table "contacts", :force => true do |t|
-    t.boolean  "is_organization",                   :default => false
-    t.string   "sort_name",          :limit => 100
-    t.string   "first_name",         :limit => 25
-    t.string   "middle_name",        :limit => 25
-    t.string   "surname",            :limit => 50
-    t.string   "organization",       :limit => 100
-    t.string   "extra_address",      :limit => 52
-    t.string   "address",            :limit => 52
-    t.string   "city",               :limit => 30
-    t.string   "state_or_province",  :limit => 15
-    t.string   "postal_code",        :limit => 25
-    t.string   "country",            :limit => 100
+    t.boolean  "is_organization",                       :default => false
+    t.string   "sort_name",              :limit => 100
+    t.string   "first_name",             :limit => 25
+    t.string   "middle_name",            :limit => 25
+    t.string   "surname",                :limit => 50
+    t.string   "organization",           :limit => 100
+    t.string   "extra_address",          :limit => 52
+    t.string   "address",                :limit => 52
+    t.string   "city",                   :limit => 30
+    t.string   "state_or_province",      :limit => 15
+    t.string   "postal_code",            :limit => 25
+    t.string   "country",                :limit => 100
     t.text     "notes"
-    t.integer  "lock_version",                      :default => 0,     :null => false
+    t.integer  "lock_version",                          :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",                                           :null => false
+    t.integer  "created_by",                                               :null => false
     t.integer  "updated_by"
-    t.integer  "next_milestone",                    :default => 100
-    t.boolean  "addr_certified",                    :default => false, :null => false
-    t.integer  "contract_id",                       :default => 1,     :null => false
+    t.integer  "next_milestone",                        :default => 100
+    t.boolean  "addr_certified",                        :default => false, :null => false
+    t.integer  "contract_id",                           :default => 1,     :null => false
     t.integer  "cashier_created_by"
     t.integer  "cashier_updated_by"
     t.boolean  "fully_covered"
     t.date     "birthday"
+    t.string   "volunteer_intern_title"
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -1190,6 +1192,15 @@ END;
   add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
 
+  create_table "tech_support_notes", :force => true do |t|
+    t.integer  "contact_id", :null => false
+    t.text     "notes"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "till_adjustments", :force => true do |t|
     t.integer  "till_type_id"
     t.date     "till_date"
@@ -1476,6 +1487,8 @@ END;
   add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
   add_foreign_key "contact_types_contacts", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_types_contacts_contacts_fk"
 
+  add_foreign_key "contact_volunteer_task_type_counts", ["contact_id"], "contacts", ["id"], :name => "contact_volunteer_task_type_counts_contact_id_fkey"
+
   add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
   add_foreign_key "contacts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_created_by_fkey"
   add_foreign_key "contacts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_updated_by_fkey"
@@ -1659,6 +1672,10 @@ END;
 
   add_foreign_key "systems", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "systems_contract_id_fkey"
   add_foreign_key "systems", ["previous_id"], "systems", ["id"], :name => "systems_previous_id_fkey"
+
+  add_foreign_key "tech_support_notes", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "tech_support_notes_contact_id_fkey"
+  add_foreign_key "tech_support_notes", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "tech_support_notes_created_by_fkey"
+  add_foreign_key "tech_support_notes", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "tech_support_notes_updated_by_fkey"
 
   add_foreign_key "till_adjustments", ["till_type_id"], "till_types", ["id"], :on_delete => :restrict, :name => "till_adjustments_till_type_id_fkey"
 

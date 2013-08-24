@@ -1,0 +1,30 @@
+    <table class="awesome">
+      <tr>
+        <th>Roster Name</th>
+        <% attendance_type_keys.each do |at| %>
+          <th># <%= at %></th>
+        <% end %>
+        <th># total</th>
+        <th>Total hours</th>
+      </tr>
+      <% result["rosters"].keys.sort.each do |roster_key| %>
+        <% roster = result["rosters"][roster_key] %>
+        <tr>
+          <td><%= roster_key %></td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= roster[at] || 0%></td>
+          <% end %>
+          <td><%= roster["total"] %></td>
+          <td><%= roster["total_hours"] %></td>
+        </tr>
+      <% end %>
+        <% roster = result["rosters_total"] %>
+        <tr>
+          <td>Total</td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= roster[at] || 0%></td>
+          <% end %>
+          <td><%= roster["total"] %></td>
+          <td><%= roster["total_hours"] %></td>
+        </tr>
+    </table>

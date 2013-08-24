@@ -1,12 +1,6 @@
 class BuilderTasksController < ApplicationController
   layout :with_sidebar
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['sign_off_spec_sheets']}
-    a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
-    a
-  end
   public
 
   def sign_off
@@ -14,7 +8,7 @@ class BuilderTasksController < ApplicationController
     s = BuilderTask.find(params[:id])
     # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
     # do not allow when users is the contact for the BT
-    if u.contact_id != s.contact_id && u.has_privileges(required_privileges("show/sign_off").flatten.first)
+    if u.contact_id != s.contact_id && u.has_privileges(ApplicationController.required_privileges("spec_sheets", "show/sign_off").flatten.first)
       s.signed_off_by=(u)
       s.save!
     end

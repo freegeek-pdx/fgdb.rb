@@ -1,0 +1,13 @@
+        Hello Volunteer Coordinator(s),
+
+        Here's a list of the 'milestone' levels that volunteers have passed this month:
+
+        <% @milestones.keys.sort.each do |m| -%>
+        <%= m %> hours:
+        <% @milestones[m].sort.each do |vol| -%>
+        <%= "#{vol}" %>
+        <% end -%>
+
+        <% end -%>
+            Sincerely,
+            The database

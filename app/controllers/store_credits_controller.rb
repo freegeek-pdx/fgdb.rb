@@ -1,9 +1,4 @@
 class StoreCreditsController < ApplicationController
-  def get_required_privileges
-    a = super
-    a << {:privileges => ["view_sales"]}
-    a
-  end
 
   layout :with_sidebar
 

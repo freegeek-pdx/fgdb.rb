@@ -12,6 +12,7 @@ require RAILS_ROOT + '/lib/model_modifications.rb'
 require RAILS_ROOT + '/lib/ordered_hash.rb'
 require RAILS_ROOT + '/vendor/prawn-labels/lib/prawn/labels.rb'
 require 'csv'
+require 'cgi'
 
 module ActionView
   module Helpers

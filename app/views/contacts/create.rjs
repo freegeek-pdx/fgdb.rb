@@ -20,6 +20,9 @@ if @successful
 else
   page.replace_html contact_messages_id(@create_options), :partial => 'form_messages'
   show_errors_for('contact', @contact, page)
+  @contact.contact_methods.each do |x|
+    show_errors_for('contact_methods', x, page)
+  end
   if @user
     show_errors_for('user', @user, page)
   end

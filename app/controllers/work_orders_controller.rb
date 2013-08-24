@@ -2,11 +2,6 @@ class WorkOrdersController < ApplicationController
   layout :with_sidebar
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['techsupport_workorders']}
-    return a
-  end
   before_filter :ensure_metadata
   def ensure_metadata
     @@rt_metadata ||= _parse_metadata_wo
@@ -119,7 +114,9 @@ class WorkOrdersController < ApplicationController
     end
     ic = ic.join("\n")
     @data["Initial Content"] = ic + "\n\n" + @data["Initial Content"] if ic.length > 0
-    @data["Technician ID"] = current_user.contact_id.to_s
+    tech_contact = current_user.shared ? User.find_by_cashier_code(@work_order.pin.to_i) : current_user
+    @data["Technician ID"] = tech_contact.contact_id.to_s if tech_contact
+    @errors.add("pin", "is required when logged in as a shared database user (#{current_user.login})") if tech_contact.nil?
 #    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
 #      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
 #    else
@@ -145,8 +142,8 @@ class WorkOrdersController < ApplicationController
           if trans.contact
             @work_order.adopter_name = trans.contact.display_name
             @work_order.adopter_id = trans.contact_id.to_s
-            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
-            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
+#            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
+#            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
 
           desc = ge.gizmo_type.description
           b_type = nil
@@ -223,8 +220,7 @@ class WorkOrdersController < ApplicationController
 
     unless @error
 
-    requestor = User.current_user ? (User.current_user.email || "") : ""
-    @data["Requestor"] = requestor
+    @data["Requestor"] = @data["Email"].to_s
 
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp 
     f = File.open(tempfile, 'w+')

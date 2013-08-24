@@ -1,10 +1,5 @@
 class DisktestBatchesController < ApplicationController
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['data_security']}
-    a
-  end
   public
 
 #  def update_all_drives
@@ -33,7 +28,7 @@ class DisktestBatchesController < ApplicationController
   def search
     @error = params[:error]
     if !params[:conditions]
-      params[:conditions] = {:created_at_enabled => "true"}
+      params[:conditions] = {:finalized_enabled => "true", :finalized_excluded => "true"}
     end
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
@@ -51,6 +46,7 @@ class DisktestBatchesController < ApplicationController
 
   def new
     @disktest_batch = DisktestBatch.new
+    @disktest_batch.date = Date.today
   end
 
   def edit

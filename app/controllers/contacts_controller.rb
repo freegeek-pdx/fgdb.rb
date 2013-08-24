@@ -39,6 +39,7 @@ class ContactsController < ApplicationController
   end
 
   def email_list
+    @multi_enabled = true
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
     @hide_full_name = (params[:hide_full_name] == "1")
@@ -64,14 +65,6 @@ class ContactsController < ApplicationController
   end
 
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
-    a << {:only => ['roles', '/admin_user_accounts'], :privileges => ['role_admin']}
-    a << {:only => ['email_list'], :privileges => ['staff']}
-    a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
-    a
-  end
   public
 
   before_filter :be_stupid
@@ -90,9 +83,9 @@ class ContactsController < ApplicationController
       ref = ref.split("/")
       c = ref[3]
       a = (ref[4] || "index") + append
-      c = c.classify.pluralize + "Controller"
+      c = c
       Thread.current['user'] = Thread.current['cashier']
-      t = false if ! c.constantize.sb_has_required_privileges(a)
+      t = false if ! ApplicationController.sb_has_required_privileges(c, a)
     else
       t = false
     end
@@ -321,8 +314,8 @@ class ContactsController < ApplicationController
 
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
-    success = @contact.save
     @contact_methods = apply_line_item_data(@contact, ContactMethod)
+    success = @contact.save
     if @contact.user
       success = success and @contact.user.save
     end

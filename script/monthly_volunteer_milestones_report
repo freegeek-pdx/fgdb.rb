@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV']="production"
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+#If we want to multiply by the multiplier,
+#do something like this:
+#Contact.find(:all, :conditions => "id IN (SELECT contact_id FROM volunteer_tasks vt JOIN contacts c ON c.id=vt.contact_id JOIN volunteer_task_types vtt ON vtt.id=vt.volunteer_task_type_id GROUP BY 1,c.next_milestone HAVING sum(duration * vtt.hours_multiplier) > c.next_milestone)")
+
+volunteers = Contact.find(:all, :conditions => "id IN (SELECT contact_id FROM volunteer_tasks vt JOIN contacts c ON c.id=vt.contact_id GROUP BY 1,c.next_monthly_milestone HAVING sum(duration) > c.next_monthly_milestone)")
+
+Notifier.deliver_monthly_volunteer_milestone_report(volunteers)
+
+volunteers.each {|vol|
+  Contact.connection.execute("UPDATE contacts SET next_monthly_milestone=(SELECT (ceil((sum(duration)+1)/100)*100) FROM volunteer_tasks WHERE contact_id=#{vol.id} GROUP BY contact_id) WHERE id=#{vol.id}")
+}

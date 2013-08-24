@@ -2,6 +2,9 @@
 
 <% unless @contact.nil? -%>
   <%=  error_messages_for 'contact' %>
+  <% @contact.contact_methods.each do |x| %>
+  <%=  error_messages_for 'contact_methods', :object => x %>
+  <% end %>
   <%   unless @contact.user.nil? -%>
     <%=    error_messages_for 'user' %>
   <%   end -%>

@@ -1,11 +1,6 @@
 class JobsController < ApplicationController
   layout "skedjulnator"
   protected
-  def get_required_privileges
-    a = super
-    a << {:privileges => ['skedjulnator']}
-    a
-  end
   public
 
   before_filter :update_skedjulnator_access_time
