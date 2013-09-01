@@ -250,12 +250,6 @@ class Donation < ActiveRecord::Base
         total_data[k]['gizmoless_cents'] = gizmoless_data[k]['amount']
       }
 
-      return total_data.map {|method_id,sums|
-        {'payment_method_id' => method_id}.merge(sums)
-      }
-
-      # FIXME: multi payment
-
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         required_as_invoice = donation.gizmo_events.select{|x| x.gizmo_type.name == 'invoice_resolved'}.inject(0){|t, x| t += x.unit_price_cents}
@@ -264,7 +258,8 @@ class Donation < ActiveRecord::Base
         required_as_pickup_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_pickup'}.inject(0){|t, x| t += x.unit_price_cents}
         required_as_other_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_other'}.inject(0){|t, x| t += x.unit_price_cents}
         required_as_recycling_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_recycling'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_to_be_paid -= required_as_invoice
+        required_to_be_paid -= (required_as_invoice + required_as_tech_support_fee + required_as_education_fee + required_as_pickup_fee + required_as_other_fee + required_as_recycling_fee)
+        raise if required_to_be_paid != 0
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
           amount = payment.amount_cents
@@ -280,17 +275,63 @@ class Donation < ActiveRecord::Base
           total_data[payment.payment_method_id]['count'] += 1
           total_data[payment.payment_method_id]['amount'] += amount
           if donation.gizmo_events.length > 0
-            if required_to_be_paid > 0
-              if required_to_be_paid > amount
-                total_data[payment.payment_method_id]['required'] += amount
+            if amount > 0 && required_as_tech_support_fee > 0
+              if required_as_tech_support_fee > amount
+                total_data[payment.payment_method_id]['tech_support_fees'] += amount
+                required_as_tech_support_fee -= amount
+                amount = 0
               else
-                total_data[payment.payment_method_id]['required'] += required_to_be_paid
-                total_data[payment.payment_method_id]['suggested'] += (amount - required_to_be_paid)
+                total_data[payment.payment_method_id]['tech_support_fees'] += required_as_tech_support_fee
+                amount = amount - required_as_tech_support_fee
+                required_as_tech_support_fee = 0
               end
-              required_to_be_paid -= amount
-            else
-              total_data[payment.payment_method_id]['suggested'] += amount
             end
+            if amount > 0 && required_as_recycling_fee > 0
+              if required_as_recycling_fee > amount
+                total_data[payment.payment_method_id]['recycling_fees'] += amount
+                required_as_recycling_fee -= amount
+                amount = 0
+              else
+                total_data[payment.payment_method_id]['recycling_fees'] += required_as_recycling_fee
+                amount = amount - required_as_recycling_fee
+                required_as_recycling_fee = 0
+              end
+            end
+            if amount > 0 && required_as_pickup_fee > 0
+              if required_as_pickup_fee > amount
+                total_data[payment.payment_method_id]['pickup_fees'] += amount
+                required_as_pickup_fee -= amount
+                amount = 0
+              else
+                total_data[payment.payment_method_id]['pickup_fees'] += required_as_pickup_fee
+                amount = amount - required_as_pickup_fee
+                required_as_pickup_fee = 0
+              end
+            end
+            if amount > 0 && required_as_education_fee > 0
+              if required_as_education_fee > amount
+                total_data[payment.payment_method_id]['education_fees'] += amount
+                required_as_education_fee -= amount
+                amount = 0
+              else
+                total_data[payment.payment_method_id]['education_fees'] += required_as_education_fee
+                amount = amount - required_as_education_fee
+                required_as_education_fee = 0
+              end
+            end
+            if amount > 0 && required_as_other_fee > 0
+              if required_as_other_fee > amount
+                total_data[payment.payment_method_id]['other_fees'] += amount
+                required_as_other_fee -= amount
+                amount = 0
+              else
+                total_data[payment.payment_method_id]['other_fees'] += required_as_other_fee
+                amount = amount - required_as_other_fee
+                required_as_other_fee = 0
+              end
+            end
+
+            total_data[payment.payment_method_id]['suggested'] += amount
           else
             total_data[payment.payment_method_id]['gizmoless_cents'] += amount
           end
@@ -300,6 +341,10 @@ class Donation < ActiveRecord::Base
           total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'],
                                                           donation.id].max
         }
+      }
+
+      return total_data.map {|method_id,sums|
+        {'payment_method_id' => method_id}.merge(sums)
       }
     end
 
