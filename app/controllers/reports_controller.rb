@@ -635,9 +635,12 @@ GROUP BY 1, 2, 3;").to_a
     # "suggested" is the wrong terminology, it should really be "donation"
 
     contribution_cents = gizmoless_cents
-# FIXME: what is this stuff?
-#    required_cents = min(amount_cents - gizmoless_cents, required_cents)
-#    suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
+    tech_support_cents = min(amount_cents - gizmoless_cents, tech_support_cents)
+    pickup_cents = min(amount_cents - pickup_cents - gizmoless_cents, pickup_cents)
+    recycling_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents, recycling_cents)
+    education_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents - recycling_cents, education_cents)
+    other_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents - recycling_cents - education_cents, other_cents)
+    suggested_cents = max(amount_cents - (tech_support_cents + education_cents + pickup_cents + recycling_cents + other_cents + gizmoless_cents), 0)
 
     if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:donor_desk]['register total']
