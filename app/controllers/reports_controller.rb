@@ -636,10 +636,10 @@ GROUP BY 1, 2, 3;").to_a
 
     contribution_cents = gizmoless_cents
     tech_support_cents = min(amount_cents - gizmoless_cents, tech_support_cents)
-    pickup_cents = min(amount_cents - pickup_cents - gizmoless_cents, pickup_cents)
-    recycling_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents, recycling_cents)
-    education_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents - recycling_cents, education_cents)
-    other_cents = min(amount_cents - pickup_cents - gizmoless_cents - pickup_cents - recycling_cents - education_cents, other_cents)
+    pickup_cents = min(amount_cents - tech_support_cents - gizmoless_cents, pickup_cents)
+    recycling_cents = min(amount_cents - tech_support_cents - pickup_cents - gizmoless_cents, recycling_cents)
+    education_cents = min(amount_cents - tech_support_cents - pickup_cents - recycling_cents - gizmoless_cents, education_cents)
+    other_cents = min(amount_cents - tech_support_cents - pickup_cents - recycling_cents - education_cents - gizmoless_cents, other_cents)
     suggested_cents = max(amount_cents - (tech_support_cents + education_cents + pickup_cents + recycling_cents + other_cents + gizmoless_cents), 0)
 
     if PaymentMethod.is_money_method?(payment_method_id)
@@ -685,7 +685,6 @@ GROUP BY 1, 2, 3;").to_a
     end
 
     totals = income_data[:donor_desk]['total']
-
 
     update_totals(totals['tech_support_fees'], tech_support_cents, count)
     update_totals(totals['education_fees'], education_cents, count)
