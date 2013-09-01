@@ -587,7 +587,7 @@ GROUP BY 1, 2, 3;").to_a
     @rows = {}
     @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'contributions', 'other contributions', 'subtotals']
     r_name = SaleType.find_by_name("retail")
-    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['subtotals']
+    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['refunds', 'subtotals']
     if r_name and @rows[:thrift_store].include?(r_name.description)
       @rows[:thrift_store] = [r_name.description] + (@rows[:thrift_store] - [r_name.description])
     end

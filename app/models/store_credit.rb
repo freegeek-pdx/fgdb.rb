@@ -5,6 +5,10 @@ class StoreCredit < ActiveRecord::Base
 
   define_amount_methods_on :amount
 
+  def self.refunds(conditions)
+    self.connection.execute("SELECT COALESCE(SUM(amount_cents),0) AS amt_cents, COALESCE(COUNT(amount_cents),0) AS count FROM store_credits WHERE #{sanitize_sql_for_conditions(conditions).gsub(/sales/, 'store_credits').gsub(/occurred_at/, 'created_at')};").to_a.first
+  end
+
   def all_instances
     res = [all_previous, self, all_next].flatten.sort_by(&:created_at).uniq
   end
