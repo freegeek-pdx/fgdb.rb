@@ -235,14 +235,15 @@ class Donation < ActiveRecord::Base
         total_data[k]['gizmoless_cents'] = gizmoless_data[k]['amount']
       }
 
+
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
-        required_as_invoice = donation.gizmo_events.select{|x| x.gizmo_type.name == 'invoice_resolved'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_as_tech_support_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_tech_support'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_as_education_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_education'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_as_pickup_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_pickup'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_as_other_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_other'}.inject(0){|t, x| t += x.unit_price_cents}
-        required_as_recycling_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_recycling'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_invoice = donation.reported_resolved_invoices_cents
+        required_as_tech_support_fee = donation.reported_tech_support_fees_cents
+        required_as_education_fee = donation.reported_education_fees_cents
+        required_as_pickup_fee = donation.reported_pickup_fees_cents
+        required_as_other_fee = donation.reported_other_fees_cents
+        required_as_recycling_fee = donation.reported_recycling_fees_cents
         required_to_be_paid -= (required_as_invoice + required_as_tech_support_fee + required_as_education_fee + required_as_pickup_fee + required_as_other_fee + required_as_recycling_fee)
         raise if required_to_be_paid != 0
         donation.payments.sort_by(&:payment_method_id).each {|payment|
