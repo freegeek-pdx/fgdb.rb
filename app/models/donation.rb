@@ -195,33 +195,18 @@ class Donation < ActiveRecord::Base
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
-                sum(payments.amount_cents) - sum(COALESCE(invoices.unit_price_cents, 0)) as amount,
-                sum(COALESCE(tech_support_fees.unit_price_cents, 0)) as tech_support_fees,
-                sum(COALESCE(other_fees.unit_price_cents, 0)) as other_fees,
-                sum(COALESCE(pickup_fees.unit_price_cents, 0)) as pickup_fees,
-                sum(COALESCE(education_fees.unit_price_cents, 0)) as education_fees,
-                sum(donations.reported_required_fee_cents) - sum(COALESCE(tech_support_fees.unit_price_cents, 0)) - sum(COALESCE(other_fees.unit_price_cents, 0)) - sum(COALESCE(pickup_fees.unit_price_cents, 0)) - sum(COALESCE(education_fees.unit_price_cents, 0)) - sum(COALESCE(invoices.unit_price_cents, 0)) as recycling_fees,
+                sum(payments.amount_cents - reported_resolved_invoices_cents) as amount,
+                sum(reported_tech_support_fees_cents) as tech_support_fees,
+                sum(reported_other_fees_cents) as other_fees,
+                sum(reported_pickup_fees_cents) as pickup_fees,
+                sum(reported_education_fees_cents) as education_fees,
+                sum(reported_recycling_fees_cents) as recycling_fees,
                 sum(donations.reported_suggested_fee_cents) as suggested,
                 count(*),
                 min(donations.id),
                 max(donations.id)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types AS gt_invoice ON gt_invoice.name = 'invoice_resolved'
-         LEFT OUTER JOIN gizmo_events AS invoices ON invoices.gizmo_type_id = gt_invoice.id
-                                      AND invoices.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types AS gt_tech_support_fee ON gt_tech_support_fee.name = 'service_fee_tech_support'
-         LEFT OUTER JOIN gizmo_events AS tech_support_fees ON tech_support_fees.gizmo_type_id = gt_tech_support_fee.id
-                                      AND tech_support_fees.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types AS gt_education_fee ON gt_education_fee.name = 'service_fee_education'
-         LEFT OUTER JOIN gizmo_events AS education_fees ON education_fees.gizmo_type_id = gt_education_fee.id
-                                      AND education_fees.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types AS gt_pickup_fee ON gt_pickup_fee.name = 'service_fee_pickup'
-         LEFT OUTER JOIN gizmo_events AS pickup_fees ON pickup_fees.gizmo_type_id = gt_pickup_fee.id
-                                      AND pickup_fees.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types AS gt_other_fee ON gt_other_fee.name = 'service_fee_other'
-         LEFT OUTER JOIN gizmo_events AS other_fees ON other_fees.gizmo_type_id = gt_other_fee.id
-                                      AND other_fees.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
