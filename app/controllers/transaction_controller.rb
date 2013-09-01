@@ -289,6 +289,11 @@ class TransactionController < ApplicationController
         flash[:error] = "This transaction cannot be removed because it includes locked #{list.join(" and ")} values without privileges"
         @successful = false
       end
+# RT #37169
+#      if @transaction.has_returns?
+#        flash[:error] = "This transaction cannot be removed because it has items which been returned in Return #{@transactions.returns.to_sentence}"
+#        @successful = false
+#      end
     end
     @successful = @transaction.destroy if @successful
     render :action => "destroy.rjs"

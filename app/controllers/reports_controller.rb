@@ -69,16 +69,16 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
       
       r = ReportsController.new
       income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
-      @bulk = income[:sales]["real total"]["Bulk sales"][:total] / 100.0
+      @bulk = income[:thrift_store]["real total"]["Bulk sales"][:total] / 100.0
 
       last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
-      @ts = income[:sales]["real total"]["Thrift store"][:total] / 100.0
-      @ts_last_year = last_income[:sales]["real total"]["Thrift store"][:total] / 100.0
+      @ts = income[:thrift_store]["real total"]["Thrift store"][:total] / 100.0
+      @ts_last_year = last_income[:thrift_store]["real total"]["Thrift store"][:total] / 100.0
 
-      @dd_suggested = income[:donations]["register total"]["suggested"][:total] / 100.0
-      @dd_suggested_count = income[:donations]["register total"]["suggested"][:count]
-      @dd_last_suggested = last_income[:donations]["register total"]["suggested"][:total] / 100.0
-      @dd_last_suggested_count = last_income[:donations]["register total"]["fees"][:count]
+      @dd_suggested = income[:donor_desk]["register total"]["contributions"][:total] / 100.0
+      @dd_suggested_count = income[:donor_desk]["register total"]["contributions"][:count]
+      @dd_last_suggested = last_income[:donor_desk]["register total"]["contributions"][:total] / 100.0
+      @dd_last_suggested_count = last_income[:donor_desk]["register total"]["fees"][:count]
 
       # TODO: YTD / donations
       year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
@@ -545,8 +545,8 @@ GROUP BY 1, 2, 3;").to_a
     @income_data = {}
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
-    ranges = {:sales => {:min => 1<<64, :max => 0},
-      :donations => {:min => 1<<64, :max => 0}
+    ranges = {:thrift_store => {:min => 1<<64, :max => 0},
+      :donor_desk => {:min => 1<<64, :max => 0}
     }
     Donation.totals(@defaults.conditions(Donation)).each do |summation|
       add_donation_summation_to_data(summation, @income_data, ranges)
@@ -556,7 +556,7 @@ GROUP BY 1, 2, 3;").to_a
     end
 
     @ranges = {}
-    [:sales, :donations].each do |x|
+    [:thrift_store, :donor_desk].each do |x|
       @ranges[x] = "#{ranges[x][:min]}..#{ranges[x][:max]}"
     end
 
@@ -585,19 +585,19 @@ GROUP BY 1, 2, 3;").to_a
       PaymentMethod.non_register_methods.select{|x| x != PaymentMethod.written_off_invoice}.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
-    @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
+    @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'contributions', 'other contributions', 'subtotals']
     r_name = SaleType.find_by_name("retail")
-    @rows[:sales] = SaleType.all.map(&:description).sort + ['subtotals']
-    if r_name and @rows[:sales].include?(r_name.description)
-      @rows[:sales] = [r_name.description] + (@rows[:sales] - [r_name.description])
+    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['subtotals']
+    if r_name and @rows[:thrift_store].include?(r_name.description)
+      @rows[:thrift_store] = [r_name.description] + (@rows[:thrift_store] - [r_name.description])
     end
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
-    @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
+    @sections = [:donor_desk, :thrift_store, :grand_totals, :written_off_invoices]
 
     @income_data = {}
-    @income_data[:donations] = {}
-    @income_data[:sales] = {}
+    @income_data[:donor_desk] = {}
+    @income_data[:thrift_store] = {}
     @income_data[:grand_totals] = {}
     @income_data[:written_off_invoices] = {}
 
@@ -620,63 +620,85 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def add_donation_summation_to_data(summation, income_data, ranges)
-    gizmoless_cents, payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['gizmoless_cents'], summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    gizmoless_cents, payment_method_id, amount_cents, tech_support_cents, education_cents, pickup_cents, recycling_cents, other_cents, suggested_cents, count, mn, mx = summation['gizmoless_cents'], summation['payment_method_id'].to_i, summation['amount'].to_i, summation['tech_support_fees'].to_i, summation['education_fees'].to_i, summation['pickup_fees'].to_i, summation['recycling_fees'].to_i, summation['other_fees'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    ranges[:donations][:min] = min(ranges[:donations][:min], mn)
-    ranges[:donations][:max] = max(ranges[:donations][:max], mx)
+    ranges[:donor_desk][:min] = min(ranges[:donor_desk][:min], mn)
+    ranges[:donor_desk][:max] = max(ranges[:donor_desk][:max], mx)
 
     payment_method = PaymentMethod.descriptions[payment_method_id]
     grand_totals = income_data[:grand_totals]
 
-    column = income_data[:donations][payment_method]
+    column = income_data[:donor_desk][payment_method]
 
     # the suggested that's passed into us is really bogus, so we compute that here
     # "suggested" is the wrong terminology, it should really be "donation"
 
     contribution_cents = gizmoless_cents
-    required_cents = min(amount_cents - gizmoless_cents, required_cents)
-    suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
+# FIXME: what is this stuff?
+#    required_cents = min(amount_cents - gizmoless_cents, required_cents)
+#    suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
 
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:donations]['register total']
+      total_real = income_data[:donor_desk]['register total']
 
-      update_totals(total_real['fees'], required_cents, count)
-      update_totals(total_real['suggested'], suggested_cents, count)
-      update_totals(total_real['other'], gizmoless_cents, count)
+      update_totals(total_real['tech_support_fees'], tech_support_cents, count)
+      update_totals(total_real['education_fees'], education_cents, count)
+      update_totals(total_real['other_fees'], other_cents, count)
+      update_totals(total_real['recycling_fees'], recycling_cents, count)
+      update_totals(total_real['pickup_fees'], pickup_cents, count)
+      update_totals(total_real['contributions'], suggested_cents, count)
+      update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
 
     if PaymentMethod.is_real_method?(payment_method_id)
-      total_real = income_data[:donations]['real total']
+      total_real = income_data[:donor_desk]['real total']
 
-      update_totals(total_real['fees'], required_cents, count)
-      update_totals(total_real['suggested'], suggested_cents, count)
-      update_totals(total_real['other'], gizmoless_cents, count)
+      update_totals(total_real['tech_support_fees'], tech_support_cents, count)
+      update_totals(total_real['education_fees'], education_cents, count)
+      update_totals(total_real['other_fees'], other_cents, count)
+      update_totals(total_real['recycling_fees'], recycling_cents, count)
+      update_totals(total_real['pickup_fees'], pickup_cents, count)
+      update_totals(total_real['contributions'], suggested_cents, count)
+      update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['real total']['total'], amount_cents, count)
     end
 
     if PaymentMethod.is_till_method?(payment_method_id)
-      till_total = income_data[:donations]['till total']
+      till_total = income_data[:donor_desk]['till total']
 
-      update_totals(till_total['fees'], required_cents, count)
-      update_totals(till_total['suggested'], suggested_cents, count)
-      update_totals(till_total['other'], gizmoless_cents, count)
+      update_totals(till_total['tech_support_fees'], tech_support_cents, count)
+      update_totals(till_total['education_fees'], education_cents, count)
+      update_totals(till_total['other_fees'], other_cents, count)
+      update_totals(till_total['recycling_fees'], recycling_cents, count)
+      update_totals(till_total['pickup_fees'], pickup_cents, count)
+      update_totals(till_total['contributions'], suggested_cents, count)
+      update_totals(till_total['other contributions'], gizmoless_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
 
-    totals = income_data[:donations]['total']
+    totals = income_data[:donor_desk]['total']
 
-    update_totals(totals['fees'], required_cents, count)
-    update_totals(totals['suggested'], suggested_cents, count)
-    update_totals(totals['other'], gizmoless_cents, count)
+
+    update_totals(totals['tech_support_fees'], tech_support_cents, count)
+    update_totals(totals['education_fees'], education_cents, count)
+    update_totals(totals['other_fees'], other_cents, count)
+    update_totals(totals['recycling_fees'], recycling_cents, count)
+    update_totals(totals['pickup_fees'], pickup_cents, count)
+    update_totals(totals['contributions'], suggested_cents, count)
+    update_totals(totals['other contributions'], gizmoless_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
-    update_totals(column['fees'], required_cents, count)
-    update_totals(column['suggested'], suggested_cents, count)
-    update_totals(column['other'], gizmoless_cents, count)
+    update_totals(column['tech_support_fees'], tech_support_cents, count)
+    update_totals(column['education_fees'], education_cents, count)
+    update_totals(column['other_fees'], other_cents, count)
+    update_totals(column['recycling_fees'], recycling_cents, count)
+    update_totals(column['pickup_fees'], pickup_cents, count)
+    update_totals(column['contributions'], suggested_cents, count)
+    update_totals(column['other contributions'], gizmoless_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
@@ -690,34 +712,34 @@ GROUP BY 1, 2, 3;").to_a
     payment_method_id, sale_type, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['sale_type'], summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    ranges[:sales][:min] = [ranges[:sales][:min], mn].min
-    ranges[:sales][:max] = [ranges[:sales][:max], mx].max
+    ranges[:thrift_store][:min] = [ranges[:thrift_store][:min], mn].min
+    ranges[:thrift_store][:max] = [ranges[:thrift_store][:max], mx].max
 
     payment_method = PaymentMethod.descriptions[payment_method_id]
 
     grand_totals = income_data[:grand_totals]
-    column = income_data[:sales][payment_method]
+    column = income_data[:thrift_store][payment_method]
     update_totals(column[sale_type], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_real_method?(payment_method_id)
-      total_real = income_data[:sales]['real total']
+      total_real = income_data[:thrift_store]['real total']
       update_totals(total_real[sale_type], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['real total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:sales]['register total']
+      total_real = income_data[:thrift_store]['register total']
       update_totals(total_real[sale_type], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
-      till_total = income_data[:sales]['till total']
+      till_total = income_data[:thrift_store]['till total']
       update_totals(till_total[sale_type], amount_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
-    totals = income_data[:sales]['total']
+    totals = income_data[:thrift_store]['total']
     update_totals(totals[sale_type], amount_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)

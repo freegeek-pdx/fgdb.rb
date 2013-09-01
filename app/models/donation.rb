@@ -188,24 +188,40 @@ class Donation < ActiveRecord::Base
       gizmoless_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
-        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+        total_data[method.id] = {'amount' => 0, 'tech_support_fees' => 0, 'education_fees' => 0, 'pickup_fees' => 0, 'other_fees' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
       }
       methods.each {|method|
         gizmoless_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
-                sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount,
-                sum(donations.reported_required_fee_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as required,
+                sum(payments.amount_cents) - sum(COALESCE(invoices.unit_price_cents, 0)) as amount,
+                sum(COALESCE(tech_support_fees.unit_price_cents, 0)) as tech_support_fees,
+                sum(COALESCE(other_fees.unit_price_cents, 0)) as other_fees,
+                sum(COALESCE(pickup_fees.unit_price_cents, 0)) as pickup_fees,
+                sum(COALESCE(education_fees.unit_price_cents, 0)) as education_fees,
+                sum(donations.reported_required_fee_cents) - sum(COALESCE(tech_support_fees.unit_price_cents, 0)) - sum(COALESCE(other_fees.unit_price_cents, 0)) - sum(COALESCE(pickup_fees.unit_price_cents, 0)) - sum(COALESCE(education_fees.unit_price_cents, 0)) - sum(COALESCE(invoices.unit_price_cents, 0)) as recycling_fees,
                 sum(donations.reported_suggested_fee_cents) as suggested,
                 count(*),
                 min(donations.id),
                 max(donations.id)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
-         LEFT OUTER JOIN gizmo_types ON gizmo_types.name = 'invoice_resolved'
-         LEFT OUTER JOIN gizmo_events ON gizmo_events.gizmo_type_id = gizmo_types.id
-                                      AND gizmo_events.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types AS gt_invoice ON gt_invoice.name = 'invoice_resolved'
+         LEFT OUTER JOIN gizmo_events AS invoices ON invoices.gizmo_type_id = gt_invoice.id
+                                      AND invoices.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types AS gt_tech_support_fee ON gt_tech_support_fee.name = 'service_fee_tech_support'
+         LEFT OUTER JOIN gizmo_events AS tech_support_fees ON tech_support_fees.gizmo_type_id = gt_tech_support_fee.id
+                                      AND tech_support_fees.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types AS gt_education_fee ON gt_education_fee.name = 'service_fee_education'
+         LEFT OUTER JOIN gizmo_events AS education_fees ON education_fees.gizmo_type_id = gt_education_fee.id
+                                      AND education_fees.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types AS gt_pickup_fee ON gt_pickup_fee.name = 'service_fee_pickup'
+         LEFT OUTER JOIN gizmo_events AS pickup_fees ON pickup_fees.gizmo_type_id = gt_pickup_fee.id
+                                      AND pickup_fees.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types AS gt_other_fee ON gt_other_fee.name = 'service_fee_other'
+         LEFT OUTER JOIN gizmo_events AS other_fees ON other_fees.gizmo_type_id = gt_other_fee.id
+                                      AND other_fees.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
@@ -214,6 +230,7 @@ class Donation < ActiveRecord::Base
         summation.each{|k,v|d[k] = v.to_i}
         total_data[summation['payment_method_id'].to_i] = d
       }
+
        self.connection.execute("SELECT payments.payment_method_id,
                 sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount
          FROM donations
@@ -232,9 +249,21 @@ class Donation < ActiveRecord::Base
       total_data.each{|k,v|
         total_data[k]['gizmoless_cents'] = gizmoless_data[k]['amount']
       }
+
+      return total_data.map {|method_id,sums|
+        {'payment_method_id' => method_id}.merge(sums)
+      }
+
+      # FIXME: multi payment
+
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         required_as_invoice = donation.gizmo_events.select{|x| x.gizmo_type.name == 'invoice_resolved'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_tech_support_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_tech_support'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_education_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_education'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_pickup_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_pickup'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_other_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_other'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_as_recycling_fee = donation.gizmo_events.select{|x| x.gizmo_type.name == 'service_fee_recycling'}.inject(0){|t, x| t += x.unit_price_cents}
         required_to_be_paid -= required_as_invoice
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
@@ -271,9 +300,6 @@ class Donation < ActiveRecord::Base
           total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'],
                                                           donation.id].max
         }
-      }
-      return total_data.map {|method_id,sums|
-        {'payment_method_id' => method_id}.merge(sums)
       }
     end
 
