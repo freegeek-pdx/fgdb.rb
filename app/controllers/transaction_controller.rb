@@ -410,7 +410,7 @@ class TransactionController < ApplicationController
         fees_ge = @txn.find_lines(:is_fee_line?)
         if fees_ge.length > 0
           data << {"desc" => "Required Fees", "bold" => true}
-          data += @txn.gizmo_events.select{|x| GizmoEvent.is_fee_line?(x)}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_processing_description, "val" => my_number_to_currency(x.gizmo_count * x.unit_price_cents)}}
+          data += fees_ge.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_processing_description, "val" => my_number_to_currency(x.gizmo_count * x.unit_price_cents)}}
           data << {"desc" => "Total Required Fees (NOT tax deductible):", "val" => my_number_to_currency(@txn.calculated_required_fee_cents)}
           data << {"desc" => " "}
         end
