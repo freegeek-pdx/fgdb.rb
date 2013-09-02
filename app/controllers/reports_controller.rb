@@ -73,13 +73,13 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
       @bulk = income[:thrift_store]["real total"]["Bulk sales"][:total] / 100.0
 
       last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
-      @ts = income[:thrift_store]["real total"]["Thrift store"][:total] / 100.0
-      @ts_last_year = last_income[:thrift_store]["real total"]["Thrift store"][:total] / 100.0
+      @ts = income[:thrift_store]["real total"]["Retail"][:total] / 100.0
+      @ts_last_year = last_income[:thrift_store]["real total"]["Retail"][:total] / 100.0
 
       @dd_suggested = income[:donor_desk]["register total"]["contributions"][:total] / 100.0
       @dd_suggested_count = income[:donor_desk]["register total"]["contributions"][:count]
       @dd_last_suggested = last_income[:donor_desk]["register total"]["contributions"][:total] / 100.0
-      @dd_last_suggested_count = last_income[:donor_desk]["register total"]["fees"][:count]
+      @dd_last_suggested_count = last_income[:donor_desk]["register total"]["contributions"][:count]
 
       # TODO: YTD / donations
       year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
@@ -587,7 +587,7 @@ GROUP BY 1, 2, 3;").to_a
     @rows = {}
     @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'contributions', 'other contributions', 'subtotals']
     r_name = SaleType.find_by_name("retail")
-    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['subtotals']
+    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['refunds', 'subtotals']
     if r_name and @rows[:thrift_store].include?(r_name.description)
       @rows[:thrift_store] = [r_name.description] + (@rows[:thrift_store] - [r_name.description])
     end
