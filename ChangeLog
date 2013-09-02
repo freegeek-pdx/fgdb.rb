@@ -4,8 +4,10 @@ fgdb.rb (1.0.125) UNRELEASED; urgency=low
   * Rename stuff on the income report to match what it should actually
     be called, and break out fees into 5 different types at the donor
     desk
+  * Fixed excluded logic in new privileges system, this stuff may need
+    some more work.. (Closes: #37253)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 01 Sep 2013 09:24:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 01 Sep 2013 20:05:01 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
