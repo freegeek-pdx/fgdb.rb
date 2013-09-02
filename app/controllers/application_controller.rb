@@ -451,17 +451,17 @@ class ApplicationController < ActionController::Base
   end
   alias_method_chain :redirect_to, :back_magic
 
-  def self.required_privileges(controller, action)
+  def self.required_privileges(controller, action, altact = nil)
     my_required_privileges = Privilege.required_for_controller(controller) # TODO: implement options variable to replace things, somehow (in controller subclassed is only when it matters, otherwise nil?)
     requires = []
     base_action = action.split("/").first
-    if base_action == "" and action
-      base_action = action
-    end
+#    if base_action == "" and action
+#      base_action =  action if altact
+#    end
     all = []
     my_required_privileges.each{|x|
       all << [x[:only], x[:except]]
-      if (x[:only].nil? || x[:only].include?(action) || x[:only].include?(base_action)) && (x[:except].nil? || !(x[:except].include?(action) || x[:except].include?(base_action)))
+      if (x[:only].nil? || x[:only].include?(action) || x[:only].include?(base_action)) && (x[:except].nil? || !(x[:except].include?(action) || x[:except].include?(base_action == "" ? altact : base_action)))
         requires << x[:privileges]
       end
     }
@@ -487,7 +487,8 @@ class ApplicationController < ActionController::Base
 
   def has_required_privileges(action)
     controller = self.class.to_s.tableize.gsub(/_controllers$/, "")
-    self.class.required_privileges(controller, action).each{|x|
+    altact = params[:action]
+    self.class.required_privileges(controller, action, altact).each{|x|
       x = x.map{|x| 
         x = "contact_" + _get_contact_id.to_s if x == "contact_nil"
         x
