@@ -88,16 +88,16 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
 
 
         data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
-        @system_price = data.values.first.first.to_f
+        @system_price = data.values.first.first.to_f if data.values.first
 
         data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
-        @system_price_lastyear = data.values.first.first.to_f
+        @system_price_lastyear = data.values.first.first.to_f if data.values.first
 
         data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
-        @laptop_price = data.values.first.first.to_f
+        @laptop_price = data.values.first.first.to_f if data.values.first
 
         data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
-        @laptop_price_lastyear = data.values.first.first.to_f
+        @laptop_price_lastyear = data.values.first.first.to_f if data.values.first
 
 
 
