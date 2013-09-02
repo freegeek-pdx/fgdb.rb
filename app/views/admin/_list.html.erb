@@ -1,0 +1,12 @@
+<table>
+  <tr>
+  </tr>
+
+<% for admin in @objects %>
+  <tr>
+    <td><%= link_to 'Show', {:action => "show", :id => admin.id, :model => @model_param} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => admin.id, :model => @model_param} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => admin.id, :model => @model_param}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

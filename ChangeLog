@@ -9,8 +9,10 @@ fgdb.rb (1.0.125) UNRELEASED; urgency=low
     1 department at a time, with quick links
   * Fixed excluded logic in new privileges system, this stuff may need
     some more work.. (Closes: #37253)
+  * add initial code for a management interface to fgdb.rb, generating
+    settings pages automagically for everything
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 01 Sep 2013 20:05:01 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 01 Sep 2013 23:55:50 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 

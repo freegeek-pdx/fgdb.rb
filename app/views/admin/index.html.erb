@@ -1,0 +1,11 @@
+<h1>Fgdb.rb Administrative Management Interface</h1>
+
+<h2>Tools</h2>
+<%= link_to "logs", :controller => 'logs' %>
+<%= link_to "recent crashes", '/recent_crash' %>
+
+<h2>Data Drive Configuration Table Interface</h2>
+
+<% @models.each do |m| %>
+  <%= link_to m.humanize, {:action => "list", :model => m} %>
+<% end %>
