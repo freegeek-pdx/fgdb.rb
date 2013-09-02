@@ -103,96 +103,96 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
 
 
       elsif mode == 'public-services'
-      @conditions = Conditions.new
-      @conditions.apply_conditions({})
-      @conditions.sked_enabled = true
-      @conditions.sked_id = Sked.find_by_name_and_category_type("Classes", "Front Desk Checkin").id
-      @conditions.date_enabled = true
-      @conditions.date_date_type = "monthly"
-      @conditions.date_month = @target.target.month
-      @conditions.date_year = @target.target.year
+        @conditions = Conditions.new
+        @conditions.apply_conditions({})
+        @conditions.sked_enabled = true
+        @conditions.sked_id = Sked.find_by_name_and_category_type("Classes", "Front Desk Checkin").id
+        @conditions.date_enabled = true
+        @conditions.date_date_type = "monthly"
+        @conditions.date_month = @target.target.month
+        @conditions.date_year = @target.target.year
 
-      _run_vol_sched_report(true)
-      @volskedj = @result["attending"]
+        _run_vol_sched_report(true)
+        @volskedj = @result["attending"]
 
-      report = DisbursementGizmoCountByTypesTrend.new
-      base_disburse = {:start_date => (@target.target - 1.year).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Disbursement Gizmo Count By Type", "gizmo_type_group_id_enabled" => "true"}
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Systems").id}))
-      report.generate_report_data
-      @disburse_systems = report.data[0]["Hardware Grants"]
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Laptops").id}))
-      report.generate_report_data
-      @disburse_laptops = report.data[0]["Hardware Grants"]
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("Peripherals").id}))
-      report.generate_report_data
-      @disburse_peripherals = report.data[0]["Hardware Grants"]
+        report = DisbursementGizmoCountByTypesTrend.new
+        base_disburse = {:start_date => (@target.target - 1.year).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Disbursement Gizmo Count By Type", "gizmo_type_group_id_enabled" => "true"}
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Systems").id}))
+        report.generate_report_data
+        @disburse_systems = report.data[0]["Hardware Grants"]
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Laptops").id}))
+        report.generate_report_data
+        @disburse_laptops = report.data[0]["Hardware Grants"]
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("Peripherals").id}))
+        report.generate_report_data
+        @disburse_peripherals = report.data[0]["Hardware Grants"]
 
-      @past_year_labels = report.x_axis
+        @past_year_labels = report.x_axis
 
-      @disburse_table = [["Month", "Laptops", "Systems", "Peripherals"]]
-      @past_year_labels.each_with_index {|x, i|
-        @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
-      }
-      
-      r = ReportsController.new
-      income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
-      @bulk = income[:thrift_store]["real total"]["Bulk sales"][:total] / 100.0
+        @disburse_table = [["Month", "Laptops", "Systems", "Peripherals"]]
+        @past_year_labels.each_with_index {|x, i|
+          @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
+        }
+        
+        r = ReportsController.new
+        income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
+        @bulk = income[:thrift_store]["real total"]["Bulk sales"][:total] / 100.0
 
-      last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
-      @ts = income[:thrift_store]["real total"]["Retail"][:total] / 100.0
-      @ts_last_year = last_income[:thrift_store]["real total"]["Retail"][:total] / 100.0
+        last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
+        @ts = income[:thrift_store]["real total"]["Retail"][:total] / 100.0
+        @ts_last_year = last_income[:thrift_store]["real total"]["Retail"][:total] / 100.0
 
-      @dd_suggested = income[:donor_desk]["register total"]["contributions"][:total] / 100.0
-      @dd_suggested_count = income[:donor_desk]["register total"]["contributions"][:count]
-      @dd_last_suggested = last_income[:donor_desk]["register total"]["contributions"][:total] / 100.0
-      @dd_last_suggested_count = last_income[:donor_desk]["register total"]["contributions"][:count]
+        @dd_suggested = income[:donor_desk]["register total"]["contributions"][:total] / 100.0
+        @dd_suggested_count = income[:donor_desk]["register total"]["contributions"][:count]
+        @dd_last_suggested = last_income[:donor_desk]["register total"]["contributions"][:total] / 100.0
+        @dd_last_suggested_count = last_income[:donor_desk]["register total"]["contributions"][:count]
 
-      # TODO: YTD / donations
-      year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
-      last_year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{(@target.target.year - 1)}", "created_at_end_date" => (@target.target - 1.year + 1.month - 1).to_s})
+        # TODO: YTD / donations
+        year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
+        last_year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{(@target.target.year - 1)}", "created_at_end_date" => (@target.target - 1.year + 1.month - 1).to_s})
 
-      # FIXME: dates from last DOM
-      @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+        # FIXME: dates from last DOM
+        @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
       HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - Default['days_for_discount'].to_f, @target.target).first["vol_count"]
 
-      @last_active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+        @last_active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
       HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - 1.year - Default['days_for_discount'].to_f, @target.target - 1.year).first["vol_count"]
 
-      @ts_head = [""]
-      @ts_vol = ["Volunteer Hours"]
-      @ts_staff = ["Staff Hours"]
-      (0..3).to_a.reverse.each do |x|
-        @ts_head << (@target.target - x.month).strftime("%b") + " " + @target.target.year.to_s
-        @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
-        @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
-      end
+        @ts_head = [""]
+        @ts_vol = ["Volunteer Hours"]
+        @ts_staff = ["Staff Hours"]
+        (0..3).to_a.reverse.each do |x|
+          @ts_head << (@target.target - x.month).strftime("%b") + " " + @target.target.year.to_s
+          @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+          @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+        end
 
       elsif mode == 'operations'
 
-      report = DonationsCountsTrend.new
-      report2 = DonationsGizmoCountByTypesTrend.new
-      base_donations = {:start_date => (@target.target - 2.months).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
-      base_donations_lastyear = {:start_date => (@target.target - 1.year - 2.months).to_s, :end_date => (@target.target - 1.year).to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
-      report.set_conditions(base_donations)
-      report.generate_report_data
-      @donations_thisyear = report.data[0][:count]
-      report2.set_conditions(base_donations.merge(:report_type => "Donations Gizmo Count By Type"))
-      report2.generate_report_data
+        report = DonationsCountsTrend.new
+        report2 = DonationsGizmoCountByTypesTrend.new
+        base_donations = {:start_date => (@target.target - 2.months).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+        base_donations_lastyear = {:start_date => (@target.target - 1.year - 2.months).to_s, :end_date => (@target.target - 1.year).to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+        report.set_conditions(base_donations)
+        report.generate_report_data
+        @donations_thisyear = report.data[0][:count]
+        report2.set_conditions(base_donations.merge(:report_type => "Donations Gizmo Count By Type"))
+        report2.generate_report_data
         @gizmos_thisyear = report2.data[0][:count]
-      report.set_conditions(base_donations_lastyear)
-      report.generate_report_data
-      @donations_lastyear = report.data[0][:count]
+        report.set_conditions(base_donations_lastyear)
+        report.generate_report_data
+        @donations_lastyear = report.data[0][:count]
 
       end
-      
+
 
       @results = "You will see results here."
     end
