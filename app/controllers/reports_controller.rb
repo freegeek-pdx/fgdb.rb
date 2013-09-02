@@ -26,17 +26,83 @@ donations.id LEFT OUTER JOIN gizmo_events ON gizmo_events.donation_id = donation
 WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjustment = 'f' GROUP BY 1, 2, 3 #{having}) AS r;")
   end
 
+  private
+  def run_graphic_report(klass, args)
+    report = klass.new
+    report.set_conditions(args)
+    report.generate_report_data
+    return report.data[0]
+  end
+
   public
 
   def monthly_reports
     @target = OpenStruct.new
+    @departments = ['production', 'operations', 'public-services']
     if params[:target].nil?
       @target.target = Date.today
     else
+      @mode = mode = params[:id]
       @target.target_year = params[:target][:target_year]
       @target.target_month = params[:target][:target_month]
       @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
 
+      if mode == 'production'
+        base_args = {:start_date => @target.target.to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Total Sales Amount By Gizmo Type", "gizmo_type_id_enabled" => "true"}
+
+
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @sale_systems = data[:amount].first
+
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sale_systems_lastyear = data[:amount].first
+
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @sale_laptops = data[:amount].first
+
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sale_laptops_lastyear = data[:amount].first
+
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @sales_system_count = data[:count].first
+
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sales_system_count_lastyear = data[:count].first
+
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @sales_laptop_count = data[:count].first
+
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sales_laptop_count_lastyear = data[:count].first
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @systems_granted = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+  data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @systems_granted_lastyear = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @laptops_granted = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @laptops_granted_lastyear = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @system_price = data.values.first.first.to_f
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @system_price_lastyear = data.values.first.first.to_f
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @laptop_price = data.values.first.first.to_f
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @laptop_price_lastyear = data.values.first.first.to_f
+
+
+
+      elsif mode == 'public-services'
       @conditions = Conditions.new
       @conditions.apply_conditions({})
       @conditions.sked_enabled = true
@@ -108,6 +174,25 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
         @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
         @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
       end
+
+      elsif mode == 'operations'
+
+      report = DonationsCountsTrend.new
+      report2 = DonationsGizmoCountByTypesTrend.new
+      base_donations = {:start_date => (@target.target - 2.months).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      base_donations_lastyear = {:start_date => (@target.target - 1.year - 2.months).to_s, :end_date => (@target.target - 1.year).to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      report.set_conditions(base_donations)
+      report.generate_report_data
+      @donations_thisyear = report.data[0][:count]
+      report2.set_conditions(base_donations.merge(:report_type => "Donations Gizmo Count By Type"))
+      report2.generate_report_data
+        @gizmos_thisyear = report2.data[0][:count]
+      report.set_conditions(base_donations_lastyear)
+      report.generate_report_data
+      @donations_lastyear = report.data[0][:count]
+
+      end
+      
 
       @results = "You will see results here."
     end
