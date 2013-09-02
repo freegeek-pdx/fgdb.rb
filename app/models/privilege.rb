@@ -20,6 +20,14 @@ class Privilege < ActiveRecord::Base
 
   def self.ruleset
     [{:only => ["/contact_condition_everybody"], :privileges => ['manage_contacts']},
+{:only => ['/admin_user_accounts'], :privileges => ['role_admin']},
+{:only => ['/create_logins'], :privileges => ['can_create_logins']},
+{:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']},
+{:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']},
+{:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']},
+{:only => ["/view_contact_name"], :privileges => ['manage_contacts']},
+{:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']},
+{:only => ["/everybody"], :privileges => ['manage_volunteer_hours']},
      {:only => ["/admin_inventory_features"], :privileges => ['role_admin']},
      ["assignments", {:privileges => ['schedule_volunteers']}],
      ["assignments", {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}],
