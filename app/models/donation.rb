@@ -377,8 +377,11 @@ class Donation < ActiveRecord::Base
 
   def calculated_required_fee_cents
     gizmo_events_actual.inject(0) {|total, gizmo|
-      next if gizmo.mostly_empty?
-      total + gizmo.required_fee_cents
+      if gizmo.mostly_empty?
+        total
+      else
+        total + gizmo.required_fee_cents
+      end
     }
   end
 
@@ -441,8 +444,11 @@ class Donation < ActiveRecord::Base
 
   def calculated_service_fee_cents(name)
     gizmo_events_actual.inject(0) {|total, gizmo|
-      next if gizmo.mostly_empty? or gizmo.gizmo_type.name != name
-      total + gizmo.required_fee_cents
+      if gizmo.mostly_empty? or gizmo.gizmo_type.name != name
+        total
+      else
+        total + gizmo.required_fee_cents
+      end
     }
   end
 
