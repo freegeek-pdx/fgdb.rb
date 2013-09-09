@@ -11,8 +11,10 @@ fgdb.rb (1.0.125) UNRELEASED; urgency=low
     some more work.. (Closes: #37253)
   * add initial code for a management interface to fgdb.rb, generating
     settings pages automagically for everything
+  * Do not hardcode the word intern in volunteer intern titles (Closes:
+    #37259)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 01 Sep 2013 23:55:50 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 08 Sep 2013 23:53:22 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
