@@ -56,18 +56,24 @@ class WorkOrdersController < ApplicationController
 
   def invoice
     show
-    service_charge = 10 # TODO: defaults
-    service_charge = 0 if @data["Warranty"].match("In")
-    @invoice = Donation.new(:contact_id => @data["Adopter ID"].to_i)
-    Thread.current['cashier'] = Thread.current['user'] # FIXME FIXME FIXME
-    @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
-    ge_base = {:gizmo_type_id => @ts_fee_type.id, :description => "Tech Support Ticket ##{@data["ID"]}", :donation => @invoice, :gizmo_context_id => GizmoContext.donation, :gizmo_count => 1}
-    #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Parts", :unit_price_cents => 0}))
-    #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
-    if service_charge > 0
-      @invoice.gizmo_events << GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
+    if params[:donation]
+      @invoice = Donation.new(params[:donation])
+      Thread.current['cashier'] = Thread.current['user'] # FIXME FIXME FIXME
+      @invoice.save!
+    else
+      service_charge = 10 # TODO: defaults
+      service_charge = 0 if @data["Warranty"].match("In")
+      @invoice = Donation.new(:contact_id => @data["Adopter ID"].to_i)
+      @invoice.contact_type = 'anonymous' unless @invoice.contact
+      @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
+      ge_base = {:gizmo_type_id => @ts_fee_type.id, :description => "Tech Support Ticket ##{@data["ID"]}", :donation => @invoice, :gizmo_context_id => GizmoContext.donation, :gizmo_count => 1}
+      #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Parts", :unit_price_cents => 0}))
+      #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
+      if service_charge > 0
+        @invoice.gizmo_events << GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
+      end
+      # TODO: sum as invoice?
     end
-    @invoice.save!
   end
 
   def show_invoice

@@ -29,7 +29,7 @@
 
       <%= javascript_tag @gizmos_and_payments_js %>
 
-        <div class="form-element" style="display: Anone; float: right; clear: right;">
+        <div class="form-element" id="management_widget" style="display: none; float: right; clear: right;">
           <br />
           <label for="gizmo_return_payment_method_id">Modify Refund Type</label>
           <select id="gizmo_return_payment_method_id" name="gizmo_return[payment_method_id]" onChange="var pmid = $('gizmo_return_payment_method_id').value; if(pmid == '') { $('store_credit_name').innerHTML = 'Store Credit:'; } else { var payment = get_name_of_selected('gizmo_return_payment_method_id'); $('store_credit_name').innerHTML = payment.toUpperCase() + ' Refund:'; }">

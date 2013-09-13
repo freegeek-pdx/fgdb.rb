@@ -1,4 +1,4 @@
-<% if @invoice %>
+<% if @invoice.id %>
 
 <div class="noprint">
 <%= link_to 'Back', {:action => "index"} %>
@@ -18,6 +18,21 @@
 
 <% else %>
 
+<% @transaction_type = "donation" %>
+<% @donation = @invoice %>
 
+  <% if current_user.shared %>
+  <p>
+    <%= f.label :pin, "PIN" %>
+    <%= f.password_field :pin %>
+  </p>
+  <% end %>
+
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= select_visibility( 'donation', 'contact_type',
+                               :anonymous => render( :partial => 'donations/anonymous' ),
+                               :named => render( :partial => 'donations/contact_search')) %>
+      </div>
 
 <% end %>
