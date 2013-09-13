@@ -18,8 +18,11 @@
 
 <% else %>
 
+<h2>Creating new invoice for Work Order #<%= @data["ID"] %></h2>
+
 <% @transaction_type = "donation" %>
-<% @donation = @invoice %>
+<% @gizmo_context = GizmoContext.donation %>
+<% @transaction = @donation = @invoice %>
 
   <% if current_user.shared %>
   <p>
@@ -34,5 +37,10 @@
                                :anonymous => render( :partial => 'donations/anonymous' ),
                                :named => render( :partial => 'donations/contact_search')) %>
       </div>
+
+<%= render :partial => 'transaction/gizmo_events' %>
+
+
+<%= javascript_tag "#{@gizmos_and_payments_js}; gizmo_type_selected();" %>
 
 <% end %>

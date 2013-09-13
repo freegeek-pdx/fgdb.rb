@@ -11,8 +11,12 @@ Select the ticket source:<br />
 <h2>Display Existing Work Order</h2>
 <%= render :partial => "woform" %>
 
+<% if has_required_privileges('invoices') %>
+
 <h2>Create Invoice From Work Order</h2>
 <%= render :partial => "woform", :locals => {:action => "invoice", :text => 'Invoice Work Order'} %>
+
+<% end %>
 
 <h2>Display Existing Invoice</h2>
 <%= render :partial => "woform", :locals => {:action => "show_invoice", :text => 'Show Invoice', :idlabel => "Invoice #"} %>

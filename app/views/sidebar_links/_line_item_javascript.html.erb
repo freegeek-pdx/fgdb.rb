@@ -6,6 +6,13 @@
 }" %>
 
 <% @gizmo_contact = gizmo_context if defined?(gizmo_context) %>
+<% if (params[:controller] == "work_orders" && params[:action].match(/invoice/)) %>
+  <% @gizmo_context = GizmoContext.donation %>
+<% end %>
+
+<% my_cont = params[:controller] %>
+<% my_cont = "donations" if defined?(@gizmo_context) && my_cont == "work_orders" %>
+
 
 <% if defined?(@gizmo_context) %>
 <script>
@@ -35,7 +42,7 @@
   <%= javascript_tag "get_storecredit_amount_url = #{url_for(:action => "get_storecredit_amount").to_json}; storecredit_amount_cache = new Array; storecredit_errors_cache = new Array;" %>
 <% end %>
 
-<% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(params[:controller]) -%>
+<% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(my_cont) -%>
   <%= js = "var gizmo_types = new Array;"
       for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description)
         js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
@@ -56,7 +63,7 @@
       end
       javascript_tag js %>
 <% end %>
-<% if ["sales", "donations"].include?(params[:controller]) -%>
+<% if ["sales", "donations"].include?(my_cont) -%>
   <%= js = "var payment_methods = new Array;"
       for payment_method in PaymentMethod.find(:all).sort_by(&:description)
         js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';"
@@ -122,7 +129,7 @@
 <% end %>
 
 <%=
-   case params[:controller]
+   case my_cont
    when 'sales'
      js = "var not_discounted = new Array;"
      gizmo_types = GizmoType.find_all_by_not_discounted(true)

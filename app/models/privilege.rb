@@ -97,6 +97,7 @@ class Privilege < ActiveRecord::Base
      ["worked_shifts", {:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']}],
      ["workers", {:privileges => ['manage_workers']}],
      ["worker_types", {:privileges => ['skedjulnator']}],
+     ["work_orders", {:only => ['invoice'], :privileges => ['role_admin']}],
      ["work_orders", {:privileges => ['techsupport_workorders']}],
      ["work_shifts", {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish', 'staffsched_rolled_out', 'staffsched_month']}],
      ["sales", {:only => ["search", "component_update", "receipt"], :privileges => ["view_sales"]}],

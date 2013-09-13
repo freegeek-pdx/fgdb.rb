@@ -42,7 +42,7 @@ end
 <div style="float: left; clear: top; position: absolute; left: 62%; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; width: 37%; font-size: 16pt; height: 300px;">
 <table width="100%">
 <% if invoice %>
-<tr><td style="font-size: 16pt;"><b>Date Invoiced:</b></td><td style="font-size: 16pt;"><%= @invoice.created_at.strftime("%D") %></td></tr>
+<tr><td style="font-size: 16pt;"><b>Date Invoiced:</b></td><td style="font-size: 16pt;"><b><%= @invoice.created_at.strftime("%D") %><b/></td></tr>
 <% end %>
 <tr><td style="font-size: 16pt;">Type:</td><td style="font-size: 16pt;"><%= value_or_none(data, "Type of Box") %></td></tr>
 <tr><td style="font-size: 16pt;">OS info:</td><td style="font-size: 16pt;"><%= value_or_none(data, "OS") %></td></tr>
@@ -52,9 +52,20 @@ end
 </div>
 <hr style="clear: both; border: none;" />
 <div style="font-size: 16pt; clear: both; width: 100%; height: 400px; border: 1px solid black;">
-Subject: <%= value_or_none(@data, "Subject") %><br />
-Notes:<br />
+<% if @invoice %>Work Order <% end %>Subject: <%= value_or_none(@data, "Subject") %><br />
+<% if @invoice %>
+<br />
+Summary of Required Tech Support Fees:<br /><br />
+<div style="text-align: right">
+<% @invoice.gizmo_events.select{|x| x.gizmo_type.name.match(/tech_support/)}.each do |ge| %>
+<% if ge.gizmo_count > 1 %><%= ge.gizmo_count %> x <% end %><%= ge.description %>: $<%= ge.total_price %><br />
+<% end %>
+<br />
+Total amount due: $<%= @invoice.reported_required_fee %>
+</div>
+<% else %>
 <%= value_or_none(data, "Initial Content").gsub("\n", "<br />") %>
+<% end %>
 </div>
 <br />
 <% if invoice %>
