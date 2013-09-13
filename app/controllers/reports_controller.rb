@@ -141,10 +141,10 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
         @ts = income[:thrift_store]["real total"]["Retail"][:total] / 100.0
         @ts_last_year = last_income[:thrift_store]["real total"]["Retail"][:total] / 100.0
 
-        @dd_suggested = income[:donor_desk]["register total"]["contributions"][:total] / 100.0
-        @dd_suggested_count = income[:donor_desk]["register total"]["contributions"][:count]
-        @dd_last_suggested = last_income[:donor_desk]["register total"]["contributions"][:total] / 100.0
-        @dd_last_suggested_count = last_income[:donor_desk]["register total"]["contributions"][:count]
+        @dd_suggested = income[:donor_desk]["register total"]["gizmo contributions"][:total] / 100.0
+        @dd_suggested_count = income[:donor_desk]["register total"]["gizmo contributions"][:count]
+        @dd_last_suggested = last_income[:donor_desk]["register total"]["gizmo contributions"][:total] / 100.0
+        @dd_last_suggested_count = last_income[:donor_desk]["register total"]["gizmo contributions"][:count]
 
         # TODO: YTD / donations
         year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
@@ -712,7 +712,7 @@ GROUP BY 1, 2, 3;").to_a
         splits << [target_account, acct_class, reported] #if reported > 0.0
       end
       generic_class = ACCT_SETTINGS["donor_desk_class"]
-      for i in [["contributions", "gizmo_contribution_account"], ["other contributions", "other_contribution_account"]]
+      for i in [["gizmo contributions", "gizmo_contribution_account"], ["other contributions", "other_contribution_account"]]
         line_name = i.first
         this_account = ACCT_SETTINGS[i.last]
         reported = my_income_report[:donor_desk][pt][line_name][:total] / 100.0
@@ -740,7 +740,7 @@ GROUP BY 1, 2, 3;").to_a
       PaymentMethod.non_register_methods.select{|x| x != PaymentMethod.written_off_invoice}.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
-    @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'contributions', 'other contributions', 'subtotals']
+    @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'gizmo contributions', 'other contributions', 'subtotals']
     r_name = SaleType.find_by_name("retail")
     @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['refunds', 'subtotals']
     if r_name and @rows[:thrift_store].include?(r_name.description)
@@ -805,7 +805,7 @@ GROUP BY 1, 2, 3;").to_a
       update_totals(total_real['other_fees'], other_cents, count)
       update_totals(total_real['recycling_fees'], recycling_cents, count)
       update_totals(total_real['pickup_fees'], pickup_cents, count)
-      update_totals(total_real['contributions'], suggested_cents, count)
+      update_totals(total_real['gizmo contributions'], suggested_cents, count)
       update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
@@ -819,7 +819,7 @@ GROUP BY 1, 2, 3;").to_a
       update_totals(total_real['other_fees'], other_cents, count)
       update_totals(total_real['recycling_fees'], recycling_cents, count)
       update_totals(total_real['pickup_fees'], pickup_cents, count)
-      update_totals(total_real['contributions'], suggested_cents, count)
+      update_totals(total_real['gizmo contributions'], suggested_cents, count)
       update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['real total']['total'], amount_cents, count)
@@ -833,7 +833,7 @@ GROUP BY 1, 2, 3;").to_a
       update_totals(till_total['other_fees'], other_cents, count)
       update_totals(till_total['recycling_fees'], recycling_cents, count)
       update_totals(till_total['pickup_fees'], pickup_cents, count)
-      update_totals(till_total['contributions'], suggested_cents, count)
+      update_totals(till_total['gizmo contributions'], suggested_cents, count)
       update_totals(till_total['other contributions'], gizmoless_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
@@ -846,7 +846,7 @@ GROUP BY 1, 2, 3;").to_a
     update_totals(totals['other_fees'], other_cents, count)
     update_totals(totals['recycling_fees'], recycling_cents, count)
     update_totals(totals['pickup_fees'], pickup_cents, count)
-    update_totals(totals['contributions'], suggested_cents, count)
+    update_totals(totals['gizmo contributions'], suggested_cents, count)
     update_totals(totals['other contributions'], gizmoless_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(column['tech_support_fees'], tech_support_cents, count)
@@ -854,7 +854,7 @@ GROUP BY 1, 2, 3;").to_a
     update_totals(column['other_fees'], other_cents, count)
     update_totals(column['recycling_fees'], recycling_cents, count)
     update_totals(column['pickup_fees'], pickup_cents, count)
-    update_totals(column['contributions'], suggested_cents, count)
+    update_totals(column['gizmo contributions'], suggested_cents, count)
     update_totals(column['other contributions'], gizmoless_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)

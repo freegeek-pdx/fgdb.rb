@@ -15,8 +15,9 @@ fgdb.rb (1.0.125) UNRELEASED; urgency=low
     #37259)
   * Add Export as IIF option to the income report when viewing a daily
     report (Closes: #36810)
+  * update the name on the income report for gizmo related contributions
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 02:04:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 02:19:46 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
