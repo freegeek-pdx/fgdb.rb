@@ -29,6 +29,7 @@ class Privilege < ActiveRecord::Base
 {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']},
 {:only => ["/everybody"], :privileges => ['manage_volunteer_hours']},
      {:only => ["/admin_inventory_features"], :privileges => ['role_admin']},
+     ["admin", {:privileges => ['role_admin']}],
      ["assignments", {:privileges => ['schedule_volunteers']}],
      ["assignments", {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}],
      ["assignments", {:only => ['noshows', 'noshows_report'], :privileges => ['admin_skedjul']}],
