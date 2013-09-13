@@ -377,8 +377,11 @@ class Donation < ActiveRecord::Base
 
   def calculated_required_fee_cents
     gizmo_events_actual.inject(0) {|total, gizmo|
-      next if gizmo.mostly_empty?
-      total + gizmo.required_fee_cents
+      if gizmo.mostly_empty?
+        total
+      else
+        total + gizmo.required_fee_cents
+      end
     }
   end
 
@@ -431,7 +434,24 @@ class Donation < ActiveRecord::Base
   def compute_fee_totals
     self.reported_required_fee_cents = self.calculated_required_fee_cents
     self.reported_suggested_fee_cents = self.calculated_suggested_fee_cents
+    self.reported_resolved_invoices_cents = self.calculated_service_fee_cents('invoice_resolved')
+    self.reported_pickup_fees_cents = self.calculated_service_fee_cents('service_fee_pickup')
+    self.reported_education_fees_cents = self.calculated_service_fee_cents('service_fee_education')
+    self.reported_tech_support_fees_cents = self.calculated_service_fee_cents('service_fee_tech_support')
+    self.reported_other_fees_cents = self.calculated_service_fee_cents('service_fee_other')
+    self.reported_recycling_fees_cents = reported_required_fee_cents - reported_resolved_invoices_cents - reported_pickup_fees_cents - reported_education_fees_cents - reported_tech_support_fees_cents - reported_other_fees_cents
   end
+
+  def calculated_service_fee_cents(name)
+    gizmo_events_actual.inject(0) {|total, gizmo|
+      if gizmo.mostly_empty? or gizmo.gizmo_type.name != name
+        total
+      else
+        total + gizmo.required_fee_cents
+      end
+    }
+  end
+
 
   def cleanup_for_contact_type
     case contact_type

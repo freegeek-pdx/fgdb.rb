@@ -55,8 +55,6 @@ fgdb.rb (1.0.124) released; urgency=low
     previously (Crash 9UxCyQ)
   * new logo (Closes: #37074)
   * fix extra fees listed in PDF for donations (Closes: #37144)
-  * Fixed excluded logic in new privileges system, this stuff may need
-    some more work.. (Closes: #37253)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 12 Aug 2013 08:36:50 -0700
 

@@ -193,6 +193,24 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
       end
 
 
+      elsif mode == 'operations'
+
+      report = DonationsCountsTrend.new
+      report2 = DonationsGizmoCountByTypesTrend.new
+      base_donations = {:start_date => (@target.target - 2.months).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      base_donations_lastyear = {:start_date => (@target.target - 1.year - 2.months).to_s, :end_date => (@target.target - 1.year).to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      report.set_conditions(base_donations)
+      report.generate_report_data
+      @donations_thisyear = report.data[0][:count]
+      report2.set_conditions(base_donations.merge(:report_type => "Donations Gizmo Count By Type"))
+      report2.generate_report_data
+        @gizmos_thisyear = report2.data[0][:count]
+      report.set_conditions(base_donations_lastyear)
+      report.generate_report_data
+      @donations_lastyear = report.data[0][:count]
+
+      end
+
       @results = "You will see results here."
     end
   end
