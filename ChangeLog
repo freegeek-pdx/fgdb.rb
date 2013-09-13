@@ -16,8 +16,10 @@ fgdb.rb (1.0.125) UNRELEASED; urgency=low
   * Add Export as IIF option to the income report when viewing a daily
     report (Closes: #36810)
   * update the name on the income report for gizmo related contributions
+  * restrict shared user checkbox to db admins, hoping that will
+    eliminate some confusion (Closes: #37292)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 02:19:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 03:50:31 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
