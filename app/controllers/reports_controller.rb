@@ -716,7 +716,7 @@ GROUP BY 1, 2, 3;").to_a
         line_name = i.first
         this_account = ACCT_SETTINGS[i.last]
         reported = my_income_report[:donor_desk][pt][line_name][:total] / 100.0
-        splits << [this_account, acct_class, reported] #if reported > 0.0
+        splits << [this_account, generic_class, reported] #if reported > 0.0
       end
       total_reported = my_income_report[:donor_desk][pt]["subtotals"][:total] / 100.0
       splits.insert(0, [transfer_account, nil, total_reported])
