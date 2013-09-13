@@ -4,6 +4,7 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
+  belongs_to :payment_method
   has_one :store_credit, :autosave => :true
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
@@ -39,15 +40,21 @@ class GizmoReturn < ActiveRecord::Base
       a = connection.execute(
                          "SELECT gizmo_returns.payment_method_id,
                 sum(gizmo_returns.storecredit_difference_cents) as amount,
-                count(*),
+                count(*)
          FROM gizmo_returns
          WHERE payment_method_id IS NOT NULL
-         AND #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY 1, 2"
+         AND #{sanitize_sql_for_conditions(conditions).gsub(/sales/, "gizmo_returns")}
+         GROUP BY 1"
                          ).to_a
-      refund_amt_cents = StoreCredit.refunds(conditions)
-      a << {'payment_method_id' => PaymentMethod.find_by_name('store_credit').id, 'sale_type' => 'refunds', 'amount' => '-' + refund_amt_cents['amt_cents'], :count => refund_amt_cents['count'], 'min' => 1<<64, 'max' => 0}
       return a
+  end
+
+  def refunded_as
+    payment_method
+  end
+
+  def refunded?
+    !!payment_method
   end
 
   def validate

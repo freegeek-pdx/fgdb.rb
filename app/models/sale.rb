@@ -226,6 +226,10 @@ thanks = [
                          ).to_a
       refund_amt_cents = StoreCredit.refunds(conditions)
       a << {'payment_method_id' => PaymentMethod.find_by_name('store_credit').id, 'sale_type' => 'refunds', 'amount' => '-' + refund_amt_cents['amt_cents'], :count => refund_amt_cents['count'], 'min' => 1<<64, 'max' => 0}
+      refund_other_cents = GizmoReturn.totals(conditions)
+      refund_other_cents.each do |hash|
+        a << hash.merge('amount' => '-' + hash['amount'], 'min' => 1<<64, 'max' => 0,  'sale_type' => 'refunds')
+      end
       return a
     end
   end

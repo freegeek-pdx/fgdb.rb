@@ -27,8 +27,6 @@
 
       <%= render :partial => 'gizmo_return_totals' %>
 
-      <%= javascript_tag @gizmos_and_payments_js %>
-
         <div class="form-element" id="management_widget" style="display: none; float: right; clear: right;">
           <br />
           <label for="gizmo_return_payment_method_id">Modify Refund Type</label>
@@ -37,6 +35,9 @@
           </select>
         </div>
     </div>
+
+      <%= javascript_tag @gizmos_and_payments_js + "; is_management = false; $('gizmo_return_payment_method_id').onchange();" %>
+
 
     <!--[eoform:sale]-->
 
