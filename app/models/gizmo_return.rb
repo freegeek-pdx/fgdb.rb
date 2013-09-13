@@ -35,6 +35,21 @@ class GizmoReturn < ActiveRecord::Base
     "gizmo_returns.created_at DESC"
   end
 
+  def self.totals(conditions)
+      a = connection.execute(
+                         "SELECT gizmo_returns.payment_method_id,
+                sum(gizmo_returns.storecredit_difference_cents) as amount,
+                count(*),
+         FROM gizmo_returns
+         WHERE payment_method_id IS NOT NULL
+         AND #{sanitize_sql_for_conditions(conditions)}
+         GROUP BY 1, 2"
+                         ).to_a
+      refund_amt_cents = StoreCredit.refunds(conditions)
+      a << {'payment_method_id' => PaymentMethod.find_by_name('store_credit').id, 'sale_type' => 'refunds', 'amount' => '-' + refund_amt_cents['amt_cents'], :count => refund_amt_cents['count'], 'min' => 1<<64, 'max' => 0}
+      return a
+  end
+
   def validate
     validate_inventory_modifications
     if contact_type == 'named'
@@ -47,6 +62,7 @@ class GizmoReturn < ActiveRecord::Base
     end
     errors.add("gizmos", "should include something") if gizmo_events_actual.empty?
     storecredit_priv_check if self.store_credit and self.store_credit.amount_cents_changed? and self.store_credit.amount_cents > 0
+# FIXME:::    returncredit_priv_check if self.payment_method and self.payment_method_id_changed?
   end
 
   def gizmo_context
@@ -67,7 +83,7 @@ class GizmoReturn < ActiveRecord::Base
 
   def set_storecredit_difference_cents
     self.storecredit_difference_cents = calculated_subtotal_cents
-    if self.storecredit_difference_cents != 0
+    if self.payment_method_id.nil? && self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
       self.store_credit.expire_date ||= (Date.today + StoreCredit.expire_after_value)
