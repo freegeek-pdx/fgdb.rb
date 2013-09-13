@@ -28,15 +28,16 @@ class WorkOrdersController < ApplicationController
     end
   end
 
-  def show
-    if params[:id]
-      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
+  def show(showid = nil)
+    showid ||= params[:id]
+    if showid
+      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{showid.to_i}`
       begin
         @data = JSON.parse(json)
       rescue
         @data = nil
       end
-      if @data.nil? || @data["ID"].to_i != params[:id].to_i
+      if @data.nil? || @data["ID"].to_i != showid.to_i
         @data = nil
         @error = "The provided ticket number does not exist."
         return
@@ -50,6 +51,32 @@ class WorkOrdersController < ApplicationController
         @system = System.find_by_id(@data["System ID"].to_i)
       end
     end
+  end
+
+
+  def invoice
+    show
+    service_charge = 10 # TODO: defaults
+    service_charge = 0 if @data["Warranty"].match("In")
+    @invoice = Donation.new(:contact_id => @data["Adopter ID"].to_i)
+    Thread.current['cashier'] = Thread.current['user'] # FIXME FIXME FIXME
+    @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
+    ge_base = {:gizmo_type_id => @ts_fee_type.id, :description => "Tech Support Ticket ##{@data["ID"]}", :donation => @invoice, :gizmo_context_id => GizmoContext.donation, :gizmo_count => 1}
+    #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Parts", :unit_price_cents => 0}))
+    #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
+    if service_charge > 0
+      @invoice.gizmo_events << GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
+    end
+    @invoice.save!
+  end
+
+  def show_invoice
+    @invoice = Donation.find_by_id(params[:id])
+    @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
+    @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/)
+    matchid = $1
+    show(matchid) if matchid
+    render :action => "invoice"
   end
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
