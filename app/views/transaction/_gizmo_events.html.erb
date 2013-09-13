@@ -1,5 +1,11 @@
 <% my_cont = params[:controller] %>
 
+<% work_order_mode = false %>
+<% if params[:controller] == "work_orders" %>
+  <% work_order_mode = true %>
+  <% my_cont = "donations" %>
+<% end %>
+
 <% show_system = ["sales", "disbursements", "gizmo_returns"].include?(my_cont) %>
 <% show_contract = my_cont == "recyclings" && contract_enabled %>
 <% show_coveredness = (!["gizmo_returns"].include?(my_cont)) && coveredness_enabled %>

@@ -6,7 +6,8 @@ class GizmoReturn < ActiveRecord::Base
   belongs_to :contact
   belongs_to :payment_method
   has_one :store_credit, :autosave => :true
-  before_save :set_storecredit_difference_cents
+  before_validation :set_storecredit_difference_cents
+  before_save :set_storecredit_difference_cents_part2
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
   acts_as_userstamp
@@ -59,6 +60,9 @@ class GizmoReturn < ActiveRecord::Base
 
   def validate
     validate_inventory_modifications
+    unless user_is_bean_counter?
+      errors.add("payment_method_id", "or amount cannot be changed when the till is already locked") if till_is_locked? && (self.storecredit_difference_cents_changed? || self.payment_method_id_changed?)
+    end
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -90,6 +94,9 @@ class GizmoReturn < ActiveRecord::Base
 
   def set_storecredit_difference_cents
     self.storecredit_difference_cents = calculated_subtotal_cents
+  end
+  def set_storecredit_difference_cents_part2
+    set_storecredit_difference_cents
     if self.payment_method_id.nil? && self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
