@@ -58,7 +58,7 @@ end
 Summary of Required Tech Support Fees:<br /><br />
 <div style="text-align: right">
 <% @invoice.gizmo_events.select{|x| x.gizmo_type.name.match(/tech_support/)}.each do |ge| %>
-<% if ge.gizmo_count > 1 %><%= ge.gizmo_count %> x <% end %><%= ge.description %>: $<%= ge.total_price %><br />
+<% if ge.gizmo_count > 1 %><%= ge.gizmo_count %> x <% end %><%= ge.description %>: $<%= (ge.total_price_cents).to_dollars %><br />
 <% end %>
 <br />
 Total amount due: $<%= @invoice.reported_required_fee %>

@@ -55,18 +55,22 @@ class WorkOrdersController < ApplicationController
 
 
   def invoice
-    show
+    show(params[:id] || params[:ticket_id])
     if params[:donation]
       @invoice = Donation.new(params[:donation])
-      # TODO: apply line item data
+      @invoice.postal_code = "97007"
+      @lines = my_apply_line_item_data(@invoice, :gizmo_events)
       @invoice.gizmo_events.each do |ge|
         orig = ge.description
-        ge.description = "Ticket ##{@data["ID"]}"
-        ge.description += " - #{orig}" if orig.length > 0
+        unless orig.match(/^Ticket #/)
+          ge.description = "Ticket ##{@data["ID"]}"
+          ge.description += " - #{orig}" if orig.length > 0
+        end
+        ge.gizmo_context_id = GizmoContext.donation
       end
-      @invoice.payments = [Payment.new(:payment_method => PaymentMethod.invoice, :amount_cents => @invoice.reported_required_fee_cents)]
+      @invoice.payments = [Payment.new(:payment_method => PaymentMethod.invoice, :amount_cents => @invoice.calculated_required_fee_cents)]
       Thread.current['cashier'] = Thread.current['user'] # FIXME FIXME FIXME: PIN for updated_by
-      @invoice.save!
+      @invoice.save
     else
       service_charge = 10 # TODO: defaults
       service_charge = 0 if @data["Warranty"].match("In")
@@ -74,12 +78,9 @@ class WorkOrdersController < ApplicationController
       @invoice.contact_type = 'anonymous' unless @invoice.contact
       @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
       ge_base = {:gizmo_type_id => @ts_fee_type.id, :donation => @invoice, :gizmo_context_id => GizmoContext.donation, :gizmo_count => 1}
-      #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Parts", :unit_price_cents => 0}))
-      #GizmoEvent.new(ge_base.merge({:description => ge_base[:description] + " - Service Charge", :unit_price_cents => service_charge * 100}))
       if service_charge > 0
         @invoice.gizmo_events << GizmoEvent.new(ge_base.merge({:description => "Service Charge", :unit_price_cents => service_charge * 100}))
       end
-      # TODO: sum as invoice?
     end
   end
 

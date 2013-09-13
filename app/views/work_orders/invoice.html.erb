@@ -24,6 +24,10 @@
 <% @gizmo_context = GizmoContext.donation %>
 <% @transaction = @donation = @invoice %>
 
+<% form_for 'donation', :url => params.merge(:ticket_id => @data["ID"]) do %>
+
+<%= error_messages_for 'invoice' %>
+
   <% if current_user.shared %>
   <p>
     <%= f.label :pin, "PIN" %>
@@ -42,5 +46,8 @@
 
 
 <%= javascript_tag "#{@gizmos_and_payments_js}; gizmo_type_selected();" %>
+<%= submit_tag "Create Invoice" %>
+
+<% end %>
 
 <% end %>
