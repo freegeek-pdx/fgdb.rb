@@ -58,7 +58,6 @@ class WorkOrdersController < ApplicationController
     show(params[:id] || params[:ticket_id])
     if params[:donation]
       @invoice = Donation.new(params[:donation])
-      @invoice.postal_code = "97007"
       @lines = my_apply_line_item_data(@invoice, :gizmo_events)
       @invoice.gizmo_events.each do |ge|
         orig = ge.description
