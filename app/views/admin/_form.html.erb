@@ -3,7 +3,8 @@
 <% associations = @model.associations %>
 
 <% @admin.class.visible_columns.each do |x| %>
-  <tr><th>LABEL <%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</th>
+  <% mytype = get_column_type(x) %>
+  <tr><th><%= f.label x.to_s, x.to_s.humanize + " (" + mytype + "):" %></th>
     <td>
   <% if @admin.class.editable_columns.include?(x) %>
   <% if associations[x] %>
