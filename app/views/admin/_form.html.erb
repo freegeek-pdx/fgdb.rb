@@ -15,7 +15,7 @@
                       }
                     }) %>
     <% else %>
-    <%= f.select x, options_for_select(associations[x].find(:all).map{|y| [y.to_s.match(/^#/) ? y.class.to_s + " #" + y.id.to_s : y.to_s, y.id]}, f.object.send(x.to_s.to_sym)) %>
+    <%= f.select x, options_for_select([["", ""]] + associations[x].find(:all).map{|y| [y.to_s.match(/^#/) ? y.class.to_s + " #" + y.id.to_s : y.to_s, y.id]}, f.object.send(x.to_s.to_sym)) %>
     <% end %>
   <% else %>
     <% if mytype == "text" %>

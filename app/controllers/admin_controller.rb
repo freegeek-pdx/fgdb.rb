@@ -36,25 +36,25 @@ class AdminController < ApplicationController
     @admin = @model.find(params[:id])
   end
 #
-#  def new
-#    @admin = @model.new
-#  end
-#
+  def new
+    @admin = @model.new
+  end
+
   def edit
     @admin = @model.find(params[:id])
   end
 #
-#  def create
-#    @admin = @model.new(params[@model_access])
+  def create
+    @admin = @model.new(params[@model_access])
 #
-#    if @admin.save
-#      flash[:notice] = '@model was successfully created.'
-#                                                     redirect_to({:action => "show", :id => @admin.id})
-#    else
-#      render :action => "new"
-#    end
-#  end
-#
+    if @admin.save
+      flash[:notice] = "#{@model_name} was successfully created."
+      redirect_to({:action => "show", :id => @admin.id})
+    else
+      render :action => "new"
+    end
+  end
+
   private
   def redirect_to(h)
     super(h.class == Hash ? h.merge(:model => params[:model]) : h)
