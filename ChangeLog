@@ -1,7 +1,9 @@
 fgdb.rb (1.0.126) UNRELEASED; urgency=low
 
+  * MURDER the store pricing functionality ... it has been BURNED with
+    LOTS and LOTS of FIIIIIRE!!! (Closes: #37077)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 09:30:39 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 11:53:55 -0700
 
 fgdb.rb (1.0.125) released; urgency=low
 

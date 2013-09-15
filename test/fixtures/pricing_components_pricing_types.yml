@@ -1,9 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  pricing_component_id: 1
-  pricing_type_id: 1
-
-two:
-  pricing_component_id: 1
-  pricing_type_id: 1

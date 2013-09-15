@@ -1,6 +1,0 @@
-Choose a new or existing component to add to this pricing type:<br />
-  <%= link_to "Create a new component", {:action => "new", :controller => "pricing_components", :pricing_expression_id => @pricing_expression.id} %><br />
-  <% PricingComponent.all.each do |x| %>
-      <%= link_to "Choose #{x.display_name}", params.merge(:pricing_component_id => x.id) %> (<%= link_to "Edit", {:action => "edit", :id => x.id, :controller => "pricing_components"}, :target => "_blank" %>)
-      <br />
-  <% end %>
