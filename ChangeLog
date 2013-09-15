@@ -4,6 +4,7 @@ fgdb.rb (1.0.126) UNRELEASED; urgency=low
     LOTS and LOTS of FIIIIIRE!!! (Closes: #37077)
   * Replace recycling shipments and till adjustments with the new
     administrative interface
+    - replace gizmo_type_groups management as well
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 12:31:14 -0700
 
