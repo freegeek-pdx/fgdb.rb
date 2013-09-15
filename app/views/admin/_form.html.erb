@@ -21,7 +21,7 @@
     <% if mytype == "text" %>
       <%= f.text_area x %>
     <% elsif mytype == "boolean" %>
-      <%= f.check_box x %>
+      <%= f.select x, options_for_select([["", ""], ["Yes", "true"], ["No", "false"]], f.object.send(x.to_s.to_sym).to_s) %>
     <% elsif mytype == "time" %>
       <%= f.time_select x %>
     <% elsif mytype == "date" %>

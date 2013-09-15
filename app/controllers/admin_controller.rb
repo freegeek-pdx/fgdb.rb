@@ -1,8 +1,6 @@
 class AdminController < ApplicationController
   layout :with_sidebar
 
-  # TODO: restrict whole deal to ADMIN
-
   before_filter :set_model
   private
   def set_model
