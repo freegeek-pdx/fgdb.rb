@@ -20,6 +20,11 @@ fgdb.rb (1.0.125) released; urgency=low
     eliminate some confusion (Closes: #37292)
   * Complete implementation of refunds (Closes: #36976)
   * Completed implementation of work order invoices (Closes: #37103)
+  * Implement administration interface in fgdb.rb, which allows to
+    directly view and edit some tables within the model interface (ones
+    with simple logic that can be entirely in the model, like
+    validations, foreign keys, etc -- no controller or view needed)
+    (Closes: #37082)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 09:30:14 -0700
 

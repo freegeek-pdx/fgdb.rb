@@ -6,18 +6,22 @@ class AdminController < ApplicationController
   before_filter :set_model
   private
   def set_model
+    # list models supported here
+    @models = ["defaults"]
     if params[:model]
       @model_param = params[:model]
       @model_name = @model_param.classify
-      @model_human = @model_param.humanize
+      @model_human = @model_param.humanize.singularize
+      @model_access = @model_name.downcase.underscore.to_sym
       @model = @model_name.constantize
     end
   end
   public
 
   def index
-    # list models supported here
-    @models = ["defaults"]
+    if @model
+      redirect_to :action => "list"
+    end
   end
 
 # TODO: have pagination settings, default sort order, default scope,
@@ -30,46 +34,49 @@ class AdminController < ApplicationController
 # NOTE: could even set future search conditions for the index page,
 #       in the model available through standard interface
 #
-#  def show
-#    @<%= file_name %> = <%= class_name %>.find(params[:id])
-#  end
+  def show
+    @admin = @model.find(params[:id])
+  end
 #
 #  def new
-#    @<%= file_name %> = <%= class_name %>.new
+#    @admin = @model.new
 #  end
 #
-#TODO: models will have a .disallow_modifcation_of_these_fields method,
-#defaulting to created_*, updated_*, etc, but also for name/description
-#of defaults, etc.
-#  def edit
-#    @<%= file_name %> = <%= class_name %>.find(params[:id])
-#  end
+  def edit
+    @admin = @model.find(params[:id])
+  end
 #
 #  def create
-#    @<%= file_name %> = <%= class_name %>.new(params[:<%= file_name %>])
+#    @admin = @model.new(params[@model_access])
 #
-#    if @<%= file_name %>.save
-#      flash[:notice] = '<%= class_name %> was successfully created.'
-#                                                     redirect_to({:action => "show", :id => @<%= file_name %>.id})
+#    if @admin.save
+#      flash[:notice] = '@model was successfully created.'
+#                                                     redirect_to({:action => "show", :id => @admin.id})
 #    else
 #      render :action => "new"
 #    end
 #  end
 #
-#  def update
-#    @<%= file_name %> = <%= class_name %>.find(params[:id])
-#
-#    if @<%= file_name %>.update_attributes(params[:<%= file_name %>])
-#      flash[:notice] = '<%= class_name %> was successfully updated.'
-#  redirect_to({:action => "show", :id => @<%= file_name %>.id})
-#    else
-#      render :action => "edit"
-#    end
-#  end
+  private
+  def redirect_to(h)
+    super(h.class == Hash ? h.merge(:model => params[:model]) : h)
+  end
+  public
+
+  def update
+    @admin = @model.find(params[:id])
+
+    if @admin.update_attributes(params[@model_access])
+      flash[:notice] = "#{@model_human} was successfully updated."
+      redirect_to({:action => "show", :id => @admin.id})
+    else
+      render :action => "edit"
+    end
+  end
 #
 #  def destroy
-#    @<%= file_name %> = <%= class_name %>.find(params[:id])
-#    @<%= file_name %>.destroy
+#    @admin = @model.find(params[:id])
+#    @admin.destroy
 #
 #    redirect_to({:action => "index"})
 #  end

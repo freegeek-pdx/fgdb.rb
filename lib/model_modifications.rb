@@ -216,6 +216,36 @@ class OpenStruct
 end
 
 class ActiveRecord::Base
+  def self.visible_columns
+    self.all_columns.select{|x| ! self.hidden_columns.include?(x) }
+  end
+
+  def self.editable_columns
+    self.visible_columns.select{|x| ! self.readonly_columns.include?(x) }
+  end
+
+  def self.all_columns
+    columns.map{|x| x.name.to_sym}
+  end
+
+        def self.hidden_columns
+          [:lock_version]
+        end
+
+        def self.readonly_columns
+          [:id, :created_at, :updated_at, :cashier_created_by, :cashier_updated_by, :created_by, :updated_by]
+        end
+
+        def self.associations
+          retassociations = {}
+          self.reflect_on_all_associations(:belongs_to).each do |x|
+            column = x.options[:foreign_key] || x.name.to_s + "_id"
+            klass = x.options[:class_name] || x.name.to_s.classify
+            retassociations[column.to_sym] = klass.constantize
+          end
+          retassociations
+        end
+
   def self.distinct(column, conds = [])
     self.find(:all, :conditions => conds, :select => "distinct #{column}").map{|x| x.send(column)}
   end

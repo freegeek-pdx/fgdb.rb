@@ -1,4 +1,8 @@
 class Default < ActiveRecord::Base
+  def to_s
+    name
+  end
+
   class << self
     def is_pdx
       Default["is-pdx"] == "true"
