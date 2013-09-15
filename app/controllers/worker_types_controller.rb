@@ -18,6 +18,10 @@ class WorkerTypesController < ApplicationController
     @worker_types = WorkerType.paginate :order => 'name', :per_page => 20, :page => params[:page]
   end
 
+  #def method_missing(n)
+  #redirect_to params.merge(:model => params[:controller], :controller => "admin")
+  #end
+
   def show
     @worker_type = WorkerType.find(params[:id])
   end

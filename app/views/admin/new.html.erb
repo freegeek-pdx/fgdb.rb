@@ -1,6 +1,6 @@
 <h1>New admin</h1>
 
-<% form_for(@admin, :url => {:action => "create"}) do |f| %>
+<% admin_form_for(@admin, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>
@@ -10,4 +10,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', {:action => "index"} %>
+<%= admin_link_to 'Back', {:action => "index"} %>

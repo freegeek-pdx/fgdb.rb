@@ -24,7 +24,7 @@
 <% @gizmo_context = GizmoContext.donation %>
 <% @transaction = @donation = @invoice %>
 
-<% form_for 'donation', :url => params.merge(:ticket_id => @data["ID"]) do %>
+<% form_for 'donation', :method => "POST", :url => params.merge(:ticket_id => @data["ID"]) do %>
 
 <%= error_messages_for 'invoice' %>
 

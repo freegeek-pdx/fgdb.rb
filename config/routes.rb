@@ -46,8 +46,14 @@ ActionController::Routing::Routes.draw do |map|
   # See how all your routes lay out with "rake routes"
 
   # Install the default routes as the lowest priority.
+  map.connect 'admin/:model', :controller => "admin", :action => "index"
+  map.connect 'admin/:model/:action/:id', :controller => "admin"
+  map.connect 'admin/:model/:action', :controller => "admin"
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+
+
+
   map.connect 'barcode/:id.:format', :controller => "barcode", :action => "barcode"
 
   map.connect 'todo', :controller => "sidebar_links", :action => "todo_moved"

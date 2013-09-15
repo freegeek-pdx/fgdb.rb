@@ -1,3 +1,13 @@
-TODO: superdynamic, field based on type,
-      select for foreign keys, etc etc
-      ( use to_s on foreign key -- defined it)
+<% @admin.class.visible_columns.each do |x| %>
+  <b><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</b>
+  <% if @admin.class.editable_columns.include?(x) %>
+    <% if mytype == "text" %>
+    <%= f.text_area x %>
+    <% else %>
+    <%= f.text_field x %>
+    <% end %>
+  <% else %>
+    <%= @admin.send(x) %>
+  <% end %><br />
+<% end %>
+
