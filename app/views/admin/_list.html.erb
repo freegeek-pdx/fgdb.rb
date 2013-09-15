@@ -3,6 +3,9 @@
     <% @model.visible_columns.each do |x| %>
       <th><%= x.to_s.humanize %></th>
     <% end %>
+    <% @model.reflect_on_all_associations(:has_and_belongs_to_many).each do |x| %>
+      <th><%= x.name.to_s.humanize %></th>
+    <% end %>
   </tr>
 
 <% associations = @model.associations %>
@@ -17,6 +20,11 @@
   <% else %>
   <%= admin.send(x) %>
   <% end %>
+      </td>
+    <% end %>
+    <% @model.reflect_on_all_associations(:has_and_belongs_to_many).each do |x| %>
+      <td>
+        <%= admin.send(x.name.to_s).map(&:to_s).to_sentence %>
       </td>
     <% end %>
     <td><%= admin_link_to 'Show', {:action => "show", :id => admin.id, :model => @model_param} %></td>

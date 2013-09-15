@@ -5,7 +5,7 @@ class AdminController < ApplicationController
   private
   def set_model
     # list models supported here
-    @models = ["defaults", "customizations", "gizmo_type_groups", "recycling_shipments", "till_adjustments", "rosters", "resources", "jobs", "worker_types", "rr_sets", "rr_items", "weekdays"]
+    @models = ["defaults", "customizations", "gizmo_type_groups", "recycling_shipments", "till_adjustments", "rosters", "skeds", "resources", "jobs", "worker_types", "rr_sets", "rr_items", "weekdays"]
     if params[:model]
       @model_param = params[:model]
       @model_name = @model_param.classify
@@ -34,6 +34,30 @@ class AdminController < ApplicationController
 #
   def show
     @admin = @model.find(params[:id])
+  end
+
+  def reorder_associated
+    @admin = @model.find(params[:id])
+    @association = params[:association]
+    @list = @admin.send(@association.to_sym)
+  end
+
+  def move_associated_up
+    reorder_associated
+    @other = @list.select{|x| x.id == params[:other_id].to_i}.first
+    raise unless @other
+    @list.move_higher(@other)
+    @admin.save
+    redirect_to :action => "reorder_associated", :id => @admin.id, :association => @association
+  end
+
+  def move_associated_down
+    reorder_associated
+    @other = @list.select{|x| x.id == params[:other_id].to_i}.first
+    raise unless @other
+    @list.move_lower(@other)
+    @admin.save
+    redirect_to :action => "reorder_associated", :id => @admin.id, :association => @association
   end
 #
   def new
