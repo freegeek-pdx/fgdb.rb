@@ -26,6 +26,10 @@ class Roster < ActiveRecord::Base
     generated_to_date >= d
   end
 
+  def to_s
+    name
+  end
+
   def generated_to_date
     newc = Conditions.new
     newc.apply_conditions({})
