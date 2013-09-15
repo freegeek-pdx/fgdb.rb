@@ -7,6 +7,7 @@ fgdb.rb (1.0.126) UNRELEASED; urgency=low
     - replace gizmo_type_groups management as well
     - remove existing frontends for rr_* tables, I don't think they are
       used or will be long
+    - replace customizations table interface with new admin interface
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 12:46:51 -0700
 

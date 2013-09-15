@@ -5,7 +5,7 @@ class AdminController < ApplicationController
   private
   def set_model
     # list models supported here
-    @models = ["defaults"]
+    @models = ["defaults", "customizations", "gizmo_type_groups", "recycling_shipments", "till_adjustments", "rr_sets", "rr_items"]
     if params[:model]
       @model_param = params[:model]
       @model_name = @model_param.classify
