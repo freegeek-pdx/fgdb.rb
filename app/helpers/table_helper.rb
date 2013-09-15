@@ -1,9 +1,9 @@
 module TableHelper
   protected
-  def make_table(a, html_opts = {}, full_width = true)
+  def make_table(a, html_opts = {}, full_width = true, noptoprow = false)
     trs = a.map_with_index{|x, i|
       subtype = "first"
-      subtype = "all" if i == 0
+      subtype = "all" if i == 0 unless noptoprow
       table_make_tr(subtype, x)
     }
     width = full_width ? {:width => "98%"} : {}

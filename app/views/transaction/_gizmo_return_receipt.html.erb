@@ -20,6 +20,7 @@
       <% if gizmo_return.storecredit_difference_cents > 0 %>
       <tr><td colspan="4">&nbsp;</td></tr>
 
+      <% if gizmo_return.store_credit %>
       <tr>
         <td colspan="2">&nbsp;</td>
         <td align="right" colspan="1">Store Credit:</td>
@@ -28,8 +29,15 @@
       <tr>
         <td colspan="2">&nbsp;</td>
         <td align="right" colspan="1">Store Credit Spent:</td>
-        <td><%= gizmo_return.store_credit.payment_id ? "yes" : "no" %></td>
+        <td><%= gizmo_return.store_credit.spent? ? "yes" : "no" %></td>
       </tr>
+      <% else %>
+      <tr>
+        <td colspan="2">&nbsp;</td>
+        <td align="right" colspan="1"><%= gizmo_return.payment_method.to_s.titleize %> Refund:</td>
+        <td><%= my_number_to_currency(gizmo_return.calculated_subtotal_cents) %></td>
+      </tr>
+      <% end %>
       <% end %>
     </tbody></table>
   <p><%= h gizmo_return.comments %></p>

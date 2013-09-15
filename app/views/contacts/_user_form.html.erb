@@ -48,12 +48,12 @@
       <%= password_field :user, :password_confirmation %>
     </div>
     <% end %>
-
+    <% if  has_required_privileges('/admin_user_accounts') %>
     <div class='form-element'>
       <label for="user_shared">shared login? (only allows read-only and PIN protected actions, with exceptions)</label>
       <%= check_box :user, :shared %>
     </div>
-
+    <% end %>
     <% unless @user and @user.shared %>
     <div class='form-element'>
       <label for="user_cashier_code">PIN</label>

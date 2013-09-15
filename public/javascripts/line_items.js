@@ -186,7 +186,7 @@ systems_invalid = false;
 
 function _add_gizmo_event_from_form()
 {
-  if(systems_invalid || $('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && (!$('covered').disabled) && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
+  if(systems_invalid || $('gizmo_type_id').value == "" || ($('covered') != null && (!$('covered').disabled) && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
   if($('system_id') != null && $('gizmo_count') != null) {
@@ -637,7 +637,7 @@ function alert_for_storecredit(id) {
 }
 
 function donation_compute_totals() {
-  if($("gizmo_events_lines") == null) {
+  if($("gizmo_events_lines") == null || $('payments_lines') == null) {
     // TODO: code that computes invoice payments goes here.
     return;
   }
@@ -784,7 +784,7 @@ function update_gizmo_events_totals() {
 }
 
 function get_donation_totals() {
-  if($("gizmo_events_lines") == null) {
+  if($("gizmo_events_lines") == null || $('payments_lines') == null) {
     return;
   }
   var totals = new Object();

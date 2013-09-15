@@ -32,7 +32,7 @@ class Contact < ActiveRecord::Base
   end
 
   def intern_title
-    [self.volunteer_intern_title.to_s, "Intern"].select{|x| x.length > 0}.join(" ")
+    self.volunteer_intern_title.to_s
   end
 
   def merge_ts_notes

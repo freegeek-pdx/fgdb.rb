@@ -91,6 +91,7 @@ class ContactsController < ApplicationController
     end
     render :update do |page|
       page.hide loading_indicator_id("cashier_loading")
+      page << "is_management = #{(t && u.roles.map(&:name).include?("MANAGEMENT")).to_json};"
       page << (t ? "enable" : "disable") + "_cashierable();"
     end
   end

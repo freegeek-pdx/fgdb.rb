@@ -44,3 +44,8 @@
 
 <p class="timestamp"> - generated <%= Time.now %></p>
 <% end %>
+<% if @defaults.occurred_at_date_type == "daily" %>
+<div class="noprint">
+<%= link_to "Export as IIF", params.merge({:action => "export_income_report"}) %>
+</div>
+<% end %>

@@ -1,7 +1,7 @@
 <div class="noprint">
-<% form_for "", nil, :url => {:action => "show" }, :html => {:method => "get"} do |f| %>
-<%= f.label(:id, "RT Ticket #").sub(/\[id\]/, "id") %>
+<% form_for "", nil, :url => {:action => defined?(action) ? action : "show" }, :html => {:method => "get"} do |f| %>
+<%= f.label(:id, defined?(idlabel) ? idlabel : "RT Ticket #").sub(/\[id\]/, "id") %>
 <%= (f.text_field "id").sub(/\[id\]/, "id") %>
-<%= submit_tag 'Show Work Order', :style => "clear: left" %>
+<%= submit_tag defined?(text) ? text : 'Show Work Order', :style => "clear: left" %>
 <% end %>
 </div>

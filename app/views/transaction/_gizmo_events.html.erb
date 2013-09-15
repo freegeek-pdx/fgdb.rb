@@ -1,11 +1,17 @@
 <% my_cont = params[:controller] %>
 
+<% work_order_mode = false %>
+<% if params[:controller] == "work_orders" %>
+  <% work_order_mode = true %>
+  <% my_cont = "donations" %>
+<% end %>
+
 <% show_system = ["sales", "disbursements", "gizmo_returns"].include?(my_cont) %>
 <% show_contract = my_cont == "recyclings" && contract_enabled %>
 <% show_coveredness = (!["gizmo_returns"].include?(my_cont)) && coveredness_enabled %>
 <% has_unit_price = ["sales", "gizmo_returns"].include?(my_cont) %>
 <% has_fee_cents = my_cont == "donations" %>
-<% hide_description = my_cont != "gizmo_returns" %>
+<% hide_description = my_cont != "gizmo_returns" && !work_order_mode %>
 <% show_qty = my_cont != "gizmo_returns" %>
 <% show_return = my_cont == "gizmo_returns" %>
 
@@ -23,7 +29,9 @@
 
 <table id="gizmo_events_lines">
   <tr><td colspan="20" style="text-align: right;"><a onclick="toggle_description();" title="shows or hides the detailed description field (ctrl-e keybinding)">toggle description</a></td></tr>
+    <% if my_cont == "sales" %>
   <tr><td colspan="20" style="text-align: right;"><a onclick="toggle_discount();" title="shows or hides the individual discount field (ctrl-y keybinding)">toggle discount</a></td></tr>
+  <% end %>
   <tr>
     <th>type</th>
     <th class="<%= description_class %>">detailed desc</th>
@@ -43,7 +51,7 @@
     <% if show_contract %>
       <th>contract</th>
     <% end %>
-    <% if show_coveredness %>
+    <% if show_coveredness && !work_order_mode %>
         <th>covered</th>
     <% end %>
     <% if show_price %>
@@ -102,10 +110,18 @@
          %>
     <% end %>
   <tr id="gizmo_events_form">
+    <% if work_order_mode %>
+    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">
+        <%= options_from_collection_for_select(GizmoType.find_all_by_name("service_fee_tech_support"), "id", "description") %>
+      </select>
+</td>
+    <% else %>
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
-    <td class="<%= description_class %>"><input name="description" id="description" size="10"></td>
+    <% end %>
+    <td class="<%= description_class %>">
+<input name="description" id="description" size="10"></td>
     <% if show_qty %>
     <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="return handle_ge(event);"></td>
     <% end %>
@@ -124,7 +140,7 @@
             <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
           </select></td>
     <% end %>
-    <% if show_coveredness %>
+    <% if show_coveredness && !work_order_mode %>
       <td><select name="covered" id="covered" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();" onkeydown="return handle_ge(event);">
           <option value="nil"></option>
           <option value="true">Yes</option>

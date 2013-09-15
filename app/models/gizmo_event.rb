@@ -248,6 +248,9 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     end
   end
 
+  def total_price=(val)
+  end
+
   def total_price_cents
     return 0 unless unit_price_cents and gizmo_count
     unit_price_cents * gizmo_count

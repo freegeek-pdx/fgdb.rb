@@ -211,7 +211,7 @@ thanks = [
 
     def totals(conditions)
       bulk_id = ContactType.bulk_buyer.id
-      connection.execute(
+      a = connection.execute(
                          "SELECT payments.payment_method_id,
                 sale_types.description AS sale_type,
                 sum(payments.amount_cents) as amount,
@@ -223,7 +223,14 @@ thanks = [
          JOIN sale_types ON sale_types.id = sale_type_id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 1, 2"
-                         )
+                         ).to_a
+      refund_amt_cents = StoreCredit.refunds(conditions)
+      a << {'payment_method_id' => PaymentMethod.find_by_name('store_credit').id, 'sale_type' => 'refunds', 'amount' => '-' + refund_amt_cents['amt_cents'], :count => refund_amt_cents['count'], 'min' => 1<<64, 'max' => 0}
+      refund_other_cents = GizmoReturn.totals(conditions)
+      refund_other_cents.each do |hash|
+        a << hash.merge('amount' => '-' + hash['amount'], 'min' => 1<<64, 'max' => 0,  'sale_type' => 'refunds')
+      end
+      return a
     end
   end
 

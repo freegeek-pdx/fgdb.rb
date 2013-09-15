@@ -1,5 +1,6 @@
 class Conditions < ConditionsBase
   attr_accessor :data_type # hax
+  attr_accessor :d_yuck_flag # tripple HAX
 
   DATES = %w[
       created_at recycled_at disbursed_at received_at
@@ -873,7 +874,11 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
+    if @d_yuck_flag
+      return ["donations.id IN (SELECT DISTINCT donation_id FROM gizmo_events WHERE gizmo_events.gizmo_type_id IN (?))", (@gizmo_type_id)]
+    else
+      return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
+    end
   end
 
   def program_id_conditions(klass)

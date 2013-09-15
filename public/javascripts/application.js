@@ -689,6 +689,14 @@ function enable_cashierable(){
   if($('covered')) {
     $('covered').value = "nil";
   }
+  var management_widget = $('management_widget');
+  if(management_widget) {
+    if(is_management) {
+      management_widget.show();
+    } else {
+      management_widget.hide();
+    }
+  }
 }
 
 function show_contract_notes() {

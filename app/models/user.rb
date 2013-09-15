@@ -32,6 +32,10 @@ class User < ActiveRecord::Base
 
   named_scope :can_login, {:conditions => ["can_login = 't'"]}
 
+  def self.hidden_columns
+    super + [:crypted_password, :salt]
+  end
+
   def can_view_disciplinary_information?
     !! (self.contact and self.contact.worker and self.contact.worker.worker_type_today and self.contact.worker.worker_type_today.name == 'management')
   end

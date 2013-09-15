@@ -1,0 +1,53 @@
+<% if @invoice.id %>
+
+<div class="noprint">
+<%= link_to 'Back', {:action => "index"} %>
+</div>
+<div class="noprint">
+<% if @error || @error = params[:error] %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
+<% if @data %>
+<INPUT type="button" id="print_button" value="Print"
+       onclick="window.print();" >
+<%= render :partial => "tech_support_notes/ts_notes", :locals => {:name => @data["Name"]} %>
+</div>
+
+<%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
+<% end %>
+
+<% else %>
+
+<h2>Creating new invoice for Work Order #<%= @data["ID"] %></h2>
+
+<% @transaction_type = "donation" %>
+<% @gizmo_context = GizmoContext.donation %>
+<% @transaction = @donation = @invoice %>
+
+<% form_for 'donation', :method => "POST", :url => params.merge(:ticket_id => @data["ID"]) do %>
+
+<%= error_messages_for 'invoice' %>
+
+  <% if current_user.shared %>
+  <p>
+    <%= f.label :pin, "PIN" %>
+    <%= f.password_field :pin %>
+  </p>
+  <% end %>
+
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= select_visibility( 'donation', 'contact_type',
+                               :anonymous => render( :partial => 'donations/anonymous' ),
+                               :named => render( :partial => 'donations/contact_search')) %>
+      </div>
+
+<%= render :partial => 'transaction/gizmo_events' %>
+
+
+<%= javascript_tag "#{@gizmos_and_payments_js}; gizmo_type_selected();" %>
+<%= submit_tag "Create Invoice" %>
+
+<% end %>
+
+<% end %>

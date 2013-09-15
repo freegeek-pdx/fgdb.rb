@@ -1,6 +1,0 @@
-  <% for gizmo_type in GizmoType.find(:all).sort_by(&:description) %>
-    <div>
-      <%= check_box_tag "gizmo_type_group[gizmo_type_ids][]", gizmo_type.id, @gizmo_type_group.gizmo_types.include?(gizmo_type) %>
-      <%= gizmo_type.description %>
-    </div>
-  <% end %>

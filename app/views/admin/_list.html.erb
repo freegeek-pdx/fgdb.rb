@@ -1,0 +1,29 @@
+<table class="awesome">
+  <tr>
+    <% @model.visible_columns.each do |x| %>
+      <th><%= x.to_s.humanize %></th>
+    <% end %>
+  </tr>
+
+<% associations = @model.associations %>
+
+<% for admin in @objects %>
+  <tr>
+    <% @model.visible_columns.each do |x| %>
+      <td>
+  <% if associations[x] %>
+    <% myid = admin.send(x); o = myid ? associations[x].find(myid) : nil %>
+    <% if myid %><%= link_to(associations[x].to_s + " " + "#" + myid.to_s, {:action => "show", :id => myid, :model => o.class.table_name}) %><% if ! o.to_s.match(/^#/) %>: <%= o.to_s %><% end %><% else %><%= associations[x].to_s %> NULL<% end %>
+  <% else %>
+  <%= admin.send(x) %>
+  <% end %>
+      </td>
+    <% end %>
+    <td><%= admin_link_to 'Show', {:action => "show", :id => admin.id, :model => @model_param} %></td>
+    <td><%= admin_link_to 'Edit', {:action => "edit", :id => admin.id, :model => @model_param} %></td>
+    <td><%# admin_link_to 'Destroy', {:action => "destroy", :id => admin.id, :model => @model_param}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @objects %>

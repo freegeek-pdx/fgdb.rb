@@ -265,6 +265,7 @@ END;
     t.boolean  "fully_covered"
     t.date     "birthday"
     t.string   "volunteer_intern_title"
+    t.integer  "next_monthly_milestone",                :default => 100
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -1300,6 +1301,7 @@ END;
     t.datetime "updated_at"
     t.text     "notes"
     t.string   "type"
+    t.boolean  "nowalkins",                  :default => false, :null => false
   end
 
   create_table "volunteer_shifts", :force => true do |t|

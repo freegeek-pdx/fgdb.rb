@@ -1,0 +1,7 @@
+<h1>Listing <%= @model_human.pluralize.downcase %></h1>
+
+<%= render :partial => "list" %>
+
+<br />
+
+<%= admin_link_to 'New ' + @model_human.downcase, {:action => "new", :model => @model_param} %>

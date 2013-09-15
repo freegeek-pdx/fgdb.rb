@@ -21,92 +21,176 @@ class ReportsController < ApplicationController
   def _suggested_query(conds, having)
     DB.exec("SELECT count(*), SUM(reported_suggested_fee_cents) AS suggested_fee_cents, SUM(contribution_cents) AS contribution_cents FROM (SELECT donations.id,
 reported_suggested_fee_cents, reported_required_fee_cents, CASE WHEN ((CASE WHEN SUM(payments.amount_cents) IS NULL THEN 0 ELSE SUM(payments.amount_cents) END) - reported_required_fee_cents) > 0 THEN ((CASE WHEN SUM(payments.amount_cents) IS NULL THEN 0 ELSE SUM(payments.amount_cents) END) - reported_required_fee_cents) ELSE 0 END AS contribution_cents, SUM(payments.amount_cents) AS
-payment_cents FROM donations LEFT OUTER JOIN payments ON payments.donation_id =
-donations.id LEFT OUTER JOIN gizmo_events ON gizmo_events.donation_id = donations.id
+payment_cents FROM donations LEFT OUTER JOIN payments ON payments.donation_id = donations.id
 WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjustment = 'f' GROUP BY 1, 2, 3 #{having}) AS r;")
+  end
+
+  private
+  def run_graphic_report(klass, args)
+    report = klass.new
+    report.set_conditions(args)
+    report.generate_report_data
+    return report.data[0]
   end
 
   public
 
   def monthly_reports
     @target = OpenStruct.new
+    @departments = ['production', 'operations', 'public-services']
     if params[:target].nil?
       @target.target = Date.today
     else
+      @mode = mode = params[:dept_id]
       @target.target_year = params[:target][:target_year]
       @target.target_month = params[:target][:target_month]
       @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
 
-      @conditions = Conditions.new
-      @conditions.apply_conditions({})
-      @conditions.sked_enabled = true
-      @conditions.sked_id = Sked.find_by_name_and_category_type("Classes", "Front Desk Checkin").id
-      @conditions.date_enabled = true
-      @conditions.date_date_type = "monthly"
-      @conditions.date_month = @target.target.month
-      @conditions.date_year = @target.target.year
+      if mode == 'production'
+        base_args = {:start_date => @target.target.to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Total Sales Amount By Gizmo Type", "gizmo_type_id_enabled" => "true"}
 
-      _run_vol_sched_report(true)
-      @volskedj = @result["attending"]
 
-      report = DisbursementGizmoCountByTypesTrend.new
-      base_disburse = {:start_date => (@target.target - 1.year).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Disbursement Gizmo Count By Type", "gizmo_type_group_id_enabled" => "true"}
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Systems").id}))
-      report.generate_report_data
-      @disburse_systems = report.data[0]["Hardware Grants"]
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Laptops").id}))
-      report.generate_report_data
-      @disburse_laptops = report.data[0]["Hardware Grants"]
-      report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("Peripherals").id}))
-      report.generate_report_data
-      @disburse_peripherals = report.data[0]["Hardware Grants"]
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @sale_systems = data[:amount].first
 
-      @past_year_labels = report.x_axis
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sale_systems_lastyear = data[:amount].first
 
-      @disburse_table = [["Month", "Laptops", "Systems", "Peripherals"]]
-      @past_year_labels.each_with_index {|x, i|
-        @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
-      }
-      
-      r = ReportsController.new
-      income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
-      @bulk = income[:sales]["real total"]["Bulk sales"][:total] / 100.0
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @sale_laptops = data[:amount].first
 
-      last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
-      @ts = income[:sales]["real total"]["Thrift store"][:total] / 100.0
-      @ts_last_year = last_income[:sales]["real total"]["Thrift store"][:total] / 100.0
+        data = run_graphic_report(TotalSalesAmountByGizmoTypesTrend, base_args.merge({"gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sale_laptops_lastyear = data[:amount].first
 
-      @dd_suggested = income[:donations]["register total"]["suggested"][:total] / 100.0
-      @dd_suggested_count = income[:donations]["register total"]["suggested"][:count]
-      @dd_last_suggested = last_income[:donations]["register total"]["suggested"][:total] / 100.0
-      @dd_last_suggested_count = last_income[:donations]["register total"]["fees"][:count]
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @sales_system_count = data[:count].first
 
-      # TODO: YTD / donations
-      year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
-      last_year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{(@target.target.year - 1)}", "created_at_end_date" => (@target.target - 1.year + 1.month - 1).to_s})
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sales_system_count_lastyear = data[:count].first
 
-      # FIXME: dates from last DOM
-      @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @sales_laptop_count = data[:count].first
+
+        data = run_graphic_report(SalesGizmoCountByTypesTrend, base_args.merge({:report_type => "Sales Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @sales_laptop_count_lastyear = data[:count].first
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @systems_granted = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+  data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @systems_granted_lastyear = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @laptops_granted = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+        data = run_graphic_report(DisbursementGizmoCountByTypesTrend, base_args.merge({:report_type => "Disbursements Gizmo Count By Type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @laptops_granted_lastyear = data.values.map{|x| x.first.to_i}.inject(0){|t, x| t+= x}
+
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id}))
+        @system_price = data.values.first.first.to_f if data.values.first
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("system").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @system_price_lastyear = data.values.first.first.to_f if data.values.first
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id}))
+        @laptop_price = data.values.first.first.to_f if data.values.first
+
+        data = run_graphic_report(AverageUnitPriceByGizmoTypesTrend, base_args.merge({:report_type => "Average unit price by gizmo type", "gizmo_type_id" => GizmoType.find_by_name("laptop").id, :start_date => (@target.target-1.year).to_s, :end_date => (@target.target-1.year).to_s}))
+        @laptop_price_lastyear = data.values.first.first.to_f if data.values.first
+
+
+
+      elsif mode == 'public-services'
+        @conditions = Conditions.new
+        @conditions.apply_conditions({})
+        @conditions.sked_enabled = true
+        @conditions.sked_id = Sked.find_by_name_and_category_type("Classes", "Front Desk Checkin").id
+        @conditions.date_enabled = true
+        @conditions.date_date_type = "monthly"
+        @conditions.date_month = @target.target.month
+        @conditions.date_year = @target.target.year
+
+        _run_vol_sched_report(true)
+        @volskedj = @result["attending"]
+
+        report = DisbursementGizmoCountByTypesTrend.new
+        base_disburse = {:start_date => (@target.target - 1.year).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Disbursement Gizmo Count By Type", "gizmo_type_group_id_enabled" => "true"}
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Systems").id}))
+        report.generate_report_data
+        @disburse_systems = report.data[0]["Hardware Grants"]
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("All Laptops").id}))
+        report.generate_report_data
+        @disburse_laptops = report.data[0]["Hardware Grants"]
+        report.set_conditions(base_disburse.merge({"gizmo_type_group_id" => GizmoTypeGroup.find_by_name("Peripherals").id}))
+        report.generate_report_data
+        @disburse_peripherals = report.data[0]["Hardware Grants"]
+
+        @past_year_labels = report.x_axis
+
+        @disburse_table = [["Month", "Laptops", "Systems", "Peripherals"]]
+        @past_year_labels.each_with_index {|x, i|
+          @disburse_table << [x, @disburse_laptops[i], @disburse_systems[i], @disburse_peripherals[i]]
+        }
+        
+        r = ReportsController.new
+        income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year})
+        @bulk = income[:thrift_store]["real total"]["Bulk sales"][:total] / 100.0
+
+        last_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "monthly", "created_at_month" => @target.target.month, "created_at_year" => @target.target.year - 1})
+        @ts = income[:thrift_store]["real total"]["Retail"][:total] / 100.0
+        @ts_last_year = last_income[:thrift_store]["real total"]["Retail"][:total] / 100.0
+
+        @dd_suggested = income[:donor_desk]["register total"]["gizmo contributions"][:total] / 100.0
+        @dd_suggested_count = income[:donor_desk]["register total"]["gizmo contributions"][:count]
+        @dd_last_suggested = last_income[:donor_desk]["register total"]["gizmo contributions"][:total] / 100.0
+        @dd_last_suggested_count = last_income[:donor_desk]["register total"]["gizmo contributions"][:count]
+
+        # TODO: YTD / donations
+        year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{@target.target_year}", "created_at_end_date" => (@target.target + 1.month - 1).to_s})
+        last_year_income = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => "01/01/#{(@target.target.year - 1)}", "created_at_end_date" => (@target.target - 1.year + 1.month - 1).to_s})
+
+        # FIXME: dates from last DOM
+        @active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
       HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - Default['days_for_discount'].to_f, @target.target).first["vol_count"]
 
-      @last_active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
+        @last_active = DB.exec("SELECT COUNT(*) AS vol_count FROM (SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
       HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AS v", @target.target - 1.year - Default['days_for_discount'].to_f, @target.target - 1.year).first["vol_count"]
 
-      @ts_head = [""]
-      @ts_vol = ["Volunteer Hours"]
-      @ts_staff = ["Staff Hours"]
-      (0..3).to_a.reverse.each do |x|
-        @ts_head << (@target.target - x.month).strftime("%b") + " " + @target.target.year.to_s
-        @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
-        @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+        @ts_head = [""]
+        @ts_vol = ["Volunteer Hours"]
+        @ts_staff = ["Staff Hours"]
+        (0..3).to_a.reverse.each do |x|
+          @ts_head << (@target.target - x.month).strftime("%b") + " " + @target.target.year.to_s
+          @ts_vol << VolunteerTask.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND volunteer_task_type_id IN (SELECT id FROM volunteer_task_types WHERE description ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+          @ts_staff << WorkedShift.sum('duration', :conditions => ["date_performed >= ? AND date_performed <= ? AND job_id IN (SELECT id FROM jobs WHERE name ILIKE 'Tech Support%')", @target.target - x.month, @target.target + 1.month - 1 - x.month]).to_f
+        end
+
+
+      elsif mode == 'operations'
+
+      report = DonationsCountsTrend.new
+      report2 = DonationsGizmoCountByTypesTrend.new
+      base_donations = {:start_date => (@target.target - 2.months).to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      base_donations_lastyear = {:start_date => (@target.target - 1.year - 2.months).to_s, :end_date => (@target.target - 1.year).to_s, :breakdown_type => "Monthly", :report_type => "Report of number of donations"}
+      report.set_conditions(base_donations)
+      report.generate_report_data
+      @donations_thisyear = report.data[0][:count]
+      report2.set_conditions(base_donations.merge(:report_type => "Donations Gizmo Count By Type"))
+      report2.generate_report_data
+        @gizmos_thisyear = report2.data[0][:count]
+      report.set_conditions(base_donations_lastyear)
+      report.generate_report_data
+      @donations_lastyear = report.data[0][:count]
+
       end
 
       @results = "You will see results here."
@@ -207,6 +291,7 @@ GROUP BY 1, 2, 3;").to_a
   def suggested_contributions_report
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
+    @conditions.d_yuck_flag = true
     conds = @conditions.conditions(Donation)
     contributed = "HAVING SUM(payments.amount_cents) > reported_required_fee_cents"
     not_contributed = "HAVING SUM(payments.amount_cents) IS NULL OR SUM(payments.amount_cents) <= reported_required_fee_cents"
@@ -545,8 +630,8 @@ GROUP BY 1, 2, 3;").to_a
     @income_data = {}
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
-    ranges = {:sales => {:min => 1<<64, :max => 0},
-      :donations => {:min => 1<<64, :max => 0}
+    ranges = {:thrift_store => {:min => 1<<64, :max => 0},
+      :donor_desk => {:min => 1<<64, :max => 0}
     }
     Donation.totals(@defaults.conditions(Donation)).each do |summation|
       add_donation_summation_to_data(summation, @income_data, ranges)
@@ -556,7 +641,7 @@ GROUP BY 1, 2, 3;").to_a
     end
 
     @ranges = {}
-    [:sales, :donations].each do |x|
+    [:thrift_store, :donor_desk].each do |x|
       @ranges[x] = "#{ranges[x][:min]}..#{ranges[x][:max]}"
     end
 
@@ -576,6 +661,76 @@ GROUP BY 1, 2, 3;").to_a
     @income_data
   end
 
+  ACCT_SETTINGS = {"pickup_fee_class" => "230 Pickups",
+    "tech_support_fee_class" => "430 Technical Support",
+    "education_fee_class" => "420 Education",
+    "recycling_fee_class" => "210 Receiving",
+    "donor_desk_class" => "700 Fundraising Activities",
+    "retail_class" => "310 Thrift Store",
+    "bulk_sales_class" => "320 Bulk Sales",
+    "online_sales_class" => "330 Online Sales",
+    "gizmo_contribution_account" => "4011 Donor Desk Contributions",
+    "other_contribution_account" => "4016 Other Cash Contiributions",
+    "fee_account" => "5180 Program service sales fees",
+    "misc_revenue_account" => "5490 Misc revenue",
+    "refunds_account" => "8598 Refunds",
+    "cash_transfer_account" => "1041 Safe",
+    "credit_transfer_account" => "1020 Payroll First Tech 4817"}
+
+  def export_income_report
+    my_income_report = income_report
+    transfers = []
+
+    for payment in [["cash", "cash_transfer_account"], ["credit", "credit_transfer_account"]]
+      pt = payment.first
+      transfer_account = ACCT_SETTINGS[payment.last]
+
+      splits = []
+      target_account = ACCT_SETTINGS["fee_account"]
+      generic_class = nil
+      for st in ["Retail", "Bulk sales", "Online sales"]
+        reported = my_income_report[:thrift_store][pt][st][:total] / 100.0
+        target_class = ACCT_SETTINGS[st.downcase.gsub(" ", "_") + "_class"] || raise
+        generic_class ||= target_class
+        splits << [target_account, target_class, reported] #if reported > 0.0
+      end
+      for i in [["Other", "misc_revenue_account"], ["refunds", "refunds_account"]]
+        line_name = i.first
+        this_target_account = ACCT_SETTINGS[i.last]
+        reported = my_income_report[:thrift_store][pt][line_name][:total] / 100.0
+        splits << [this_target_account, generic_class, reported] #if reported > 0.0
+      end
+      total_reported = my_income_report[:thrift_store][pt]["subtotals"][:total] / 100.0
+      splits.insert(0, [transfer_account, nil, total_reported])
+      transfers << splits #if total_reported > 0.0
+
+      splits = []
+      for ft in ["Recycling", "Pickup", "Tech Support", "Education", "Other"]
+        lc = ft.downcase.gsub(" ", "_")
+        acct_class = ACCT_SETTINGS[lc + "_fee_class"]
+        reported = my_income_report[:donor_desk][pt][lc + "_fees"][:total] / 100.0
+        splits << [target_account, acct_class, reported] #if reported > 0.0
+      end
+      generic_class = ACCT_SETTINGS["donor_desk_class"]
+      for i in [["gizmo contributions", "gizmo_contribution_account"], ["other contributions", "other_contribution_account"]]
+        line_name = i.first
+        this_account = ACCT_SETTINGS[i.last]
+        reported = my_income_report[:donor_desk][pt][line_name][:total] / 100.0
+        splits << [this_account, generic_class, reported] #if reported > 0.0
+      end
+      total_reported = my_income_report[:donor_desk][pt]["subtotals"][:total] / 100.0
+      splits.insert(0, [transfer_account, nil, total_reported])
+      transfers << splits #if total_reported > 0.0
+    end
+    @transfers = transfers
+    @date = @defaults.occurred_at_date
+    @TRNSTYPE = "TRANSFER"
+
+    render :partial => "reports/iif.text.erb"
+  end
+
+
+
   protected
 
   def income_report_init
@@ -585,19 +740,19 @@ GROUP BY 1, 2, 3;").to_a
       PaymentMethod.non_register_methods.select{|x| x != PaymentMethod.written_off_invoice}.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
-    @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
+    @rows[:donor_desk] = ['recycling_fees', 'pickup_fees', 'tech_support_fees', 'education_fees', 'other_fees', 'gizmo contributions', 'other contributions', 'subtotals']
     r_name = SaleType.find_by_name("retail")
-    @rows[:sales] = SaleType.all.map(&:description).sort + ['subtotals']
-    if r_name and @rows[:sales].include?(r_name.description)
-      @rows[:sales] = [r_name.description] + (@rows[:sales] - [r_name.description])
+    @rows[:thrift_store] = SaleType.all.map(&:description).sort + ['refunds', 'subtotals']
+    if r_name and @rows[:thrift_store].include?(r_name.description)
+      @rows[:thrift_store] = [r_name.description] + (@rows[:thrift_store] - [r_name.description])
     end
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
-    @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
+    @sections = [:donor_desk, :thrift_store, :grand_totals, :written_off_invoices]
 
     @income_data = {}
-    @income_data[:donations] = {}
-    @income_data[:sales] = {}
+    @income_data[:donor_desk] = {}
+    @income_data[:thrift_store] = {}
     @income_data[:grand_totals] = {}
     @income_data[:written_off_invoices] = {}
 
@@ -620,63 +775,87 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def add_donation_summation_to_data(summation, income_data, ranges)
-    gizmoless_cents, payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['gizmoless_cents'], summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    gizmoless_cents, payment_method_id, amount_cents, tech_support_cents, education_cents, pickup_cents, recycling_cents, other_cents, suggested_cents, count, mn, mx = summation['gizmoless_cents'], summation['payment_method_id'].to_i, summation['amount'].to_i, summation['tech_support_fees'].to_i, summation['education_fees'].to_i, summation['pickup_fees'].to_i, summation['recycling_fees'].to_i, summation['other_fees'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    ranges[:donations][:min] = min(ranges[:donations][:min], mn)
-    ranges[:donations][:max] = max(ranges[:donations][:max], mx)
+    ranges[:donor_desk][:min] = min(ranges[:donor_desk][:min], mn)
+    ranges[:donor_desk][:max] = max(ranges[:donor_desk][:max], mx)
 
     payment_method = PaymentMethod.descriptions[payment_method_id]
     grand_totals = income_data[:grand_totals]
 
-    column = income_data[:donations][payment_method]
+    column = income_data[:donor_desk][payment_method]
 
     # the suggested that's passed into us is really bogus, so we compute that here
     # "suggested" is the wrong terminology, it should really be "donation"
 
     contribution_cents = gizmoless_cents
-    required_cents = min(amount_cents - gizmoless_cents, required_cents)
-    suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
+    tech_support_cents = min(amount_cents - gizmoless_cents, tech_support_cents)
+    pickup_cents = min(amount_cents - tech_support_cents - gizmoless_cents, pickup_cents)
+    recycling_cents = min(amount_cents - tech_support_cents - pickup_cents - gizmoless_cents, recycling_cents)
+    education_cents = min(amount_cents - tech_support_cents - pickup_cents - recycling_cents - gizmoless_cents, education_cents)
+    other_cents = min(amount_cents - tech_support_cents - pickup_cents - recycling_cents - education_cents - gizmoless_cents, other_cents)
+    suggested_cents = max(amount_cents - (tech_support_cents + education_cents + pickup_cents + recycling_cents + other_cents + gizmoless_cents), 0)
 
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:donations]['register total']
+      total_real = income_data[:donor_desk]['register total']
 
-      update_totals(total_real['fees'], required_cents, count)
-      update_totals(total_real['suggested'], suggested_cents, count)
-      update_totals(total_real['other'], gizmoless_cents, count)
+      update_totals(total_real['tech_support_fees'], tech_support_cents, count)
+      update_totals(total_real['education_fees'], education_cents, count)
+      update_totals(total_real['other_fees'], other_cents, count)
+      update_totals(total_real['recycling_fees'], recycling_cents, count)
+      update_totals(total_real['pickup_fees'], pickup_cents, count)
+      update_totals(total_real['gizmo contributions'], suggested_cents, count)
+      update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
 
     if PaymentMethod.is_real_method?(payment_method_id)
-      total_real = income_data[:donations]['real total']
+      total_real = income_data[:donor_desk]['real total']
 
-      update_totals(total_real['fees'], required_cents, count)
-      update_totals(total_real['suggested'], suggested_cents, count)
-      update_totals(total_real['other'], gizmoless_cents, count)
+      update_totals(total_real['tech_support_fees'], tech_support_cents, count)
+      update_totals(total_real['education_fees'], education_cents, count)
+      update_totals(total_real['other_fees'], other_cents, count)
+      update_totals(total_real['recycling_fees'], recycling_cents, count)
+      update_totals(total_real['pickup_fees'], pickup_cents, count)
+      update_totals(total_real['gizmo contributions'], suggested_cents, count)
+      update_totals(total_real['other contributions'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['real total']['total'], amount_cents, count)
     end
 
     if PaymentMethod.is_till_method?(payment_method_id)
-      till_total = income_data[:donations]['till total']
+      till_total = income_data[:donor_desk]['till total']
 
-      update_totals(till_total['fees'], required_cents, count)
-      update_totals(till_total['suggested'], suggested_cents, count)
-      update_totals(till_total['other'], gizmoless_cents, count)
+      update_totals(till_total['tech_support_fees'], tech_support_cents, count)
+      update_totals(till_total['education_fees'], education_cents, count)
+      update_totals(till_total['other_fees'], other_cents, count)
+      update_totals(till_total['recycling_fees'], recycling_cents, count)
+      update_totals(till_total['pickup_fees'], pickup_cents, count)
+      update_totals(till_total['gizmo contributions'], suggested_cents, count)
+      update_totals(till_total['other contributions'], gizmoless_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
 
-    totals = income_data[:donations]['total']
+    totals = income_data[:donor_desk]['total']
 
-    update_totals(totals['fees'], required_cents, count)
-    update_totals(totals['suggested'], suggested_cents, count)
-    update_totals(totals['other'], gizmoless_cents, count)
+    update_totals(totals['tech_support_fees'], tech_support_cents, count)
+    update_totals(totals['education_fees'], education_cents, count)
+    update_totals(totals['other_fees'], other_cents, count)
+    update_totals(totals['recycling_fees'], recycling_cents, count)
+    update_totals(totals['pickup_fees'], pickup_cents, count)
+    update_totals(totals['gizmo contributions'], suggested_cents, count)
+    update_totals(totals['other contributions'], gizmoless_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
-    update_totals(column['fees'], required_cents, count)
-    update_totals(column['suggested'], suggested_cents, count)
-    update_totals(column['other'], gizmoless_cents, count)
+    update_totals(column['tech_support_fees'], tech_support_cents, count)
+    update_totals(column['education_fees'], education_cents, count)
+    update_totals(column['other_fees'], other_cents, count)
+    update_totals(column['recycling_fees'], recycling_cents, count)
+    update_totals(column['pickup_fees'], pickup_cents, count)
+    update_totals(column['gizmo contributions'], suggested_cents, count)
+    update_totals(column['other contributions'], gizmoless_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
@@ -690,34 +869,34 @@ GROUP BY 1, 2, 3;").to_a
     payment_method_id, sale_type, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['sale_type'], summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    ranges[:sales][:min] = [ranges[:sales][:min], mn].min
-    ranges[:sales][:max] = [ranges[:sales][:max], mx].max
+    ranges[:thrift_store][:min] = [ranges[:thrift_store][:min], mn].min
+    ranges[:thrift_store][:max] = [ranges[:thrift_store][:max], mx].max
 
     payment_method = PaymentMethod.descriptions[payment_method_id]
 
     grand_totals = income_data[:grand_totals]
-    column = income_data[:sales][payment_method]
+    column = income_data[:thrift_store][payment_method]
     update_totals(column[sale_type], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_real_method?(payment_method_id)
-      total_real = income_data[:sales]['real total']
+      total_real = income_data[:thrift_store]['real total']
       update_totals(total_real[sale_type], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['real total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:sales]['register total']
+      total_real = income_data[:thrift_store]['register total']
       update_totals(total_real[sale_type], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
-      till_total = income_data[:sales]['till total']
+      till_total = income_data[:thrift_store]['till total']
       update_totals(till_total[sale_type], amount_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
-    totals = income_data[:sales]['total']
+    totals = income_data[:thrift_store]['total']
     update_totals(totals[sale_type], amount_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)

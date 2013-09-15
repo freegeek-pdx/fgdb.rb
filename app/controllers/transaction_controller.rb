@@ -289,6 +289,11 @@ class TransactionController < ApplicationController
         flash[:error] = "This transaction cannot be removed because it includes locked #{list.join(" and ")} values without privileges"
         @successful = false
       end
+# RT #37169
+#      if @transaction.has_returns?
+#        flash[:error] = "This transaction cannot be removed because it has items which been returned in Return #{@transactions.returns.to_sentence}"
+#        @successful = false
+#      end
     end
     @successful = @transaction.destroy if @successful
     render :action => "destroy.rjs"
@@ -410,7 +415,7 @@ class TransactionController < ApplicationController
         fees_ge = @txn.find_lines(:is_fee_line?)
         if fees_ge.length > 0
           data << {"desc" => "Required Fees", "bold" => true}
-          data += @txn.gizmo_events.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_processing_description, "val" => my_number_to_currency(x.gizmo_count * x.unit_price_cents)}}
+          data += fees_ge.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_processing_description, "val" => my_number_to_currency(x.gizmo_count * x.unit_price_cents)}}
           data << {"desc" => "Total Required Fees (NOT tax deductible):", "val" => my_number_to_currency(@txn.calculated_required_fee_cents)}
           data << {"desc" => " "}
         end

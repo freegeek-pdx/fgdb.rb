@@ -4,17 +4,24 @@
   <h1>Monthly Report Metrics</h1>
 <% end %>
 
+Quick links for last month's report by department:<br />
+<% @departments.each do |x| %>
+<%= link_to x.gsub(/-/, " ").humanize, {:dept_id => x, :target => {:target_month => (Date.today - 1.month).month, :target_year => (Date.today - 1.month).year}} %><br />
+<% end %>
+<br />
 <% field_name = "target" %>
 <% obj_name = "target" %>
 <% obj = @target %>
 
-<% form_tag  do  %>
+<% form_tag '', :method => "GET" do  %>
 <%= select_month(@target.target, :field_name => field_name + '_month', :prefix => obj_name) +  select_year(@target.target, :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year) %>
+<%= select_tag 'dept_id', options_for_select(@departments.collect{ |u| [u.gsub(/-/, " ").humanize, u] }, :selected => params[:dept_id]) %>
 <%= submit_tag "Run Monthly Report Metrics" %>
 
 <% end %>
 
 <% if @results %>
+<% if @mode  == 'public-services' %>
 <h2>Public Services:</h2>
 <h3>Education</h3>
 
@@ -55,7 +62,7 @@ Total transactions: <%= @dd_last_suggested_count %><br />
 Suggested donations register total: $<%= @dd_last_suggested %><br />
 <%= @target.target.strftime("%B") %> <%= @target.target.year %><br />
 Total transactions: <%= @dd_suggested_count %> (<%= (100 * @dd_suggested_count/@dd_last_suggested_count).round %>%)<br />
-Suggested donations register total: $<%= @dd_suggested %> (<%= (100 * @dd_suggested/@dd_last_suggested).round %>%)<br />
+Suggested donations register total: <%= number_to_currency @dd_suggested %> (<%= (100 * @dd_suggested/@dd_last_suggested).round %>%)<br />
 
 TODO
 
@@ -65,17 +72,59 @@ TODO
 
 <h3>Bulk Sales</h3>
 
-Income total $<%= @bulk %>
+Income total <%= number_to_currency @bulk %>
+
+<% elsif @mode  == 'production' %>
 
 <h2>Production:</h2>
 TODO
 <h3>Laptop</h3>
+<% thismonth = @target.target.strftime("%B") + " " + @target.target.year.to_s %>
+<% lastyear = @target.target.strftime("%B") + " " + (@target.target.year-1).to_s %>
+
+<%= make_table([["Total laptop sales for #{thismonth}", number_to_currency(@sale_laptops)],
+["Total laptop sales for #{lastyear}", number_to_currency(@sale_laptops_lastyear)],
+["Amount of laptops sold in #{thismonth}", number_with_delimiter(@sales_laptop_count)],
+["Amount of laptops sold in #{lastyear}", number_with_delimiter(@sales_laptop_count_lastyear)],
+["Amount of laptops granted in #{thismonth}", number_with_delimiter(@laptops_granted)],
+["Amount of laptops granted in #{lastyear}", number_with_delimiter(@laptops_granted_lastyear)],
+["Average price per laptop for #{thismonth}", number_to_currency(@laptop_price)],
+["Average price per laptop for #{lastyear}", number_to_currency(@laptop_price_lastyear)]
+], {}, true, true    ) %>
+
 <h3>Desktop</h3>
-<h3>Phone</h3>
+
+<%= make_table([["Total desktop sales for #{thismonth}", number_to_currency(@sale_systems)],
+["Total desktop sales for #{lastyear}", number_to_currency(@sale_systems_lastyear)],
+["Amount of desktops sold in #{thismonth}", number_with_delimiter(@sales_system_count)],
+["Amount of desktops sold in #{lastyear}", number_with_delimiter(@sales_system_count_lastyear)],
+["Amount of desktops granted in #{thismonth}", number_with_delimiter(@systems_granted)],
+["Amount of desktops granted in #{lastyear}", number_with_delimiter(@systems_granted_lastyear)],
+["Average price per desktop for #{thismonth}", number_to_currency(@system_price)],
+["Average price per desktop for #{lastyear}", number_to_currency(@system_price_lastyear)]
+], {}, true, true    ) %>
+
+<h3>Mobile Devices</h3>
 <h3>A/V</h3>
 <h3>Mac</h3>
 
+<% elsif @mode  == 'operations' %>
+
 <h2>Operations:</h2>
-TODO
 <h3>Receiving</h3>
+
+Donations in numbers:<br />
+<% one= @donations_thisyear %>
+<% two= @donations_lastyear %>
+<% d = @target.target
+t=[d - 2.months, d - 1.months, d]
+a = [["Month", "Donor Contacts (#{(t.first - 1.year).year.to_s} numbers)", "Gizmo Count"]]
+t.each do |x|
+   a << [x.strftime("%B") + " " + x.year.to_s, number_with_delimiter ( one.shift ) + " (" + number_with_delimiter ( two.shift ) + ")", number_with_delimiter ( @gizmos_thisyear.shift )]
+end %>
+
+<%= make_table(a) %>
+
+<% end %>
+
 <% end %>

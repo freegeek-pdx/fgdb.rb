@@ -1,0 +1,10 @@
+!TRNS	TRNSTYPE	DATE	ACCNT	CLASS	AMOUNT
+!SPL	SPLID	DATE	ACCNT	CLASS	AMOUNT
+!ENDTRNS
+<% @transfers.each do |transfer| -%>
+TRNS	<%= @TRNSTYPE %>	<%= @date %>	<%= transfer.first.first %>		<%= transfer.first.last %>
+<% transfer.shift; transfer.each_with_index do |split, i| -%>
+SPL	<%= i + 1 %>	<%= @date %>	<%= split.first %>	<%= split[1] %>	<%= -1 * split.last %>
+<%- end -%>
+ENDTRNS
+<%- end %>

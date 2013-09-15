@@ -43,6 +43,7 @@ module SidebarHelper
 #    "library" => "library",
     "spec_sheets" => "build",
     "gizmo_returns" => "sales",
+      "admin" => "admin",
     "till_adjustments" => "bean counters",
     "worked_shifts" => "staff",
     "points_trades" => "hours",
@@ -144,6 +145,7 @@ module SidebarHelper
     sidebar_hash["data sec"]["disktest runs"] = {:controller => "disktest_runs"}
     sidebar_hash["data sec"]["disktest batches"] = {:controller => "disktest_batches"}
     # done
+    sidebar_hash["admin"]["config"] = {:controller => "admin", :model => nil}
     sidebar_hash["admin"]["logs"] = {:controller => "logs"}
     sidebar_hash["admin"]["deleted records"] = {:controller => "logs", :action => "find_deleted"}
     sidebar_hash["feedback"] = "http://technocrats.freegeek.org/cgi-bin/technocrats.pl?_submitted_new_$_=1&mode=new_technocrats&infrastructure=fgdb.rb/SPECIFICALLY?"
