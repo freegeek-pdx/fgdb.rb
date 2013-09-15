@@ -19,6 +19,13 @@
   <% end %></td>
   </tr>
 <% end %>
+<% @model.reflect_on_all_associations(:has_and_belongs_to_many).each do |x| %>
+  <tr><th><%= x.name.to_s.humanize %></th>
+    <td>
+      <%= @admin.send(x.name.to_s).map(&:to_s).to_sentence %>
+    </td>
+  </tr>
+<% end %>
 </table>
 
 <% other = (@model.reflect_on_all_associations(:has_many) + @model.reflect_on_all_associations(:has_one)).map{|x| x.name} %>
