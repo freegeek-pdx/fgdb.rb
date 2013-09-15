@@ -72,9 +72,25 @@ class AdminController < ApplicationController
   end
 #
   def create
+    gimme_onesec = {}
+
+    for x in @model.reflect_on_all_associations(:has_and_belongs_to_many)
+      field = (x.name.to_s.singularize + "_ids").to_sym
+      if params[@model_access] && params[@model_access][field]
+        gimme_onesec[field] = params[@model_access].delete(field)
+      end
+    end
+
     @admin = @model.new(params[@model_access])
+
 #
     if @admin.save
+      if gimme_onesec.length > 0
+        gimme_onesec.each do |k, v|
+          @admin.send((k.to_s + "=").to_sym, v)
+        end
+        @admin.save
+      end
       flash[:notice] = "#{@model_name} was successfully created."
       redirect_to({:action => "show", :id => @admin.id})
     else
