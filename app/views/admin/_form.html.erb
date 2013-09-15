@@ -24,7 +24,7 @@
     <% elsif mytype == "boolean" %>
       <%= f.select x, options_for_select([["", ""], ["Yes", "true"], ["No", "false"]], f.object.send(x.to_s.to_sym).to_s) %>
     <% elsif mytype == "time" %>
-      <%= f.time_select x %>
+      <%= f.time_select x, :include_blank => true %>
     <% elsif mytype == "date" %>
       <%= calendar_box f.object_name, x.to_sym %>
     <% else %>

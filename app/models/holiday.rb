@@ -5,6 +5,8 @@ class Holiday < ActiveRecord::Base
   validates_presence_of :end_time, :unless => :is_all_day
   validates_presence_of :holiday_date
 
+  default_scope :order => 'holiday_date DESC'
+
   def Holiday.is_holiday?(day)
     !! Holiday.find(:first, :conditions => ["holiday_date = ? AND is_all_day = 't'", day])
   end
