@@ -1,4 +1,4 @@
-<h1>New admin</h1>
+<h1>New <%= @model_human.downcase %></h1>
 
 <% admin_form_for(@admin, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
