@@ -228,6 +228,10 @@ class ActiveRecord::Base
     columns.map{|x| x.name.to_sym}
   end
 
+  def self.per_page
+    20
+  end
+
         def self.hidden_columns
           [:lock_version]
         end

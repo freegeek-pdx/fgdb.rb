@@ -1,9 +1,23 @@
 <% eval("@" + f.object_name + " = @admin") %>
 <table class="awesome">
+<% associations = @model.associations %>
+
 <% @admin.class.visible_columns.each do |x| %>
-  <tr><th><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</th>
+  <tr><th>LABEL <%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</th>
     <td>
   <% if @admin.class.editable_columns.include?(x) %>
+  <% if associations[x] %>
+    <% if associations[x] == Contact %>
+        <%= contact_field("@" + f.object_name, "contact",
+                    :locals => {:options => {
+                        :object_name => f.object_name,
+                        :field_name => x.to_s
+                      }
+                    }) %>
+    <% else %>
+    <%= f.select x, options_for_select(associations[x].find(:all).map{|y| [y.to_s.match(/^#/) ? y.class.to_s + " #" + y.id.to_s : y.to_s, y.id]}, f.object.send(x.to_s.to_sym)) %>
+    <% end %>
+  <% else %>
     <% if mytype == "text" %>
       <%= f.text_area x %>
     <% elsif mytype == "boolean" %>
@@ -15,10 +29,15 @@
     <% else %>
     <%= f.text_field x %>
     <% end %>
+  <% end %>
   <% else %>
-    <%= @admin.send(x) %>
+  <% if associations[x] %>
+    <% myid = @admin.send(x); o = myid ? associations[x].find(myid) : nil %>
+    <% if myid %><%= link_to(associations[x].to_s + " " + "#" + myid.to_s, {:action => "show", :id => myid, :model => o.class.table_name}) %><% if ! o.to_s.match(/^#/) %>: <%= o.to_s %><% end %><% else %><%= associations[x].to_s %> NULL<% end %><br />
+  <% else %>
+  <%= @admin.send(x) %><br />
+  <% end %>
   <% end %>
   </td></tr>
 <% end %>
 </table>
-

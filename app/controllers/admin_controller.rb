@@ -12,7 +12,7 @@ class AdminController < ApplicationController
       @model_param = params[:model]
       @model_name = @model_param.classify
       @model_human = @model_param.humanize.singularize
-      @model_access = @model_name.downcase.underscore.to_sym
+      @model_access = @model_param.singularize.to_sym
       @model = @model_name.constantize
     end
   end
@@ -28,7 +28,7 @@ class AdminController < ApplicationController
 #       etc etc etc all defined the rails way (default_scope how?)
 
   def list
-    @objects = @model.find(:all)
+    @objects = @model.paginate :per_page => @model.per_page, :page => params[:page]
   end
 
 # NOTE: could even set future search conditions for the index page,
