@@ -8,7 +8,7 @@
 
 <% other = (@model.reflect_on_all_associations(:has_many) + @model.reflect_on_all_associations(:has_one)).map{|x| x.name} %>
 <% if other.length > 0 %>
-Not included here: <%= other.map{|x| x.to_s.humanize}.to_sentence %><br >
+Not shown here: <%= other.map{|x| x.to_s.humanize}.to_sentence %><br >
 <% end %>
 
   <p>

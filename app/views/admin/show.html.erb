@@ -6,19 +6,24 @@
 
 <% associations = @model.associations %>
 
+<table class="awesome">
 <% @admin.class.visible_columns.each do |x| %>
-  <b><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>): </b>
+  <tr>
+  <th><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</th>
+  <td>
   <% if associations[x] %>
     <% myid = @admin.send(x); o = myid ? associations[x].find(myid) : nil %>
     <% if myid %><%= link_to(associations[x].to_s + " " + "#" + myid.to_s, {:action => "show", :id => myid, :model => o.class.table_name}) %><% if ! o.to_s.match(/^#/) %>: <%= o.to_s %><% end %><% else %><%= associations[x].to_s %> NULL<% end %><br />
   <% else %>
   <%= @admin.send(x) %><br />
-  <% end %>
+  <% end %></td>
+  </tr>
 <% end %>
+</table>
 
 <% other = (@model.reflect_on_all_associations(:has_many) + @model.reflect_on_all_associations(:has_one)).map{|x| x.name} %>
 <% if other.length > 0 %>
-Not included here: <%= other.to_sentence %><br >
+Not shown here: <%= other.to_sentence %><br >
 <% end %>
 
 <%= admin_link_to 'Edit', {:action => "edit", :id => @admin.id} %> |

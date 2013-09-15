@@ -1,13 +1,24 @@
+<% eval("@" + f.object_name + " = @admin") %>
+<table class="awesome">
 <% @admin.class.visible_columns.each do |x| %>
-  <b><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</b>
+  <tr><th><%= x.to_s.humanize %> (<%= mytype = get_column_type(x) %>):</th>
+    <td>
   <% if @admin.class.editable_columns.include?(x) %>
     <% if mytype == "text" %>
-    <%= f.text_area x %>
+      <%= f.text_area x %>
+    <% elsif mytype == "boolean" %>
+      <%= f.check_box x %>
+    <% elsif mytype == "time" %>
+      <%= f.time_select x %>
+    <% elsif mytype == "date" %>
+      <%= calendar_box f.object_name, x.to_sym %>
     <% else %>
     <%= f.text_field x %>
     <% end %>
   <% else %>
     <%= @admin.send(x) %>
-  <% end %><br />
+  <% end %>
+  </td></tr>
 <% end %>
+</table>
 
