@@ -7,11 +7,11 @@ export GZIP="--rsyncable"
 /usr/sbin/logrotate -f $backup_dir/database_logrotate.conf
 
 echo "$(date) hourly fgdb dump started" >> $log
-su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb_production | nice gzip > $sql_dump"
+su - postgres -c "nice pg_dump --use-set-session-authorization -C fgdb_production | nice gzip > $sql_dump"
 echo "$(date) hourly fgdb dump ended" >> $log
 
 echo "$(date) hourly fgdb rsync started" >> $log
 su - postgres -c "nice /usr/bin/rsync -WHqzae \
   'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 4096\
-  --delete-excluded $backup_dir 'postgres@tulip:/usr/local/zhora/'"
+  --delete-excluded $backup_dir 'postgres@tulip:/usr/local/hodge/'"
 echo "$(date) hourly fgdb rsync ended" >> $log
