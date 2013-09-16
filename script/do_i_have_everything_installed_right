@@ -118,7 +118,7 @@ check_for_postgres(){
 }
 
 test_my_rails_version(){
-    check_a_version 2.3.5
+    check_a_version 2.3.14
 }
 
 test_find_thin(){

@@ -1,5 +1,6 @@
 fgdb.rb (1.0.126) UNRELEASED; urgency=low
 
+  [ Ryan Niebur ]
   * MURDER the store pricing functionality ... it has been BURNED with
     LOTS and LOTS of FIIIIIRE!!! (Closes: #37077)
   * Replace recycling shipments and till adjustments with the new
@@ -12,38 +13,9 @@ fgdb.rb (1.0.126) UNRELEASED; urgency=low
     - replace roster and skeds administration too
   * Reenable crash reports, the last part of upgrading to wheezy
     Rails/Ruby (Closes: #35103)
+  * Developed against Rails 2.3.14 from Debian Wheezy, now
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 13:07:21 -0700
-
-fgdb.rb (1.0.125) released; urgency=low
-
-  * Add generic of rpeating dots (Closes: #37110)
-  * Rename stuff on the income report to match what it should actually
-    be called, and break out fees into 5 different types at the donor
-    desk
-  * further implementation of monthly reports, for production and
-    operations departments. also separated the page to only generate
-    1 department at a time, with quick links
-  * Fixed excluded logic in new privileges system, this stuff may need
-    some more work.. (Closes: #37253)
-  * add initial code for a management interface to fgdb.rb, generating
-    settings pages automagically for everything
-  * Do not hardcode the word intern in volunteer intern titles (Closes:
-    #37259)
-  * Add Export as IIF option to the income report when viewing a daily
-    report (Closes: #36810)
-  * update the name on the income report for gizmo related contributions
-  * restrict shared user checkbox to db admins, hoping that will
-    eliminate some confusion (Closes: #37292)
-  * Complete implementation of refunds (Closes: #36976)
-  * Completed implementation of work order invoices (Closes: #37103)
-  * Implement administration interface in fgdb.rb, which allows to
-    directly view and edit some tables within the model interface (ones
-    with simple logic that can be entirely in the model, like
-    validations, foreign keys, etc -- no controller or view needed)
-    (Closes: #37082)
-
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Sep 2013 09:30:14 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:02:41 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
