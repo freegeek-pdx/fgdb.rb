@@ -28,3 +28,5 @@
 /script/rt
 /mytagpending
 /config/rt_metadata.txt
+/script/update-devel-data/scp_key
+/script/update-devel-data/scp_key.pub
