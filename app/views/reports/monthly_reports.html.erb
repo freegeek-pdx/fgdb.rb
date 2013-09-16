@@ -120,7 +120,7 @@ Donations in numbers:<br />
 t=[d - 2.months, d - 1.months, d]
 a = [["Month", "Donor Contacts (#{(t.first - 1.year).year.to_s} numbers)", "Gizmo Count"]]
 t.each do |x|
-   a << [x.strftime("%B") + " " + x.year.to_s, number_with_delimiter ( one.shift ) + " (" + number_with_delimiter ( two.shift ) + ")", number_with_delimiter ( @gizmos_thisyear.shift )]
+   a << [x.strftime("%B") + " " + x.year.to_s, number_with_delimiter( one.shift ) + " (" + number_with_delimiter( two.shift ) + ")", number_with_delimiter( @gizmos_thisyear.shift )]
 end %>
 
 <%= make_table(a) %>

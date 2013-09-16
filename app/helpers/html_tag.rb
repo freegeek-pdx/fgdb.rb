@@ -10,7 +10,7 @@ class HtmlTag
 
   def to_s
     str = ""
-    str << "<#{tag}#{attrs.map{|name, val| " #{name}=\"#{val}\""}}>"
+    str << "<#{tag}#{attrs.map{|name, val| " #{name}=\"#{val}\""}.join("")}>"
     str << children.map{|x| x.to_s}.join("\n")
     str << content.to_s
     str << "</#{tag}>"

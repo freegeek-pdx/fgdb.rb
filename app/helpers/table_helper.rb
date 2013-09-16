@@ -28,6 +28,6 @@ module TableHelper
       href = url_for(value[1])
       return HtmlTag.new(type, {}, [HtmlTag.new(value[0].to_s, {:href => href}, [], value[2].to_s)])
     end
-    HtmlTag.new(type, {}, [], value)
+    HtmlTag.new(type, {}, [], value.to_s)
   end
 end
