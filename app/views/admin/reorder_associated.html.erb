@@ -1,0 +1,21 @@
+<h2>Reorder <%= params[:association] %> for <%= @model_human.downcase %> #<%= @admin.id %></h2>
+<table>
+<% @list.each do |x| %>
+<tr>
+<th>
+<%= x.to_s %>
+</th>
+<td>
+<% unless @list.first?(x) %>
+<%= link_to "Move up", {:action => "move_associated_up", :id => @admin.id, :other_id => x.id, :association => @association} %>
+<% end %>
+</td>
+<td>
+<% unless @list.last?(x) %>
+<%= link_to "Move down", {:action => "move_associated_down", :id => @admin.id, :other_id => x.id, :association => @association} %>
+<% end %>
+</td>
+</tr>
+
+<% end %>
+</table>

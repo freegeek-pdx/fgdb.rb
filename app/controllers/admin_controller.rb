@@ -1,11 +1,14 @@
 class AdminController < ApplicationController
   layout :with_sidebar
 
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+  :redirect_to => { :action => :list }
+
   before_filter :set_model
   private
   def set_model
     # list models supported here
-    @models = ["defaults", "customizations", "gizmo_type_groups", "recycling_shipments", "till_adjustments", "rr_sets", "rr_items"]
+    @models = ["defaults", "customizations", "gizmo_type_groups", "recycling_shipments", "till_adjustments", "rosters", "skeds", "resources", "jobs", "worker_types", "rr_sets", "rr_items", "weekdays"]
     if params[:model]
       @model_param = params[:model]
       @model_name = @model_param.classify
@@ -35,6 +38,30 @@ class AdminController < ApplicationController
   def show
     @admin = @model.find(params[:id])
   end
+
+  def reorder_associated
+    @admin = @model.find(params[:id])
+    @association = params[:association]
+    @list = @admin.send(@association.to_sym)
+  end
+
+  def move_associated_up
+    reorder_associated
+    @other = @list.select{|x| x.id == params[:other_id].to_i}.first
+    raise unless @other
+    @list.move_higher(@other)
+    @admin.save
+    redirect_to :action => "reorder_associated", :id => @admin.id, :association => @association
+  end
+
+  def move_associated_down
+    reorder_associated
+    @other = @list.select{|x| x.id == params[:other_id].to_i}.first
+    raise unless @other
+    @list.move_lower(@other)
+    @admin.save
+    redirect_to :action => "reorder_associated", :id => @admin.id, :association => @association
+  end
 #
   def new
     @admin = @model.new
@@ -45,9 +72,25 @@ class AdminController < ApplicationController
   end
 #
   def create
+    gimme_onesec = {}
+
+    for x in @model.reflect_on_all_associations(:has_and_belongs_to_many)
+      field = (x.name.to_s.singularize + "_ids").to_sym
+      if params[@model_access] && params[@model_access][field]
+        gimme_onesec[field] = params[@model_access].delete(field)
+      end
+    end
+
     @admin = @model.new(params[@model_access])
+
 #
     if @admin.save
+      if gimme_onesec.length > 0
+        gimme_onesec.each do |k, v|
+          @admin.send((k.to_s + "=").to_sym, v)
+        end
+        @admin.save
+      end
       flash[:notice] = "#{@model_name} was successfully created."
       redirect_to({:action => "show", :id => @admin.id})
     else

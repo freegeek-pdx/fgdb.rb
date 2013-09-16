@@ -44,11 +44,15 @@
 <% @model.reflect_on_all_associations(:has_and_belongs_to_many).each do |x| %>
   <tr><th><%= x.name.to_s.humanize %></th>
     <td>
+      <%= hidden_field_tag "#{@model_access}[#{x.name.to_s.singularize}_ids][]", "" %>
       <% x.name.to_s.classify.constantize.find(:all).each do |q| %>
       <div>
         <%= check_box_tag "#{@model_access}[#{x.name.to_s.singularize}_ids][]", q.id, @admin.send(x.name).include?(q) %>
         <%= q.to_s %>
       </div>
+      <% end %>
+      <% if @admin.id && x.options[:order] %>
+      <%= link_to "Change sorting order", {:action => "reorder_associated", :association => x.name.to_s, :id => @admin.id}, :target => '_blank' %>
       <% end %>
     </td>
   </tr>
