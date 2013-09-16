@@ -1,0 +1,3 @@
+module ResourcesVolunteerDefaultEventsHelper
+
+end
