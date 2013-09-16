@@ -90,7 +90,7 @@ class TrendReport
   end
 
   def gnuplot_stuff(tempfile, graph_n)
-    Gnuplot.open do |gp|
+    Gnuplot.open(false) do |gp|
       plot = Gnuplot::Plot.new( gp ) do |plot|
         plot.set "title", self.graph_titles[graph_n]
         plot.set "terminal", "gif"
