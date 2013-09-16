@@ -8,10 +8,10 @@ class TechSupportNote < ActiveRecord::Base
   validates_presence_of :notes
 
   def self.contacts_with_notes(name)
-    Contact.search(name, {:limit => 25}).select{|x| x.tech_support_note}
+    Contact.search(name, {:limit => 25, :include => [:tech_support_note]}).select{|x| x.tech_support_note}
   end
 
   def self.contacts_without_notes(name)
-    Contact.search(name, {:limit => 25}).select{|x| !x.tech_support_note}
+    Contact.search(name, {:limit => 25, :include => [:tech_support_note]}).select{|x| !x.tech_support_note}
   end
 end
