@@ -13,5 +13,5 @@ echo "$(date) hourly fgdb dump ended" >> $log
 echo "$(date) hourly fgdb rsync started" >> $log
 su - postgres -c "nice /usr/bin/rsync -WHqzae \
   'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 4096\
-  --delete-excluded $backup_dir 'postgres@tulip:/usr/local/hodge/'"
+  --exclude lost+found --delete-excluded $backup_dir 'postgres@tulip:/usr/local/hodge/'"
 echo "$(date) hourly fgdb rsync ended" >> $log
