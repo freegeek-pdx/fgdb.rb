@@ -6,6 +6,7 @@ class RemovePricingTables < ActiveRecord::Migration
     drop_table :pricing_types
     drop_table :pricing_values
     drop_table :pricing_values_system_pricings
+    drop_table :pricing_components_pricing_expressions
   end
 
   def self.down
