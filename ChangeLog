@@ -14,6 +14,7 @@ fgdb.rb (1.0.126) released; urgency=low
   * Reenable crash reports, the last part of upgrading to wheezy
     Rails/Ruby (Closes: #35103)
   * Developed against Rails 2.3.14 from Debian Wheezy, now
+  * fix monthly reporting date logic (Closes: #37543)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:42:05 -0700
 

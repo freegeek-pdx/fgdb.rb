@@ -44,7 +44,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
       @mode = mode = params[:dept_id]
       @target.target_year = params[:target][:target_year]
       @target.target_month = params[:target][:target_month]
-      @target.target = Date.parse("#{@target.target_month}/01/#{@target.target_year}")
+      @target.target = Date.parse("01/#{@target.target_month}/#{@target.target_year}")
 
       if mode == 'production'
         base_args = {:start_date => @target.target.to_s, :end_date => @target.target.to_s, :breakdown_type => "Monthly", :report_type => "Total Sales Amount By Gizmo Type", "gizmo_type_id_enabled" => "true"}
