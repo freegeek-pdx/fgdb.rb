@@ -1,5 +1,9 @@
 # HEY, LOOK HERE!!!
 # NEVER, EVER, EVER CHANGE THIS FILE.
+
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 # CREATE A environment.local.rb FILE INSTEAD
 
 if File.exists?(__FILE__.sub(/\.rb$/, ".local.rb"))
