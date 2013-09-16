@@ -1,4 +1,4 @@
-fgdb.rb (1.0.126) UNRELEASED; urgency=low
+fgdb.rb (1.0.126) released; urgency=low
 
   [ Ryan Niebur ]
   * MURDER the store pricing functionality ... it has been BURNED with
@@ -15,7 +15,7 @@ fgdb.rb (1.0.126) UNRELEASED; urgency=low
     Rails/Ruby (Closes: #35103)
   * Developed against Rails 2.3.14 from Debian Wheezy, now
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:02:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:42:05 -0700
 
 fgdb.rb (1.0.124) released; urgency=low
 
