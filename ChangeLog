@@ -10,6 +10,8 @@ fgdb.rb (1.0.126) UNRELEASED; urgency=low
     - replace customizations table interface with new admin interface,
       as well as resources, jobs, worker types, and weekdays
     - replace roster and skeds administration too
+  * Reenable crash reports, the last part of upgrading to wheezy
+    Rails/Ruby (Closes: #35103)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 13:07:21 -0700
 

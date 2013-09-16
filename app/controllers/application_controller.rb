@@ -266,11 +266,11 @@ class ApplicationController < ActionController::Base
     return 60 * (mins + (hours * 60)) * sign # secs
   end
 
-#  rescue_from 'Exception', :with => :process_exception
+  rescue_from 'Exception', :with => :process_exception
 
-#  def rescue_as_normal
-#    return false
-#  end
+  def rescue_as_normal
+    return false
+  end
 
   def do_volskedj_generate(cname)
     gconditions = Conditions.new
@@ -351,31 +351,31 @@ class ApplicationController < ActionController::Base
     redirect_to :controller => cname, :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
   end
 
-#  def process_exception(exception)
-#    authorize
-#    set_cashier
-#    if rescue_as_normal
-#      ret = rescue_action(exception)
-#    else
-#      ret = rescue_action_locally(exception)
-#    end
-#    if request and request.xhr?
-#      response.content_type = Mime::JS
-#    end
-#    return ret
-#  end
-#
-#  def rescues_path(thing)
-#    if rescue_as_normal
-#      return super(thing)
-#    elsif request and request.xhr?
-#      return "app/views/sidebar_links/error.rjs"
-#    elsif thing == "layout"
-#      return "app/views/layouts/application.html.erb"
-#    else
-#      return "app/views/sidebar_links/error.html.erb"
-#    end
-#  end
+  def process_exception(exception)
+    authorize
+    set_cashier
+    if rescue_as_normal
+      ret = rescue_action(exception)
+    else
+      ret = rescue_action_locally(exception)
+    end
+    if request and request.xhr?
+      response.content_type = Mime::JS
+    end
+    return ret
+  end
+
+  def rescues_path(thing)
+    if rescue_as_normal
+      return super(thing)
+    elsif request and request.xhr?
+      return "app/views/sidebar_links/error.rjs"
+    elsif thing == "layout"
+      return "app/views/layouts/application.html.erb"
+    else
+      return "app/views/sidebar_links/error.html.erb"
+    end
+  end
 
   before_filter :set_correct_server_port
   def set_correct_server_port

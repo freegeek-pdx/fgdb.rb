@@ -1,4 +1,4 @@
-<% if @transaction.methods.include?('storecredits') %>
+<% if @transaction.methods.include?(:storecredits) %>
   <% for credit in @transaction.storecredits.select{|x| !x.spent?} %>
     <fieldset style="border: 1px solid;" class="noprint">
       <h3>Store Credit Hash #<%= StoreChecksum.new_from_result(credit.id).checksum %></h3>
