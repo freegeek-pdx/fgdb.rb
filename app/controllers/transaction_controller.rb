@@ -47,6 +47,13 @@ class TransactionController < ApplicationController
   public
 
   def get_system_pricing
+    render :update do |page|
+      page << "system_pricing_cache[#{params[:system_id].to_json}] = '';"
+      page << "system_pricing_price_cache[#{params[:system_id].to_json}] = ''";
+      page << "system_pricing_type_cache[#{params[:system_id].to_json}] = ''";
+      page << "ge_done();"
+    end
+    return
     s = nil
     if params[:system_id].to_s == params[:system_id].to_i.to_s
       s = System.find_by_id(params[:system_id])
