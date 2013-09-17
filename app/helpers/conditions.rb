@@ -1066,12 +1066,12 @@ class Conditions < ConditionsBase
         v = "volunteering #{@volunteer_hours_minimum} hours in last #{@volunteer_hours_days} days"
       elsif me == 'volunteered_non_court_hours_in_days'
         v = "volunteering #{@volunteer_hours_minimum} non-court hours in last #{@volunteer_hours_days} days"
-      elsif meo == 'contact' or meo == 'worker' or meo == 'contact_type' or !mea.include?(me) or meo.match(/_id/)
+      elsif meo == 'contact' or meo == 'worker' or meo == 'contact_type' or !mea.include?(me.to_sym) or meo.match(/_id/)
         ome = me.dup
         me += "_id" unless me.match(/_id/)
         ome = me unless ome == 'contact_type' # FIXME: this is ugly
         meo = meo.sub(/_id/, "")
-        if !mea.include?(ome)
+        if !mea.include?(ome.to_sym)
           v = ""
         else
           v = [self.send(ome)].flatten.map{|it|
