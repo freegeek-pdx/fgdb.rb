@@ -669,13 +669,13 @@ GROUP BY 1, 2, 3;").to_a
     "retail_class" => "310 Thrift Store",
     "bulk_sales_class" => "320 Bulk Sales",
     "online_sales_class" => "330 Online Sales",
-    "gizmo_contribution_account" => "4011 Donor Desk Contributions",
-    "other_contribution_account" => "4016 Other Cash Contiributions",
-    "fee_account" => "5180 Program service sales fees",
-    "misc_revenue_account" => "5490 Misc revenue",
-    "refunds_account" => "8598 Refunds",
-    "cash_transfer_account" => "1041 Safe",
-    "credit_transfer_account" => "1020 Payroll First Tech 4817"}
+    "gizmo_contribution_account" => "Donor Desk Contributions",
+    "other_contribution_account" => "Other Cash Contributions",
+    "fee_account" => "Program service sales fees",
+    "misc_revenue_account" => "Misc revenue",
+    "refunds_account" => "Refunds",
+    "cash_transfer_account" => "Safe",
+    "credit_transfer_account" => "Payroll First Tech 4817"}
 
   def export_income_report
     my_income_report = income_report
@@ -692,35 +692,35 @@ GROUP BY 1, 2, 3;").to_a
         reported = my_income_report[:thrift_store][pt][st][:total] / 100.0
         target_class = ACCT_SETTINGS[st.downcase.gsub(" ", "_") + "_class"] || raise
         generic_class ||= target_class
-        splits << [target_account, target_class, reported] #if reported > 0.0
+        splits << [target_account, target_class, reported] if reported > 0.0
       end
       for i in [["Other", "misc_revenue_account"], ["refunds", "refunds_account"]]
         line_name = i.first
         this_target_account = ACCT_SETTINGS[i.last]
         reported = my_income_report[:thrift_store][pt][line_name][:total] / 100.0
-        splits << [this_target_account, generic_class, reported] #if reported > 0.0
+        splits << [this_target_account, generic_class, reported] if reported > 0.0
       end
       total_reported = my_income_report[:thrift_store][pt]["subtotals"][:total] / 100.0
       splits.insert(0, [transfer_account, nil, total_reported])
-      transfers << splits #if total_reported > 0.0
+      transfers << splits if total_reported > 0.0
 
       splits = []
       for ft in ["Recycling", "Pickup", "Tech Support", "Education", "Other"]
         lc = ft.downcase.gsub(" ", "_")
         acct_class = ACCT_SETTINGS[lc + "_fee_class"]
         reported = my_income_report[:donor_desk][pt][lc + "_fees"][:total] / 100.0
-        splits << [target_account, acct_class, reported] #if reported > 0.0
+        splits << [target_account, acct_class, reported] if reported > 0.0
       end
       generic_class = ACCT_SETTINGS["donor_desk_class"]
       for i in [["gizmo contributions", "gizmo_contribution_account"], ["other contributions", "other_contribution_account"]]
         line_name = i.first
         this_account = ACCT_SETTINGS[i.last]
         reported = my_income_report[:donor_desk][pt][line_name][:total] / 100.0
-        splits << [this_account, generic_class, reported] #if reported > 0.0
+        splits << [this_account, generic_class, reported] if reported > 0.0
       end
       total_reported = my_income_report[:donor_desk][pt]["subtotals"][:total] / 100.0
       splits.insert(0, [transfer_account, nil, total_reported])
-      transfers << splits #if total_reported > 0.0
+      transfers << splits if total_reported > 0.0
     end
     @transfers = transfers
     @date = @defaults.occurred_at_date
