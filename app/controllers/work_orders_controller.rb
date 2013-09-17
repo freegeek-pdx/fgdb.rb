@@ -16,7 +16,7 @@ class WorkOrdersController < ApplicationController
   def new
     if params[:open_struct]
       @work_order = OpenStruct.new(params[:open_struct])
-      @work_order.issues = params[:open_struct][:issue].to_a.select{|x| x.first == x.last}.map{|x| x.first}
+## WTF:      @work_order.issues = params[:open_struct][:issue].to_a.select{|x| x.first == x.last}.map{|x| x.first}
       parse_data
 #      @work_order.issue = nil
     else
