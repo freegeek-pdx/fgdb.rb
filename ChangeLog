@@ -17,6 +17,7 @@ fgdb.rb (1.0.126) released; urgency=low
   * fix monthly reporting date logic (Closes: #37543)
   * Fixed contacts form issue (Closes: 37553)
   * fix titles on schedjul (Closes: #37554)
+  * Fix weekday condition check boxes (Closes: #37549)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:42:05 -0700
 
