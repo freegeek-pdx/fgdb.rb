@@ -1,6 +1,8 @@
 <% @options = options %>
+<% newone = @options.merge(:controller => 'contacts', :contact => nil, :user => nil).dup %>
+<% newone.delete(:contact) %>
 <% form_remote_tag(
-                   :url => @options.merge(:controller => 'contacts'),
+                   :url => newone,
                    :loading => "Element.show('#{loading_indicator_id("form_for_contact_loading")}');
                   Form.disable('floating_form');",
                    :html => {:id => 'floating_form', :class => 'floating_form cashierable_form'}
