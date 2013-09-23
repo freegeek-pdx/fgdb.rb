@@ -9,7 +9,7 @@
                          Date.today
                        end
                       %>
-          <% dropdown_list = VolunteerTaskType.instantiables.effective_on().sort_by{|x| x.description.downcase} %>
+          <% dropdown_list = VolunteerTaskType.instantiables.effective_on(my_date).sort_by{|x| x.description.downcase} %>
         <% end %>
         <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
           <option value="">---</option>
