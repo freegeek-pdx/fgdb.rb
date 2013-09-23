@@ -8,6 +8,10 @@ module AdminHelper
   end
 
   def get_column_type(n)
+    override = @model.type_override_for(n.to_sym)
+    if override
+      return override
+    end
     get_column(n).type.to_s
   end
 

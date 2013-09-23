@@ -220,6 +220,18 @@ class ActiveRecord::Base
     self.all_columns.select{|x| ! self.hidden_columns.include?(x) }
   end
 
+  def self.custom_option_selects
+    []
+  end
+
+  def self.custom_options_for(opt)
+    return {}[opt]
+  end
+
+  def self.type_override_for(opt)
+    return {}[opt]
+  end
+
   def self.editable_columns
     self.visible_columns.select{|x| ! self.readonly_columns.include?(x) }
   end
