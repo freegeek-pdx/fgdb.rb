@@ -28,7 +28,7 @@ class PricingData < ActiveRecord::Base
   def PricingData.find_match(table_name, printme_value)
     pd = nil
     PricingData.table_values(table_name).sort_by(&:length).reverse.each do |x|
-      if SystemPricing.does_match?(x.to_s, printme_value.to_s)
+      if PricingData.does_match?(x.to_s, printme_value.to_s)
         pd = x
       end
     end
@@ -38,11 +38,21 @@ class PricingData < ActiveRecord::Base
   def PricingData.find_loose_match(table_name, printme_value)
     pd = nil
     PricingData.table_values(table_name).sort_by(&:length).reverse.each do |x|
-      if SystemPricing.does_match?(printme_value.to_s, x.to_s)
+      if PricingData.does_match?(printme_value.to_s, x.to_s)
         pd = x
       end
     end
     return pd
+  end
+
+  def self.does_match?(matcher, value)
+    value ||= ""
+    values = [value.downcase]
+    for i in [/\s/, "-", ")", "("]
+      values = values.map{|v| v.split(i)}.flatten
+    end
+    values = values.select{|x| x.length > 0}
+    matcher.split(/[\s-]+/).select{|x| x.length > 0}.map(&:downcase).select{|x| !values.include?(x)}.length == 0
   end
 
   def PricingData.lookup_proc(proc_name)
