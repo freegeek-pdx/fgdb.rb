@@ -27,6 +27,10 @@ class PaymentMethod < ActiveRecord::Base
     @@credit ||= find_by_name('credit')
   end
 
+  def PaymentMethod.bitcoin
+    @@bitcoin ||= find_by_name('bitcoin')
+  end
+
   def PaymentMethod.store_credit
     @@store_credit ||= find_by_name('store_credit')
   end
@@ -58,7 +62,7 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.register_non_till_methods()
-    return [credit]
+    return [credit, bitcoin]
   end
 
   def PaymentMethod.real_non_register_methods()
