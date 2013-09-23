@@ -1,6 +1,6 @@
-<% for name in [:info, :warning, :error] %>
+<% for name in [:info, :warning, :error, :notice] %>
   <% if flash[name] %>
-    <p class="<%= "#{name}-message message #{name == :error ? "error" : ""}" %>" >
+    <p class="<%= "#{name}-message message #{name == :error ? "error" : ""} #{name == :notice || name == :info ? "info" : ""}" %>" >
       <%= flash[name] %>
       <% if request.xhr? %>
         <a href="#" onclick="Element.remove(this.parentNode); return false;">Close</a>

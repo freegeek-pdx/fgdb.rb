@@ -251,6 +251,12 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
   def total_price=(val)
   end
 
+  belongs_to :store_pricing
+
+  def barcode=(val)
+      self.store_pricing = StorePricing.find_by_barcode(val)
+  end
+
   def total_price_cents
     return 0 unless unit_price_cents and gizmo_count
     unit_price_cents * gizmo_count

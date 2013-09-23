@@ -1,5 +1,7 @@
 <h1>New store pricing<% if @store_pricing.system %> for system #<%= @store_pricing.system_id %><% end %></h1>
 
+<%= render :partial => 'transaction/messages' %>
+
 <% form_for(@store_pricing, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
 

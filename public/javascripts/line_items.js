@@ -122,6 +122,9 @@ function edit_gizmo_event(id) {
   if($('gizmo_count') != null) {
     $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   }
+  if($('barcode') != null) {
+    $('barcode').value = getValueBySelector(thing, ".barcode");
+  }
   if($('system_id') != null) {
     $('system_id').value = getValueBySelector(thing, ".system_id");
   }
@@ -151,7 +154,11 @@ function edit_gizmo_event(id) {
     $('discount').value = getValueBySelector(thing, ".discount");
   }
   $('description').value = getValueBySelector(thing, ".description");
-  $('gizmo_type_id').focus();
+  if($('barcode') != null) {
+    $('barcode').focus();
+  } else {
+    $('gizmo_type_id').focus();
+  }
 }
 
 function edit_payment(id) {
@@ -193,7 +200,11 @@ function _add_gizmo_event_from_form()
     var list = strlist_to_arr($('system_id').value);
     if(parseInt($('gizmo_count').value) != list.length && list.length != 0) {
       alert("you gave a different number of system ids than the number of gizmos. If you have systems without an ID they will need to be entered separately, please fix this and try again.");
-      $('gizmo_type_id').focus();
+  if($('barcode') != null) {
+    $('barcode').focus();
+  } else {
+    $('gizmo_type_id').focus();
+  }
       return true;
     }
   }
@@ -235,6 +246,9 @@ function _add_gizmo_event_from_form()
   if($('covered') != null) {
     args['covered'] = $('covered').value;
   }
+  if($('barcode') != null) {
+    args['barcode'] = $('barcode').value;
+  }
   if($('contract_id') != null) {
     args['contract_id'] = $('contract_id').value;
   }
@@ -242,6 +256,9 @@ function _add_gizmo_event_from_form()
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   if($('unit_price') != null) {
     $('unit_price').enable();
+  }
+  if($('barcode') != null) {
+    $('barcode').value = $('barcode').defaultValue;
   }
   $('description').value = $('description').defaultValue;
   if($('unit_price') != null) {
@@ -272,7 +289,11 @@ function _add_gizmo_event_from_form()
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
   }
-  $('gizmo_type_id').focus();
+  if($('barcode') != null) {
+    $('barcode').focus();
+  } else {
+    $('gizmo_type_id').focus();
+  }
   return false;
 }
 
@@ -415,7 +436,16 @@ function gizmo_events_stuff(args, tr){
   }
 }
 
+function barcode_stuff(args, tr){
+  var barcode = args['barcode'];
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden(args['prefix'], "barcode", barcode, barcode, line_id));
+}
+
 function transaction_hooks(args, tr) {
+  if($('barcode') != null) {
+    barcode_stuff(args, tr);
+  }
   gizmo_events_stuff(args, tr);
   returns_stuff(args, tr);
   systems_stuff(args, tr);
@@ -491,7 +521,7 @@ function format_float(float) {
 
 function get_system_pricing(system_id) {
   var val;
-  if(!system_pricing_cache[system_id]) {
+  if(system_id != "" && !system_pricing_cache[system_id]) {
     var myhash = new Hash();
     myhash.set('barcode', system_id);
     var str = myhash.toQueryString();
@@ -501,13 +531,14 @@ function get_system_pricing(system_id) {
   val = system_pricing_cache[system_id];
   if(val != undefined) {
     apply_ge_hash(val);
+    return true;
   }
-  return val;
+  return false;
 }
 
 function barcode_selected() {
   if($('barcode')) {
-    get_system_pricing($('barcode').value);
+    return get_system_pricing($('barcode').value);
   }
 }
 

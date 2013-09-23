@@ -8,7 +8,7 @@ class StorePricing < ActiveRecord::Base
 
   def self.find_by_barcode(inbarcode)
     inbarcode = inbarcode.to_s
-    if inbarcode.match(/^p(.+)$/)
+    if inbarcode.match(/^0(.+)$/)
       self.find_by_id($1.to_s)
     else
       self.find_by_system_id(inbarcode.to_i)
@@ -21,7 +21,7 @@ class StorePricing < ActiveRecord::Base
 
   def barcode
     return "" unless self.id
-    system_id ? system_id.to_s : "p" + id.to_s
+    system_id ? system_id.to_s : "0" + id.to_s
   end
 
   # Note: it should be updated between, no duplicates

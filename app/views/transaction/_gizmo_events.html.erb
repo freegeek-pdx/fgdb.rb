@@ -93,7 +93,7 @@
            hash = {:gizmo_type_id => line.gizmo_type_id, :description => description}
            hash[:gizmo_count] = line.gizmo_count if show_qty
            hash[:unit_price] = price if (show_price)
-           hash[:barcode] = "" # FIXME FIXME FIXME
+           hash[:barcode] = line.store_pricing ? line.store_pricing.barcode : "" if has_barcode
            hash[:system_id] = line.system_id if line.system_id
            if show_return
              hash[:reason] = line.reason ? line.reason : ""
@@ -116,7 +116,7 @@
     <% end %>
   <tr id="gizmo_events_form">
     <% if has_barcode %>
-    <td><input name="barcode" id="barcode" size="10" onchange="barcode_selected();"></td>
+    <td><input name="barcode" id="barcode" size="10" onkeydown="if(is_tab(event)) {return !barcode_selected();}"></td>
     <% end %>
     <% if work_order_mode %>
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">

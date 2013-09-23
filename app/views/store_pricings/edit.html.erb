@@ -1,5 +1,11 @@
 <h1>Editing store pricing</h1>
 
+<%= render :partial => 'transaction/messages' %>
+
+Barcode: <%= @store_pricing.barcode %><br />
+
+<%= barcode(@store_pricing.barcode) %>
+
 <% form_for(@store_pricing, :url => {:action => "update", :id => @store_pricing.id}) do |f| %>
   <%= f.error_messages %>
 
@@ -10,5 +16,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Show', {:action => "show", :id => @store_pricing.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
