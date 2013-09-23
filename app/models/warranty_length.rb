@@ -10,6 +10,20 @@ class WarrantyLength < ActiveRecord::Base
   validates_numericality_of :length_number
   validates_presence_of :length_unit
 
+  def self.custom_option_selects
+    [:system_type, :box_source, :os_type]
+  end
+
+  def self.custom_options_for(opt)
+    h = ApplicationController.new.send(:_parse_metadata_wo)
+    q = {:system_type => h["Type of Box"], :box_source => h["Box source"], :os_type => WorkOrdersController::OS_OPTIONS}
+    return q[opt]
+  end
+
+  def self.type_override_for(opt)
+    return {:length => "date_period_length"}[opt]
+  end
+
   def length_number
     read_attribute(:length).to_s.split(".")[0].to_s
   end
