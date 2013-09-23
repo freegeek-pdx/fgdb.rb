@@ -9,6 +9,8 @@ RAILS_ENV=production
 0 8 * * * root /var/www/fgdb.rb/script/announce_holidays.rb
 0 21 * * 2 root /var/www/fgdb.rb/script/overtime_report.rb
 
+0 0 1 * * root /var/www/fgdb.rb/script/send_self_signed_builder_task_report.sh
+
 # staff hours reports
 0 0 * * * root /var/www/fgdb.rb/script/hours_poker --email
 0 * * * * root /var/www/fgdb.rb/script/meeting_minder.rb

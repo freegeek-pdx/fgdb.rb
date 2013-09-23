@@ -3,6 +3,7 @@ fgdb.rb (1.0.127) UNRELEASED; urgency=low
   * Implement BARCODES! (Closes: #37673)
   * Allow build instructors to sign off their own builder tasks (Closes:
     #36984)
+    - add a monthly report to managers of offenders using this command
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:21:55 -0700
 
