@@ -1,0 +1,13 @@
+<%= f.hidden_field :system_id %>
+  <p>
+    <%= f.label :gizmo_type_id %><br />
+    <%= f.select(:gizmo_type_id, [["", ""]] + GizmoContext.sale.gizmo_types.sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
+  </p>
+  <p>
+    <%= f.label :unit_price %><br />
+    <%= f.text_field :unit_price %>
+  </p>
+  <p>
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </p>

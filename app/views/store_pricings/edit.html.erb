@@ -1,0 +1,14 @@
+<h1>Editing store pricing</h1>
+
+<% form_for(@store_pricing, :url => {:action => "update", :id => @store_pricing.id}) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', {:action => "show", :id => @store_pricing.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  gizmo_type_id: 1
+  unit_price_cents: 1
+  system_id: 1
+  description: MyText
+
+two:
+  gizmo_type_id: 1
+  unit_price_cents: 1
+  system_id: 1
+  description: MyText

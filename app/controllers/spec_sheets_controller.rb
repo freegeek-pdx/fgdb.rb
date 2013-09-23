@@ -114,7 +114,7 @@ class SpecSheetsController < ApplicationController
       redirect_to :action => 'system'
       return
     end
-    redirect_to :action => "show", :controller => "spec_sheets", :id => @system.spec_sheets.sort_by(&:created_at).last.id
+    redirect_to :action => "show", :controller => "spec_sheets", :id => @system.last_spec_sheet.id
   end
 
 

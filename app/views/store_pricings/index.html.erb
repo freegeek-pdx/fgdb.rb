@@ -1,0 +1,21 @@
+<h1>Lookup store pricing by barcode</h1>
+
+<% form_for(@store_pricing, :url => {:action => "search"}) do |f| %>
+  <p>
+    <%= f.label :barcode, "Scan Barcode" %>
+    <%= f.text_field :barcode %>
+  </p>
+
+  <%= f.submit "Edit Store Pricing" %>
+<% end %>
+
+<h1>New store pricing</h1>
+
+<% form_for(@store_pricing, :url => {:action => "new"}) do |f| %>
+  <p>
+    <%= f.label :system_id, "System ID (if applicable)" %>
+    <%= f.text_field :system_id %>
+  </p>
+
+  <%= f.submit "New Store Pricing" %>
+<% end %>

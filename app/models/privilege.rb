@@ -78,6 +78,7 @@ class Privilege < ActiveRecord::Base
      ["spec_sheets", {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}],
      ["store_credits", {:privileges => ["view_sales"]}],
      ["system_pricings", {:privileges => ['price_systems']}],
+     ["store_pricings", {:privileges => ['price_systems']}],
      ["tech_support_notes", {:privileges => ['staff'], :except => ['find_footnotes']}],
      ["tech_support_notes", {:privileges => ['techsupport_workorders'], :only => ['find_footnotes']}],
      ["till_adjustments", {:privileges => ['till_adjustments']}],

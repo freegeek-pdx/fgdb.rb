@@ -54,6 +54,15 @@ class TransactionController < ApplicationController
       page << "ge_done();"
     end
     return
+    result = nil
+    sp = StorePricing.find_by_barcode(params[:barcode].to_s.strip)
+    if sp
+      result = sp.pricing_data
+    end
+    render :udpate do |page|
+      page << "barcode_pricing_cache[#{params[:barcode].to_json}} = #{result.to_json};"
+      page << "ge_done();"
+    return
     s = nil
     if params[:system_id].to_s == params[:system_id].to_i.to_s
       s = System.find_by_id(params[:system_id])

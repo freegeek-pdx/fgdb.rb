@@ -1,7 +1,8 @@
 fgdb.rb (1.0.127) UNRELEASED; urgency=low
 
+  * Implement BARCODES! (Closes: #37673)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 15 Sep 2013 21:42:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 20:09:18 -0700
 
 fgdb.rb (1.0.126) released; urgency=low
 
