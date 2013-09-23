@@ -25,6 +25,12 @@ class StorePricingsController < ApplicationController
     if @store_pricing.system && @store_pricing.system.last_spec_sheet && @store_pricing.system.last_spec_sheet.type
       @store_pricing.gizmo_type = @store_pricing.system.last_spec_sheet.type.gizmo_type
     end
+    if @store_pricing.system && @store_pricing.gizmo_type.nil?
+      @store_pricing.gizmo_type = GizmoType.find_by_name('system')
+    end
+    if @store_pricing.system_id && @store_pricing.system.nil?
+      @store_pricing.system_id = nil
+    end
   end
 
   def create
