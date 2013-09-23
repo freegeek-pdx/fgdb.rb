@@ -418,6 +418,18 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  def alert_about_pdx?
+    eligible_for_take_home? && portland_resident?
+  end
+
+  def eligible_for_take_home?
+    spec_sheets_since_last_adoption('builder').length >= 5 && (date_of_last_adoption.nil? || date_of_last_adoption <= 1.year.ago)
+  end
+
+  def portland_resident?
+    self.city && self.city == "Portland"
+  end
+
   def spec_sheets_since_last_adoption(action_name)
     BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption || Date.parse("2000-01-01"), Action.find_by_name(action_name).id])
   end
