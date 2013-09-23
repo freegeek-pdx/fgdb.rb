@@ -491,6 +491,8 @@ public
     @assignment = Assignment.find(params[:id])
     @my_url = {:action => "create_shift", :controller => "volunteer_events"}
     @assignment.id = nil
+    @assignment.attendance_type_id = nil
+    @assignment.call_status_type_id = nil
     @action_title = "Copying"
     edit
   end

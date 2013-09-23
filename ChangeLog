@@ -4,8 +4,10 @@ fgdb.rb (1.0.127) UNRELEASED; urgency=low
   * Allow build instructors to sign off their own builder tasks (Closes:
     #36984)
     - add a monthly report to managers of offenders using this command
+  * Do not keep attenance and call status when copying an assignment
+    (Closes: #37600)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:21:55 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:40:47 -0700
 
 fgdb.rb (1.0.126) released; urgency=low
 

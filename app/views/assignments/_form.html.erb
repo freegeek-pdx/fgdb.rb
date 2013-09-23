@@ -116,7 +116,7 @@
   <% topts = [weekday.open_time.hour.to_json, weekday.close_time.hour.to_json].join(", ") %>
   <%= javascript_tag "cleanup_hour_select('#{is_r ? "" : "default_"}assignment_start_time_4i', #{topts}); cleanup_hour_select('#{is_r ? "" : "default_"}assignment_end_time_4i', #{topts});" %>
       <% if is_r %>
-  <% if f.object.contact_id %>
+  <% if f.object.id && f.object.contact_id %>
   <p>
     <%= f.label :attendance_type_id %><br />
     <%= select(f.object_name, "attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, :include_blank => true) %>
