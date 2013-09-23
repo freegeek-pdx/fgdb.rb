@@ -8,8 +8,10 @@ fgdb.rb (1.0.127) UNRELEASED; urgency=low
     (Closes: #37600)
   * Fix display of messages within the staff hours logging interface
     (Closes: #37621)
+  * Implement a suggestion to find the FG-PDX shelf when the builder has
+    completed their 5th build (Closes: #37427)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:54:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:12:36 -0700
 
 fgdb.rb (1.0.126) released; urgency=low
 
