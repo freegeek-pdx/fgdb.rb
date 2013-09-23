@@ -6,8 +6,10 @@ fgdb.rb (1.0.127) UNRELEASED; urgency=low
     - add a monthly report to managers of offenders using this command
   * Do not keep attenance and call status when copying an assignment
     (Closes: #37600)
+  * Fix display of messages within the staff hours logging interface
+    (Closes: #37621)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:40:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 22:54:41 -0700
 
 fgdb.rb (1.0.126) released; urgency=low
 

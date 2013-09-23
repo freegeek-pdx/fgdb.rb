@@ -99,11 +99,11 @@ class WorkShift < ActiveRecord::Base
 
   def to_worked_shift
     ws = WorkedShift.new({:offsite => self.offsite, :worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
-    msgs = []
+    msgs = nil
     if self.kind == "Meeting"
       if self.job
         ws.job_id = self.job_id
-        msgs << "The \"#{self.meeting_name}\" meeting was recorded as a \"#{self.job.name}\" shift."
+        msgs = "The \"#{self.meeting_name}\" meeting was recorded as a \"#{self.job.name}\" shift."
       else
         ws.job_id = Job.find_by_name("Meeting").id
       end
