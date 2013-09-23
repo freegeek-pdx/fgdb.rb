@@ -110,6 +110,10 @@ function is_tab(event) {
   return (event.keyCode==9 && !event.shiftKey);
 }
 
+function is_tab_or_enter(event) {
+   return ((event.keyCode==9 || event.keyCode==13) && !event.shiftKey);
+}
+
 function magic_onkeyscroll(event) {
   var target = event.target;
   if(event.ctrlKey)

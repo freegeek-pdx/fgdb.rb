@@ -116,7 +116,7 @@
     <% end %>
   <tr id="gizmo_events_form">
     <% if has_barcode %>
-    <td><input name="barcode" id="barcode" size="10" onkeydown="if(is_tab(event)) {return !barcode_selected();}"></td>
+    <td><input name="barcode" id="barcode" size="10" onkeydown="if(is_tab_or_enter(event)) {return !barcode_selected();}"></td>
     <% end %>
     <% if work_order_mode %>
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">
