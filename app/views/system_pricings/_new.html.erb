@@ -1,9 +1,0 @@
-<h1>New system pricing</h1>
-
-<% form_for(@system_pricing, :url => {:action => "create"}) do |f| %>
-  <%= render :partial => "form", :locals => {:f => f} %>
-
-  <p>
-    <%= f.submit "Create" %>
-  </p>
-<% end %>
