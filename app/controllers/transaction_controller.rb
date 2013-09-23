@@ -47,34 +47,13 @@ class TransactionController < ApplicationController
   public
 
   def get_system_pricing
-    render :update do |page|
-      page << "system_pricing_cache[#{params[:system_id].to_json}] = '';"
-      page << "system_pricing_price_cache[#{params[:system_id].to_json}] = ''";
-      page << "system_pricing_type_cache[#{params[:system_id].to_json}] = ''";
-      page << "ge_done();"
-    end
-    return
     result = nil
     sp = StorePricing.find_by_barcode(params[:barcode].to_s.strip)
     if sp
       result = sp.pricing_data
     end
-    render :udpate do |page|
-      page << "barcode_pricing_cache[#{params[:barcode].to_json}} = #{result.to_json};"
-      page << "ge_done();"
-    return
-    s = nil
-    if params[:system_id].to_s == params[:system_id].to_i.to_s
-      s = System.find_by_id(params[:system_id])
-      p = s ? s.pricing : nil
-    end
-    v = (p ? p.id.to_s : nil)
-    v2 = (p ? p.calculated_price : "")
-    v3 = (p && p.gizmo_type ? p.gizmo_type.id : "")
     render :update do |page|
-      page << "system_pricing_cache[#{params[:system_id].to_json}] = #{v.inspect.to_json}";
-      page << "system_pricing_price_cache[#{params[:system_id].to_json}] = #{v2.to_json}";
-      page << "system_pricing_type_cache[#{params[:system_id].to_json}] = #{v3.to_json}";
+      page << "system_pricing_cache[#{params[:barcode].to_json}] = #{result.to_json};"
       page << "ge_done();"
     end
   end

@@ -10,6 +10,7 @@
 <% show_contract = my_cont == "recyclings" && contract_enabled %>
 <% show_coveredness = (!["gizmo_returns"].include?(my_cont)) && coveredness_enabled %>
 <% has_unit_price = ["sales", "gizmo_returns"].include?(my_cont) %>
+<% has_barcode = ["sales"].include?(my_cont) %>
 <% has_fee_cents = my_cont == "donations" %>
 <% hide_description = my_cont != "gizmo_returns" && !work_order_mode %>
 <% show_qty = my_cont != "gizmo_returns" %>
@@ -33,6 +34,9 @@
   <tr><td colspan="20" style="text-align: right;"><a onclick="toggle_discount();" title="shows or hides the individual discount field (ctrl-y keybinding)">toggle discount</a></td></tr>
   <% end %>
   <tr>
+    <% if has_barcode %>
+      <th>barcode</th>
+    <% end %>
     <th>type</th>
     <th class="<%= description_class %>">detailed desc</th>
     <% if show_qty %>
@@ -89,6 +93,7 @@
            hash = {:gizmo_type_id => line.gizmo_type_id, :description => description}
            hash[:gizmo_count] = line.gizmo_count if show_qty
            hash[:unit_price] = price if (show_price)
+           hash[:barcode] = "" # FIXME FIXME FIXME
            hash[:system_id] = line.system_id if line.system_id
            if show_return
              hash[:reason] = line.reason ? line.reason : ""
@@ -110,6 +115,9 @@
          %>
     <% end %>
   <tr id="gizmo_events_form">
+    <% if has_barcode %>
+    <td><input name="barcode" id="barcode" size="10" onchange="barcode_selected();"></td>
+    <% end %>
     <% if work_order_mode %>
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">
         <%= options_from_collection_for_select(GizmoType.find_all_by_name("service_fee_tech_support"), "id", "description") %>

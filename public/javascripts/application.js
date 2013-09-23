@@ -967,6 +967,11 @@ function toggle_description(evt) {
   return true;
 }
 
+function on_description() {
+  show_description = 0;
+  toggle_description(null);
+}
+
 function toggle_discount(evt) {
   discount_visible++;
   var arr = document.getElementsByClassName('discount');

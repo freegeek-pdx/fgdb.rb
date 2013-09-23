@@ -493,30 +493,36 @@ function get_system_pricing(system_id) {
   var val;
   if(!system_pricing_cache[system_id]) {
     var myhash = new Hash();
-    myhash.set('system_id', system_id);
+    myhash.set('barcode', system_id);
     var str = myhash.toQueryString();
     ge_thinking();
     new Ajax.Request(get_system_pricing_url + '?' + str, {asynchronous:false, evalScripts:true});
   }
   val = system_pricing_cache[system_id];
-  if(val == undefined || val == -2) {
-    alert("internal error");
+  if(val != undefined) {
+    apply_ge_hash(val);
   }
   return val;
 }
 
-function get_system_pricing_unit_price(system_id) {
-  if(!system_pricing_cache[system_id]) {
-    get_system_pricing(system_id);
+function barcode_selected() {
+  if($('barcode')) {
+    get_system_pricing($('barcode').value);
   }
-  return system_pricing_price_cache[system_id];
 }
 
-function get_system_pricing_gizmo_type_id(system_id) {
-  if(!system_pricing_cache[system_id]) {
-    get_system_pricing(system_id);
+function apply_ge_hash(hash) {
+  $('system_id').value = hash['system_id'];
+  $('gizmo_type_id').value = hash['gizmo_type_id'];
+  $('description').value = hash['description'];
+  if(hash['description'] != "") {
+    on_description();
   }
-  return system_pricing_type_cache[system_id];
+  $('unit_price').value = hash['unit_price'];
+  $('gizmo_count').value = hash['gizmo_count'];
+  coveredness_type_selected();
+  handle_gizmo_events();
+  return;
 }
 
 // OLDTODO: just pass the hash in the parameters: option below
@@ -1042,24 +1048,12 @@ function storecredit_selected () {
   }
   $('unit_price').value = val;
 }
-
 function coveredness_type_selected() {
   if($('covered') == null)
     return;
   contract_widget = $('contract_id') || $('donation_contract_id');
   systems_invalid = false;
   if(gizmo_context == "sale" ? (system_types.include($('gizmo_type_id').value) || $('gizmo_type_id').value == "") : gizmo_types_covered[$('gizmo_type_id').value] == true) {
-    if($('system_id') && $('system_id').value && !is_a_list($('system_id').value) && get_system_pricing($('system_id').value) != "nil") {
-      if($('unit_price') && $('unit_price').value == "") {
-        $('unit_price').value = get_system_pricing_unit_price($('system_id').value);
-      }
-      if($('gizmo_type_id').value == "") {
-        $('gizmo_type_id').value = get_system_pricing_gizmo_type_id($('system_id').value);
-      }
-      if($('gizmo_count').value == "") {
-        $('gizmo_count').value = "1";
-      }
-    }
     if(contract_widget && contract_widget.value != "1") {
       $('covered').disable();
       $('covered').value = "false";

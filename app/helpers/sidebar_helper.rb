@@ -58,6 +58,7 @@ module SidebarHelper
     "assignments" => "vol sked",
     "logs" => "admin",
     "system_pricings" => "sales",
+    "store_pricings" => "sales",
     "pricing_types" => "sales",
     "pricing_components" => "sales",
     "pricing_values" => "sales" # Going away?
@@ -85,8 +86,7 @@ module SidebarHelper
       sidebar_hash[disp][prep + "search"] = {:controller => pl, :action => 'search'}
     end
     sidebar_hash["sales"]["store credits"] = {:controller => "store_credits", :action => 'index'}
-    sidebar_hash["sales"]["pricing"] = {:controller => "system_pricings", :action => "index"}
-    sidebar_hash["sales"]["pricing admin"] = {:controller => "pricing_types", :action => "index"}
+    sidebar_hash["sales"]["pricing"] = {:controller => "store_pricings", :action => "index"}
     # reports
     ["income", "gizmos", "volunteering", "top_donations", "donation_areas", "contributions", "volunteer_schedule"].each do |x|
       sidebar_hash["reports"][x.gsub(/_/, " ")] = {:controller => "reports", :action => ((x == "contributions") ? "suggested_contributions" : (x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}

@@ -16,7 +16,7 @@ class StorePricing < ActiveRecord::Base
   end
 
   def pricing_data
-    {:description => description, :gizmo_type_id => gizmo_type_id, :system_id => system_id, :unit_price_cents => unit_price_cents, :gizmo_count => 1}
+    {:description => description, :gizmo_type_id => gizmo_type_id, :system_id => system_id, :unit_price => unit_price, :gizmo_count => 1}
   end
 
   def barcode
