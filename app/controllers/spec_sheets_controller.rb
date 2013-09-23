@@ -34,8 +34,12 @@ class SpecSheetsController < ApplicationController
       if u.has_privileges(ApplicationController.required_privileges("spec_sheets", "show/sign_off").flatten.first)
         s.signed_off_by=(u)
         s.save!
-      if s.contact && s.contact.alert_about_pdx?
-        flash[:jsalert] = "Congratulations! As a resident of Portland, you are eligible to take home an FG-PDX system today!\n\nPlease have your build instructor show you the correct shelf to build your take-home system from."
+      if s.contact && s.contact.eligible_for_take_home?
+        if s.contact.portland_resident?
+          flash[:jsalert] = "Hey, you're ready to build your take-home box!\n\nPlease have your build instructor show you the correct shelf to build your take-home system from."
+        else
+          flash[:jsalert] = "Hey, you're ready to build your take-home box!\n\nCongratulations! As a resident of Portland, you are eligible to take home an FG-PDX system today!\n\nPlease have your build instructor show you the correct shelf to build your take-home system from."
+        end
       end
       end
     end

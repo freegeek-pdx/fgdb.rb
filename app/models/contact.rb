@@ -418,10 +418,6 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def alert_about_pdx?
-    eligible_for_take_home? && portland_resident?
-  end
-
   def eligible_for_take_home?
     spec_sheets_since_last_adoption('builder').length >= 5 && (date_of_last_adoption.nil? || date_of_last_adoption <= 1.year.ago)
   end
