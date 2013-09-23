@@ -1,8 +1,10 @@
 # HEY, LOOK HERE!!!
 # NEVER, EVER, EVER CHANGE THIS FILE.
 
-Encoding.default_external = Encoding::UTF_8
-Encoding.default_internal = Encoding::UTF_8
+unless RUBY_VERSION.match(/1.8/)
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
+end
 
 # CREATE A environment.local.rb FILE INSTEAD
 
