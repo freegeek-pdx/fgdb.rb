@@ -34,10 +34,10 @@
   <tr><td colspan="20" style="text-align: right;"><a onclick="toggle_discount();" title="shows or hides the individual discount field (ctrl-y keybinding)">toggle discount</a></td></tr>
   <% end %>
   <tr>
+    <th>type</th>
     <% if has_barcode %>
       <th>barcode</th>
     <% end %>
-    <th>type</th>
     <th class="<%= description_class %>">detailed desc</th>
     <% if show_qty %>
     <th>qty</th>
@@ -115,18 +115,18 @@
          %>
     <% end %>
   <tr id="gizmo_events_form">
-    <% if has_barcode %>
-    <td><input name="barcode" id="barcode" size="10" onkeydown="if(is_tab_or_enter(event)) {return !barcode_selected();}"></td>
-    <% end %>
     <% if work_order_mode %>
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">
         <%= options_from_collection_for_select(GizmoType.find_all_by_name("service_fee_tech_support"), "id", "description") %>
       </select>
 </td>
     <% else %>
-    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id">
+    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id" onkeydown="if((event.keyCode >= 96 && event.keyCode <= 105 ) || (event.keyCode >= 48 && event.keyCode <= 57 )) {$('barcode').enable(); $('barcode').focus();}">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
+    <% end %>
+    <% if has_barcode %>
+    <td><input class="always_disabled" disabled="disabled" name="barcode" id="barcode" size="10" onkeydown="if(is_tab_or_enter(event)) {return !barcode_selected();}"></td>
     <% end %>
     <td class="<%= description_class %>">
 <input name="description" id="description" size="10"></td>
