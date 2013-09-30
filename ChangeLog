@@ -5,6 +5,7 @@ fgdb.rb (1.0.128) UNRELEASED; urgency=low
 
 fgdb.rb (1.0.127) released; urgency=low
 
+  [ Ryan Niebur ]
   * Implement BARCODES! (Closes: #37673)
   * Allow build instructors to sign off their own builder tasks (Closes:
     #36984)
@@ -15,6 +16,11 @@ fgdb.rb (1.0.127) released; urgency=low
     (Closes: #37621)
   * Implement a suggestion to find the FG-PDX shelf when the builder has
     completed their 5th build (Closes: #37427)
+  * replace warrnty configuration with the administrative interface
+  * Add bitcoin payment type
+  * Fix bug in WO invoice search by converting id to integer type first
+    (Crash: rp9Uvt)
+  * fix type mismatch in spec sheet sign off (Closes: #37699)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 

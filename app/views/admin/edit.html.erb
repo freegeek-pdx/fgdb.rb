@@ -1,4 +1,4 @@
-<h2>Editing <%= @model_human.downcase %> #<%= @admin.id %></h2>
+<h2>Editing <%= @model_human.downcase %> #<%= @admin.id %><% if ! @admin.to_s.match(/^#/) %>: <%= @admin.to_s %><% end %></h2>
 
 <% admin_form_for(@admin, :url => {:action => "update", :id => @admin.id}) do |f| %>
   <%= f.error_messages %>

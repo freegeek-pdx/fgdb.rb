@@ -13,6 +13,8 @@ class CreateStorePricings < ActiveRecord::Migration
     add_foreign_key :gizmo_events, :store_pricing_id, :store_pricings, :id, :on_delete => :set_null
     add_foreign_key :store_pricings, :system_id, :systems, :id, :on_delete => :cascade
     add_foreign_key :store_pricings, :gizmo_type_id, :gizmo_types, :id, :on_delete => :restrict
+
+    drop_table :system_pricings
   end
 
   def self.down

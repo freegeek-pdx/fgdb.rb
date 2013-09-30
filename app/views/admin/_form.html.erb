@@ -7,7 +7,9 @@
   <tr><th><%= f.label x.to_s, x.to_s.humanize + " (" + mytype + "):" %></th>
     <td>
   <% if @admin.class.editable_columns.include?(x) %>
-  <% if associations[x] %>
+  <% if @model.custom_option_selects.include?(x) %>
+<%= f.select x, options_for_select([["", ""]] + @model.custom_options_for(x.to_sym).map{|y| [y, y]}, f.object.send(x.to_sym)) %>
+  <% elsif associations[x] %>
     <% if associations[x] == Contact %>
         <%= contact_field("@" + f.object_name, "contact",
                     :locals => {:options => {
@@ -27,6 +29,9 @@
       <%= f.time_select x, :include_blank => true %>
     <% elsif mytype == "date" %>
       <%= calendar_box f.object_name, x.to_sym %>
+    <% elsif mytype == "date_period_length" %>
+      <%= f.text_field :length_number, :value => f.object.length_number, :size => 5 %>
+      <%= f.select :length_unit, WarrantyLength::UNITS.map{|x| [x.to_s, x.to_s]}, :select => f.object.length_unit %>
     <% else %>
     <%= f.text_field x %>
     <% end %>

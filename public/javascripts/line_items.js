@@ -154,11 +154,7 @@ function edit_gizmo_event(id) {
     $('discount').value = getValueBySelector(thing, ".discount");
   }
   $('description').value = getValueBySelector(thing, ".description");
-  if($('barcode') != null) {
-    $('barcode').focus();
-  } else {
-    $('gizmo_type_id').focus();
-  }
+  $('gizmo_type_id').focus();
 }
 
 function edit_payment(id) {
@@ -259,6 +255,7 @@ function _add_gizmo_event_from_form()
   }
   if($('barcode') != null) {
     $('barcode').value = $('barcode').defaultValue;
+    $('barcode').disable();
   }
   $('description').value = $('description').defaultValue;
   if($('unit_price') != null) {
@@ -289,11 +286,7 @@ function _add_gizmo_event_from_form()
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
   }
-  if($('barcode') != null) {
-    $('barcode').focus();
-  } else {
-    $('gizmo_type_id').focus();
-  }
+  $('gizmo_type_id').focus();
   return false;
 }
 
@@ -428,6 +421,9 @@ function gizmo_events_stuff(args, tr){
   var gizmo_type = all_gizmo_types[gizmo_type_id];
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden(args['prefix'], "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
+  if($('barcode') != null) {
+    barcode_stuff(args, tr);
+  }
   var desc = make_hidden(args['prefix'], "description", description, description, line_id)
   set_visibility(desc, show_description & 1);
   tr.appendChild(desc);
@@ -443,9 +439,6 @@ function barcode_stuff(args, tr){
 }
 
 function transaction_hooks(args, tr) {
-  if($('barcode') != null) {
-    barcode_stuff(args, tr);
-  }
   gizmo_events_stuff(args, tr);
   returns_stuff(args, tr);
   systems_stuff(args, tr);
