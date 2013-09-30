@@ -84,7 +84,7 @@ class WorkOrdersController < ApplicationController
   end
 
   def show_invoice
-    @invoice = Donation.find_by_id(params[:id])
+    @invoice = Donation.find_by_id(params[:id].to_i)
     @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
     @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/)
     matchid = $1

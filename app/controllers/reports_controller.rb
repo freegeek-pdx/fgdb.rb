@@ -724,7 +724,7 @@ GROUP BY 1, 2, 3;").to_a
     end
     @transfers = transfers
     @date = @defaults.occurred_at_date
-    @TRNSTYPE = "TRANSFER"
+    @TRNSTYPE = "GENJRNL"
 
     render :partial => "reports/iif.text.erb"
   end
