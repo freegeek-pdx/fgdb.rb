@@ -18,11 +18,10 @@ class ShiftsController < ApplicationController
   before_filter :update_skedjulnator_access_time
 
   def find_problems
-    w = [Weekday.find_by_name("Sunday").id]
-    @weeks = w.map(&:id)
+    @weeks = [Weekday.find_by_name("Sunday")].map(&:id)
     @schedule = Schedule.find_by_id(params[:schedule_id])
     if @schedule
-      do_find_problems_report(Shift, "weekday_id", @weeks, w + [Weekday.find_by_name("Saturday").id], "s", @schedule.id)
+      do_find_problems_report(Shift, "weekday_id", @weeks, @weeks + [Weekday.find_by_name("Saturday")].map(&:id), "s", @schedule.id)
     else
       redirect_to :action => "view_weekly_schedule"
     end
