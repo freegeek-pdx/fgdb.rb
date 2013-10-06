@@ -25,6 +25,9 @@ fgdb.rb (1.0.127) released; urgency=low
     points, as we don't know the time of hours worked (Closes: #37844)
   * Remove nonprintable characters from value before saving the spec
     sheet value to the printme database (Closes: #37759)
+  * Filter out deprecated warnings that come from rails internally in
+    cron jobs to prevent my inbox from being spammed rediculously
+    (Closes: #37778)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 
