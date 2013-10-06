@@ -22,6 +22,8 @@ fgdb.rb (1.0.127) released; urgency=low
     #37634)
   * fix hours logged on the date of last adoption to no longer count as
     points, as we don't know the time of hours worked (Closes: #37844)
+  * Remove nonprintable characters from value before saving the spec
+    sheet value to the printme database (Closes: #37759)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 
