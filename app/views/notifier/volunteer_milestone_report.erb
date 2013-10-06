@@ -1,11 +1,12 @@
         Hello Volunteer Coordinator(s),
 
         Here's a list of all of the people who have passed their last 'milestone':
-        <% @volunteers.each do |vol| -%>
+<% @volunteers.each do |vol| -%>
+
         <%= "#{vol.display_name}(ID: #{vol.id}, Phone: #{vol.phone_number})" %>
           milestone:   <%= vol.next_milestone %>
             total hours: <%= vol.hours_actual %>
-            <% end -%>
+<% end -%>
 
             Sincerely,
             The database
