@@ -1,6 +1,7 @@
 class Notifier < ActionMailer::Base
   def text_report(mail_default_name, subj, data)
     recipients Default[mail_default_name]
+    bcc  Default['my_email_address']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject subj
@@ -14,6 +15,7 @@ class Notifier < ActionMailer::Base
       name = meeting_name + " " + name
     end
     from name + " <" + Default['meeting_minder_address'] + ">"
+    bcc  Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject subj
     body :text => data
@@ -41,6 +43,7 @@ class Notifier < ActionMailer::Base
 
   def holiday_announcement(subj, data)
     recipients Default['staff_mailing_list']
+    bcc  Default['my_email_address']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject subj
@@ -49,6 +52,7 @@ class Notifier < ActionMailer::Base
 
   def volunteer_milestone_report( volunteers )
     recipients Default['staff_mailing_list']
+    bcc  Default['my_email_address']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Volunteer Milestone Report"
@@ -66,6 +70,7 @@ class Notifier < ActionMailer::Base
       end
     end
     recipients Default['volunteer_reports_to']
+    bcc  Default['my_email_address']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Monthly Volunteer Milestone Report"
@@ -74,6 +79,7 @@ class Notifier < ActionMailer::Base
 
   def staff_hours_summary_report(myworkers)
     recipients Default['management_mailing_list']
+    bcc  Default['my_email_address']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Staff Hours Summary"
