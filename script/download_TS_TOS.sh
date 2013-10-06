@@ -18,5 +18,5 @@ curl -s "http://wiki.freegeek.org/index.php?title=Tech_Support_Intake_Blurb&acti
   -e 's/<\/ul> <ul type="none">//g' \
   -e 's/<\/li><li><ul>/<ul>/g' | \
   sed -e 's/$/\n/g' \
-  -e 's/<li>/<li style="font-size: 12px;">/g' \
+  -e 's/<li>/<li style="font-size: 10px;">/g' \
   -e 's/>/>\n/g' > config/TS_TOS.html
