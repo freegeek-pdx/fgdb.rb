@@ -21,6 +21,15 @@ fgdb.rb (1.0.127) released; urgency=low
   * Fix bug in WO invoice search by converting id to integer type first
     (Crash: rp9Uvt)
   * fix type mismatch in spec sheet sign off (Closes: #37699)
+  * Fix spacing on the volunteer milestone report (Closes: #37825)
+
+  [ root ]
+  * Tweaks to the TOS and sizes for updated Firefox margins (Closes:
+    #37634)
+  * fix hours logged on the date of last adoption to no longer count as
+    points, as we don't know the time of hours worked (Closes: #37844)
+  * Remove nonprintable characters from value before saving the spec
+    sheet value to the printme database (Closes: #37759)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 

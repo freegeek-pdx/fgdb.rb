@@ -62,11 +62,11 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.register_non_till_methods()
-    return [credit, bitcoin]
+    return [credit]
   end
 
   def PaymentMethod.real_non_register_methods()
-    return [invoice, online]
+    return [invoice, online, bitcoin]
   end
 
   def PaymentMethod.non_register_methods()
