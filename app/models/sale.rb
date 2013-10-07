@@ -224,7 +224,12 @@ thanks = [
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 1, 2"
                          ).to_a
-      refund_amt_cents = StoreCredit.refunds(conditions)
+      newconds = conditions.dup
+      if conditions[0].match(/ AND sales.cashier_created_by = ?/)
+        newconds[0] = newconds[0].gsub(/ AND sales.cashier_created_by = \?/, "")
+        newconds.pop
+      end
+      refund_amt_cents = StoreCredit.refunds(newconds)
       a << {'payment_method_id' => PaymentMethod.find_by_name('store_credit').id, 'sale_type' => 'refunds', 'amount' => '-' + refund_amt_cents['amt_cents'], :count => refund_amt_cents['count'], 'min' => 1<<64, 'max' => 0}
       refund_other_cents = GizmoReturn.totals(conditions)
       refund_other_cents.each do |hash|
