@@ -126,16 +126,16 @@ class Contact < ActiveRecord::Base
   validates_associated :user
   after_save :add_to_processor_daemon
 
-  validates_length_of :first_name, :maximum => 25
-  validates_length_of :middle_name, :maximum => 25
-  validates_length_of :surname, :maximum => 50
-  validates_length_of :organization, :maximum => 100
-  validates_length_of :extra_address, :maximum => 52
-  validates_length_of :address, :maximum => 52
-  validates_length_of :city, :maximum => 30
-  validates_length_of :state_or_province, :maximum => 15
-  validates_length_of :postal_code, :maximum => 25
-  validates_length_of :country, :maximum => 100
+  validates_length_of :first_name, :maximum => 25, :allow_nil => true
+  validates_length_of :middle_name, :maximum => 25, :allow_nil => true
+  validates_length_of :surname, :maximum => 50, :allow_nil => true
+  validates_length_of :organization, :maximum => 100, :allow_nil => true
+  validates_length_of :extra_address, :maximum => 52, :allow_nil => true
+  validates_length_of :address, :maximum => 52, :allow_nil => true
+  validates_length_of :city, :maximum => 30, :allow_nil => true
+  validates_length_of :state_or_province, :maximum => 15, :allow_nil => true
+  validates_length_of :postal_code, :maximum => 25, :allow_nil => true
+  validates_length_of :country, :maximum => 100, :allow_nil => true
 
   def foreign_person_or_civicrm?
     foreign_person? or $civicrm_mode
@@ -397,9 +397,9 @@ class Contact < ActiveRecord::Base
     # if it's named volunteer_tasks it breaks everything
     contact_id_type = contact_id_type + "_" if contact_id_type.length > 0
     if max and cutoff
-      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ? AND #{date_field} < ?", id, cutoff, max ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} > ? AND #{date_field} < ?", id, cutoff, max ]
     elsif cutoff
-      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?", id, cutoff ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} > ?", id, cutoff ]
     elsif max
       conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} < ?", id, max ]
     else
@@ -431,9 +431,9 @@ class Contact < ActiveRecord::Base
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil, after = nil)
-    a = [date_of_last_adoption ? date_of_last_adoption + 1 : nil]
+    a = [date_of_last_adoption]
     if type == "from" and after.nil?
-      a << (1.year.ago + 1).to_datetime # FIXME: Default variable?
+      a << (1.year.ago).to_datetime # FIXME: Default variable?
     end
     date = a.select{|x| !x.nil?}.sort.last
     find_volunteer_tasks(date, PointsTrade, type, "created_at", after).delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|

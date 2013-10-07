@@ -18,6 +18,25 @@ fgdb.rb (1.0.127) released; urgency=low
   * fix type mismatch in spec sheet sign off (Closes: #37699)
   * Fix crashes in trend report caused by new income report (FXXBsC,
     XAUwNx)
+  * Fix spacing on the volunteer milestone report (Closes: #37825)
+
+  [ root ]
+  * Tweaks to the TOS and sizes for updated Firefox margins (Closes:
+    #37634)
+  * fix hours logged on the date of last adoption to no longer count as
+    points, as we don't know the time of hours worked (Closes: #37844)
+  * Remove nonprintable characters from value before saving the spec
+    sheet value to the printme database (Closes: #37759)
+  * Filter out deprecated warnings that come from rails internally in
+    cron jobs to prevent my inbox from being spammed rediculously
+    (Closes: #37778)
+  * Fix crash while merging into old contacts with NULL values (Closes:
+    #37840)
+  * Implement disabling users automatically after 6 months of
+    inactivity, with a message to user that are disabled explaining the
+    situation on login attempt (Closes: #37664)
+  * Fix crash in trend reports (bsS7P7)
+>>>>>>> ab5dc4baac588c46f85361d10f72ea089963f649
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 

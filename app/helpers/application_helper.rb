@@ -77,6 +77,7 @@ module ApplicationHelper
       h[:client_ip] = "SOAP Client" # TODO: use the request object that SoapHandler has if it will let me
     end
     h[:date] = DateTime.now.to_s
+    h[:server] = `hostname`.strip
     eval("h = process_exception_data_#{rescue_template}(e, h)")
     h = JSON.parse(h.to_json)
     return h

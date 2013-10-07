@@ -15,43 +15,43 @@ end
 <% invoice = params[:action].match("invoice") %>
 <center><h1>Tech Support <%= invoice ? "Invoice ##{@invoice.id}" : "Work Order" %><br /><br />Help Ticket #<%= data["ID"] %></center>
 <hr style="clear: both; border: none;" />
-<div style="float: left; clear: left; font-size: 16pt; width: 30%; border: 1px solid black; height: 300px;">
+<div style="float: left; clear: left; font-size: 15pt; width: 30%; border: 1px solid black; height: 270px;">
 <table width="100%">
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Name") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">Name</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Adopter ID") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">Contact ID #</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Phone") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">Phone</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Email") %></td></tr>
-<tr><td style="font-size: 12pt;">E-mail</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Name") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">Name</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Adopter ID") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">Contact ID #</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Phone") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">Phone</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Email") %></td></tr>
+<tr><td style="font-size: 11pt;">E-mail</td></tr>
 </table>
 </div>
-<div style="float: left; position: absolute; left: 32%; border: 1px solid black; width: 30%; font-size: 16pt; height: 300px;">
+<div style="float: left; position: absolute; left: 32%; border: 1px solid black; width: 30%; font-size: 15pt; height: 270px;">
 <table width="100%">
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "System ID") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">System ID #</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Transaction Date") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">Sale/Disbursement Date</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Warranty") %></td></tr>
-<tr><td style="font-size: 12pt; padding-bottom: 25px;">Warranty Status</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Box Source") %></td></tr>
-<tr><td style="font-size: 12pt;">Source</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "System ID") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">System ID #</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Transaction Date") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">Sale/Disbursement Date</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Warranty") %></td></tr>
+<tr><td style="font-size: 11pt; padding-bottom: 20px;">Warranty Status</td></tr>
+<tr><td style="font-size: 15pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Box Source") %></td></tr>
+<tr><td style="font-size: 11pt;">Source</td></tr>
 </table>
 </div>
-<div style="float: left; clear: top; position: absolute; left: 62%; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; width: 37%; font-size: 16pt; height: 300px;">
+<div style="float: left; clear: top; position: absolute; left: 62%; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; width: 37%; font-size: 15pt; height: 270px;">
 <table width="100%">
 <% if invoice %>
-<tr><td style="font-size: 16pt;"><b>Date Invoiced:</b></td><td style="font-size: 16pt;"><b><%= @invoice.created_at.strftime("%D") %><b/></td></tr>
+<tr><td style="font-size: 15pt;"><b>Date Invoiced:</b></td><td style="font-size: 15pt;"><b><%= @invoice.created_at.strftime("%D") %><b/></td></tr>
 <% end %>
-<tr><td style="font-size: 16pt;">Type:</td><td style="font-size: 16pt;"><%= value_or_none(data, "Type of Box") %></td></tr>
-<tr><td style="font-size: 16pt;">OS info:</td><td style="font-size: 16pt;"><%= value_or_none(data, "OS") %></td></tr>
-<tr><td style="vertical-align: top; font-size: 16pt;" colspan="2">Issue(s):</td></tr>
-<tr><td style="font-size: 12pt;" colspan="2"><%= value_or_none(data, "Issues").gsub(", ", "<br />") %></td></tr>
+<tr><td style="font-size: 15pt;">Type:</td><td style="font-size: 15pt;"><%= value_or_none(data, "Type of Box") %></td></tr>
+<tr><td style="font-size: 15pt;">OS info:</td><td style="font-size: 15pt;"><%= value_or_none(data, "OS") %></td></tr>
+<tr><td style="vertical-align: top; font-size: 15pt;" colspan="2">Issue(s):</td></tr>
+<tr><td style="font-size: 11pt;" colspan="2"><%= value_or_none(data, "Issues").gsub(", ", "<br />") %></td></tr>
 </table>
 </div>
 <hr style="clear: both; border: none;" />
-<div style="font-size: 16pt; clear: both; width: 100%; height: 400px; border: 1px solid black;">
+<div style="font-size: 15pt; clear: both; width: 100%; height: 350px; border: 1px solid black;">
 <% if @invoice %>Work Order <% end %>Subject: <%= value_or_none(@data, "Subject") %><br />
 <% if @invoice %>
 <br />
@@ -69,10 +69,10 @@ Total amount due: $<%= @invoice.reported_required_fee %>
 </div>
 <br />
 <% if invoice %>
-<span style="font-size: 16pt; float: right;">Paid&nbsp;Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Received&nbsp;By:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Cash&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Credit&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Check</span>
+<span style="font-size: 15pt; float: right;">Paid&nbsp;Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Received&nbsp;By:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Cash&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Credit&nbsp;&nbsp;&nbsp;<&nbsp;>&nbsp;Check</span>
 <% else %>
-<span style="font-size: 16pt; float: right;">Recv'd by: #<%= value_or_none(data, "Technician ID") %> Date: <%= data["Created"].nil? ? Date.today : Date.parse(data["Created"]).to_s %></span>
+<span style="font-size: 15pt; float: right;">Recv'd by: #<%= value_or_none(data, "Technician ID") %> Date: <%= data["Created"].nil? ? Date.today : Date.parse(data["Created"]).to_s %></span>
 <% end %>
-<div style="page-break-before: always; font-size: 12px; clear: both; width: 100%; height: 930px; border: 1px solid black;">
+<div style="page-break-before: always; font-size: 10px; clear: both; width: 100%; height: 850px; border: 1px solid black;">
 <%= File.readlines("config/TS_TOS.html").join("") %>
 </div>
