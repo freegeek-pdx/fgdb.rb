@@ -20,5 +20,11 @@ Select the ticket source:<br />
 <% end %>
 
 <h2>Display Existing Invoice</h2>
+<div class="noprint">
+<% if flash[:error] %>
+<span class="error"><%= flash[:error] %><br /><br /></span>
+<% end %>
+</div>
+
 <%= render :partial => "woform", :locals => {:action => "show_invoice", :text => 'Show Invoice', :idlabel => "Invoice #"} %>
 

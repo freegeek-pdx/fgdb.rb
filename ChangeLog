@@ -37,6 +37,11 @@ fgdb.rb (1.0.127) released; urgency=low
     situation on login attempt (Closes: #37664)
   * Fix crash in trend reports (bsS7P7)
 
+  [ Ryan Niebur ]
+  * Fix crash in barcodes when a very largely wrong number is given, as
+    this may have frozen the interface, but they did know not to do it
+    (hNg1QX, mQCai4)
+
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 
 fgdb.rb (1.0.126) released; urgency=low
