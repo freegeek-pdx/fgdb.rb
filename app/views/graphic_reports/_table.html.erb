@@ -15,7 +15,7 @@
         <%  t = @report.table_data_types[num][k] %>
         <td>
           <% if t == "integer" %>
-            <%= sprintf "%d", v[i] %>
+            <%= sprintf "%d", v[i].to_i %>
           <% else %>
             <%= t == "money" ? "$" : "" %><%= v[i].tp %><%= t=="percentage" ? "%" :"" %>
           <% end %>
