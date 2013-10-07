@@ -36,7 +36,6 @@ fgdb.rb (1.0.127) released; urgency=low
     inactivity, with a message to user that are disabled explaining the
     situation on login attempt (Closes: #37664)
   * Fix crash in trend reports (bsS7P7)
->>>>>>> ab5dc4baac588c46f85361d10f72ea089963f649
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 
