@@ -86,10 +86,15 @@ class WorkOrdersController < ApplicationController
   def show_invoice
     @invoice = Donation.find_by_id(params[:id].to_i)
     @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
-    @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/)
-    matchid = $1
-    show(matchid) if matchid
-    render :action => "invoice"
+    @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/) if @invoice
+    matchid = $1 if @invoice && $1
+    if matchid
+      show(matchid)
+      render :action => "invoice"
+    else
+      flash[:error] = "No #{@ts_fee_type.description} found with invoice ##{params[:id]}"
+      redirect_to :action => "index"
+    end
   end
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
