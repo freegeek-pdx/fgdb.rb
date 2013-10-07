@@ -17,6 +17,12 @@ class User < ActiveRecord::Base
   validates_format_of       :login, :with => /[^0-9]/, :message => "must contain a non-numeric character"
   before_save :encrypt_password
   before_save :add_cashier_code
+  before_save :disable_reason_cannot_login_on_reenable
+
+  def disable_reason_cannot_login_on_reenable
+    return unless self.can_login && self.can_login_changed?
+    self.reason_cannot_login = "" if self.reason_cannot_login && self.reason_cannot_login.length > 0
+  end
 
   belongs_to :contact
   has_one :skedjulnator_access
