@@ -11,6 +11,7 @@ RAILS_ENV=production
 0 21 * * 2 root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/overtime_report.rb
 
 0 0 1 * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/send_self_signed_builder_task_report.sh
+0 0 1 * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/disable_inactive_users
 
 # staff hours reports
 0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/hours_poker --email
