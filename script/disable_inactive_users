@@ -1,0 +1,4 @@
+#!/bin/sh
+exec ruby `dirname $0`/sql_runner $0 "$@"
+
+UPDATE users SET can_login = 'f', updated_at = now(), reason_cannot_login = 'Account disabled due to 180 days of inactivity.' WHERE can_login = 't' AND (last_logged_in IS NULL OR last_logged_in < (now()::date - 180)) AND created_at < (now()::date - 180);
