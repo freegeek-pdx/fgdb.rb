@@ -3,6 +3,7 @@
 STATUS=0
 p=$0
 DEBUG=false
+LIST=false
 AUTO_INSTALL=false
 AUTO_INSTALL_PACKAGES=
 RAILS_VERSION=2.3.14
@@ -13,6 +14,7 @@ echo ""
 echo "Options:"
 echo "  --help, -h          -- displays this help message"
 echo "  --debug, -d         -- shows the output of the test commands"
+echo "  --list, -l          -- shows the list of packages that would be tested or installed"
 echo "  --auto-install, -i  -- automatically installs missing dependencies (not yet implemented)"
 echo ""
 }
@@ -21,6 +23,9 @@ while [ -n "$1" ]; do
     case "$1" in
         --debug|-d)
             DEBUG=true
+            ;;
+        --list|-l)
+            LIST=true
             ;;
         --auto-install|-i)
             AUTO_INSTALL=true
@@ -94,6 +99,10 @@ runit(){
 }
 
 run(){
+    if [ "$LIST" = "true" ]; then
+	echo "$3"
+	return
+    fi
     if [ "$4" != "return" ]; then
         echo -n $1
     fi
@@ -118,6 +127,9 @@ run(){
 }
 
 setup_stuff(){
+    if [ "$LIST" = "true" ] ; then
+	return
+    fi
     run "..." "require_test rubygems" "..." "return"
     if [ $? = 0 ]; then
         GEMS="true"
@@ -153,8 +165,10 @@ test_find_thin(){
     which thin || which thin1.8
 }
 
-echo "Testing to see if you have everything required for fgdb to run..."
-echo
+if [ "$LIST" = "false" ] ; then
+    echo "Testing to see if you have everything required for fgdb to run..."
+    echo
+fi
 run "Checking to see if ruby is installed..." "which ruby" "ruby" "error"
 setup_stuff # only runable if ruby is installed
 run "Checking to see if make is installed..." "which make" "make" "fail"
@@ -164,7 +178,7 @@ run "Checking to see if the ruby postgres bindings are installed..." "require_te
 run "Checking to see if nokogiri is installed..." "require_test nokogiri" "ruby-nokogiri" "fail"
 run "Checking to see if barby is installed..." "require_test barby" "ruby-barby" "fail"
 run "Checking to see if bluecloth is installed..." "require_test bluecloth" "ruby-bluecloth" "fail"
-run "Checking to see if rmagick is installed..." "require_test RMagick" "ruby-imagemagick" "fail"
+run "Checking to see if rmagick is installed..." "require_test RMagick" "ruby-rmagick" "fail"
 run "Checking to see if bytes is installed..." "require_test bytes" "ruby-bytes" "fail"
 run "Checking to see if prawn is installed..." "require_test prawn" "ruby-prawn" "fail"
 run "Checking to see if RT::Client::REST is installed..." "require_perl_test RT::Client::REST" "librt-client-rest-perl" "fail"
@@ -174,7 +188,7 @@ run "Checking to see if curl is installed..." "which curl" "curl" "fail"
 run "Checking to see if socat is installed..." "which socat" "socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "ruby-nokogiri" "fail"
 run "Checking to see if postgres is installed and running..." "check_for_postgres" "postgresql" "fail"
-run "Checking to see if timeout is installed..." "which timeout" "timeout" "fail"
+run "Checking to see if timeout is installed..." "which timeout" "coreutils" "fail"
 
 auto_install
 
