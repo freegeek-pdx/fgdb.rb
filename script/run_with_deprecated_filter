@@ -7,7 +7,7 @@ STDERR_FILE=$(mktemp)
 RETURN_VALUE=$?
 
 cat $STDOUT_FILE
-cat $STDERR_FILE  | grep -Ev ' is deprecated,? ' | grep -v ' called from ' | grep -v ' will be deprecated '
+cat $STDERR_FILE  | grep -Ev ' is deprecated,? ' | grep -v ' called from ' | grep -v ' will be deprecated ' | grep -v 'against to UTF-8 string' >&2
 
 rm $STDOUT_FILE $STDERR_FILE
 

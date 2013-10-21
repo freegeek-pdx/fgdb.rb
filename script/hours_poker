@@ -70,7 +70,7 @@ if ARGV[0] == "--print"
 elsif ARGV[0] == "--email"
   dostuff
   exit if @myworkers.length == 0
-  Notifier.deliver_staff_hours_summary_report(@myworkers)
+#  Notifier.deliver_staff_hours_summary_report(@myworkers)
   @myworkers.select{|x| x.can_send?}.each{|x|
     Notifier.deliver_staff_hours_poke(x)
   }
