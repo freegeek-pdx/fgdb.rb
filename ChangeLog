@@ -1,6 +1,5 @@
 fgdb.rb (1.0.127) released; urgency=low
 
-  [ Ryan Niebur ]
   * Implement BARCODES! (Closes: #37673)
   * Allow build instructors to sign off their own builder tasks (Closes:
     #36984)
@@ -19,8 +18,6 @@ fgdb.rb (1.0.127) released; urgency=low
   * Fix crashes in trend report caused by new income report (FXXBsC,
     XAUwNx)
   * Fix spacing on the volunteer milestone report (Closes: #37825)
-
-  [ root ]
   * Tweaks to the TOS and sizes for updated Firefox margins (Closes:
     #37634)
   * fix hours logged on the date of last adoption to no longer count as
@@ -36,14 +33,12 @@ fgdb.rb (1.0.127) released; urgency=low
     inactivity, with a message to user that are disabled explaining the
     situation on login attempt (Closes: #37664)
   * Fix crash in trend reports (bsS7P7)
-
-  [ Ryan Niebur ]
   * Fix crash in barcodes when a very largely wrong number is given, as
     this may have frozen the interface, but they did know not to do it
     (hNg1QX, mQCai4)
-
-  [ root ]
   * disable staff hours summary (Closes: #38099)
+  * Do not accept or remember 0 or less settings of per page, which
+    break the DB transaction search page (Crash D5nklB) (Closes: #38555)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 
