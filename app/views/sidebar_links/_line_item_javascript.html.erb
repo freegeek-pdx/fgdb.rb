@@ -5,7 +5,7 @@
                           :with => "{cashier_code: code, append_this: append}") + "
 }" %>
 
-<% @gizmo_contact = gizmo_context if defined?(gizmo_context) %>
+<% @gizmo_context = gizmo_context if defined?(gizmo_context) %>
 <% if (params[:controller] == "work_orders" && params[:action].match(/invoice/)) %>
   <% @gizmo_context = GizmoContext.donation %>
 <% end %>
@@ -13,8 +13,6 @@
 <% my_cont = params[:controller] %>
 <% my_cont = "donations" if defined?(@gizmo_context) && my_cont == "work_orders" %>
 
-
-<% if defined?(@gizmo_context) %>
 <script>
   var not_discounted;
   var counters = new Array();
@@ -22,11 +20,13 @@
   counters['payments_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
   counters['shifts_line_id'] = <%= defined?(@shifts) ? @shifts.length : 0 %>;
   counters['contact_methods_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
-  gizmo_context_name = '<%= @gizmo_context.name %>';
+  gizmo_context_name = '<%= @gizmo_context ? @gizmo_context.name : "" %>';
   coveredness_enabled = <%= coveredness_enabled.to_json %>;
 </script>
 
 <%= javascript_include_tag 'line_items' %>
+
+<% if defined?(@gizmo_context) %>
 
 <%= javascript_tag "get_sale_exists_url = #{url_for(:action => "get_sale_exists").to_json}; sale_id_cache = new Array;" %>
 <%= javascript_tag "get_disbursement_exists_url = #{url_for(:action => "get_disbursement_exists").to_json}; disbursement_id_cache = new Array;" %>
