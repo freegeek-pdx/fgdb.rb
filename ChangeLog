@@ -41,6 +41,7 @@ fgdb.rb (1.0.127) released; urgency=low
     break the DB transaction search page (Crash D5nklB) (Closes: #38555)
   * Fix bug when editing contacts so that it will always work from any
     page (Closes: #37848)
+  * Fix crash in WO (Closes: #38585)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 

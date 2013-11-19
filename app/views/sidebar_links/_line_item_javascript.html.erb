@@ -6,7 +6,7 @@
 }" %>
 
 <% @gizmo_context = gizmo_context if defined?(gizmo_context) %>
-<% if (params[:controller] == "work_orders" && params[:action].match(/invoice/)) %>
+<% if (params[:controller] == "work_orders") %>
   <% @gizmo_context = GizmoContext.donation %>
 <% end %>
 
