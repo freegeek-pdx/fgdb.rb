@@ -164,6 +164,7 @@ class SpecSheet < ActiveRecord::Base
 #    write_attribute(:original_output, val)
     val = val.to_s
     file = Tempfile.new("fgss-xml")
+    val.force_encoding('UTF-8')
     file.write(val)
     file.flush
     write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
