@@ -14,6 +14,11 @@
   <% end %>
 <% end %>
 
+<% if session[:account_message] %>
+  <span class="error"><%= session[:account_message].gsub("\n", "<br />") %></span>
+  <% session[:account_message] = false %>
+<% end %>
+
 <% if session[:logout_message] %>
   <span class="info">You have been logged out!</span>
   <% session[:logout_message] = false %>

@@ -15,11 +15,11 @@ module AdminHelper
     get_column(n).type.to_s
   end
 
-  def admin_form_for(n, p, *o)
+  def admin_form_for(n, p)
     if p.class == Hash && p[:url]
       p[:url] = p[:url].merge(:model => params[:model])
     end
-    form_for(n, p, *o) do |f|
+    form_for(n, p.merge(:html => {:method => "POST"})) do |f|
       yield(f)
     end
   end

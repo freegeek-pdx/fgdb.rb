@@ -126,16 +126,16 @@ class Contact < ActiveRecord::Base
   validates_associated :user
   after_save :add_to_processor_daemon
 
-  validates_length_of :first_name, :maximum => 25
-  validates_length_of :middle_name, :maximum => 25
-  validates_length_of :surname, :maximum => 50
-  validates_length_of :organization, :maximum => 100
-  validates_length_of :extra_address, :maximum => 52
-  validates_length_of :address, :maximum => 52
-  validates_length_of :city, :maximum => 30
-  validates_length_of :state_or_province, :maximum => 15
-  validates_length_of :postal_code, :maximum => 25
-  validates_length_of :country, :maximum => 100
+  validates_length_of :first_name, :maximum => 25, :allow_nil => true
+  validates_length_of :middle_name, :maximum => 25, :allow_nil => true
+  validates_length_of :surname, :maximum => 50, :allow_nil => true
+  validates_length_of :organization, :maximum => 100, :allow_nil => true
+  validates_length_of :extra_address, :maximum => 52, :allow_nil => true
+  validates_length_of :address, :maximum => 52, :allow_nil => true
+  validates_length_of :city, :maximum => 30, :allow_nil => true
+  validates_length_of :state_or_province, :maximum => 15, :allow_nil => true
+  validates_length_of :postal_code, :maximum => 25, :allow_nil => true
+  validates_length_of :country, :maximum => 100, :allow_nil => true
 
   def foreign_person_or_civicrm?
     foreign_person? or $civicrm_mode

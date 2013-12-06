@@ -103,6 +103,7 @@ class ApplicationController < ActionController::Base
     session[:per_page] ||= 20
     session[:per_page] = params[:per_page] if params[:per_page]
     session[:per_page] = "500" if session[:per_page].to_i > 500
+    session[:per_page] = "20" if session[:per_page].to_i <= 0
     return session[:per_page]
   end
 

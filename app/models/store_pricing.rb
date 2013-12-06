@@ -9,9 +9,11 @@ class StorePricing < ActiveRecord::Base
   def self.find_by_barcode(inbarcode)
     inbarcode = inbarcode.to_s
     if inbarcode.match(/^0(.+)$/)
-      self.find_by_id($1.to_s)
+      searchfor = $1.to_i
+      return searchfor.valid_postgres_int? ? self.find_by_id(searchfor) : nil
     else
-      self.find_by_system_id(inbarcode.to_i)
+      searchfor = inbarcode.to_i
+      return searchfor.valid_postgres_int? ? self.find_by_system_id(searchfor) : nil
     end
   end
 

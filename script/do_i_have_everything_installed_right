@@ -3,7 +3,10 @@
 STATUS=0
 p=$0
 DEBUG=false
+LIST=false
 AUTO_INSTALL=false
+AUTO_INSTALL_PACKAGES=
+RAILS_VERSION=2.3.14
 
 helpme(){
 echo "Usage: $(basename $0) [options]"
@@ -11,6 +14,7 @@ echo ""
 echo "Options:"
 echo "  --help, -h          -- displays this help message"
 echo "  --debug, -d         -- shows the output of the test commands"
+echo "  --list, -l          -- shows the list of packages that would be tested or installed"
 echo "  --auto-install, -i  -- automatically installs missing dependencies (not yet implemented)"
 echo ""
 }
@@ -19,6 +23,9 @@ while [ -n "$1" ]; do
     case "$1" in
         --debug|-d)
             DEBUG=true
+            ;;
+        --list|-l)
+            LIST=true
             ;;
         --auto-install|-i)
             AUTO_INSTALL=true
@@ -38,16 +45,31 @@ while [ -n "$1" ]; do
 done
 
 fail(){
-    STATUS=1
-    echo "FAILED"
-    echo "  $@"
+    if [ "$AUTO_INSTALL" = "true" ]; then
+	echo "FAILED"
+	echo "  will auto-install $@"
+	AUTO_INSTALL_PACKAGES="$AUTO_INSTALL_PACKAGES $@"
+    else
+	STATUS=1
+	echo "FAILED"
+	echo "  install $@"
+    fi
+}
+
+install_pkg() {
+    sudo apt-get install -y "$@"
 }
 
 error(){
     fail "$@"
-    echo
-    echo "After doing that, retry this script."
-    exit $STATUS # 1
+    if [ "$AUTO_INSTALL" = "true" ] ; then
+	echo "  installing early to allow further testing:"
+	install_pkg "$@"
+    else
+	echo
+	echo "After doing that, retry this script."
+	exit $STATUS # 1
+    fi
 }
 
 start(){
@@ -77,6 +99,10 @@ runit(){
 }
 
 run(){
+    if [ "$LIST" = "true" ]; then
+	echo "$3"
+	return
+    fi
     if [ "$4" != "return" ]; then
         echo -n $1
     fi
@@ -101,6 +127,9 @@ run(){
 }
 
 setup_stuff(){
+    if [ "$LIST" = "true" ] ; then
+	return
+    fi
     run "..." "require_test rubygems" "..." "return"
     if [ $? = 0 ]; then
         GEMS="true"
@@ -113,41 +142,55 @@ check_a_version(){
     ruby -r "$(dirname $p)/../config/boot.rb" -e "test_version($(echo $@ | sed 's/[.]/,/g'))"
 }
 
+auto_install() {
+    if [ "$AUTO_INSTALL" = "true" ] ; then
+	if [ -n "$AUTO_INSTALL_PACKAGES" ]; then
+	    echo "Now auto-installing packages: $@"
+	    install_pkg "$AUTO_INSTALL_PACKAGES"
+	else
+	    echo "Nothing needs to be installed."
+	fi
+    fi
+}
+
 check_for_postgres(){
     [ -n "$(pgrep -x postgres)$(pgrep -x postmaster)" ]
 }
 
 test_my_rails_version(){
-    check_a_version 2.3.14
+    check_a_version $RAILS_VERSION
 }
 
 test_find_thin(){
     which thin || which thin1.8
 }
 
-echo "Testing to see if you have everything required for fgdb to run..."
-echo
-run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
+if [ "$LIST" = "false" ] ; then
+    echo "Testing to see if you have everything required for fgdb to run..."
+    echo
+fi
+run "Checking to see if ruby is installed..." "which ruby" "ruby" "error"
 setup_stuff # only runable if ruby is installed
-run "Checking to see if make is installed..." "which make" "install make" "fail"
-run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
-run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.3.5" "fail"
-run "Checking to see if the ruby postgres bindings are installed..." "require_test pg" "install libpgsql-ruby" "fail"
-run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"
-run "Checking to see if barby is installed..." "require_test barby" "install libbarby-ruby" "fail"
-run "Checking to see if bluecloth is installed..." "require_test bluecloth" "install libbluecloth-ruby" "fail"
-run "Checking to see if rmagick is installed..." "require_test RMagick" "install librmagick-ruby" "fail"
-run "Checking to see if bytes is installed..." "require_test bytes" "install libbytes-ruby1.8" "fail"
-run "Checking to see if prawn is installed..." "require_test prawn" "install ruby-prawn" "fail"
-run "Checking to see if json is installed..." "require_test json" "install libjson-ruby1.8" "fail"
-run "Checking to see if RT::Client::REST is installed..." "require_perl_test RT::Client::REST" "install librt-client-rest-perl" "fail"
-run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
-run "Checking to see if thin is installed..." "test_find_thin" "install thin" "fail"
-run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
-run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
-run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"
-run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
-run "Checking to see if timeout is installed..." "which timeout" "install timeout" "fail"
+run "Checking to see if make is installed..." "which make" "make" "fail"
+run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "rails" "error"
+run "Checking to see if rails is correct version ($RAILS_VERSION)..." "test_my_rails_version" "rails" "fail"
+run "Checking to see if the ruby postgres bindings are installed..." "require_test pg" "ruby-pg" "fail"
+run "Checking to see if nokogiri is installed..." "require_test nokogiri" "ruby-nokogiri" "fail"
+run "Checking to see if barby is installed..." "require_test barby" "ruby-barby" "fail"
+run "Checking to see if bluecloth is installed..." "require_test bluecloth" "ruby-bluecloth" "fail"
+run "Checking to see if rmagick is installed..." "require_test RMagick" "ruby-rmagick" "fail"
+run "Checking to see if bytes is installed..." "require_test bytes" "ruby-bytes" "fail"
+run "Checking to see if prawn is installed..." "require_test prawn" "ruby-prawn" "fail"
+run "Checking to see if RT::Client::REST is installed..." "require_perl_test RT::Client::REST" "librt-client-rest-perl" "fail"
+run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "xmlstarlet" "fail"
+run "Checking to see if thin is installed..." "test_find_thin" "thin" "fail"
+run "Checking to see if curl is installed..." "which curl" "curl" "fail"
+run "Checking to see if socat is installed..." "which socat" "socat" "fail"
+run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "ruby-nokogiri" "fail"
+run "Checking to see if postgres is installed and running..." "check_for_postgres" "postgresql" "fail"
+run "Checking to see if timeout is installed..." "which timeout" "coreutils" "fail"
+
+auto_install
 
 exit $STATUS
 

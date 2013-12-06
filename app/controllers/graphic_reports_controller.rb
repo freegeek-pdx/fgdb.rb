@@ -695,9 +695,10 @@ class AverageFrontdeskIncomesTrend < TrendReport
 
     def get_for_timerange(args)
       thing = call_income_report(args)
-      thing = thing[:donations]["real total"] # WHY IS THERE A SPACE!?!?!
-      suggested = thing["suggested"][:total] / 100.0
-      fees = thing["fees"][:total] / 100.0
+      thing = thing[:donor_desk]["real total"] # WHY IS THERE A SPACE!?!?!
+      # FIXME: needs improvement / breakout?
+      suggested = thing["gizmo contributions"][:total] / 100.0
+      fees = thing["recycling_fees"][:total] / 100.0
       number = find_all_donations(args)
       total = suggested + fees
       suggested = suggested / number

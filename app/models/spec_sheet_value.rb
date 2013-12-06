@@ -5,7 +5,10 @@ class SpecSheetValue < ActiveRecord::Base
   validates_presence_of :value
 
   def remove_nonprintables_from_value
-    value = value.gsub(/[^\p{Print}]+/, "") if value
+    if value && !value.blank?
+      self.value = self.value.gsub(/[^\p{Print}]+/, " ")
+      self.value = "<non-printable-characters>" if value.blank?
+    end
   end
 
   def title

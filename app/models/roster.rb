@@ -54,8 +54,9 @@ class Roster < ActiveRecord::Base
       VolunteerDefaultShift.generate(from, to, c, skippers)
       ResourcesVolunteerDefaultEvent.generate(from, to, c)
     rescue => e
-      puts "ERROR: Failed to generate #{self.name} roster!"
-      puts "Please check for consistency, error message: #{e.to_s}"
+      puts "ERROR: Failed to generate #{self.name} roster from #{from} to #{to}!"
+      puts "Please check for consistency,"
+      puts "  error message: #{e.to_s}"
     end
     return results
   end

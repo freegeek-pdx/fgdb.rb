@@ -1,5 +1,23 @@
 require File.join(File.dirname(__FILE__), "rails_fix.rb")
 
+class Bignum
+  def valid_postgres_int?()
+    return !(self > 2147483647 || self < -2147483648)
+  end
+end
+
+class Fixnum
+  def valid_postgres_int?()
+    return true
+  end
+end
+
+class Float
+  def valid_postgres_int?()
+    return !(self.to_i > 2147483647 || self.to_i < -2147483648)
+  end
+end
+
 class ProcessorDaemon
   def self.add_to(type, tid, source = "fgdb")
     return false if Default['civicrm_server'].nil?

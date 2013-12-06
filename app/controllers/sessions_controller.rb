@@ -7,6 +7,19 @@ class SessionsController < ApplicationController
   end
 
   def create
+    disabled_user = User.find_by_login_and_can_login(params[:login].to_s.strip, false)
+    if disabled_user
+      if disabled_user.reason_cannot_login && disabled_user.reason_cannot_login.to_s.length > 0
+        session[:account_message] = "Your account, #{disabled_user.login}, is not enabled for the following reason:\n#{disabled_user.reason_cannot_login.to_s}"
+      else
+        session[:account_message] = "Your account, #{disabled_user.login}, is no longer enabled. This may be due to inactivity."
+      end
+      session[:account_message] += "\n\nPlease see a staff member or email Technocrats if you need your account turned back on."
+      render :update do |page|
+        page.redirect_to(:controller => "sidebar_links", :action => "index")
+      end
+      return
+    end
     self.current_user = User.authenticate(params[:login].to_s.strip, params[:password])
     if self.current_user
       self.current_user.will_not_updated_timestamps!
