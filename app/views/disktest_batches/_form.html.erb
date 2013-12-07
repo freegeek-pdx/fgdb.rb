@@ -1,3 +1,9 @@
+  <div style="float: right; clear: none;">
+    <p>
+      <%= f.label :contact_id %><br />
+      <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
+    </p>
+  </div>
   <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>
@@ -9,10 +15,6 @@
   <p>
     <%= f.label :finalized %><br />
     <%= f.check_box(:finalized) %>
-  </p>
-  <p>
-    <%= f.label :contact_id %><br />
-    <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
   </p>
 
   <% interface = OH.new %>

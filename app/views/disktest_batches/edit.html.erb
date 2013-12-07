@@ -1,5 +1,7 @@
 <h1>Editing disktest batch</h1>
 
+<%= render :partial => "warnings" %>
+
 <% form_for(@disktest_batch, :url => {:action => "update", :id => @disktest_batch.id}) do |f| %>
   <%= f.error_messages %>
 

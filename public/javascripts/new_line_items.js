@@ -964,12 +964,17 @@ var DriveFrontend = Class.create(ComponentLineItem, {
 
   add_from_form_hook: function ($super) {
     if($('serial_number').value != "" || $('system_serial_number').value != "") {
-      $super();
+      return $super();
     }
   },
 
   copy_hook: function (original_line_id) {
-    $('serial_number').value = "";
+    if($('serial_number').value == "no drive") {
+      $('system_serial_number').value = "";
+      $('system_serial_number').focus();
+    } else {
+      $('serial_number').value = "";
+    }
     return;
   },
 

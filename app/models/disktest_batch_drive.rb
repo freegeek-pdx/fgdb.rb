@@ -30,7 +30,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   end
 
   def no_drive?
-    return self.serial_number.downcase.strip == "no drive"
+    return self.serial_number.downcase.strip == self.class.no_drive
   end
 
   def destroyed?
@@ -59,5 +59,9 @@ class DisktestBatchDrive < ActiveRecord::Base
   def finalize_run
     run = _find_run
     self.disktest_run_id = run ? run.id : nil
+  end
+
+  def self.no_drive
+    "no drive"
   end
 end

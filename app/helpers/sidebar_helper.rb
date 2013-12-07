@@ -61,6 +61,8 @@ module SidebarHelper
     "store_pricings" => "sales",
     "pricing_types" => "sales",
     "pricing_components" => "sales",
+      "disktest_batches" => "data sec",
+      "disktest_runs" => "data sec",
     "pricing_values" => "sales" # Going away?
     }
   end

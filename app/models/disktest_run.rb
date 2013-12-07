@@ -19,6 +19,8 @@ class DisktestRun < ActiveRecord::Base
   def status
     if running?
       "Testing since #{self.started_at.to_s}"
+    elsif self.completed_at.nil?
+      self.result
     else
       "#{self.result} at #{self.completed_at.to_s}"
     end

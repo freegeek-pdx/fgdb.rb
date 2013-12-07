@@ -28,7 +28,7 @@ class DisktestBatchesController < ApplicationController
     @success = false
     if @serial
       dbd = DisktestBatchDrive.find(:all, :include => [:disktest_batch], :conditions => ['disktest_batches.finalized_on IS NULL AND serial_number = ?', @serial])
-      if dbd.length > 2
+      if dbd.length >= 2
         @status = "There are multiple drives with serial number #{@serial} in active batches, please correct the problem first."
         return
       end
@@ -96,13 +96,13 @@ class DisktestBatchesController < ApplicationController
 
   def update
     @disktest_batch = DisktestBatch.find(params[:id])
-    # FIXME: consolidate these..
-    my_apply_line_item_data(@disktest_batch, 'disktest_batch_drives', 'drives')
 
     if @disktest_batch.update_attributes(params[:disktest_batch])
-      @disktest_batch.disktest_batch_drives.each do |dbb|
-        dbb.save
-      end
+      my_apply_line_item_data(@disktest_batch, 'disktest_batch_drives', 'drives')
+      @disktest_batch.save
+#      @disktest_batch.disktest_batch_drives.each do |dbb|
+#        dbb.save
+#      end
       flash[:notice] = 'DisktestBatch was successfully updated.'
       redirect_to({:action => "show", :id => @disktest_batch.id})
     else
