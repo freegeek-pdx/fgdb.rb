@@ -32,7 +32,7 @@
 <% if @contact.has_areas_disciplined_from? or (@contact.notes && @contact.notes != '') %>
   <div class="contact_comments">
     <% if @contact.has_areas_disciplined_from? %>
-      Cannot volunteer in these areas (check with a management staff member for assistance):<br />
+      Cannot volunteer in these areas (check with a staff member for assistance):<br />
       <ul>
         <% @contact.areas_disciplined_from.map(&:name).each do |d| %>
           <li><%= d %></li>
