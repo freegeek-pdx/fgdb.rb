@@ -1,0 +1,11 @@
+<% if @status %>
+<span class="<%= @success ? "info" : "error" %>">
+<%= @status %>
+</span>
+</br ></br >
+<% end %>
+
+<% form_tag do %>
+<%= text_field_tag "serial_number" %>
+<%= submit_tag "Mark Destroyed" %>
+<% end %>
