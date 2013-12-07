@@ -144,6 +144,7 @@ module SidebarHelper
     sidebar_hash["build"]["proc db"] = {:controller => 'spec_sheets', :action => 'lookup_proc'}
     sidebar_hash["data sec"]["disktest runs"] = {:controller => "disktest_runs"}
     sidebar_hash["data sec"]["disktest batches"] = {:controller => "disktest_batches"}
+    sidebar_hash["data sec"]["record destroy"] = {:controller => "disktest_batches", :action => "mark_destroyed"}
     # done
     sidebar_hash["admin"]["config"] = {:controller => "admin", :model => nil}
     sidebar_hash["admin"]["logs"] = {:controller => "logs"}

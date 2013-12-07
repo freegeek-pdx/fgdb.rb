@@ -6,7 +6,7 @@
   <%= render :partial => "form", :locals => {:f => f} %>
 
   <p>
-    <%= f.submit "Update" %>
+    <%= f.submit "Update", :onclick => "add_all_line_items();" %>
   </p>
 <% end %>
 

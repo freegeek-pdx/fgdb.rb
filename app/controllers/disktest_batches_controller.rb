@@ -23,6 +23,34 @@ class DisktestBatchesController < ApplicationController
     end
   end
 
+  def mark_destroyed
+    @serial = params[:serial_number]
+    @success = false
+    if @serial
+      dbd = DisktestBatchDrive.find(:all, :include => [:disktest_batch], :conditions => ['disktest_batches.finalized_on IS NULL AND serial_number = ?', @serial])
+      if dbd.length > 2
+        @status = "There are multiple drives with serial number #{@serial} in active batches, please correct the problem first."
+        return
+      end
+      dbd = dbd.first
+      if dbd
+        if dbd.destroyed_at
+          @status = "The drive with serial number #{@serial} was already marked destroyed."
+        else
+          dbd.mark_destroyed
+          if dbd.save
+            @status = "Marked drive with serial number #{@serial} destroyed."
+            @success = true
+          else
+            @status = "There was an error saving the record."
+          end
+        end
+      else
+        @status = "No drive was found in current batches with serial number: #{@serial}"
+      end
+    end
+  end
+
   layout :with_sidebar
 
   def search

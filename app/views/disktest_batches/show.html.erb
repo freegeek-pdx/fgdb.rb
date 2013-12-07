@@ -18,7 +18,7 @@ Report not yet finalized.
 <% @disktest_batch.disktest_batch_drives.sort_by{|x| [x.system_serial_number, x.serial_number].join("---")}.each do |d| %>
   <tr>
     <td><%= d.system_serial_number %></td>
-    <td><%= link_to d.serial_number, {:controller => "disktest_runs", :action => "history", :serial => d.serial_number} %></td>
+    <td><% if d.no_drive? %>No Drive<% else %><%= link_to d.serial_number, {:controller => "disktest_runs", :action => "history", :serial => d.serial_number} %><% end %></td>
     <td><%= d.status %></td>
   </tr>
 <% end %>
@@ -39,8 +39,14 @@ Report not yet finalized.
   </tr>
   <tr>
     <td>Total hard drives:</td>
-    <td><%= @disktest_batch.disktest_batch_drives.count %></td>
+    <td><%= @disktest_batch.disktest_batch_drives.count - @disktest_batch.count_number(:no_drive?) %></td>
   </tr>
+  <% if @disktest_batch.count_number(:no_drive?) > 0 %>
+  <tr>
+    <td>Systems with no hard drives:</td>
+    <td><%= @disktest_batch.count_number(:no_drive?) %></td>
+  </tr>
+  <% end %>
 
 
 </table>

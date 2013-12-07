@@ -67,8 +67,13 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.do_update_hook();
   },
 
+  copy_hook: function (original_line_id) {
+    return;
+  },
+
   copy: function (line_id) {
     this.edit_hook(line_id);
+    this.copy_hook(line_id);
   },
 
   make_hidden: function (name, display_value, value){
@@ -935,6 +940,9 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
 
 var SerialComponent = Class.create(InputBasedComponent, {
   linelist: ['serial_number'],
+  add_from_form_reject: function() {
+    return false;
+  },
 });
 
 var SystemSerialComponent = Class.create(InputBasedComponent, {
@@ -951,7 +959,19 @@ var StatusComponent = Class.create(HiddenBasedComponent, {
 var DriveFrontend = Class.create(ComponentLineItem, {
   prefix: 'drives',
   copyable: true,
+  add_on_save: true,
   checkfor: [SerialComponent, SystemSerialComponent, StatusComponent],
+
+  add_from_form_hook: function ($super) {
+    if($('serial_number').value != "" || $('system_serial_number').value != "") {
+      $super();
+    }
+  },
+
+  copy_hook: function (original_line_id) {
+    $('serial_number').value = "";
+    return;
+  },
 
 //  update_all: function(args) {
 //    Element.show(batch_drive_loading_id);
