@@ -9,7 +9,7 @@ end
 i=0
 names = {}
 Contact.find(:all).each do |c|
-  if c.first_name || c.surname
+  if (c.first_name || c.surname || c.organization) && (c.first_name.to_s + c.surname.to_s + c.organization.to_s).length > 0
     address = "#{c.extra_address} #{c.address} #{c.postal_code}".downcase().gsub(/\b(st|ave|av|rd|road)\b/, "")
     #name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[aeiou]|[^a-z0-9\s]/, "")
     name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[^a-z0-9\s]/, "")

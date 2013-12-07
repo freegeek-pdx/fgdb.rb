@@ -99,7 +99,7 @@ class Assignment < ActiveRecord::Base
       errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end
     unless self.cancelled?
-      errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", ")})") if !(self.contact.nil?) and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
+      errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc + " on " + x.volunteer_shift.volunteer_event.date.to_s}.join(", ")})") if !(self.contact.nil?) and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
       errors.add("volunteer_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time

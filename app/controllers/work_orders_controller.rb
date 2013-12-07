@@ -86,10 +86,15 @@ class WorkOrdersController < ApplicationController
   def show_invoice
     @invoice = Donation.find_by_id(params[:id].to_i)
     @ts_fee_type = GizmoType.find_by_name("service_fee_tech_support")
-    @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/)
-    matchid = $1
-    show(matchid) if matchid
-    render :action => "invoice"
+    @invoice.gizmo_events.select{|x| x.gizmo_type == @ts_fee_type}.map{|x| x.description}.join(" ").match(/Ticket #([0-9]+)/) if @invoice
+    matchid = $1 if @invoice && $1
+    if matchid
+      show(matchid)
+      render :action => "invoice"
+    else
+      flash[:error] = "No #{@ts_fee_type.description} found with invoice ##{params[:id]}"
+      redirect_to :action => "index"
+    end
   end
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
@@ -129,7 +134,12 @@ class WorkOrdersController < ApplicationController
     end
     @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3}-\d{3}-\d{4}/)
     @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
-    @errors.add("ticket_source", "must be chosen") if @data["Ticket Source"].to_s.length == 0
+    if @data["Ticket Source"].to_s.length == 0
+      @errors.add("ticket_source", "must be chosen")
+    else
+      @data["Support Level"] = @work_order.ticket_source.to_s == "Box Brought In" ? "Line 2" : "Line 1"
+    end
+
     if @work_order.mode == 'ts'
       @data["Adopter Name"] = @work_order.adopter_name
       @data["OS"] = @work_order.os

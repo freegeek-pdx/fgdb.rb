@@ -17,6 +17,9 @@
     <div class='form-element'>
       <label for="user_can_login">can authenticate to database?</label>
       <%= check_box :user, :can_login %>
+      <% if @contact.user.reason_cannot_login && @contact.user.reason_cannot_login.length > 0 %><br />
+      Reason cannot login: <%= @contact.user.reason_cannot_login %>
+      <% end %>
     </div>
   <% end %>
 
