@@ -4,14 +4,14 @@
     <% if @contact %>
       <% if @contact.has_areas_disciplined_from? %>
         Not allowed to volunteer in the following areas: <%= @contact.areas_disciplined_from.map(&:name).join(", ") %><br/>
-        Please check with a manager for assistance.
+        Please check with a staff member for assistance.
       <% end %>
       <% @management_cashier.contact_id = @contact.id %>
     <% end %>
     </div>
     <div class="form-element">
     <% fields_for :management_cashier do |f| %>
-    <%= f.label :cashier_code, "Enter PIN for more information (management only):" %>
+    <%= f.label :cashier_code, "Enter PIN for more information (staff only):" %>
     <%= f.password_field :cashier_code, :autocomplete => :off %>
     <%= button_to_function "Load Confidential Information", remote_function(
           :url => {:controller => "contacts", :action => "load_confidential_information", :management_cashier => {:contact_id => @management_cashier.contact_id}},
