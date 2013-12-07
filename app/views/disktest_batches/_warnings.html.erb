@@ -1,0 +1,14 @@
+<% if @disktest_batch %>
+  <% bigchunks = @disktest_batch.disktest_batch_drives.map{|x| x.serial_number}.select{|x| x && x != DisktestBatchDrive.no_drive}.chunk{|x| x}.select{|x,y| y.length > 1}.map{|x,y| [x, y.length]} %>
+  <% bigchunks.each do |serial, count| %>
+    <span class="error">
+      WARNING: Hard drive serial number "<%= serial %>" is used <%= count %> times!<br />
+    </span>
+  <% end %>
+  <% bigchunks = @disktest_batch.disktest_batch_drives.select{|x| x.system_serial_number && x.serial_number == DisktestBatchDrive.no_drive}.map{|x| x.system_serial_number}.chunk{|x| x}.select{|x,y| y.length > 1}.map{|x,y| [x, y.length]} %>
+  <% bigchunks.each do |serial, count| %>
+    <span class="error">
+      WARNING: System serial number "<%= serial %>" is used with "no drive" <%= count %> times!<br />
+    </span>
+  <% end %>
+<% end %>
