@@ -52,7 +52,7 @@ class ContactsController < ApplicationController
     @conditions = Conditions.new
     if params[:conditions]
       @conditions.apply_conditions(params[:conditions])
-      @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
+      @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact), :order => 'contacts.id ASC')
     else
       @show_email = true
     end

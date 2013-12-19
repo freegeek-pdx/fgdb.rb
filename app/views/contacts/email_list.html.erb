@@ -9,7 +9,7 @@
 <%= check_box_tag 'include_last_donated_date', "1", @include_last_donated_date %><%= label_tag 'include_last_donated_date' %><br />
 <%= check_box_tag 'include_last_donated_contribution_only_date', "1", @include_last_donated_contribution_only_date %><%= label_tag 'include_last_donated_contribution_only_date' %><br />
 <%= check_box_tag 'include_last_donated_gizmos_only_date', "1", @include_last_donated_gizmos_only_date %><%= label_tag 'include_last_donated_gizmos_only_date' %><br />
-<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days', 'last_volunteer_date', 'organization', 'last_donated_date', 'last_donated_gizmos_only_date', 'last_donated_contribution_only_date']) %>
+<%= conditions_html("conditions", ['created_at', 'contact_type', 'volunteered_hours_in_days', 'last_volunteer_date', 'organization', 'last_donated_date', 'last_donated_gizmos_only_date', 'last_donated_contribution_only_date']) %>
 <%= submit_tag 'View Email List' %>
 <% end %>
 
@@ -108,7 +108,7 @@
 
 <h3>Matches:</h3>
 <pre>
-<% for i in @contacts.sort_by(&:sort_name)  -%>
+<% for i in @contacts -%>
 <%= i.display_last_name_first %><%= @include_comma ? "," : "" %>
 <% end %>
 </pre>
