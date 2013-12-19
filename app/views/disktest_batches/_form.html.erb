@@ -1,19 +1,19 @@
   <div style="float: right; clear: none;">
     <p>
-      <%= f.label :contact_id %><br />
+      <%= f.label :contact_id, "Contact Requesting Certificate" %><br />
       <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
     </p>
   </div>
   <p>
-    <%= f.label :name %><br />
+    <%= f.label :name, "Identifying Name of Batch" %><br />
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :date, "Date batch received" %><br />
+    <%= f.label :date, "Date Batch was Received" %><br />
     <%= calendar_box(f.object_name, :date) %>
   </p>
   <p>
-    <%= f.label :finalized %><br />
+    <%= f.label :finalized, "Is the Batch Complete?" %><br />
     <%= f.check_box(:finalized) %>
   </p>
 
@@ -23,15 +23,22 @@
   <% interface[:system_serial_number] = text_field_tag('system_serial_number', "", kdh) %>
   <% interface[:status] = hidden_field_tag('status', '', :style => 'display: none;') %>
 
+  <%= link_to_function "Mark No Drive", "$('serial_number').value = 'no drive'; $('system_serial_number').focus();" %> | <%= link_to_function "Add", "add_all_line_items();" %>
+  <div id="toggle_serial_off2">
+    <a href="#" onclick="$('system_serial_number').disable(); $('toggle_serial_off').hide(); $('toggle_serial_on').show(); $('toggle_serial_off2').hide(); $('toggle_serial_on2').show();">Disable system serials</a>
+  </div>
+  <div id="toggle_serial_on2" style="display: none">
+    <a href="#" onclick="$('system_serial_number').enable(); $('toggle_serial_on').hide(); $('toggle_serial_off').show(); $('toggle_serial_on2').hide(); $('toggle_serial_off2').show();">Enable system serials</a>
+  </div>
+
+
   <%= line_item("drives", 'DriveFrontend', interface, @disktest_batch.disktest_batch_drives.map{|i| hash = {:serial_number => i.serial_number, :system_serial_number => i.system_serial_number, :status => i.status}; hash[:id] = i.id if  i.id; hash }) %><%= link_to_function "Mark No Drive", "$('serial_number').value = 'no drive'; $('system_serial_number').focus();" %> | <%= link_to_function "Add", "add_all_line_items();" %><%= loading_indicator_tag("batch_drive_line") %>
 
   <%= javascript_tag "batch_drive_loading_id = #{loading_indicator_id("batch_drive_line").to_json}; update_one_drive_url = #{url_for(:action => "update_a_drive", :id => params[:id]).to_json}; update_all_drives_url = #{url_for(:action => "update_all_drives", :id => params[:id]).to_json};" %>
 
-<%
   <div id="toggle_serial_off">
-    <a href="#" onclick="$('system_serial_number').disable(); $('toggle_serial_off').hide(); $('toggle_serial_on').show();">Disable system serials</a>
+    <a href="#" onclick="$('system_serial_number').disable(); $('toggle_serial_off').hide(); $('toggle_serial_on').show(); $('toggle_serial_off2').hide(); $('toggle_serial_on2').show();">Disable system serials</a>
   </div>
   <div id="toggle_serial_on" style="display: none">
-    <a href="#" onclick="$('system_serial_number').enable(); $('toggle_serial_on').hide(); $('toggle_serial_off').show();">Enable system serials</a>
+    <a href="#" onclick="$('system_serial_number').enable(); $('toggle_serial_on').hide(); $('toggle_serial_off').show(); $('toggle_serial_on2').hide(); $('toggle_serial_off2').show();">Enable system serials</a>
   </div>
-
