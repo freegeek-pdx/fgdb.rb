@@ -21,6 +21,7 @@ class DisktestAPI < SOAP::SoapsBase
     ["check_disktest_running", "vendor", "model", "serial_number"],
     ["get_form_factor", "vendor", "model"],
     ["set_form_factor", "id", "form_factor"],
+    ["get_batch_description", "serial"]
 
      # TODO: remove this later
     ["add_disktest_result", "id", "status"],
@@ -43,6 +44,10 @@ class DisktestAPI < SOAP::SoapsBase
   #########
 
   public
+  def get_batch_description(serial)
+    DisktestBatchDrive.find_active_by_serial(serial).map{|x| x.disktest_batch}.uniq.map{|x| x.long_description}.join(", ")
+  end
+
   def get_form_factor(vendor, model)
     dr = DisktestRun.find(:first, :conditions => ["vendor ILIKE ? AND model ILIKE ? AND form_factor IS NOT NULL AND form_factor <> ''", vendor, model], :order => "updated_at DESC")
     return dr ? dr.form_factor : dr

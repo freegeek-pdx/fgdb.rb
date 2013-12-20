@@ -64,4 +64,8 @@ class DisktestBatchDrive < ActiveRecord::Base
   def self.no_drive
     "no drive"
   end
+
+  def self.find_active_by_serial(serial)
+    self.find(:all, :include => [:disktest_batch], :conditions => ['disktest_batches.finalized_on IS NULL AND serial_number = ?', serial])
+  end
 end

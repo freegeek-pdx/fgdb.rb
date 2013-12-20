@@ -8,6 +8,10 @@ class DisktestBatch < ActiveRecord::Base
   validates_presence_of :contact_id
   validates_existence_of :contact
 
+  def long_description
+    "Batch called " + self.name.to_s + ", for contact #" + self.contact_id.to_s + ", from " + self.date.to_s
+  end
+
   def fake_status(serial)
     drive = self.disktest_batch_drives.new(:serial_number => serial)
     drive.disktest_batch = self

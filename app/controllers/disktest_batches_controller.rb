@@ -27,7 +27,7 @@ class DisktestBatchesController < ApplicationController
     @serial = params[:serial_number]
     @success = false
     if @serial
-      dbd = DisktestBatchDrive.find(:all, :include => [:disktest_batch], :conditions => ['disktest_batches.finalized_on IS NULL AND serial_number = ?', @serial])
+      dbd = DisktestBatchDrive.find_active_by_serial(@serial)
       if dbd.length >= 2
         @status = "There are multiple drives with serial number #{@serial} in active batches, please correct the problem first."
         return
