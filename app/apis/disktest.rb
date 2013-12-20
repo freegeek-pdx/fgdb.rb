@@ -21,7 +21,7 @@ class DisktestAPI < SOAP::SoapsBase
     ["check_disktest_running", "vendor", "model", "serial_number"],
     ["get_form_factor", "vendor", "model"],
     ["set_form_factor", "id", "form_factor"],
-    ["get_batch_description", "serial"]
+    ["get_batch_description", "serial"],
 
      # TODO: remove this later
     ["add_disktest_result", "id", "status"],
