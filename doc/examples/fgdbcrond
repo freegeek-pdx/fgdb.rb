@@ -2,36 +2,36 @@ MAILTO=database
 RAILS_ENV=production
 # cleans up sessions
 #
-0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/delete-sessions
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/delete-sessions
 
 # milestone report
-0 21 * * 3 root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/volunteer_milestones_report
-0 7 1 * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/monthly_volunteer_milestones_report
-0 8 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/announce_holidays.rb
-0 21 * * 2 root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/overtime_report.rb
+0 21 * * 3 dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/volunteer_milestones_report
+0 7 1 * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/monthly_volunteer_milestones_report
+0 8 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/announce_holidays.rb
+0 21 * * 2 dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/overtime_report.rb
 
-0 0 1 * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/send_self_signed_builder_task_report.sh
-0 0 1 * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/disable_inactive_users
+0 0 1 * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/send_self_signed_builder_task_report.sh
+0 0 1 * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/disable_inactive_users
 
 # staff hours reports
-0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/hours_poker --email
-0 * * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/meeting_minder.rb
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/hours_poker --email
+0 * * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/meeting_minder.rb
 
 # backups
 25 6    * * *   root    flock -w 1000000000000000000000000000 /var/www/fgdb.rb/tmp/pids/backup.lock -c "timeout 79200 /var/www/fgdb.rb/doc/examples/db-backup-daily"
 17 *    * * *   root    flock -n /var/www/fgdb.rb/tmp/pids/backup.lock -c "timeout 10800 /var/www/fgdb.rb/doc/examples/db-backup-hourly"
 
 # TODO: move the mailing to sql_runner and grab from database
-0 7 * * 2,3,4,5,6,7 root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/cashier_report.sql --email "Cashiers Report" beancounters_mailing_list
+0 7 * * 2,3,4,5,6,7 dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/cashier_report.sql --email "Cashiers Report" beancounters_mailing_list
 
-0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/import-newsletter-subscribers
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/import-newsletter-subscribers
 #0 0 * * * root /var/www/fgdb.rb/script/break_check.rb
-0 0 * * * www-data /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/regenerate_sandbox
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/regenerate_sandbox
 
 0 0 * * * root diff /etc/cron.d/fgdbcrond /var/www/fgdb.rb/doc/examples/fgdbcrond
-0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/recent_crash_report.rb
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/recent_crash_report.rb
 # Set the till to be locked at midnight
-0 0 * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
-0 * * * * root /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/pull_rt_metadata.sh
-7 0 * * * www-data /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/run_generate_volskedj
+0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
+0 * * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/pull_rt_metadata.sh
+7 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/run_generate_volskedj
 
