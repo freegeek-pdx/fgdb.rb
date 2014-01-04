@@ -14,7 +14,7 @@ RAILS_ENV=production
 0 0 1 * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/disable_inactive_users
 
 # staff hours reports
-0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/hours_poker --email
+#0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/hours_poker --email
 0 * * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/meeting_minder.rb
 
 # backups
