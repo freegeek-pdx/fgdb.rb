@@ -2,12 +2,23 @@ module SOAP
 class SoapsBase
   include ApplicationHelper
 
+  attr_accessor :api, :methods, :error
+
+  def self.all
+    @@all
+  end
+
   def initialize
+    @methods = {}
+    @api = self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
+    @@all ||= {}
+    @@all[@api] = self
     add_methods
   end
 
   def add_method(name, *param)
-    namespace = "urn:" + self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
+    namespace = "urn:" + @api
+    @methods[name] = param
 #    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     MyAPIPort.port.add_method(self, name, namespace, *param)
   end

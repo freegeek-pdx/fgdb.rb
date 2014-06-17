@@ -1,5 +1,11 @@
 require_dependency RAILS_ROOT + "/app/helpers/system_helper.rb"
 
+class Struct
+  def to_json(*args)
+    Hash[self.each_pair.to_a].to_json(*args)
+  end
+end
+
 class PrintmeAPI < SOAP::SoapsBase
   include SystemHelper
 
@@ -72,7 +78,11 @@ class PrintmeAPI < SOAP::SoapsBase
   ######################
 
   def ping
-#    return error("BOO")
+#    begin
+#      raise Exception
+#    rescue Exception => e
+#      return error(e, "BOO: ")
+#    end
     "pong"
   end
 

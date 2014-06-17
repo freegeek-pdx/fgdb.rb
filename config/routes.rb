@@ -46,6 +46,8 @@ ActionController::Routing::Routes.draw do |map|
   # See how all your routes lay out with "rake routes"
 
   # Install the default routes as the lowest priority.
+  map.connect 'api/:namespace/:method', :controller => "api", :action => "handle"
+  map.connect 'api/:namespace/:method/:request', :controller => "api", :action => "handle"
   map.connect 'admin/:model', :controller => "admin", :action => "index"
   map.connect 'admin/:model/:action/:id', :controller => "admin"
   map.connect 'admin/:model/:action', :controller => "admin"
