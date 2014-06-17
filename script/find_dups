@@ -8,17 +8,20 @@ end
 
 i=0
 names = {}
-Contact.find(:all).each do |c|
-  if (c.first_name || c.surname || c.organization) && (c.first_name.to_s + c.surname.to_s + c.organization.to_s).length > 0
-    address = "#{c.extra_address} #{c.address} #{c.postal_code}".downcase().gsub(/\b(st|ave|av|rd|road)\b/, "")
-    #name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[aeiou]|[^a-z0-9\s]/, "")
-    name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[^a-z0-9\s]/, "")
-    rv = names[name]
-    if rv == nil
-      names[name] = [c.id]
-    else
-      names[name] << c.id
-    end
+# only with name WHERE clause: Contact.find(:all, :conditions => ['LENGTH(COALESCE(first_name,'') || COALESCE(organization,'') || COALESCE(surname,'')) > 0']).each do |c|
+# no op WHERE clause: Contact.find(:all, :conditions => ['true']).each do |c|
+# addr validated (large postal code): Contact.find(:all, :conditions => ["LENGTH(postal_code) > 9"]).each do |c|
+Contact.find(:all, :conditions => ["LENGTH(postal_code) > 9"]).each do |c|
+  addr = "#{c.extra_address.to_s.strip} #{c.address.to_s.strip} #{c.postal_code.to_s.strip}".downcase().gsub(/\b(st|ave|av|rd|road)\b/, "")
+  # repect whitespace: name = "#{c.first_name.to_s.strip} #{c.surname.to_s.strip} #{c.organization.to_s.strip.sub(/^the /i, "")} #{addr}".downcase().gsub(/[^a-z0-9\s]/, "")
+  # ignore whitespace: name = "#{c.first_name.to_s.strip} #{c.surname.to_s.strip} #{c.organization.to_s.strip.sub(/^the /i, "")} #{addr}".downcase().gsub(/[^a-z0-9]/, "")
+  # ignore whitespace and vowels: name = "#{c.first_name.to_s.strip} #{c.surname.to_s.strip} #{c.organization.to_s.strip.sub(/^the /i, "")} #{addr}".downcase().gsub(/[aeiou]|[^a-z0-9]/, "")
+  name = "#{c.first_name.to_s.strip} #{c.surname.to_s.strip} #{c.organization.to_s.strip.sub(/^the /i, "")} #{addr}".downcase().gsub(/[aeiou]|[^a-z0-9]/, "")
+  rv = names[name]
+  if rv == nil
+    names[name] = [c.id]
+  else
+    names[name] << c.id
   end
   i+=1
   puts "loaded #{i} -> #{c.id}" if i%1000==0

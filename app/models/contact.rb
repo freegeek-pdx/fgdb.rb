@@ -309,6 +309,42 @@ class Contact < ActiveRecord::Base
       if other.user and !self.user
         Contact.connection.execute("UPDATE users SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       end
+      if other.first_name.to_s.strip.length > 0 && self.first_name.to_s.strip.length == 0
+        self.first_name = other.first_name
+      end
+      if other.middle_name.to_s.strip.length > 0 && self.middle_name.to_s.strip.length == 0
+        self.middle_name = other.middle_name
+      end
+      if other.surname.to_s.strip.length > 0 && self.surname.to_s.strip.length == 0
+        self.surname = other.surname
+      end
+      if other.address.to_s.strip.length > 0 && self.address.to_s.strip.length == 0
+        self.address = other.address
+      end
+      if other.extra_address.to_s.strip.length > 0 && self.extra_address.to_s.strip.length == 0
+        self.extra_address = other.extra_address
+      end
+      if other.city.to_s.strip.length > 0 && self.city.to_s.strip.length == 0
+        self.city = other.city
+      end
+      if other.state_or_province.to_s.strip.length > 0 && self.state_or_province.to_s.strip.length == 0
+        self.state_or_province = other.state_or_province
+      end
+      if other.postal_code.to_s.strip.length > 0 && self.postal_code.to_s.strip.length == 0
+        self.postal_code = other.postal_code
+      end
+      if other.country.to_s.strip.length > 0 && self.country.to_s.strip.length == 0
+        self.country = other.country
+      end
+      if other.birthday.to_s.strip.length > 0 && self.birthday.to_s.strip.length == 0
+        self.birthday = other.birthday
+      end
+      if other.organization.to_s.strip.length > 0 && self.organization.to_s.strip.length == 0
+        self.organization = other.organization
+      end
+      if other.volunteer_intern_title.to_s.strip.length > 0 && self.volunteer_intern_title.to_s.strip.length == 0
+        self.volunteer_intern_title = other.volunteer_intern_title
+      end
       self.save!
       if other.contact_duplicate
         ContactDuplicate.delete(other.contact_duplicate)

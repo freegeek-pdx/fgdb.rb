@@ -136,8 +136,8 @@ class WorkersController < ApplicationController
       flash[:error] = "Cannot write to #{filename}"
     else
       File.unlink(filename) if File.exists?(filename)
-       File.open(filename, 'w') do |f|
-        f.write(params[:picture].read)
+       File.open(filename, 'w:binary') do |f|
+        f.write(params[:picture].read.encode('binary'))
       end
       flash[:notice] = "Uploaded new image for worker"
     end
