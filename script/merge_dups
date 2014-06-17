@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+names = {}
+
+ContactDuplicate.find(:all).each {|a|
+  name = a.dup_check
+  rv = names[name]
+  if rv == nil
+    names[name] = [a.contact]
+  else
+    names[name] << a.contact
+  end
+}
+
+names.each{|k, v|
+  puts "DEDUPING FOR STRING: #{k}"
+  keeper = v.shift
+  v.each do |x|
+    puts "MERGING #{x.id} into #{keeper.id}"
+  end
+  keeper.merge_these_in(v)
+}
