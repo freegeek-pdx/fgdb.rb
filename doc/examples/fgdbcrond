@@ -24,7 +24,7 @@ RAILS_ENV=production
 # TODO: move the mailing to sql_runner and grab from database
 0 7 * * 2,3,4,5,6,7 dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/cashier_report.sql --email "Cashiers Report" beancounters_mailing_list
 
-0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/import-newsletter-subscribers
+#0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/import-newsletter-subscribers
 #0 0 * * * root /var/www/fgdb.rb/script/break_check.rb
 0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/regenerate_sandbox
 
