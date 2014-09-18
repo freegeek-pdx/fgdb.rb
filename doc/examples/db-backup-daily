@@ -4,6 +4,7 @@ sql_dump_data="$backup_dir/database_daily_data.sql"
 sql_dump_schema="$backup_dir/database_daily_schema.sql"
 export GZIP="--rsyncable"
 /usr/sbin/logrotate -f $backup_dir/database_logrotate_daily.conf
-su - postgres -c "pg_dump -a --disable-triggers fgdb_production > $sql_dump_data"
+# NO MORE -a --disable-triggers!
+su - postgres -c "pg_dump fgdb_production > $sql_dump_data"
 su - postgres -c "nice cat $sql_dump_data | nice gzip > $sql_dump_data.gz"
 su - postgres -c "pg_dump -s fgdb_production > $sql_dump_schema"
