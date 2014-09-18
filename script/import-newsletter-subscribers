@@ -5,7 +5,7 @@ ENV['RAILS_ENV']||="production"
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-emails = `ssh -i /root/.ssh/wasp_key root@wasp /usr/sbin/list_members e-newsletter`.split("\n")
+emails = `sudo ssh -i /root/.ssh/wasp_key root@wasp /usr/sbin/list_members e-newsletter`.split("\n")
 
 if emails.length < 100 # error detection! lol
   puts "ERROR: " + emails.join("\n")
