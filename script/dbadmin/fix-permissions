@@ -28,3 +28,6 @@ chown -R dbadmin:git $FGDB_BASE/.git
 chown -R dbadmin:dbadmin $FGDB_MASTER
 chown -R root:dbadmin $FGDB_BASE/doc/examples/database_logrotate{,_daily}.conf
 chown -R dbadmin:git $FGDB_MASTER/.git
+
+chown www-data:www-data /var/www/fgdb.rb/config/rt_metadata.txt
+chmod 644 /var/www/fgdb.rb/config/rt_metadata.txt

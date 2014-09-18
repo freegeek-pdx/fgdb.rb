@@ -1,3 +1,2 @@
-
-dbadmin    ALL=NOPASSWD: /usr/local/bin/restart-webserver, /usr/local/bin/fix-permissions
+dbadmin    ALL=NOPASSWD: /usr/local/bin/restart-webserver, /usr/local/bin/fix-permissions, /usr/bin/ssh
 
