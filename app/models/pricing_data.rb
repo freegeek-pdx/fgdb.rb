@@ -18,7 +18,7 @@ class PricingData < ActiveRecord::Base
   end
 
   def PricingData.display_fields
-    ["Brand", "Model", "Cores", "Clock Speed", "Spec Level", "Release Date"]
+    ["Brand", "Model", "Cores", "Clock Speed", "Release Date"]
   end
 
   def PricingData.delete_table(table_name)
