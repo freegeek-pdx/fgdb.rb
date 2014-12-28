@@ -73,6 +73,10 @@ class PaymentMethod < ActiveRecord::Base
     return [written_off_invoice, coupon, store_credit]
   end
 
+  def PaymentMethod.fake_money_methods()
+    return [coupon, store_credit]
+  end
+
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?

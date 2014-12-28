@@ -1347,10 +1347,12 @@ class TotalSalesAmountByGizmoTypesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/100.0 AS due
+      res = DB.execute("SELECT (SUM((amount_real_money_paid_cents::float/reported_amount_due_cents)*gizmo_count * unit_price_cents * (100-(NOT gizmo_types.not_discounted)::int*COALESCE(discount_percentages.percentage, 0)) / 100)::int/100.00) as due
 FROM gizmo_events
-JOIN sales ON sale_id = sales.id
-WHERE sale_id IS NOT NULL
+LEFT OUTER JOIN sales ON sales.id = sale_id
+LEFT OUTER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id
+LEFT OUTER JOIN discount_percentages ON COALESCE(gizmo_events.discount_percentage_id, sales.discount_percentage_id) = discount_percentages.id
+WHERE sales.reported_amount_due_cents != 0
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:amount => res.first["due"]}
     end
