@@ -12,7 +12,7 @@ class NewFee < ActiveRecord::Migration
       gt.save!
     end
 
-    for k, v in {'printer' => 14, 'keyboard' => 15, 'mouse' => 16}
+    for k, v in {'printer' => 14, 'keyboard' => 15, 'mouse' => 16, 'misc_item' => 100, 'bag_box_misc' => 101, 'av_gizmo' => 98}
       gt = GizmoType.find_by_name(k)
       gt.rank = v
       gt.save!
