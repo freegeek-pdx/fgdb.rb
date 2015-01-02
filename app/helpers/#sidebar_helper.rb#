@@ -1,4 +1,4 @@
-module SidebarHelper
+xmodule SidebarHelper
   # TODO: add methods like this that control it for all 4 transactions + hours, reports, and contact dedup
   # TODO: get this from some table or something
 
