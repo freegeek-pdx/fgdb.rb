@@ -260,6 +260,12 @@ thanks = [
     }
   end
 
+  def calculate_real_payments
+    payments.inject(0) {|tot, payment|
+      tot + (PaymentMethod.is_fake_method?(payment.payment_method_id) ? 0 : payment.amount_cents)
+    }
+  end
+
   def calculated_discount_cents
     calculated_subtotal_cents - calculated_total_cents
   end
@@ -279,6 +285,7 @@ thanks = [
   def compute_fee_totals
     self.reported_amount_due_cents = self.calculated_total_cents
     self.reported_discount_amount_cents = self.calculated_discount_cents
+    self.amount_real_money_paid_cents = self.calculate_real_payments
   end
 
   # WOAH! commented code.

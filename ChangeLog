@@ -46,6 +46,8 @@ fgdb.rb (1.0.127) released; urgency=low
   * Do not allow modification of newsletter flags after contact is
     created, sort email list by ID number and allow created_at condition
     (Closes: #38629)
+  * In the sales by gizmo type trend report, exclude discounts and funny
+    money (RT#42946)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 22 Sep 2013 23:44:42 -0700
 

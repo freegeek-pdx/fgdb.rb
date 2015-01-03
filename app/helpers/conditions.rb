@@ -601,7 +601,17 @@ class Conditions < ConditionsBase
   end
 
   def postal_code_conditions(klass)
-    return ["#{klass.table_name}.postal_code ILIKE '?%'", @postal_code]
+    tb = klass.table_name
+    list = @postal_code.to_s.split("|").map{|x|
+      ["#{tb}.postal_code ILIKE '?%'", x.to_i]
+    }
+    first = list.shift
+    list.each{|y|
+      first[0] += " OR " + y.shift
+      first = first + y
+    }
+    first[0] = "(#{first[0]})"
+    return first
   end
 
   def city_conditions(klass)

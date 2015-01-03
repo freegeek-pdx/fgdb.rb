@@ -13,7 +13,7 @@
 <% body = "Crash exception message: #{@exception_data["clean_message"]}, Admin link to crash: http://data/sidebar_links/crash/#{@exception_data["crash_id"]}" %>
 <% subj = CGI.escape(subj) %>
 <% body = CGI.escape(body) %>
-<% url = "http://todo.freegeek.org/index.html?QuickCreate=1&Subject=#{subj}&Queue=Coding&Owner=#{Default['coding_ticket_owner'].to_s}&Content=#{body}&Requestors=#{User.current_user ? (User.current_user.email || "") : ""}" %>
+<% url = "http://todo.freegeek.org/index.html?QuickCreate=1&Subject=#{subj}&Queue=IT&Owner=#{Default['coding_ticket_owner'].to_s}&Content=#{body}&Requestors=#{User.current_user ? (User.current_user.email || "") : ""}" %>
 <br />  <%= link_to "Click Here to Automatically Report This Issue Now", url %>
 <% end %>
 </b></p>

@@ -124,14 +124,14 @@ module SidebarHelper
     sidebar_hash["staff"]["schedule"] = {:controller => "work_shifts", :action => "staffsched"} if should_show_schedule
     sidebar_hash["staff"]["holidays"] = {:controller => "holidays", :action => "display"}
     sidebar_hash["staff"]["edit schedule"] = {:controller => "work_shifts"} if should_show_edit_schedule
-    sidebar_hash["staff"]["staff hours"] = {:controller => "worked_shifts"}
-    sidebar_hash["staff"]["individual report"] = {:controller => "worked_shifts", :action => "individual"}
-    sidebar_hash["staff"]["breaks report"] = {:controller => "worked_shifts", :action => "breaks"}
-    sidebar_hash["staff"]["jobs report"] = {:controller => "reports", :action => "staff_hours"}
-    sidebar_hash["staff"]["types report"] = {:controller => "worked_shifts", :action => "type_totals"}
-    sidebar_hash["staff"]["payroll report"] = {:controller => "worked_shifts", :action => "payroll"}
-    sidebar_hash["staff"]["weekly report"] = {:controller => "worked_shifts", :action => "weekly_workers"}
-    sidebar_hash["staff"]["hours summary"] = {:action => 'staff_hours_summary', :controller => "reports"}
+#    sidebar_hash["staff"]["staff hours"] = {:controller => "worked_shifts"}
+#    sidebar_hash["staff"]["individual report"] = {:controller => "worked_shifts", :action => "individual"}
+#    sidebar_hash["staff"]["breaks report"] = {:controller => "worked_shifts", :action => "breaks"}
+#    sidebar_hash["staff"]["jobs report"] = {:controller => "reports", :action => "staff_hours"}
+#    sidebar_hash["staff"]["types report"] = {:controller => "worked_shifts", :action => "type_totals"}
+#    sidebar_hash["staff"]["payroll report"] = {:controller => "worked_shifts", :action => "payroll"}
+#    sidebar_hash["staff"]["weekly report"] = {:controller => "worked_shifts", :action => "weekly_workers"}
+#    sidebar_hash["staff"]["hours summary"] = {:action => 'staff_hours_summary', :controller => "reports"}
     sidebar_hash["staff"]["badges"] = {:action => 'badge', :controller => "workers"}
     # library
 #    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers', 'inventory']
