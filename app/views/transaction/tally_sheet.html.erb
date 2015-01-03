@@ -1,7 +1,7 @@
 <center>
 <h3>FREE GEEK DONATION SLIP</h3>
-<b>Please note: This is not a receipt!</b><br />
-Please bring this form along with any monetary contributions to the front desk for processing. Thanks for your hardware donation!<br />
+<b>For office use only. This is not a receipt!</b><br />
+Please bring this form to the front desk for processing. Thank you for your hardware donation and any monetary contribution you are able to provide to support our work.<br />
 <% seen = false %>
 <% last = nil %>
 <% last_r = nil %>
@@ -27,13 +27,13 @@ Please bring this form along with any monetary contributions to the front desk f
       <td style="<%= style %>" colspan="2">&nbsp;</td>
     <% end %>
     <td style="<%= style %>"><%= r["description"] %></td>
-    <td style="<%= style %>">$<%= r["amount"] %></td>
+    <td style="<%= style %>">$<%= r["amount"] %><% if r["fee_type"] == "required" %>*<% end %></td>
   </tr>
   <% seen = true %>
   <% last = current %>
   <% last_r = current_r %>
 <% end %>
 </table>
-<i>Note: The first seven devices covered by Oregon eCycles do not require a mandatory fee. Covered devices with CRTs beyond that may require a fee. If you are unsure if this applies to your situation, ask at the front desk.</i><br />
+<i>*Fee may be applicable for businesses not covered by Oregon E-Cycles</i><br />
 FD# _________________________
 </center>
