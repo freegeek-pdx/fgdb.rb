@@ -4,7 +4,7 @@ RAILS_ENV=production
 #
 0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/delete-sessions
 
-0 7 * * 1 dbadmin /var/www/fgdb.rb/script/colleen
+0 7 * * 4 dbadmin /var/www/fgdb.rb/script/colleen
 0 7 * * 1 dbadmin /var/www/fgdb.rb/script/kosmala
 
 # milestone report
