@@ -337,7 +337,11 @@ class TransactionController < ApplicationController
         ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
       end
       if params[:subscribe] == "1"
-        NewsletterSubscriber.subscribe(address)
+        if @txn.contact && !@txn.contact.is_subscribed
+          c = @txn.contact
+          c.contact_types << ContactType.newsletter
+          c.save
+        end
       end
       Notifier.deliver_donation_pdf(address, data, filename, type)
       @message = "Sent to #{address}"

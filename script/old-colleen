@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd /tmp
+F=contributorsreport_$(date +%Y%m%d).csv
+echo "SELECT contacts.id AS ContactID, contacts.first_name AS FirstName,contacts.surname AS LastName, (SELECT value FROM contact_methods JOIN contact_method_types ON contact_method_types.id = contact_method_type_id WHERE contact_method_types.name LIKE '%email' AND contact_methods.ok = 't' AND contact_id = contacts.id ORDER BY contact_method_types.name LIMIT 1) AS Email, donations.created_at AS ContributedAt, (SELECT (SUM(amount_cents)-donations.reported_required_fee_cents)/100.0 FROM payments WHERE payments.donation_id = donations.id) as contribution FROM contact_types_contacts JOIN contacts ON contacts.id = contact_id LEFT OUTER JOIN donations ON donations.contact_id = contacts.id AND donations.created_at >= (current_date - interval '7 days') WHERE contact_types_contacts.created_at >= (current_date - interval '7 days') AND contact_type_id = 40;" | psql fgdb_production | /var/www/fgdb.rb/script/psql2csv > $F
+uuencode $F $F | mail -s "Weekly Contributors Report" colleen.dixon@freegeek.org ryan.niebur@freegeek.org

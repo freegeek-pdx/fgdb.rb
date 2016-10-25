@@ -72,7 +72,7 @@ function get_chosen_address() {
     }
 }
 " %>
-            <label for="address">Enter an e-mail address: </label><%= text_field_tag 'address', nil, {:onchange => "check_contact_subscribed(get_chosen_address());"} %>
+            <label for="address">Enter an e-mail address: </label><%= text_field_tag 'address', nil %>
             <% if @txn.contact_id %>
               <label for="save">Save to contact record?</label> <%= check_box_tag "save" %>
               <%= observe_field("save",
@@ -84,7 +84,13 @@ function get_chosen_address() {
             <br />
             <div class='form-element' style="clear:left">
             <%= loading_indicator_tag('subscription_loading') %>
+	    <% if @txn.contact %>
+	    <% if @txn.contact.is_subscribed %>
+	    <label id="subscribe_label" for="subscribe">Already subscribed to newsletter.</label>
+	    <% else %>
             <label id="subscribe_label" for="subscribe">Subscribe to e-newsletter?</label> <%= check_box_tag "subscribe" %>
+	    <% end %>
+	    <% end %>
             </div>
             <div class='form-element' style="clear:left">
               <%= submit_tag "Send PDF" %>

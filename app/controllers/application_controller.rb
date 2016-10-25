@@ -36,10 +36,8 @@ class ApplicationController < ActionController::Base
   end
 
   def gencsv(*a)
-    s = ""
     a = a.flatten
-    CSV.generate_row(a, a.length, s)
-    return s
+    return CSV.generate_line(a)
   end
 
   def edit_footnote

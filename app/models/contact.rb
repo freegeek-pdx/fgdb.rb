@@ -6,7 +6,8 @@ class Contact < ActiveRecord::Base
 
   has_many :assignments
 
-  has_and_belongs_to_many :contact_types
+  has_many :contact_types_contacts
+  has_many :contact_types, :through => :contact_types_contacts
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
   has_many :volunteer_tasks, :order => 'date_performed DESC'
@@ -22,6 +23,10 @@ class Contact < ActiveRecord::Base
   has_one :worker
   has_one :tech_support_note
   validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
+
+  def is_subscribed
+      contact_types.include?(ContactType.newsletter)
+  end
 
   def is_organization_s
     (!! is_organization).to_s
@@ -646,7 +651,9 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    if effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
+    if self.has_worker?
+      return "staff"
+    elsif effective_discount_hours >= Default['hours_for_discount'].to_f
       return "volunteer"
     else
       return "no_discount"

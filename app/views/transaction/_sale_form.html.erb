@@ -7,7 +7,7 @@
         <label for="donation_contact_type">What kind of contact?</label>
 
         <%= select_visibility( 'sale', 'contact_type', {
-                               :anonymous => render( :partial => 'anonymous', :locals => {:disabled_code => true} ),
+                               :anonymous => render( :partial => 'anonymous' ),
                                :named => render( :partial => 'contact_search',
                                                  :locals => {:options => {
                                                      :on_display => "if($('contact__default_discount_name')) {

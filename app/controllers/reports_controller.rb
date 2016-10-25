@@ -202,6 +202,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} AND donations.adjust
   end
 
   def cashier_contributions_report
+    ReportLog.add_to_log("Cashier Contributions")
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     sql = DB.send(:sanitize_sql_for_conditions, @conditions.conditions(Donation))
@@ -226,6 +227,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def volunteer_schedule_report
+    ReportLog.add_to_log("Volunteer Schedule")
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     _run_vol_sched_report
@@ -289,6 +291,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def suggested_contributions_report
+    ReportLog.add_to_log("Suggested Contributions")
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     @conditions.d_yuck_flag = true
@@ -324,6 +327,7 @@ GROUP BY 1, 2, 3;").to_a
   public
 
   def staff_hours_summary_report
+    ReportLog.add_to_log("Staff Hours Summary")
     # columns related
     staff_hours_summary
     @tables = []
@@ -433,6 +437,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def donation_zip_areas_report
+    ReportLog.add_to_log("Donation Zip Code Areas")
     donation_zip_areas
     @report = OpenStruct.new(params[:report])
     @report.by_full_zip = (@report.by_full_zip == "1")
@@ -465,6 +470,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def top_donations_report
+    ReportLog.add_to_log("Top Donations")
     conds = Conditions.new
     if params[:report]
       @report = OpenStruct.new(params[:report])
@@ -533,6 +539,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def gizmos_report
+    ReportLog.add_to_log("Gizmo Report")
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
@@ -619,6 +626,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def income_report(thing = nil)
+    ReportLog.add_to_log("Income Report")
     @defaults = Conditions.new
     thing = thing || params[:defaults]
     if thing.nil?
@@ -970,6 +978,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def staff_hours_report
+    ReportLog.add_to_log("Staff Hours")
     @sections = [:job, :income_stream, :wc_category, :program]
     @hours_type = "staff"
     @klass = WorkedShift
@@ -980,6 +989,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def volunteers_report
+    ReportLog.add_to_log("Volunteers")
     @sections = [:community_service_type, :volunteer_task_types]
     @hours_type = "volunteer"
     @klass = VolunteerTask
@@ -1026,6 +1036,7 @@ GROUP BY 1, 2, 3;").to_a
   end
 
   def hours_report
+    ReportLog.add_to_log("Volunteer Hours")
     pre_common_hours_report
     # if this is too slow, replace it with straight sql
     @tasks = VolunteerTask.find(:all,

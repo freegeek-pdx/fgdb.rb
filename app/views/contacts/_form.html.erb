@@ -12,7 +12,6 @@
     <div class="form-element ">
       <input type="checkbox" id="<%= h contact_type.name %>"
              name="contact_types[]"
-             <%= (!@contact.id.nil? && contact_type.name.match(/newsletter/)) ? "onClick=\"return false;\"" : "" %>
              value="<%= contact_type.id %>"
              <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
              />&nbsp;<label class="checkbox" for="<%= h contact_type.name %>"><%= h contact_type.description %></label>

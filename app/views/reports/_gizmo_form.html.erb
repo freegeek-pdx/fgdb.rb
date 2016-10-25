@@ -6,5 +6,6 @@
   <% filters << "gizmo_category_id" %>
   <% filters << "gizmo_type_group_id" %>
   <% filters << "contact" if has_required_privileges('/contact_condition') %>
+  <% filters << "organization" if has_required_privileges('/contact_condition') %>
   <%= conditions_html('defaults', filters) %>
 </div>

@@ -40,22 +40,37 @@ class ContactsController < ApplicationController
 
   def email_list
     @multi_enabled = true
-    @include_comma = (params[:include_comma] == "1")
-    @show_email = (params[:show_email] == "1")
-    @hide_full_name = (params[:hide_full_name] == "1")
-    @include_first_name = (params[:include_first_name] == "1")
-    @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
-    @include_last_donated_date = (params[:include_last_donated_date] == "1")
-    @include_last_donated_contribution_only_date = (params[:include_last_donated_contribution_only_date] == "1")
-    @include_last_donated_gizmos_only_date = (params[:include_last_donated_gizmos_only_date] == "1")
+#    @include_comma = (params[:include_comma] == "1")
+#    @show_email = (params[:show_email] == "1")
+#    @hide_full_name = (params[:hide_full_name] == "1")
+#    @include_first_name = (params[:include_first_name] == "1")
+#    @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
+#    @include_last_donated_date = (params[:include_last_donated_date] == "1")
+#    @include_last_donated_contribution_only_date = (params[:include_last_donated_contribution_only_date] == "1")
+#    @include_last_donated_gizmos_only_date = (params[:include_last_donated_gizmos_only_date] == "1")
 
     @conditions = Conditions.new
     if params[:conditions]
       @conditions.apply_conditions(params[:conditions])
       @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact), :order => 'contacts.id ASC')
     else
-      @show_email = true
+      @conditions.contact_type_enabled=true
+      @conditions.contact_type=ContactType.find_by_name('newsletter').id
+#      @show_email = true
     end
+  end
+
+  def email_list_csv
+    email_list
+    found = [["First Name", "Last Name", "Email"]]
+    if @contacts
+      for i in @contacts;
+        v = [i.first_name, i.surname, i.mailing_list_email]
+        found << v;
+      end
+    end
+    str = found.map{|x| gencsv(x)}.join("")
+    render :text => str, :content_type => "text/csv"
   end
 
   around_filter :transaction_wrapper
@@ -297,12 +312,13 @@ class ContactsController < ApplicationController
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
       n = params[params["object_name"]][params[:field_name]].strip
-      if params[:contact_context] and params[:contact_context].to_s.length > 0
-        l = params[:contact_context].to_s.split(/ ,/).map(&:to_i)
-        @contacts = Contact.search_by_type(l, n, :limit => 10)
-      else
+# FIXME:
+#      if params[:contact_context] and params[:contact_context].to_s.length > 0
+#        l = params[:contact_context].to_s.split(/ ,/).map(&:to_i)
+#        @contacts = Contact.search_by_type(l, n, :limit => 10)
+#      else
         @contacts = Contact.search(n, :limit => 10)
-      end
+#      end
       render :partial => 'auto_complete_list'
     else
       super

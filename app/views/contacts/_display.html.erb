@@ -127,7 +127,10 @@ Attended Classes:<br />
         :confirm => 'Are REALLY you sure you want to kill this person?',
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
-<% if @contact.default_discount_schedule == "volunteer" %>
+<% if @contact.default_discount_schedule == "staff" %>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.default_staff_discount %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_staff_discount_percentage %></div>
+<% elsif @contact.default_discount_schedule == "volunteer" %>
 <div id="contact__default_discount_name" style="display: none"><%= Sale.default_volunteer_discount %></div>
 <div id="contact__default_discount_percentage" style="display: none"><%= Sale.default_volunteer_discount_percentage %></div>
 <% else %>

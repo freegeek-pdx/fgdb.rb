@@ -4,6 +4,9 @@ RAILS_ENV=production
 #
 0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/delete-sessions
 
+0 7 * * 1 dbadmin /var/www/fgdb.rb/script/colleen
+0 7 * * 1 dbadmin /var/www/fgdb.rb/script/kosmala
+
 # milestone report
 0 21 * * 3 dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/volunteer_milestones_report
 0 7 1 * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/monthly_volunteer_milestones_report
@@ -34,4 +37,3 @@ RAILS_ENV=production
 0 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
 0 * * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/pull_rt_metadata.sh
 7 0 * * * dbadmin /var/www/fgdb.rb/script/run_with_deprecated_filter /var/www/fgdb.rb/script/run_generate_volskedj
-

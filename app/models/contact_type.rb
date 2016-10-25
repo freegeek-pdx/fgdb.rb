@@ -1,6 +1,10 @@
 class ContactType < ActiveRecord::Base
   validates_uniqueness_of :name, :message => "already exists"
-  has_and_belongs_to_many :contacts
+#  has_and_belongs_to_many :contacts
+
+  def self.newsletter
+    find_by_name('newsletter')
+  end
 
   def self.find_instantiable
     find(:all, :conditions => ["instantiable = ?", true], :order => "description")

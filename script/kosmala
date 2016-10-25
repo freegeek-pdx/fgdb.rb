@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd /tmp
+F=frontdeskreport_$(date +%Y%m%d).csv
+echo "SELECT has_contribution, COUNT(*) AS count, date, CASE WHEN anonymous THEN 'anonymous' WHEN dumped THEN 'dumped' ELSE 'named' END AS type, login, SUM(suggested)/100.0 AS suggested, COALESCE(SUM(contribution),0)/100.0 AS contributed FROM (SELECT donations.id AS id, users.login AS login, date_trunc('day', donations.created_at) AS date, SUM(payments.amount_cents) IS NOT NULL AND SUM(payments.amount_cents) > reported_required_fee_cents AS has_contribution, reported_suggested_fee_cents AS suggested, SUM(payments.amount_cents) - reported_required_fee_cents AS contribution, postal_code IS NULL AND donations.contact_id IS NULL AS dumped, postal_code IS NOT NULL AS anonymous, donations.contact_id IS NOT NULL AS named FROM donations LEFT OUTER JOIN users ON cashier_created_by = users.id LEFT OUTER JOIN payments ON donation_id = donations.id GROUP BY 1, 2) AS q WHERE date >= '2015-01-01' GROUP BY 1,3,4,5;" | psql fgdb_production | /var/www/fgdb.rb/script/psql2csv > $F
+uuencode $F $F | mail -s "Weekly Front Desk Report" omar.vargas@freegeek.org richard.seymour@freegeek.org

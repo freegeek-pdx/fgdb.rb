@@ -26,12 +26,20 @@ class Sale < ActiveRecord::Base
     Sale.new.discount_name.id
   end
 
+  def self.default_staff_discount
+    DiscountName.find(Default["discount_name_id_for_staff_discount"]).id
+  end
+
   def self.default_volunteer_discount
     DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id
   end
 
   def self.default_discount_percentage
     Sale.new.discount_percentage.id
+  end
+
+  def self.default_staff_discount_percentage
+    DiscountPercentage.find(Default["discount_percentage_id_for_staff_discount"]).id
   end
 
   def self.default_volunteer_discount_percentage
@@ -170,7 +178,9 @@ thanks = [
         errors.add("contact_id", "does not refer to any single, unique contact")
       end
     else
-      nil
+      if postal_code.nil? or postal_code.strip.blank? #or postal_code.to_i == 0
+        errors.add("postal_code", "must be provided for all anonymous sales")
+      end
     end
     end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?

@@ -49,6 +49,7 @@ class GraphicReportsController < ApplicationController
       index2
       render :action => "index2"
     end
+    ReportLog.add_to_log(@report.title)
   end
 
   def index
@@ -1075,29 +1076,6 @@ class DisbursementAndSalesByGizmoTypeTrend < TrendReport
 
   def title
     "Disbursement and Sales by Gizmo Type"
-  end
-end
-class SalesTotalsTrend < TrendReport
-    def category
-      "Income"
-    end
-
-    def default_table_data_types
-      Hash.new("money")
-    end
-
-    def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( reported_amount_due_cents )/100.0 AS amount
-  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
-      return {:total => res.first["amount"]}
-    end
-
-    def title
-      "Report of total sales in dollars"
-    end
-
-  def valid_conditions
-    ["sale_type"]
   end
 end
 class DonationTotalsTrend < TrendReport

@@ -645,6 +645,7 @@ class Conditions < ConditionsBase
     if klass == Contact
       i = "id"
     else
+      klass = Disbursement if klass = GizmoEvent
       i = "contact_id"
     end
     return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", true]
