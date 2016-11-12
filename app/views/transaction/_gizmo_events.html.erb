@@ -116,12 +116,12 @@
     <% end %>
   <tr id="gizmo_events_form">
     <% if work_order_mode %>
-    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" readonly="readonly" name="gizmo_type_id">
+    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" onblur="gizmo_type_left();" readonly="readonly" name="gizmo_type_id">
         <%= options_from_collection_for_select(GizmoType.find_all_by_name("service_fee_tech_support"), "id", "description") %>
       </select>
 </td>
     <% else %>
-    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id" onkeydown="if((event.keyCode >= 96 && event.keyCode <= 105 ) || (event.keyCode >= 48 && event.keyCode <= 57 )) {$('barcode').enable(); $('barcode').focus();}">
+    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" onblur="gizmo_type_left();" name="gizmo_type_id" onkeydown="if((event.keyCode >= 96 && event.keyCode <= 105 ) || (event.keyCode >= 48 && event.keyCode <= 57 )) {$('barcode').enable(); $('barcode').focus();}">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
     <% end %>

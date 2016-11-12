@@ -1196,15 +1196,21 @@ function disbursement_gizmo_type_selected() {
   coveredness_type_selected();
   systems_type_selected();
 }
+function gizmo_type_left() {
+  if($('system_id') == null)
+    return;
+  if(system_types.include($('gizmo_type_id').value) || $('gizmo_type_id').value == "") {
+    if($('sale_contact_type') && $('sale_contact_type').value != 'named') {
+      $('sale_contact_type').value = 'named';
+      trigger_change_on($('sale_contact_type'));
+    }
+  }
+}
 function systems_type_selected() {
   if($('system_id') == null)
     return;
   if(system_types.include($('gizmo_type_id').value) || $('gizmo_type_id').value == "") {
     $('system_id').enable();
-    if($('sale_contact_type') && $('sale_contact_type').value != 'named') {
-      $('sale_contact_type').value = 'named';
-      trigger_change_on($('sale_contact_type'));
-    }
   } else {
     $('system_id').disable();
     $('system_id').value = '';
