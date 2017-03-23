@@ -10,7 +10,6 @@ module RawReceiptHelper
   end
 
   def account_regexp
-    return nil
     Default["raw_receipt_account_regexp"]
   end
 
