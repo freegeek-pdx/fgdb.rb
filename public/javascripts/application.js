@@ -230,62 +230,6 @@ function cleanup_hour_select(hour_id, start_hour, end_hour) {
   }
 }
 
-function monitorLoadingThenCall(doneFunc) {
-   try { if (isActive()) { eval(doneFunc); return; }} 
-   catch (err) { alert("Unknown error occured: " + err); return; }
-   doneFunc =  "'" + doneFunc.replace(/\"/g,'\\"') + "'";
-   window.setTimeout("monitorLoadingThenCall(" + doneFunc + ")", 100);
-}
-
-function isActive() {
-   if (document && document.jzebra) {
-      try { return document.jzebra.isActive; }
-      // IE Fix, don't expect it to make sense
-      catch (err) { return true; }
-   }
-   return false;
-}
-
-function monitorInitFinding() {
-  var applet = document.jzebra;
-  if (applet != null) {
-    if (!applet.isDoneFinding()) {
-      window.setTimeout('monitorInitFinding()', 100);
-    } else {
-      var list = document.jzebra.getPrinters();
-      list = list.split(",").select(function(n) {return (n != "null");})
-      list.each(function(i){
-        e = document.createElement("option");
-        e.text = e.value = i;
-        $('receipt_printer').add(e, $('receipt_printer').options[0]);
-      });
-      var a = $('receipt_printer').options;
-      for(var i = 0; i < a.length; i++) {
-        var q = a[i];
-        if(q.value == receipt_printer_default) {
-          $('receipt_printer').selectedIndex = i;
-        }
-      }
-    }
-  } else {
-    alert('ERROR: applet is not found. do you have Java enabled?');
-  }
-}
-
-function monitorAppending() {
-  var applet = document.jzebra;
-  if (applet != null) {
-    if (!applet.isDoneAppending()) {
-      window.setTimeout('monitorAppending()', 100);
-    } else {
-      applet.print(); // Don't print until all of the data has been appended
-      monitorPrinting();
-    }
-  } else {
-    alert("ERROR: Applet not loaded! do you have java?");
-  }
-}
-
 function parse_name_words(words_s) {
   var a = words_s.split(" ");
   var f = [];
@@ -374,65 +318,7 @@ function after_print_hook() {
         }
 }
 
-function monitorPrinting() {
-  var applet = document.jzebra;
-  if (applet != null) {
-    if (!applet.isDonePrinting()) {
-      window.setTimeout('monitorPrinting()', 100);
-    } else {
-      var e = applet.getException();
-      if(e != null) {
-        alert("ERROR: printing failed. " + e.getLocalizedMessage());
-      } else {
-        after_print_hook();
-      }
-    }
-  } else {
-    alert("Applet not loaded!");
-  }
-}
-
-function monitorPrintFinding() {
-  var applet = document.jzebra;
-  if (applet != null) {
-    if (!applet.isDoneFinding()) {
-      window.setTimeout('monitorPrintFinding()', 100);
-    } else {
-      if(selected_printer() != applet.getPrinter()) {
-        alert('ERROR: Could not choose correct printer');
-        return;
-      }
-      applet.append(text_pending_print);
-      monitorAppending();
-      applet.print();
-    }
-  } else {
-    alert('ERROR: applet is not found. do you have Java enabled?');
-  }
-}
-
-function set_printers() {
-  document.jzebra.findPrinter("");
-  monitorInitFinding();
-}
-
 // FIXME: needs to be rewritten to be event driven so that race conditions and errors are accounted for
-
-function print_text(text) {
-  var ap = document.jzebra;
-  if(ap == null) {
-    alert('ERROR: jZebra could not load, do you have java installed?');
-    return;
-  }
-  var printer = selected_printer();
-  if(printer == "") {
-    alert('ERROR: Please choose a printer');
-    return;
-  }
-  text_pending_print = text;
-  ap.findPrinter(printer);
-  monitorPrintFinding();
-}
 
 function selected_printer() {
   return $('receipt_printer').options[$('receipt_printer').selectedIndex].value;

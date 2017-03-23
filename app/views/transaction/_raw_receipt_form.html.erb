@@ -2,9 +2,6 @@
 <%= javascript_tag "receipt_printer_default = #{receipt_printer_default.to_json};" %>
 <% remote_form_for(:receipt, nil, :url => {:action => 'raw_receipt', :id => params[:id]}, :loading => "Element.show('#{loading_indicator_id("raw_receipt")}')") do |f| %>
   <%= f.submit 'Print Text Receipt to ', :name => 'print', :id => 'print_submit', :onclick => '$("receipt_mode").value = "print";' %>
-  <%= f.select "printer", [["<Choose a Printer>", ""]] %>
+  <%= f.select "printer", printer_options("<Choose a Printer>"), :selected => receipt_printer %>
   <%= f.hidden_field "mode", :value => 'print' %>
 <%      end %>
-   <applet name="jzebra" code="jzebra.PrintApplet.class"  alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive="/jzebra/jzebra.jar" width="0" height="0" >
-   </applet>
-<%= javascript_tag("monitorLoadingThenCall('set_printers();');") %>

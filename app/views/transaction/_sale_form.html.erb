@@ -106,15 +106,11 @@
       <% if receipt_printer_enabled %>
         <div>
           <%= javascript_tag "receipt_printer_default = #{receipt_printer_default.to_json};" %>
-          Receipt Printer: <%= select_tag "receipt_printer", options_for_select([["Old Format (Choose a Printer)", ""]]) %>
+          Receipt Printer: <%= select_tag "receipt_printer", options_for_select(printer_options("Old Format (Choose a Printer)"), receipt_printer_default) %>
         </div>
       <% end %>
 
       <% if receipt_printer_enabled %>
-
-   <applet name="jzebra" code="jzebra.PrintApplet.class"  alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive="/jzebra/jzebra.jar" width="0" height="0">
-   </applet>
-<%= javascript_tag("monitorLoadingThenCall('set_printers();');") %>
 
       <% end %>
 

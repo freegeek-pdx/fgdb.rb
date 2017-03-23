@@ -9,12 +9,31 @@ module RawReceiptHelper
     Default.is_pdx
   end
 
+  def account_regexp
+    return nil
+    Default["raw_receipt_account_regexp"]
+  end
+
   def is_receipt_user
-    (Default["raw_receipt_account_regexp"].nil? || (current_user and current_user.login.match(/#{Default["raw_receipt_account_regexp"]}/)))
+    (account_regexp.nil? || (current_user and current_user.login.match(/#{account_regexp}/)))
   end
 
   def receipt_printer_regexp
     Default["raw_receipt_printer_regexp"].nil? ? /^#{Default["raw_receipt_printer_default"]}$/ : /#{Default["raw_receipt_printer_regexp"]}/
+  end
+
+  def printer_options(default_string)
+    list = [[default_string, ""]]
+    list << [receipt_printer, receipt_printer] if is_printer_available
+    return list
+  end
+
+  def receipt_printer
+    Default["raw_receipt_printer_default"]
+  end
+
+  def is_printer_available
+    CupsBSD.is_printer_ready(receipt_printer)
   end
 
   def receipt_printer_default
@@ -55,10 +74,12 @@ module RawReceiptHelper
     end
     if RAILS_ENV == "development"
       page << "alert('Would have printed to text receipt mode (but RAILS_ENV is development):' + #{text.to_json});"
-      page << "after_print_hook();"
     else
-      page << "print_text(#{text.to_json});"
+      if !CupsBSD.print_string(receipt_printer, text) 
+        page << "alert('Failed to print to receipt printer \"#{receipt_printer}\". Please ensure it is configured compatibly in CUPS.');"
+      end
     end
+    page << "after_print_hook();"
     if opts[:alert]
       page << "alert(#{opts[:alert].to_json});" if opts[:alert].length > 0
     end
